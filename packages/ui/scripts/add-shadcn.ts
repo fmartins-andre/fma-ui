@@ -4,11 +4,13 @@
 //
 // Usage (from packages/ui, or via `pnpm add:shadcn` at the repo root):
 //   pnpm add:shadcn button card "alert-dialog"
+//   pnpm add:shadcn all              (fetches every official component in one go)
 //
 // What it does:
-//   1. Runs the real `shadcn add` against components.json (whose `ui`/`components`
-//      aliases point at a throwaway staging folder, src/core/_incoming) — this is
-//      what installs any npm dependencies the component needs, too.
+//   1. Runs the real `shadcn add` (--all for "all") against components.json (whose
+//      `ui`/`components` aliases point at a throwaway staging folder,
+//      src/core/_incoming) — this is what installs any npm dependencies the
+//      component(s) need, too.
 //   2. Moves each staged file into src/core/<name>/<name>.tsx.
 //   3. Scaffolds a meta.json stub (source: "shadcn") if one doesn't exist yet.
 //
@@ -16,7 +18,7 @@
 // if you want ("customized"), then run `pnpm generate:registry && pnpm registry:build`.
 
 import { execSync } from "node:child_process";
-import { existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const STAGING_DIR = join("src", "core", "_incoming");
@@ -30,19 +32,36 @@ function toTitle(id: string): string {
 }
 
 function main() {
-  const names = process.argv.slice(2);
-  if (names.length === 0) {
+  const args = process.argv.slice(2);
+  const wantsAll = args.length === 1 && args[0]?.toLowerCase() === "all";
+
+  if (args.length === 0 || (!wantsAll && args.some((a) => a.toLowerCase() === "all"))) {
     console.error("Usage: pnpm add:shadcn <component> [component...]");
     console.error('Example: pnpm add:shadcn button card "alert-dialog"');
+    console.error("Or:      pnpm add:shadcn all   (fetches every official component)");
     process.exit(1);
   }
 
   mkdirSync(STAGING_DIR, { recursive: true });
 
-  console.log(`Fetching from the shadcn/ui registry: ${names.join(", ")}`);
-  execSync(`pnpm dlx shadcn@latest add ${names.map((n) => `"${n}"`).join(" ")} --yes --overwrite`, {
-    stdio: "inherit",
-  });
+  if (wantsAll) {
+    console.log("Fetching the entire shadcn/ui registry...");
+    execSync("pnpm dlx shadcn@latest add --all --yes --overwrite", { stdio: "inherit" });
+  } else {
+    console.log(`Fetching from the shadcn/ui registry: ${args.join(", ")}`);
+    execSync(
+      `pnpm dlx shadcn@latest add ${args.map((n) => `"${n}"`).join(" ")} --yes --overwrite`,
+      { stdio: "inherit" },
+    );
+  }
+
+  // "all" doesn't know component names ahead of time — discover them from
+  // whatever actually landed in staging instead of an expected list.
+  const names = wantsAll
+    ? readdirSync(STAGING_DIR)
+        .filter((f) => f.endsWith(".tsx"))
+        .map((f) => f.slice(0, -".tsx".length))
+    : args;
 
   for (const name of names) {
     const staged = join(STAGING_DIR, `${name}.tsx`);

@@ -59,6 +59,16 @@ reorganiza o resultado de `components/ui/<nome>.tsx` (formato padrão do shadcn)
 nosso formato `src/core/<nome>/<nome>.tsx`, criando um `meta.json` stub com
 `"source": "shadcn"`. Edite a descrição/categoria/tags depois.
 
+Pra baixar todos os componentes oficiais de uma vez:
+
+```bash
+pnpm add:shadcn all
+```
+
+Usa a flag real `--all` do próprio `shadcn add` (`shadcn add --help`), não uma lista
+mantida à mão — como "all" não sabe os nomes de antemão, o script descobre os
+componentes vasculhando o que de fato caiu na pasta de staging depois do fetch.
+
 ### 1b. Baixar um componente de um registro de terceiros (pra republicar no seu)
 
 ```bash
@@ -199,6 +209,7 @@ pnpm lint          # biome, via turbo
 pnpm type-check    # tsc --noEmit em todos os pacotes
 pnpm test          # vitest --project unit em todos os pacotes, via turbo
 pnpm add:shadcn <nomes...>  # baixa componente(s) do shadcn/ui oficial
+pnpm add:shadcn all         # baixa todos os componentes oficiais de uma vez
 ```
 
 ## Stack
