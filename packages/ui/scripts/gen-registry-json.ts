@@ -18,7 +18,7 @@ function toTitle(id: string): string {
     .join(" ");
 }
 
-function detectNpmDependencies(source: string): string[] {
+export function detectNpmDependencies(source: string): string[] {
   const deps = new Set<string>();
   const importRegex = /from\s+["']([^"']+)["']/g;
   let match: RegExpExecArray | null;
@@ -43,7 +43,7 @@ function detectNpmDependencies(source: string): string[] {
   return [...deps];
 }
 
-function detectRegistryDependencies(source: string, componentId: string): string[] {
+export function detectRegistryDependencies(source: string, componentId: string): string[] {
   const deps = new Set<string>();
   // src/core/<id>/<id>.tsx importing another core component via the "@/core/x/x" alias
   const aliasImportRegex = /from\s+["']@\/core\/([^/"']+)\/\1["']/g;
@@ -97,7 +97,7 @@ function processComponent(componentId: string): RegistryItem | null {
   };
 }
 
-function main() {
+export function main() {
   console.log("Discovering components...");
   const componentIds = readdirSync(CORE_DIR, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && entry.name !== "_incoming")
@@ -131,4 +131,8 @@ function main() {
   console.log("Next: pnpm registry:build");
 }
 
-main();
+// Guard so importing this module from tests (to unit-test the pure functions
+// above) doesn't also run the script against the filesystem.
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}

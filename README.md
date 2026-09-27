@@ -96,6 +96,44 @@ Componentes usam `cn()` do pacote `cn` (`import { cn } from "cn"`) e podem impor
 outros componentes do registro via `@/core/<outro>/<outro>` — o gerador detecta
 essas dependências automaticamente (`registryDependencies`).
 
+### 2b. Storybook, testes e docs
+
+Cada componente é uma pasta autocontida em `src/core/<nome>/`:
+
+```
+src/core/<nome>/
+  <nome>.tsx           → código
+  meta.json            → metadata (fonte de verdade da descrição/categoria/tags)
+  <nome>.stories.tsx   → story do Storybook (obrigatória — ver gate abaixo)
+```
+
+`meta.json.description` é a **única** fonte da descrição — o `registry.json`
+(via `gen-registry-json.ts`) e a story (`parameters.docs.description.component`)
+os dois leem dela, em vez de duplicar o texto em dois lugares (diferente do que
+o EMITTE faz, com JSDoc em inglês + `docs.description` em português repetindo o
+mesmo conteúdo).
+
+```bash
+pnpm --filter @fmartinsandre/ui storybook        # dev server, porta 6006
+pnpm --filter @fmartinsandre/ui build-storybook  # build estático em storybook-static/
+```
+
+Testes rodam via Vitest com dois "projects" (`packages/ui/vitest.config.ts`):
+
+- **`unit`** (`pnpm --filter @fmartinsandre/ui test`) — ambiente Node, sem browser.
+  Cobre funções puras dos scripts (`tests/gen-registry-json.test.ts`) e um gate
+  estrutural (`tests/registry-consistency.test.ts`): **todo componente em
+  `src/core/` precisa ter `meta.json` válido contra `ComponentMetaSchema` e um
+  `<nome>.stories.tsx` colocado ao lado** — falha o teste (e o CI) se faltar. É
+  o gate que o registro do EMITTE não tem (lá, cobrir uma story é convenção, não
+  verificado automaticamente).
+- **`storybook`** (`pnpm --filter @fmartinsandre/ui test:storybook`) — roda as
+  próprias stories como testes de interação num Chromium headless via Playwright
+  (`@storybook/addon-vitest`), usando `play` functions dentro da story
+  (padrão emprestado do EMITTE: a story É o teste de interação, sem arquivo
+  `.test.tsx` separado). Exige `pnpm exec playwright install chromium` uma vez;
+  não roda no CI de PR pra manter o job leve — só `test` (unit) roda lá.
+
 ### 3. Gerar e publicar o registro
 
 ```bash
@@ -144,6 +182,7 @@ pnpm dev           # turbo dev em todos os pacotes/apps
 pnpm build         # build completo (inclui gerar + compilar o registro)
 pnpm lint          # biome, via turbo
 pnpm type-check    # tsc --noEmit em todos os pacotes
+pnpm test          # vitest --project unit em todos os pacotes, via turbo
 pnpm add:shadcn <nomes...>  # baixa componente(s) do shadcn/ui oficial
 ```
 

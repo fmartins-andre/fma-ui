@@ -15,7 +15,11 @@
     "generate:registry": "tsx scripts/gen-registry-json.ts",
     "registry:build": "shadcn build --cwd . --output ../../apps/web/public/r",
     "add:shadcn": "tsx scripts/add-shadcn.ts",
-    "add:registry": "tsx scripts/add-from-registry.ts"
+    "add:registry": "tsx scripts/add-from-registry.ts",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test": "vitest run --project unit",
+    "test:storybook": "vitest run --project storybook"
   },
   "dependencies": {
     "@fmartinsandre/registry": "workspace:*",
@@ -33,12 +37,23 @@
     "tailwindcss": ">=4.0.0"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/addon-vitest": "^10.6.0",
+    "@storybook/react-vite": "^10.6.0",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@vitest/browser": "^4.1.11",
+    "@vitest/browser-playwright": "^4.1.11",
+    "playwright": "^1.63.0",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "storybook": "^10.6.0",
     "tsx": "^4.20.3",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "^4.1.11"
   }
 }

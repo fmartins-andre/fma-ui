@@ -10,6 +10,9 @@
     "lint": "biome check .",
     "clean": "turbo clean",
     "type-check": "turbo type-check",
+    "test": "turbo test",
+    "storybook": "pnpm --filter @fmartinsandre/ui storybook",
+    "build-storybook": "pnpm --filter @fmartinsandre/ui build-storybook",
     "add:shadcn": "pnpm --filter @fmartinsandre/ui add:shadcn",
     "add:registry": "pnpm --filter @fmartinsandre/ui add:registry"
   },

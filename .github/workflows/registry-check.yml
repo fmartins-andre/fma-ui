@@ -25,10 +25,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
+
+      - name: Unit tests (meta.json + story presence, pure-function tests)
+        run: pnpm --filter @fmartinsandre/ui test
 
       - name: Build ui package (regenerates registry.json + public/r)
         run: pnpm --filter @fmartinsandre/ui build
@@ -59,7 +62,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
