@@ -1,0 +1,8 @@
+{
+  "name": "alert-dialog",
+  "category": "uncategorized",
+  "status": "experimental",
+  "source": "shadcn",
+  "description": "Alert Dialog — vendored from shadcn/ui. Edit this description.",
+  "tags": []
+}

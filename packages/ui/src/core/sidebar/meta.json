@@ -1,0 +1,8 @@
+{
+  "name": "sidebar",
+  "category": "uncategorized",
+  "status": "experimental",
+  "source": "shadcn",
+  "description": "Sidebar — vendored from shadcn/ui. Edit this description.",
+  "tags": []
+}

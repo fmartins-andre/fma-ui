@@ -1,0 +1,8 @@
+{
+  "name": "command",
+  "category": "uncategorized",
+  "status": "experimental",
+  "source": "shadcn",
+  "description": "Command — vendored from shadcn/ui. Edit this description.",
+  "tags": []
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton",
+  "title": "Skeleton",
+  "author": "@fmartinsandre/ui",
+  "description": "Skeleton — vendored from shadcn/ui. Edit this description.",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/core/skeleton/skeleton.tsx",
+      "content": "import { cn } from \"cn\";\n\nfunction Skeleton({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"skeleton\"\n      className={cn(\"animate-pulse rounded-md bg-muted\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { Skeleton };\n",
+      "type": "registry:component",
+      "target": "components/ui/skeleton.tsx"
+    }
+  ],
+  "meta": {
+    "status": "experimental",
+    "source": "shadcn",
+    "tags": []
+  },
+  "categories": [
+    "uncategorized"
+  ],
+  "type": "registry:ui"
+}

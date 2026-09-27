@@ -1,0 +1,8 @@
+{
+  "name": "alert",
+  "category": "uncategorized",
+  "status": "experimental",
+  "source": "shadcn",
+  "description": "Alert — vendored from shadcn/ui. Edit this description.",
+  "tags": []
+}

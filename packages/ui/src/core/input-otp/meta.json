@@ -1,0 +1,8 @@
+{
+  "name": "input-otp",
+  "category": "uncategorized",
+  "status": "experimental",
+  "source": "shadcn",
+  "description": "Input Otp — vendored from shadcn/ui. Edit this description.",
+  "tags": []
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "direction",
+  "title": "Direction",
+  "author": "@fmartinsandre/ui",
+  "description": "Direction — vendored from shadcn/ui. Edit this description.",
+  "dependencies": [
+    "react-aria-components"
+  ],
+  "files": [
+    {
+      "path": "src/core/direction/direction.tsx",
+      "content": "import type * as React from \"react\";\nimport { I18nProvider, useLocale } from \"react-aria-components\";\n\nfunction DirectionProvider(\n  props: React.ComponentProps<typeof I18nProvider> & {\n    direction?: \"ltr\" | \"rtl\";\n  },\n) {\n  // For compatibility with Radix / Base UI, if only a `direction` is provided and not a `locale`,\n  // create a locale string that forces the direction by setting the script to arabic or latin.\n  const { locale: currentLocale } = useLocale();\n  let locale = props.locale;\n  if (!locale && props.direction) {\n    locale = new Intl.Locale(currentLocale, {\n      script: props.direction === \"rtl\" ? \"Arab\" : \"Latn\",\n    }).toString();\n  }\n\n  return <I18nProvider {...props} locale={locale} />;\n}\n\nfunction useDirection() {\n  const { direction } = useLocale();\n  return direction;\n}\n\nexport { DirectionProvider, I18nProvider, useDirection, useLocale };\n",
+      "type": "registry:component",
+      "target": "components/ui/direction.tsx"
+    }
+  ],
+  "meta": {
+    "status": "experimental",
+    "source": "shadcn",
+    "tags": []
+  },
+  "categories": [
+    "uncategorized"
+  ],
+  "type": "registry:ui"
+}

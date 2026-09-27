@@ -1,0 +1,8 @@
+{
+  "name": "item",
+  "category": "uncategorized",
+  "status": "experimental",
+  "source": "shadcn",
+  "description": "Item — vendored from shadcn/ui. Edit this description.",
+  "tags": []
+}

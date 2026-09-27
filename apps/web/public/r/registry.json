@@ -4,6 +4,246 @@
   "homepage": "https://ui.fmartinsandre.dev",
   "items": [
     {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Accordion — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/accordion/accordion.tsx",
+          "target": "components/ui/accordion.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "Alert — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/alert/alert.tsx",
+          "target": "components/ui/alert.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert Dialog",
+      "description": "Alert Dialog — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/alert-dialog/alert-dialog.tsx",
+          "target": "components/ui/alert-dialog.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect Ratio",
+      "description": "Aspect Ratio — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/aspect-ratio/aspect-ratio.tsx",
+          "target": "components/ui/aspect-ratio.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "description": "Attachment — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/attachment/attachment.tsx",
+          "target": "components/ui/attachment.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "Avatar — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/avatar/avatar.tsx",
+          "target": "components/ui/avatar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Badge — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/badge/badge.tsx",
+          "target": "components/ui/badge.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "Breadcrumb — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/breadcrumb/breadcrumb.tsx",
+          "target": "components/ui/breadcrumb.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "bubble",
+      "type": "registry:ui",
+      "title": "Bubble",
+      "description": "Bubble — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/bubble/bubble.tsx",
+          "target": "components/ui/bubble.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
@@ -37,6 +277,67 @@
       }
     },
     {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "Button Group",
+      "description": "Button Group — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/button-group/button-group.tsx",
+          "target": "components/ui/button-group.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "separator"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "description": "Calendar — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/calendar/calendar.tsx",
+          "target": "components/ui/calendar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button",
+        "select"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
       "name": "card",
       "type": "registry:ui",
       "title": "Card",
@@ -64,6 +365,1271 @@
           "surface",
           "nova"
         ]
+      }
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "Carousel — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/carousel/carousel.tsx",
+          "target": "components/ui/carousel.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "cn",
+        "embla-carousel-react",
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "Chart — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/chart/chart.tsx",
+          "target": "components/ui/chart.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "recharts"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Checkbox — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/checkbox/checkbox.tsx",
+          "target": "components/ui/checkbox.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "Collapsible — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/collapsible/collapsible.tsx",
+          "target": "components/ui/collapsible.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Combobox — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/combobox/combobox.tsx",
+          "target": "components/ui/combobox.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button",
+        "input-group"
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command",
+      "description": "Command — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/command/command.tsx",
+          "target": "components/ui/command.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "dialog",
+        "input-group"
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "description": "Context Menu — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/context-menu/context-menu.tsx",
+          "target": "components/ui/context-menu.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Dialog — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/dialog/dialog.tsx",
+          "target": "components/ui/dialog.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "description": "Direction — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/direction/direction.tsx",
+          "target": "components/ui/direction.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "Drawer — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/drawer/drawer.tsx",
+          "target": "components/ui/drawer.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "Dropdown Menu — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/dropdown-menu/dropdown-menu.tsx",
+          "target": "components/ui/dropdown-menu.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "description": "Empty — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/empty/empty.tsx",
+          "target": "components/ui/empty.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Field — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/field/field.tsx",
+          "target": "components/ui/field.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "label",
+        "separator"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Hover Card",
+      "description": "Hover Card — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/hover-card/hover-card.tsx",
+          "target": "components/ui/hover-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "Input — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/input/input.tsx",
+          "target": "components/ui/input.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "Input Group",
+      "description": "Input Group — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/input-group/input-group.tsx",
+          "target": "components/ui/input-group.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button",
+        "input",
+        "textarea"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "Input Otp",
+      "description": "Input Otp — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/input-otp/input-otp.tsx",
+          "target": "components/ui/input-otp.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "input-otp",
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "description": "Item — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/item/item.tsx",
+          "target": "components/ui/item.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "separator"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "description": "Kbd — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/kbd/kbd.tsx",
+          "target": "components/ui/kbd.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "Label — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/label/label.tsx",
+          "target": "components/ui/label.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "marker",
+      "type": "registry:ui",
+      "title": "Marker",
+      "description": "Marker — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/marker/marker.tsx",
+          "target": "components/ui/marker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "message",
+      "type": "registry:ui",
+      "title": "Message",
+      "description": "Message — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/message/message.tsx",
+          "target": "components/ui/message.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "message-scroller",
+      "type": "registry:ui",
+      "title": "Message Scroller",
+      "description": "Message Scroller — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/message-scroller/message-scroller.tsx",
+          "target": "components/ui/message-scroller.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "@shadcn/react",
+        "cn",
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "native-select",
+      "type": "registry:ui",
+      "title": "Native Select",
+      "description": "Native Select — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/native-select/native-select.tsx",
+          "target": "components/ui/native-select.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "Pagination — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/pagination/pagination.tsx",
+          "target": "components/ui/pagination.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "Popover — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/popover/popover.tsx",
+          "target": "components/ui/popover.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "description": "Progress — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/progress/progress.tsx",
+          "target": "components/ui/progress.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "questionnaire",
+      "type": "registry:ui",
+      "title": "Questionnaire",
+      "description": "Questionnaire — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/questionnaire/questionnaire.tsx",
+          "target": "components/ui/questionnaire.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "@shadcn/react",
+        "cn",
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Radio Group — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/radio-group/radio-group.tsx",
+          "target": "components/ui/radio-group.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "resizable",
+      "type": "registry:ui",
+      "title": "Resizable",
+      "description": "Resizable — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/resizable/resizable.tsx",
+          "target": "components/ui/resizable.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-resizable-panels"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll Area",
+      "description": "Scroll Area — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/scroll-area/scroll-area.tsx",
+          "target": "components/ui/scroll-area.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Select — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/select/select.tsx",
+          "target": "components/ui/select.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "input-group"
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "Separator — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/separator/separator.tsx",
+          "target": "components/ui/separator.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "description": "Sheet — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/sheet/sheet.tsx",
+          "target": "components/ui/sheet.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "Sidebar — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/sidebar/sidebar.tsx",
+          "target": "components/ui/sidebar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "button",
+        "input",
+        "separator",
+        "sheet",
+        "skeleton",
+        "tooltip"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "Skeleton — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/skeleton/skeleton.tsx",
+          "target": "components/ui/skeleton.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Slider — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/slider/slider.tsx",
+          "target": "components/ui/slider.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "sonner",
+      "type": "registry:ui",
+      "title": "Sonner",
+      "description": "Sonner — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/sonner/sonner.tsx",
+          "target": "components/ui/sonner.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "lucide-react",
+        "next-themes",
+        "sonner"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "Spinner — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/spinner/spinner.tsx",
+          "target": "components/ui/spinner.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Switch — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/switch/switch.tsx",
+          "target": "components/ui/switch.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "Table — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/table/table.tsx",
+          "target": "components/ui/table.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Tabs — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/tabs/tabs.tsx",
+          "target": "components/ui/tabs.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "Textarea — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/textarea/textarea.tsx",
+          "target": "components/ui/textarea.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "description": "Toggle — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/toggle/toggle.tsx",
+          "target": "components/ui/toggle.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "description": "Toggle Group — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/toggle-group/toggle-group.tsx",
+          "target": "components/ui/toggle-group.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "toggle"
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
+      }
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Tooltip — vendored from shadcn/ui. Edit this description.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "uncategorized"
+      ],
+      "files": [
+        {
+          "path": "src/core/tooltip/tooltip.tsx",
+          "target": "components/ui/tooltip.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": []
       }
     }
   ]

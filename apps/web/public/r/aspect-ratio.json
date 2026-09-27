@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aspect-ratio",
+  "title": "Aspect Ratio",
+  "author": "@fmartinsandre/ui",
+  "description": "Aspect Ratio — vendored from shadcn/ui. Edit this description.",
+  "dependencies": [
+    "cn"
+  ],
+  "files": [
+    {
+      "path": "src/core/aspect-ratio/aspect-ratio.tsx",
+      "content": "import { cn } from \"cn\";\n\nfunction AspectRatio({\n  ratio,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & { ratio: number }) {\n  return (\n    <div\n      data-slot=\"aspect-ratio\"\n      style={\n        {\n          \"--ratio\": ratio,\n        } as React.CSSProperties\n      }\n      className={cn(\"relative aspect-(--ratio)\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { AspectRatio };\n",
+      "type": "registry:component",
+      "target": "components/ui/aspect-ratio.tsx"
+    }
+  ],
+  "meta": {
+    "status": "experimental",
+    "source": "shadcn",
+    "tags": []
+  },
+  "categories": [
+    "uncategorized"
+  ],
+  "type": "registry:ui"
+}
