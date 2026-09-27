@@ -1,0 +1,9 @@
+{
+  "name": "button",
+  "category": "forms",
+  "status": "stable",
+  "source": "shadcn",
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). No asChild — use LinkButton for a link styled as a button, and isDisabled instead of disabled.",
+  "description": "Displays a button, or a component that looks like one, with a set of visual variants and sizes. Also exports LinkButton (react-aria-components' Link, same variants) for link-as-button use cases.",
+  "tags": ["form", "interactive", "react-aria", "nova"]
+}
