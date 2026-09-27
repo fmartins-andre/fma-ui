@@ -1,0 +1,70 @@
+{
+  "name": "@fmartinsandre",
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "homepage": "https://ui.fmartinsandre.dev",
+  "items": [
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Displays a button, or a component that looks like one, with a set of visual variants and sizes. Also exports LinkButton (react-aria-components' Link, same variants) for link-as-button use cases.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/button/button.tsx",
+          "target": "components/ui/button.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "shadcn",
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). No asChild — use LinkButton for a link styled as a button, and isDisabled instead of disabled.",
+        "tags": [
+          "form",
+          "interactive",
+          "react-aria",
+          "nova"
+        ]
+      }
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "title": "Card",
+      "description": "A container for grouping related content, with header, title, description, action, content, and footer slots. Supports a compact size=\"sm\" variant.",
+      "author": "@fmartinsandre/ui",
+      "categories": [
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "src/core/card/card.tsx",
+          "target": "components/ui/card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "shadcn",
+        "origin": "shadcn/ui, style: aria-nova",
+        "tags": [
+          "layout",
+          "surface",
+          "nova"
+        ]
+      }
+    }
+  ]
+}
