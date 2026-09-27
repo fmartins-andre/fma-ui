@@ -7,7 +7,7 @@
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {},
 
-  "forwardPorts": [3001],
+  "forwardPorts": [3000, 6006],
 
   "postCreateCommand": "bash .devcontainer/post-create.sh",
 
@@ -16,14 +16,20 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbaeumer.vscode-eslint",
+        "biomejs.biome",
         "christian-kohler.npm-intellisense",
-        "esbenp.prettier-vscode",
         "bradlc.vscode-tailwindcss",
         "eamodio.gitlens",
         "streetsidesoftware.code-spell-checker",
         "streetsidesoftware.code-spell-checker-portuguese-brazilian"
-      ]
+      ],
+      "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.codeActionsOnSave": {
+          "quickfix.biome": "explicit",
+          "source.organizeImports.biome": "explicit"
+        }
+      }
     }
   },
 
