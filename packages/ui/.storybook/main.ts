@@ -2,8 +2,12 @@ import tailwindcss from "@tailwindcss/vite";
 import type { StorybookConfig } from "@storybook/react-vite";
 
 const config: StorybookConfig = {
-  // Colocated, one convention with meta.json: src/core/<name>/<name>.stories.tsx
-  stories: ["../src/core/**/*.stories.tsx"],
+  stories: [
+    // Colocated, one convention with meta.json: src/core/<name>/<name>.stories.tsx
+    "../src/core/**/*.stories.tsx",
+    // Doc-only token catalogs (color/radius/typography) — no meta.json, not registry items.
+    "../src/design-tokens/**/*.stories.tsx",
+  ],
   addons: ["@storybook/addon-docs", "@storybook/addon-a11y", "@storybook/addon-vitest"],
   framework: {
     name: "@storybook/react-vite",
