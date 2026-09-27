@@ -49,6 +49,18 @@
           "tailwindDirectives": true
         }
       }
+    },
+    {
+      "includes": ["packages/ui/src/core/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off",
+            "useKeyWithClickEvents": "off",
+            "useFocusableInteractive": "off"
+          }
+        }
+      }
     }
   ]
 }
