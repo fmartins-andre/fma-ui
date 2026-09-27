@@ -18,6 +18,17 @@ function toTitle(id: string): string {
     .join(" ");
 }
 
+// A bare import specifier is the installable package name plus an optional
+// subpath (e.g. "@base-ui/react/drawer", "lucide-react/icons/check"). Only
+// the package name itself belongs in a dependencies list — the subpath isn't
+// a real npm package "@base-ui/react/drawer" would 404 if passed to a package
+// manager.
+function toPackageName(spec: string): string {
+  const parts = spec.split("/");
+  // biome-ignore lint/style/noNonNullAssertion: split() on a non-empty string always yields at least 1 element
+  return spec.startsWith("@") ? parts.slice(0, 2).join("/") : parts[0]!;
+}
+
 export function detectNpmDependencies(source: string): string[] {
   const deps = new Set<string>();
   const importRegex = /from\s+["']([^"']+)["']/g;
@@ -38,7 +49,7 @@ export function detectNpmDependencies(source: string): string[] {
     ) {
       continue;
     }
-    deps.add(spec);
+    deps.add(toPackageName(spec));
   }
   return [...deps];
 }
