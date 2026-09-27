@@ -4,21 +4,39 @@
 //
 // Usage (from packages/ui, or via `pnpm add:shadcn` at the repo root):
 //   pnpm add:shadcn button card "alert-dialog"
-//   pnpm add:shadcn all              (fetches every official component in one go)
+//   pnpm add:shadcn all              (fetches every available ui component, one at a time)
 //
 // What it does:
-//   1. Runs the real `shadcn add` (--all for "all") against components.json (whose
-//      `ui`/`components` aliases point at a throwaway staging folder,
-//      src/core/_incoming) — this is what installs any npm dependencies the
-//      component(s) need, too.
-//   2. Moves each staged file into src/core/<name>/<name>.tsx.
+//   1. Runs the real `shadcn add` against components.json (whose `ui`/`components`
+//      aliases point at a throwaway staging folder, src/core/_incoming) — this is
+//      what installs any npm dependencies the component(s) need, too.
+//      For "all": the CLI's own `--all` flag isn't safe to use here — it
+//      preflight-checks every item's URL for the *current* style/base up front
+//      and aborts the whole batch on the first miss. "aria-nova" doesn't have
+//      full parity with every component yet (e.g. menubar 404s), so instead we
+//      discover the real item list via `shadcn search @shadcn --type ui --json`
+//      and add items one at a time, skipping ones that don't resolve for this
+//      style instead of losing the whole run.
+//   2. Moves each staged file into src/core/<name>/<name>.tsx, rewriting any
+//      cross-component import (components.json's "ui"/"components" aliases
+//      point at the staging dir, so a component that imports another one,
+//      e.g. alert-dialog -> button, is written as "@/core/_incoming/button")
+//      to this repo's real per-folder path ("@/core/button/button").
 //   3. Scaffolds a meta.json stub (source: "shadcn") if one doesn't exist yet.
 //
 // After this, edit meta.json (category/description/tags), customize the component
 // if you want ("customized"), then run `pnpm generate:registry && pnpm registry:build`.
 
 import { execSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 
 const STAGING_DIR = join("src", "core", "_incoming");
@@ -45,8 +63,21 @@ function main() {
   mkdirSync(STAGING_DIR, { recursive: true });
 
   if (wantsAll) {
-    console.log("Fetching the entire shadcn/ui registry...");
-    execSync("pnpm dlx shadcn@latest add --all --yes --overwrite", { stdio: "inherit" });
+    console.log("Discovering available components in the @shadcn registry...");
+    const searchOutput = execSync(
+      "pnpm dlx shadcn@latest search @shadcn --type ui --json --limit 500",
+      { encoding: "utf8" },
+    );
+    const { items } = JSON.parse(searchOutput) as { items: { name: string }[] };
+    console.log(`Found ${items.length} components. Adding one at a time...`);
+
+    for (const { name } of items) {
+      try {
+        execSync(`pnpm dlx shadcn@latest add "${name}" --yes --overwrite`, { stdio: "inherit" });
+      } catch {
+        console.warn(`Skipped "${name}": not available for this style/base — see error above.`);
+      }
+    }
   } else {
     console.log(`Fetching from the shadcn/ui registry: ${args.join(", ")}`);
     execSync(
@@ -55,8 +86,8 @@ function main() {
     );
   }
 
-  // "all" doesn't know component names ahead of time — discover them from
-  // whatever actually landed in staging instead of an expected list.
+  // "all" doesn't know ahead of time which items actually resolved for this
+  // style — discover them from whatever actually landed in staging instead.
   const names = wantsAll
     ? readdirSync(STAGING_DIR)
         .filter((f) => f.endsWith(".tsx"))
@@ -74,7 +105,17 @@ function main() {
 
     const dest = join(CORE_DIR, name);
     mkdirSync(dest, { recursive: true });
-    renameSync(staged, join(dest, `${name}.tsx`));
+    const destFile = join(dest, `${name}.tsx`);
+    renameSync(staged, destFile);
+
+    const source = readFileSync(destFile, "utf8");
+    const rewritten = source.replace(
+      /@\/core\/_incoming\/([\w-]+)/g,
+      (_match, dep: string) => `@/core/${dep}/${dep}`,
+    );
+    if (rewritten !== source) {
+      writeFileSync(destFile, rewritten);
+    }
 
     const metaPath = join(dest, "meta.json");
     if (!existsSync(metaPath)) {
