@@ -14,7 +14,7 @@ const OUTPUT_FILE = "registry.json";
 function toTitle(id: string): string {
   return id
     .split("-")
-    .map((word) => word[0]!.toUpperCase() + word.slice(1))
+    .map((word) => word[0]?.toUpperCase() + word.slice(1))
     .join(" ");
 }
 
@@ -24,6 +24,7 @@ function detectNpmDependencies(source: string): string[] {
   let match: RegExpExecArray | null;
   // biome-ignore lint/suspicious/noAssignInExpressions: loop over all matches
   while ((match = importRegex.exec(source)) !== null) {
+    // biome-ignore lint/style/noNonNullAssertion: capture group 1 always matches when the regex matches
     const spec = match[1]!;
     // Skip relative imports, our own "@/..." alias, node builtins, and react
     // itself (a peer dep the consumer already has) — anything else is a real
@@ -49,6 +50,7 @@ function detectRegistryDependencies(source: string, componentId: string): string
   let match: RegExpExecArray | null;
   // biome-ignore lint/suspicious/noAssignInExpressions: loop over all matches
   while ((match = aliasImportRegex.exec(source)) !== null) {
+    // biome-ignore lint/style/noNonNullAssertion: capture group 1 always matches when the regex matches
     const depId = match[1]!;
     if (depId !== componentId) deps.add(depId);
   }

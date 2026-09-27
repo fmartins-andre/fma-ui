@@ -27,7 +27,7 @@ const CORE_DIR = join("src", "core");
 function toTitle(id: string): string {
   return id
     .split("-")
-    .map((word) => word[0]!.toUpperCase() + word.slice(1))
+    .map((word) => word[0]?.toUpperCase() + word.slice(1))
     .join(" ");
 }
 
