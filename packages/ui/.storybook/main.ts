@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import type { StorybookConfig } from "@storybook/react-vite";
 
 const config: StorybookConfig = {
@@ -10,6 +11,17 @@ const config: StorybookConfig = {
   },
   core: {
     disableTelemetry: true,
+  },
+  // Nothing else in this repo has ever wired Tailwind v4 into a Vite build —
+  // "tailwindcss" is only a peerDependency of @fmartinsandre/ui (the consumer
+  // supplies it). Storybook needs its own copy to actually compile
+  // src/styles.css's `@import "tailwindcss"` into real utility classes;
+  // without this plugin only the plain CSS custom properties (:root vars)
+  // would load, and every `bg-*`/`text-*`/`rounded-*` class would be empty.
+  async viteFinal(viteConfig) {
+    viteConfig.plugins ??= [];
+    viteConfig.plugins.push(tailwindcss());
+    return viteConfig;
   },
 };
 

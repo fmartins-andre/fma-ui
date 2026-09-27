@@ -68,7 +68,10 @@ export const Disabled: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole("button");
-    await userEvent.click(button);
+    // pointer-events: none (disabled:pointer-events-none) is real CSS here —
+    // bypass Testing Library's clickability check, same as clicking would if
+    // a user's mouse could somehow still land on it.
+    await userEvent.click(button, { pointerEventsCheck: 0 });
     expect(args.onPress).not.toHaveBeenCalled();
   },
 };
