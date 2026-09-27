@@ -3,7 +3,7 @@
   "name": "item",
   "title": "Item",
   "author": "@fmartinsandre/ui",
-  "description": "Item — vendored from shadcn/ui. Edit this description.",
+  "description": "A generic row layout for lists of things — media/icon, title, description, and trailing actions — that renders as a <div> or, when given an href, a real link. Use ItemGroup to stack several with consistent spacing.",
   "dependencies": [
     "class-variance-authority",
     "cn",
@@ -21,12 +21,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+    "tags": [
+      "layout",
+      "list",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "layout"
   ],
   "type": "registry:ui"
 }

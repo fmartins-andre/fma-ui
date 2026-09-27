@@ -3,7 +3,7 @@
   "name": "textarea",
   "title": "Textarea",
   "author": "@fmartinsandre/ui",
-  "description": "Textarea — vendored from shadcn/ui. Edit this description.",
+  "description": "A multi-line text input that auto-sizes to its content by default (field-sizing-content), rather than staying a fixed number of rows.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "forms",
+      "input",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

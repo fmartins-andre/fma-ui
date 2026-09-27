@@ -38,6 +38,9 @@ type Story = StoryObj<typeof componentMeta>;
 export const Default: Story = {};
 
 export const Variants: Story = {
+  parameters: {
+    docs: { description: { story: "All six visual variants, side by side." } },
+  },
   render: (args) => (
     <div className="flex flex-wrap gap-2">
       {(["default", "outline", "secondary", "ghost", "destructive", "link"] as const).map(
@@ -52,6 +55,9 @@ export const Variants: Story = {
 };
 
 export const Sizes: Story = {
+  parameters: {
+    docs: { description: { story: "The size scale, from xs up to lg." } },
+  },
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       {(["xs", "sm", "default", "lg"] as const).map((size) => (
@@ -65,6 +71,13 @@ export const Sizes: Story = {
 
 export const Disabled: Story = {
   args: { isDisabled: true },
+  parameters: {
+    docs: {
+      description: {
+        story: "isDisabled blocks pointer and keyboard interaction — verified here, not disabled.",
+      },
+    },
+  },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole("button");
@@ -77,6 +90,9 @@ export const Disabled: Story = {
 };
 
 export const Interactive: Story = {
+  parameters: {
+    docs: { description: { story: "Verifies onPress actually fires on click." } },
+  },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole("button");
@@ -86,6 +102,13 @@ export const Interactive: Story = {
 };
 
 export const AsLink: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "LinkButton — the same variants, rendered as a real <a> for link-as-button cases.",
+      },
+    },
+  },
   render: () => (
     <LinkButton href="https://ui.fmartinsandre.dev" variant="outline">
       Visit site

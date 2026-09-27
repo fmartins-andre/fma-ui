@@ -3,7 +3,7 @@
   "name": "marker",
   "title": "Marker",
   "author": "@fmartinsandre/ui",
-  "description": "Marker — vendored from shadcn/ui. Edit this description.",
+  "description": "A small inline label used in chat/message timelines — a date separator, a status note, or similar metadata — rendered in muted text with an optional icon.",
   "dependencies": [
     "class-variance-authority",
     "cn"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova",
+    "tags": [
+      "chat",
+      "data-display"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "chat"
   ],
   "type": "registry:ui"
 }

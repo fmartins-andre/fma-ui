@@ -1,8 +1,8 @@
 {
   "name": "spinner",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "feedback",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Spinner — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A spinning loading indicator icon (role=\"status\"), sized via className — drop it inside a disabled button or empty state while something loads.",
+  "tags": ["feedback", "loading"]
 }

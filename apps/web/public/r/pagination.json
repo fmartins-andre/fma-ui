@@ -3,7 +3,7 @@
   "name": "pagination",
   "title": "Pagination",
   "author": "@fmartinsandre/ui",
-  "description": "Pagination — vendored from shadcn/ui. Edit this description.",
+  "description": "Page-number navigation built from LinkButton — previous/next controls, numbered links, and an ellipsis for collapsed ranges.",
   "dependencies": [
     "cn",
     "lucide-react"
@@ -20,12 +20,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "navigation",
+      "links",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "navigation"
   ],
   "type": "registry:ui"
 }

@@ -3,7 +3,7 @@
   "name": "kbd",
   "title": "Kbd",
   "author": "@fmartinsandre/ui",
-  "description": "Kbd — vendored from shadcn/ui. Edit this description.",
+  "description": "Displays a keyboard key or shortcut (e.g. ⌘K) inline, styled as a small pill. KbdGroup lays out several keys side by side for combos like ⌘+Shift+P.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+    "tags": [
+      "data-display",
+      "keyboard",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "data-display"
   ],
   "type": "registry:ui"
 }

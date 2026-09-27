@@ -25,6 +25,11 @@ const config: StorybookConfig = {
   async viteFinal(viteConfig) {
     viteConfig.plugins ??= [];
     viteConfig.plugins.push(tailwindcss());
+    // Most vendored components cross-import each other via the "@/core/x/x"
+    // alias (tsconfig.json's paths) — tsc resolves it fine, but Vite doesn't
+    // read tsconfig paths unless told to. Invisible until now: button/card
+    // (the only 2 components before) have zero cross-imports.
+    viteConfig.resolve = { ...viteConfig.resolve, tsconfigPaths: true };
     return viteConfig;
   },
 };

@@ -3,7 +3,7 @@
   "name": "message",
   "title": "Message",
   "author": "@fmartinsandre/ui",
-  "description": "Message — vendored from shadcn/ui. Edit this description.",
+  "description": "Layout for one message row in a chat UI — avatar, header, footer, and a content column that aligns to the start or end depending on who sent it. Pairs with Bubble for the actual message content.",
   "dependencies": [
     "cn"
   ],
@@ -16,12 +16,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova",
+    "tags": [
+      "chat",
+      "layout"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "chat"
   ],
   "type": "registry:ui"
 }

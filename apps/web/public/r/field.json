@@ -3,7 +3,7 @@
   "name": "field",
   "title": "Field",
   "author": "@fmartinsandre/ui",
-  "description": "Field — vendored from shadcn/ui. Edit this description.",
+  "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends.",
   "dependencies": [
     "class-variance-authority",
     "cn"
@@ -21,12 +21,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+    "tags": [
+      "forms",
+      "layout",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

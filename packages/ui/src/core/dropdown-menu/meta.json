@@ -1,8 +1,8 @@
 {
   "name": "dropdown-menu",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "overlay",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Dropdown Menu — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A menu of actions or options triggered by clicking a button. Supports nested submenus, separators, labels, and a shortcut-display slot for each item.",
+  "tags": ["react-aria", "menu", "overlay"]
 }

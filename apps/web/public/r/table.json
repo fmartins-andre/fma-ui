@@ -3,7 +3,7 @@
   "name": "table",
   "title": "Table",
   "author": "@fmartinsandre/ui",
-  "description": "Table — vendored from shadcn/ui. Edit this description.",
+  "description": "Semantic table primitives (header, body, rows, cells, footer, caption) built on react-aria-components' Table for accessible, sorting/selection-ready markup.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "data-display",
+      "table",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "data-display"
   ],
   "type": "registry:ui"
 }

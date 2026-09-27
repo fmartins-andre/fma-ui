@@ -1,8 +1,8 @@
 {
   "name": "accordion",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "disclosure",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Accordion — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A vertically stacked set of headers that expand to reveal or hide associated content. Supports single or multiple items open at once.",
+  "tags": ["disclosure", "collapsible", "react-aria"]
 }

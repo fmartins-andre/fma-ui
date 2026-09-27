@@ -3,7 +3,7 @@
   "name": "carousel",
   "title": "Carousel",
   "author": "@fmartinsandre/ui",
-  "description": "Carousel — vendored from shadcn/ui. Edit this description.",
+  "description": "A carousel for cycling through slides (images, cards, or any content) with keyboard, swipe, and button navigation. Built on embla-carousel-react; CarouselPrevious/CarouselNext are Buttons wired to the carousel API.",
   "dependencies": [
     "cn",
     "embla-carousel-react",
@@ -21,12 +21,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "data-display",
+      "carousel",
+      "slider",
+      "embla"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "data-display"
   ],
   "type": "registry:ui"
 }

@@ -3,7 +3,7 @@
   "name": "direction",
   "title": "Direction",
   "author": "@fmartinsandre/ui",
-  "description": "Direction — vendored from shadcn/ui. Edit this description.",
+  "description": "Sets LTR/RTL text-direction context for descendant react-aria-components — a compatibility shim so a Radix/Base UI-style `direction` prop keeps working via react-aria's locale system.",
   "dependencies": [
     "react-aria-components"
   ],
@@ -16,12 +16,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "layout",
+      "i18n",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "layout"
   ],
   "type": "registry:ui"
 }

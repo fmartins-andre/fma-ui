@@ -3,7 +3,7 @@
   "name": "badge",
   "title": "Badge",
   "author": "@fmartinsandre/ui",
-  "description": "Badge — vendored from shadcn/ui. Edit this description.",
+  "description": "A small label for status, count, or category — inline with text or attached to another element. Can also render as a link.",
   "dependencies": [
     "class-variance-authority",
     "cn"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "data-display",
+      "status",
+      "label"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "data-display"
   ],
   "type": "registry:ui"
 }

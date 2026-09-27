@@ -1,8 +1,8 @@
 {
   "name": "empty",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "feedback",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Empty — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A placeholder for empty states — no data, no search results, nothing configured yet. Composes an icon/media, title, description, and optional call-to-action content.",
+  "tags": ["feedback", "empty-state", "placeholder"]
 }

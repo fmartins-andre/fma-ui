@@ -1,8 +1,8 @@
 {
   "name": "badge",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "data-display",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Badge — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A small label for status, count, or category — inline with text or attached to another element. Can also render as a link.",
+  "tags": ["data-display", "status", "label"]
 }

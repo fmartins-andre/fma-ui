@@ -1,8 +1,9 @@
 {
   "name": "label",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "forms",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Label — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+  "description": "A form field label. Pair it with a control via id/htmlFor rather than passing label text as the control's own children — several toggle-style primitives (Checkbox, Switch, RadioGroupItem) render their children inside a small fixed-size box meant for a custom indicator, not prose.",
+  "tags": ["forms", "label", "react-aria"]
 }

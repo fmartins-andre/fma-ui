@@ -3,7 +3,7 @@
   "name": "combobox",
   "title": "Combobox",
   "author": "@fmartinsandre/ui",
-  "description": "Combobox — vendored from shadcn/ui. Edit this description.",
+  "description": "A searchable, filterable select combining a text input with a listbox popover. Supports single selection (ComboboxValue) or a multi-select tag/chip input (ComboboxChips + ComboboxChip).",
   "dependencies": [
     "cn",
     "lucide-react",
@@ -22,12 +22,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "form",
+      "react-aria",
+      "selection",
+      "autocomplete"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

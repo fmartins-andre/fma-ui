@@ -1,8 +1,9 @@
 {
   "name": "message",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "chat",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Message — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova",
+  "description": "Layout for one message row in a chat UI — avatar, header, footer, and a content column that aligns to the start or end depending on who sent it. Pairs with Bubble for the actual message content.",
+  "tags": ["chat", "layout"]
 }

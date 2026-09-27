@@ -1,8 +1,9 @@
 {
   "name": "hover-card",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "overlay",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Hover Card — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+  "description": "A popover that shows on hover or focus instead of click, for previewing content (a profile card, a link preview) without navigating away. Unlike a tooltip, it can contain interactive content.",
+  "tags": ["overlay", "popover", "react-aria"]
 }

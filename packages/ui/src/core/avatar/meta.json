@@ -1,8 +1,8 @@
 {
   "name": "avatar",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "data-display",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Avatar — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A user/entity image with a text or icon fallback for when the image fails to load. Composes into overlapping groups for showing multiple participants.",
+  "tags": ["data-display", "user", "image"]
 }

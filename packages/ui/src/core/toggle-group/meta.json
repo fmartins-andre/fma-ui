@@ -1,8 +1,8 @@
 {
   "name": "toggle-group",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "buttons",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Toggle Group — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A connected row (or column) of Toggle buttons sharing one visual variant/size/spacing, for grouped single- or multi-select controls (e.g. text formatting).",
+  "tags": ["buttons", "toggle", "react-aria"]
 }

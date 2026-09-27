@@ -3,7 +3,7 @@
   "name": "tooltip",
   "title": "Tooltip",
   "author": "@fmartinsandre/ui",
-  "description": "Tooltip — vendored from shadcn/ui. Edit this description.",
+  "description": "A short, non-interactive hint that appears on hover or keyboard focus of its trigger.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). TooltipTrigger wraps [trigger, Tooltip] and opens with no delay by default (delay=0).",
+    "tags": [
+      "overlay",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "overlay"
   ],
   "type": "registry:ui"
 }

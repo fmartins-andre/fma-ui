@@ -1,8 +1,8 @@
 {
   "name": "pagination",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "navigation",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Pagination — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "Page-number navigation built from LinkButton — previous/next controls, numbered links, and an ellipsis for collapsed ranges.",
+  "tags": ["navigation", "links", "react-aria"]
 }

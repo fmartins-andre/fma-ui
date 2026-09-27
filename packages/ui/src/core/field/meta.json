@@ -1,8 +1,9 @@
 {
   "name": "field",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "forms",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Field — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+  "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends.",
+  "tags": ["forms", "layout", "react-aria"]
 }

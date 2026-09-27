@@ -3,7 +3,7 @@
   "name": "input",
   "title": "Input",
   "author": "@fmartinsandre/ui",
-  "description": "Input — vendored from shadcn/ui. Edit this description.",
+  "description": "A single-line text input, styled to match the rest of the registry. Plain native attributes (disabled, not isDisabled) since it wraps react-aria-components' bare Input rather than a higher-level field primitive.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+    "tags": [
+      "forms",
+      "input",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

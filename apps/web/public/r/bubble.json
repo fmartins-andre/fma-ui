@@ -3,7 +3,7 @@
   "name": "bubble",
   "title": "Bubble",
   "author": "@fmartinsandre/ui",
-  "description": "Bubble — vendored from shadcn/ui. Edit this description.",
+  "description": "A single chat message bubble — start/end alignment for sent vs. received, several color variants, and an optional reactions pill overlaid on a corner.",
   "dependencies": [
     "class-variance-authority",
     "cn"
@@ -17,12 +17,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "chat",
+      "message"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "chat"
   ],
   "type": "registry:ui"
 }

@@ -3,7 +3,7 @@
   "name": "sidebar",
   "title": "Sidebar",
   "author": "@fmartinsandre/ui",
-  "description": "Sidebar — vendored from shadcn/ui. Edit this description.",
+  "description": "A collapsible application sidebar with a mobile drawer fallback, a Cmd/Ctrl+B keyboard shortcut, and composable header/content/footer/menu slots.",
   "dependencies": [
     "class-variance-authority",
     "cn",
@@ -27,12 +27,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "navigation",
+      "layout",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "navigation"
   ],
   "type": "registry:ui"
 }

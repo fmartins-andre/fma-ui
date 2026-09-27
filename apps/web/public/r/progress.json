@@ -3,7 +3,7 @@
   "name": "progress",
   "title": "Progress",
   "author": "@fmartinsandre/ui",
-  "description": "Progress — vendored from shadcn/ui. Edit this description.",
+  "description": "A horizontal progress bar communicating the completion of a task, determinate or indeterminate, with optional label/value slots.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "feedback",
+      "loading",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "feedback"
   ],
   "type": "registry:ui"
 }

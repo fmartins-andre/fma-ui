@@ -3,7 +3,7 @@
   "name": "input-group",
   "title": "Input Group",
   "author": "@fmartinsandre/ui",
-  "description": "Input Group — vendored from shadcn/ui. Edit this description.",
+  "description": "Wraps an Input or Textarea with leading/trailing addons (icons, text, or buttons) inside one bordered container, so the whole group shares a single focus ring and border.",
   "dependencies": [
     "class-variance-authority",
     "cn",
@@ -23,12 +23,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+    "tags": [
+      "forms",
+      "input",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

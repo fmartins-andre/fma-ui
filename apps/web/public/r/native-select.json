@@ -3,7 +3,7 @@
   "name": "native-select",
   "title": "Native Select",
   "author": "@fmartinsandre/ui",
-  "description": "Native Select — vendored from shadcn/ui. Edit this description.",
+  "description": "A styled wrapper around the real, native <select> — use it when you need actual native select behavior (mobile OS pickers, form autofill, no JS dependency) instead of react-aria-components' custom Select.",
   "dependencies": [
     "cn",
     "lucide-react"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "form",
+      "select",
+      "native"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

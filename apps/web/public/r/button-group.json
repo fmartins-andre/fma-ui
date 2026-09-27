@@ -3,7 +3,7 @@
   "name": "button-group",
   "title": "Button Group",
   "author": "@fmartinsandre/ui",
-  "description": "Button Group — vendored from shadcn/ui. Edit this description.",
+  "description": "Visually joins a row (or column) of buttons into one connected control, with shared borders and rounded end corners. Can include a separator or a plain text segment.",
   "dependencies": [
     "class-variance-authority",
     "cn"
@@ -20,12 +20,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "buttons",
+      "layout"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "buttons"
   ],
   "type": "registry:ui"
 }

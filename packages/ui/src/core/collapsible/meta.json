@@ -1,8 +1,8 @@
 {
   "name": "collapsible",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "disclosure",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Collapsible — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "Shows or hides a single section of content behind a trigger. A thin wrapper around react-aria-components' Disclosure — for several mutually-exclusive sections, use Accordion instead.",
+  "tags": ["react-aria", "disclosure", "toggle"]
 }

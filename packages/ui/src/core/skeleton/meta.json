@@ -1,8 +1,8 @@
 {
   "name": "skeleton",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "feedback",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Skeleton — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A pulsing placeholder block for content that's still loading — size and shape it with className to match whatever it stands in for.",
+  "tags": ["feedback", "loading"]
 }

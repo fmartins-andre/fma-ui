@@ -3,7 +3,7 @@
   "name": "breadcrumb",
   "title": "Breadcrumb",
   "author": "@fmartinsandre/ui",
-  "description": "Breadcrumb — vendored from shadcn/ui. Edit this description.",
+  "description": "Shows the user's current location within a hierarchy, as a trail of links back to parent pages, with an ellipsis for collapsing long paths.",
   "dependencies": [
     "cn",
     "lucide-react",
@@ -18,12 +18,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "navigation",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "navigation"
   ],
   "type": "registry:ui"
 }

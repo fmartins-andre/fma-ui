@@ -1,8 +1,8 @@
 {
   "name": "command",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "overlay",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Command — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A searchable list of commands or actions, filtered live as you type. Export CommandDialog wraps it in a Dialog for a full command-palette (⌘K) pattern.",
+  "tags": ["react-aria", "search", "command-palette", "overlay"]
 }

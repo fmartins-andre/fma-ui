@@ -3,7 +3,7 @@
   "name": "popover",
   "title": "Popover",
   "author": "@fmartinsandre/ui",
-  "description": "Popover — vendored from shadcn/ui. Edit this description.",
+  "description": "A non-modal floating panel anchored to a trigger — for supplementary controls or content (e.g. a settings form) that shouldn't block the rest of the page.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "overlay",
+      "floating",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "overlay"
   ],
   "type": "registry:ui"
 }

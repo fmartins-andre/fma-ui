@@ -1,8 +1,8 @@
 {
   "name": "scroll-area",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "layout",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Scroll Area — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A scrollable container with a themeable, always-consistent-looking scrollbar via native scrollbar-width/scrollbar-color — no JS scrollbar emulation.",
+  "tags": ["layout", "scroll"]
 }

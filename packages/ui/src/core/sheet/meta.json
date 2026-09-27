@@ -1,8 +1,8 @@
 {
   "name": "sheet",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "overlay",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Sheet — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A modal panel that slides in from an edge of the screen (top/right/bottom/left) — for navigation drawers, filters, or forms that need more room than a popover.",
+  "tags": ["overlay", "modal", "drawer", "react-aria"]
 }

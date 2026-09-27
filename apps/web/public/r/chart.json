@@ -3,7 +3,7 @@
   "name": "chart",
   "title": "Chart",
   "author": "@fmartinsandre/ui",
-  "description": "Chart — vendored from shadcn/ui. Edit this description.",
+  "description": "Composable chart primitives (ChartContainer, ChartTooltip, ChartLegend) wrapping Recharts, themed via CSS custom properties from a ChartConfig. Supports area, bar, line, and pie charts.",
   "dependencies": [
     "cn",
     "recharts"
@@ -17,12 +17,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "data-display",
+      "charts",
+      "recharts",
+      "visualization"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "data-display"
   ],
   "type": "registry:ui"
 }

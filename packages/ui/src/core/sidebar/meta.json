@@ -1,8 +1,8 @@
 {
   "name": "sidebar",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "navigation",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Sidebar — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A collapsible application sidebar with a mobile drawer fallback, a Cmd/Ctrl+B keyboard shortcut, and composable header/content/footer/menu slots.",
+  "tags": ["navigation", "layout", "react-aria"]
 }

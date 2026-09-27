@@ -1,8 +1,8 @@
 {
   "name": "breadcrumb",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "navigation",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Breadcrumb — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "Shows the user's current location within a hierarchy, as a trail of links back to parent pages, with an ellipsis for collapsing long paths.",
+  "tags": ["navigation", "react-aria"]
 }

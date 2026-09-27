@@ -3,7 +3,7 @@
   "name": "resizable",
   "title": "Resizable",
   "author": "@fmartinsandre/ui",
-  "description": "Resizable — vendored from shadcn/ui. Edit this description.",
+  "description": "Resizable split panes (panel group, panel, drag handle) built on react-resizable-panels — for layouts like a sidebar/editor split the user can drag to resize.",
   "dependencies": [
     "cn",
     "react-resizable-panels"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "layout",
+      "panels",
+      "react-resizable-panels"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "layout"
   ],
   "type": "registry:ui"
 }

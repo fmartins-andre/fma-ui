@@ -3,7 +3,7 @@
   "name": "empty",
   "title": "Empty",
   "author": "@fmartinsandre/ui",
-  "description": "Empty — vendored from shadcn/ui. Edit this description.",
+  "description": "A placeholder for empty states — no data, no search results, nothing configured yet. Composes an icon/media, title, description, and optional call-to-action content.",
   "dependencies": [
     "class-variance-authority",
     "cn"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "feedback",
+      "empty-state",
+      "placeholder"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "feedback"
   ],
   "type": "registry:ui"
 }

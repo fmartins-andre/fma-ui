@@ -1,8 +1,8 @@
 {
   "name": "questionnaire",
-  "category": "uncategorized",
+  "category": "chat",
   "status": "experimental",
   "source": "shadcn",
-  "description": "Questionnaire — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet.",
+  "tags": ["chat", "form", "@shadcn/react"]
 }

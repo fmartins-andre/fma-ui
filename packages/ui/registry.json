@@ -7,10 +7,10 @@
       "name": "accordion",
       "type": "registry:ui",
       "title": "Accordion",
-      "description": "Accordion — vendored from shadcn/ui. Edit this description.",
+      "description": "A vertically stacked set of headers that expand to reveal or hide associated content. Supports single or multiple items open at once.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "disclosure"
       ],
       "files": [
         {
@@ -25,19 +25,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "disclosure",
+          "collapsible",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "alert",
       "type": "registry:ui",
       "title": "Alert",
-      "description": "Alert — vendored from shadcn/ui. Edit this description.",
+      "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with a destructive variant for errors/warnings.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "feedback"
       ],
       "files": [
         {
@@ -51,19 +55,22 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "feedback",
+          "callout"
+        ]
       }
     },
     {
       "name": "alert-dialog",
       "type": "registry:ui",
       "title": "Alert Dialog",
-      "description": "Alert Dialog — vendored from shadcn/ui. Edit this description.",
+      "description": "A modal dialog that interrupts the user with important content and expects an explicit response (e.g. confirming a destructive action) — unlike Dialog, it can't be dismissed by clicking outside or pressing Escape.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -80,19 +87,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "overlay",
+          "modal",
+          "confirmation",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "aspect-ratio",
       "type": "registry:ui",
       "title": "Aspect Ratio",
-      "description": "Aspect Ratio — vendored from shadcn/ui. Edit this description.",
+      "description": "Constrains content (typically an image or video) to a fixed width/height ratio, so it scales without distortion or layout shift.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "media"
       ],
       "files": [
         {
@@ -105,19 +117,22 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "media",
+          "layout"
+        ]
       }
     },
     {
       "name": "attachment",
       "type": "registry:ui",
       "title": "Attachment",
-      "description": "Attachment — vendored from shadcn/ui. Edit this description.",
+      "description": "A file/attachment chip for chat-style UIs — shows a name, optional upload progress or error state, and an independently clickable remove action.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "chat"
       ],
       "files": [
         {
@@ -134,19 +149,22 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "chat",
+          "file-upload"
+        ]
       }
     },
     {
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
-      "description": "Avatar — vendored from shadcn/ui. Edit this description.",
+      "description": "A user/entity image with a text or icon fallback for when the image fails to load. Composes into overlapping groups for showing multiple participants.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "data-display"
       ],
       "files": [
         {
@@ -159,19 +177,23 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "data-display",
+          "user",
+          "image"
+        ]
       }
     },
     {
       "name": "badge",
       "type": "registry:ui",
       "title": "Badge",
-      "description": "Badge — vendored from shadcn/ui. Edit this description.",
+      "description": "A small label for status, count, or category — inline with text or attached to another element. Can also render as a link.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "data-display"
       ],
       "files": [
         {
@@ -185,19 +207,23 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "data-display",
+          "status",
+          "label"
+        ]
       }
     },
     {
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
-      "description": "Breadcrumb — vendored from shadcn/ui. Edit this description.",
+      "description": "Shows the user's current location within a hierarchy, as a trail of links back to parent pages, with an ellipsis for collapsing long paths.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "navigation"
       ],
       "files": [
         {
@@ -212,19 +238,22 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "navigation",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "bubble",
       "type": "registry:ui",
       "title": "Bubble",
-      "description": "Bubble — vendored from shadcn/ui. Edit this description.",
+      "description": "A single chat message bubble — start/end alignment for sent vs. received, several color variants, and an optional reactions pill overlaid on a corner.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "chat"
       ],
       "files": [
         {
@@ -238,9 +267,12 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "chat",
+          "message"
+        ]
       }
     },
     {
@@ -280,10 +312,10 @@
       "name": "button-group",
       "type": "registry:ui",
       "title": "Button Group",
-      "description": "Button Group — vendored from shadcn/ui. Edit this description.",
+      "description": "Visually joins a row (or column) of buttons into one connected control, with shared borders and rounded end corners. Can include a separator or a plain text segment.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "buttons"
       ],
       "files": [
         {
@@ -300,19 +332,22 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "buttons",
+          "layout"
+        ]
       }
     },
     {
       "name": "calendar",
       "type": "registry:ui",
       "title": "Calendar",
-      "description": "Calendar — vendored from shadcn/ui. Edit this description.",
+      "description": "A date picker grid for selecting a single date or a range, with month/year dropdown navigation and support for showing multiple months at once.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -332,9 +367,13 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "form",
+          "date",
+          "react-aria"
+        ]
       }
     },
     {
@@ -371,10 +410,10 @@
       "name": "carousel",
       "type": "registry:ui",
       "title": "Carousel",
-      "description": "Carousel — vendored from shadcn/ui. Edit this description.",
+      "description": "A carousel for cycling through slides (images, cards, or any content) with keyboard, swipe, and button navigation. Built on embla-carousel-react; CarouselPrevious/CarouselNext are Buttons wired to the carousel API.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "data-display"
       ],
       "files": [
         {
@@ -392,19 +431,24 @@
         "lucide-react"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "data-display",
+          "carousel",
+          "slider",
+          "embla"
+        ]
       }
     },
     {
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
-      "description": "Chart — vendored from shadcn/ui. Edit this description.",
+      "description": "Composable chart primitives (ChartContainer, ChartTooltip, ChartLegend) wrapping Recharts, themed via CSS custom properties from a ChartConfig. Supports area, bar, line, and pie charts.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "data-display"
       ],
       "files": [
         {
@@ -418,19 +462,24 @@
         "recharts"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "data-display",
+          "charts",
+          "recharts",
+          "visualization"
+        ]
       }
     },
     {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
-      "description": "Checkbox — vendored from shadcn/ui. Edit this description.",
+      "description": "A control for a single on/off/indeterminate value. Pair with an external Label (via id/htmlFor) laid out as a flex row rather than passing label text as children.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -445,19 +494,25 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). Pair with an external Label via id/htmlFor — Checkbox's own children slot is for a custom indicator override, not label text.",
+        "tags": [
+          "form",
+          "react-aria",
+          "selection",
+          "nova"
+        ]
       }
     },
     {
       "name": "collapsible",
       "type": "registry:ui",
       "title": "Collapsible",
-      "description": "Collapsible — vendored from shadcn/ui. Edit this description.",
+      "description": "Shows or hides a single section of content behind a trigger. A thin wrapper around react-aria-components' Disclosure — for several mutually-exclusive sections, use Accordion instead.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "disclosure"
       ],
       "files": [
         {
@@ -470,19 +525,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "react-aria",
+          "disclosure",
+          "toggle"
+        ]
       }
     },
     {
       "name": "combobox",
       "type": "registry:ui",
       "title": "Combobox",
-      "description": "Combobox — vendored from shadcn/ui. Edit this description.",
+      "description": "A searchable, filterable select combining a text input with a listbox popover. Supports single selection (ComboboxValue) or a multi-select tag/chip input (ComboboxChips + ComboboxChip).",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -501,19 +560,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "form",
+          "react-aria",
+          "selection",
+          "autocomplete"
+        ]
       }
     },
     {
       "name": "command",
       "type": "registry:ui",
       "title": "Command",
-      "description": "Command — vendored from shadcn/ui. Edit this description.",
+      "description": "A searchable list of commands or actions, filtered live as you type. Export CommandDialog wraps it in a Dialog for a full command-palette (⌘K) pattern.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -532,19 +596,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "react-aria",
+          "search",
+          "command-palette",
+          "overlay"
+        ]
       }
     },
     {
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Context Menu",
-      "description": "Context Menu — vendored from shadcn/ui. Edit this description.",
+      "description": "A menu that opens on right-click (or long-press on touch) instead of a regular trigger click. Supports nested submenus, separators, and keyboard shortcut display.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -560,19 +629,25 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). The trigger region must call usePress() — wrap a plain element in react-aria-components' Pressable if it doesn't already.",
+        "tags": [
+          "react-aria",
+          "menu",
+          "context-menu",
+          "nova"
+        ]
       }
     },
     {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
-      "description": "Dialog — vendored from shadcn/ui. Edit this description.",
+      "description": "A modal window layered over the page, requiring explicit action (or Escape) to dismiss. Pair with react-aria-components' DialogTrigger to wire up the trigger and open state.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -590,19 +665,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "react-aria",
+          "modal",
+          "overlay"
+        ]
       }
     },
     {
       "name": "direction",
       "type": "registry:ui",
       "title": "Direction",
-      "description": "Direction — vendored from shadcn/ui. Edit this description.",
+      "description": "Sets LTR/RTL text-direction context for descendant react-aria-components — a compatibility shim so a Radix/Base UI-style `direction` prop keeps working via react-aria's locale system.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "layout"
       ],
       "files": [
         {
@@ -615,19 +694,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "layout",
+          "i18n",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "drawer",
       "type": "registry:ui",
       "title": "Drawer",
-      "description": "Drawer — vendored from shadcn/ui. Edit this description.",
+      "description": "A panel that slides in from an edge of the screen, with swipe-to-dismiss and snap-point support. Uses @base-ui/react (not react-aria-components), so its API and data attributes differ from this repo's other overlays.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -643,17 +726,22 @@
       "meta": {
         "status": "experimental",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova. Built on @base-ui/react/drawer, not react-aria-components — upstream hasn't ported this component to the aria base yet.",
+        "tags": [
+          "@base-ui/react",
+          "overlay",
+          "modal"
+        ]
       }
     },
     {
       "name": "dropdown-menu",
       "type": "registry:ui",
       "title": "Dropdown Menu",
-      "description": "Dropdown Menu — vendored from shadcn/ui. Edit this description.",
+      "description": "A menu of actions or options triggered by clicking a button. Supports nested submenus, separators, labels, and a shortcut-display slot for each item.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -669,19 +757,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "react-aria",
+          "menu",
+          "overlay"
+        ]
       }
     },
     {
       "name": "empty",
       "type": "registry:ui",
       "title": "Empty",
-      "description": "Empty — vendored from shadcn/ui. Edit this description.",
+      "description": "A placeholder for empty states — no data, no search results, nothing configured yet. Composes an icon/media, title, description, and optional call-to-action content.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "feedback"
       ],
       "files": [
         {
@@ -695,19 +787,23 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "feedback",
+          "empty-state",
+          "placeholder"
+        ]
       }
     },
     {
       "name": "field",
       "type": "registry:ui",
       "title": "Field",
-      "description": "Field — vendored from shadcn/ui. Edit this description.",
+      "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -725,19 +821,24 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+        "tags": [
+          "forms",
+          "layout",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "hover-card",
       "type": "registry:ui",
       "title": "Hover Card",
-      "description": "Hover Card — vendored from shadcn/ui. Edit this description.",
+      "description": "A popover that shows on hover or focus instead of click, for previewing content (a profile card, a link preview) without navigating away. Unlike a tooltip, it can contain interactive content.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -751,19 +852,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+        "tags": [
+          "overlay",
+          "popover",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
-      "description": "Input — vendored from shadcn/ui. Edit this description.",
+      "description": "A single-line text input, styled to match the rest of the registry. Plain native attributes (disabled, not isDisabled) since it wraps react-aria-components' bare Input rather than a higher-level field primitive.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -777,19 +883,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+        "tags": [
+          "forms",
+          "input",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "input-group",
       "type": "registry:ui",
       "title": "Input Group",
-      "description": "Input Group — vendored from shadcn/ui. Edit this description.",
+      "description": "Wraps an Input or Textarea with leading/trailing addons (icons, text, or buttons) inside one bordered container, so the whole group shares a single focus ring and border.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -809,19 +920,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+        "tags": [
+          "forms",
+          "input",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "input-otp",
       "type": "registry:ui",
       "title": "Input Otp",
-      "description": "Input Otp — vendored from shadcn/ui. Edit this description.",
+      "description": "A one-time-password / verification-code input rendered as individual boxed slots, backed by a single hidden text input for real typing, paste, and autofill behavior.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -836,19 +952,24 @@
         "lucide-react"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova. Built on the input-otp library, not react-aria-components.",
+        "tags": [
+          "forms",
+          "input",
+          "otp"
+        ]
       }
     },
     {
       "name": "item",
       "type": "registry:ui",
       "title": "Item",
-      "description": "Item — vendored from shadcn/ui. Edit this description.",
+      "description": "A generic row layout for lists of things — media/icon, title, description, and trailing actions — that renders as a <div> or, when given an href, a real link. Use ItemGroup to stack several with consistent spacing.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "layout"
       ],
       "files": [
         {
@@ -866,19 +987,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+        "tags": [
+          "layout",
+          "list",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "kbd",
       "type": "registry:ui",
       "title": "Kbd",
-      "description": "Kbd — vendored from shadcn/ui. Edit this description.",
+      "description": "Displays a keyboard key or shortcut (e.g. ⌘K) inline, styled as a small pill. KbdGroup lays out several keys side by side for combos like ⌘+Shift+P.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "data-display"
       ],
       "files": [
         {
@@ -892,19 +1018,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+        "tags": [
+          "data-display",
+          "keyboard",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "label",
       "type": "registry:ui",
       "title": "Label",
-      "description": "Label — vendored from shadcn/ui. Edit this description.",
+      "description": "A form field label. Pair it with a control via id/htmlFor rather than passing label text as the control's own children — several toggle-style primitives (Checkbox, Switch, RadioGroupItem) render their children inside a small fixed-size box meant for a custom indicator, not prose.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -918,19 +1049,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+        "tags": [
+          "forms",
+          "label",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "marker",
       "type": "registry:ui",
       "title": "Marker",
-      "description": "Marker — vendored from shadcn/ui. Edit this description.",
+      "description": "A small inline label used in chat/message timelines — a date separator, a status note, or similar metadata — rendered in muted text with an optional icon.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "chat"
       ],
       "files": [
         {
@@ -944,19 +1080,23 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova",
+        "tags": [
+          "chat",
+          "data-display"
+        ]
       }
     },
     {
       "name": "message",
       "type": "registry:ui",
       "title": "Message",
-      "description": "Message — vendored from shadcn/ui. Edit this description.",
+      "description": "Layout for one message row in a chat UI — avatar, header, footer, and a content column that aligns to the start or end depending on who sent it. Pairs with Bubble for the actual message content.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "chat"
       ],
       "files": [
         {
@@ -969,19 +1109,23 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova",
+        "tags": [
+          "chat",
+          "layout"
+        ]
       }
     },
     {
       "name": "message-scroller",
       "type": "registry:ui",
       "title": "Message Scroller",
-      "description": "Message Scroller — vendored from shadcn/ui. Edit this description.",
+      "description": "An auto-scrolling viewport for chat message lists: sticks to the latest message as new ones arrive, and shows a jump-to-end/start button once the user scrolls away. Marked experimental here because it doesn't sit on react-aria-components like the rest of this registry.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "chat"
       ],
       "files": [
         {
@@ -1001,17 +1145,22 @@
       "meta": {
         "status": "experimental",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova. Built on @shadcn/react/message-scroller, not react-aria-components — upstream hasn't ported this one to the aria base yet.",
+        "tags": [
+          "chat",
+          "scroll",
+          "@shadcn/react"
+        ]
       }
     },
     {
       "name": "native-select",
       "type": "registry:ui",
       "title": "Native Select",
-      "description": "Native Select — vendored from shadcn/ui. Edit this description.",
+      "description": "A styled wrapper around the real, native <select> — use it when you need actual native select behavior (mobile OS pickers, form autofill, no JS dependency) instead of react-aria-components' custom Select.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -1025,19 +1174,23 @@
         "lucide-react"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "form",
+          "select",
+          "native"
+        ]
       }
     },
     {
       "name": "pagination",
       "type": "registry:ui",
       "title": "Pagination",
-      "description": "Pagination — vendored from shadcn/ui. Edit this description.",
+      "description": "Page-number navigation built from LinkButton — previous/next controls, numbered links, and an ellipsis for collapsed ranges.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "navigation"
       ],
       "files": [
         {
@@ -1054,19 +1207,23 @@
         "lucide-react"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "navigation",
+          "links",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
-      "description": "Popover — vendored from shadcn/ui. Edit this description.",
+      "description": "A non-modal floating panel anchored to a trigger — for supplementary controls or content (e.g. a settings form) that shouldn't block the rest of the page.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -1080,19 +1237,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "overlay",
+          "floating",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
-      "description": "Progress — vendored from shadcn/ui. Edit this description.",
+      "description": "A horizontal progress bar communicating the completion of a task, determinate or indeterminate, with optional label/value slots.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "feedback"
       ],
       "files": [
         {
@@ -1106,19 +1267,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "feedback",
+          "loading",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "questionnaire",
       "type": "registry:ui",
       "title": "Questionnaire",
-      "description": "Questionnaire — vendored from shadcn/ui. Edit this description.",
+      "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "chat"
       ],
       "files": [
         {
@@ -1138,17 +1303,21 @@
       "meta": {
         "status": "experimental",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "chat",
+          "form",
+          "@shadcn/react"
+        ]
       }
     },
     {
       "name": "radio-group",
       "type": "registry:ui",
       "title": "Radio Group",
-      "description": "Radio Group — vendored from shadcn/ui. Edit this description.",
+      "description": "A set of mutually-exclusive radio options. Pair each RadioGroupItem with an external Label via id/htmlFor — its own children slot is for a custom indicator, not label text.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -1162,19 +1331,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "form",
+          "selection",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "resizable",
       "type": "registry:ui",
       "title": "Resizable",
-      "description": "Resizable — vendored from shadcn/ui. Edit this description.",
+      "description": "Resizable split panes (panel group, panel, drag handle) built on react-resizable-panels — for layouts like a sidebar/editor split the user can drag to resize.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "layout"
       ],
       "files": [
         {
@@ -1188,19 +1361,23 @@
         "react-resizable-panels"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "layout",
+          "panels",
+          "react-resizable-panels"
+        ]
       }
     },
     {
       "name": "scroll-area",
       "type": "registry:ui",
       "title": "Scroll Area",
-      "description": "Scroll Area — vendored from shadcn/ui. Edit this description.",
+      "description": "A scrollable container with a themeable, always-consistent-looking scrollbar via native scrollbar-width/scrollbar-color — no JS scrollbar emulation.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "layout"
       ],
       "files": [
         {
@@ -1213,19 +1390,22 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "layout",
+          "scroll"
+        ]
       }
     },
     {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
-      "description": "Select — vendored from shadcn/ui. Edit this description.",
+      "description": "A listbox-style picker (react-aria-components' Select) with a trigger, popover, groups, and an optional search input — richer than the native <select> (see native-select for that).",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -1243,19 +1423,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "form",
+          "select",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "separator",
       "type": "registry:ui",
       "title": "Separator",
-      "description": "Separator — vendored from shadcn/ui. Edit this description.",
+      "description": "A thin visual divider between content, horizontal or vertical.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "layout"
       ],
       "files": [
         {
@@ -1269,19 +1453,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "layout",
+          "divider",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "sheet",
       "type": "registry:ui",
       "title": "Sheet",
-      "description": "Sheet — vendored from shadcn/ui. Edit this description.",
+      "description": "A modal panel that slides in from an edge of the screen (top/right/bottom/left) — for navigation drawers, filters, or forms that need more room than a popover.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -1299,19 +1487,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "overlay",
+          "modal",
+          "drawer",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Sidebar",
-      "description": "Sidebar — vendored from shadcn/ui. Edit this description.",
+      "description": "A collapsible application sidebar with a mobile drawer fallback, a Cmd/Ctrl+B keyboard shortcut, and composable header/content/footer/menu slots.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "navigation"
       ],
       "files": [
         {
@@ -1335,19 +1528,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "navigation",
+          "layout",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
-      "description": "Skeleton — vendored from shadcn/ui. Edit this description.",
+      "description": "A pulsing placeholder block for content that's still loading — size and shape it with className to match whatever it stands in for.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "feedback"
       ],
       "files": [
         {
@@ -1360,19 +1557,22 @@
         "cn"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "feedback",
+          "loading"
+        ]
       }
     },
     {
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
-      "description": "Slider — vendored from shadcn/ui. Edit this description.",
+      "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -1386,19 +1586,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "forms",
+          "input",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "sonner",
       "type": "registry:ui",
       "title": "Sonner",
-      "description": "Sonner — vendored from shadcn/ui. Edit this description.",
+      "description": "A themed wrapper around the sonner toast library. Renders the toast viewport (Toaster); call toast() from \"sonner\" anywhere to actually show one.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "feedback"
       ],
       "files": [
         {
@@ -1413,19 +1617,22 @@
         "sonner"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "feedback",
+          "toast"
+        ]
       }
     },
     {
       "name": "spinner",
       "type": "registry:ui",
       "title": "Spinner",
-      "description": "Spinner — vendored from shadcn/ui. Edit this description.",
+      "description": "A spinning loading indicator icon (role=\"status\"), sized via className — drop it inside a disabled button or empty state while something loads.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "feedback"
       ],
       "files": [
         {
@@ -1439,19 +1646,22 @@
         "lucide-react"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "feedback",
+          "loading"
+        ]
       }
     },
     {
       "name": "switch",
       "type": "registry:ui",
       "title": "Switch",
-      "description": "Switch — vendored from shadcn/ui. Edit this description.",
+      "description": "A two-state on/off toggle switch, in default and compact sizes.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -1465,19 +1675,24 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). Pair with an external Label via id/htmlFor — its own children slot is for a custom thumb, not label text.",
+        "tags": [
+          "forms",
+          "toggle",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "table",
       "type": "registry:ui",
       "title": "Table",
-      "description": "Table — vendored from shadcn/ui. Edit this description.",
+      "description": "Semantic table primitives (header, body, rows, cells, footer, caption) built on react-aria-components' Table for accessible, sorting/selection-ready markup.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "data-display"
       ],
       "files": [
         {
@@ -1491,19 +1706,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "data-display",
+          "table",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",
-      "description": "Tabs — vendored from shadcn/ui. Edit this description.",
+      "description": "A tab list and its panels for switching between related views, with default and line visual variants, horizontal or vertical orientation.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "navigation"
       ],
       "files": [
         {
@@ -1518,19 +1737,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "navigation",
+          "disclosure",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "textarea",
       "type": "registry:ui",
       "title": "Textarea",
-      "description": "Textarea — vendored from shadcn/ui. Edit this description.",
+      "description": "A multi-line text input that auto-sizes to its content by default (field-sizing-content), rather than staying a fixed number of rows.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "forms"
       ],
       "files": [
         {
@@ -1544,19 +1767,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "forms",
+          "input",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "toggle",
       "type": "registry:ui",
       "title": "Toggle",
-      "description": "Toggle — vendored from shadcn/ui. Edit this description.",
+      "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "buttons"
       ],
       "files": [
         {
@@ -1571,19 +1798,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "buttons",
+          "toggle",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "toggle-group",
       "type": "registry:ui",
       "title": "Toggle Group",
-      "description": "Toggle Group — vendored from shadcn/ui. Edit this description.",
+      "description": "A connected row (or column) of Toggle buttons sharing one visual variant/size/spacing, for grouped single- or multi-select controls (e.g. text formatting).",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "buttons"
       ],
       "files": [
         {
@@ -1601,19 +1832,23 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "tags": [
+          "buttons",
+          "toggle",
+          "react-aria"
+        ]
       }
     },
     {
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
-      "description": "Tooltip — vendored from shadcn/ui. Edit this description.",
+      "description": "A short, non-interactive hint that appears on hover or keyboard focus of its trigger.",
       "author": "@fmartinsandre/ui",
       "categories": [
-        "uncategorized"
+        "overlay"
       ],
       "files": [
         {
@@ -1627,9 +1862,13 @@
         "react-aria-components"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "tags": []
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). TooltipTrigger wraps [trigger, Tooltip] and opens with no delay by default (delay=0).",
+        "tags": [
+          "overlay",
+          "react-aria"
+        ]
       }
     }
   ]

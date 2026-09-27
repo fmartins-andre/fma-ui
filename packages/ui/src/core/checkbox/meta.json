@@ -1,8 +1,9 @@
 {
   "name": "checkbox",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "forms",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Checkbox — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). Pair with an external Label via id/htmlFor — Checkbox's own children slot is for a custom indicator override, not label text.",
+  "description": "A control for a single on/off/indeterminate value. Pair with an external Label (via id/htmlFor) laid out as a flex row rather than passing label text as children.",
+  "tags": ["form", "react-aria", "selection", "nova"]
 }

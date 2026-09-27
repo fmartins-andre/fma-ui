@@ -3,7 +3,7 @@
   "name": "sheet",
   "title": "Sheet",
   "author": "@fmartinsandre/ui",
-  "description": "Sheet — vendored from shadcn/ui. Edit this description.",
+  "description": "A modal panel that slides in from an edge of the screen (top/right/bottom/left) — for navigation drawers, filters, or forms that need more room than a popover.",
   "dependencies": [
     "cn",
     "lucide-react",
@@ -21,12 +21,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "overlay",
+      "modal",
+      "drawer",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "overlay"
   ],
   "type": "registry:ui"
 }

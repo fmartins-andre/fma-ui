@@ -1,8 +1,9 @@
 {
   "name": "switch",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "forms",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Switch — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). Pair with an external Label via id/htmlFor — its own children slot is for a custom thumb, not label text.",
+  "description": "A two-state on/off toggle switch, in default and compact sizes.",
+  "tags": ["forms", "toggle", "react-aria"]
 }

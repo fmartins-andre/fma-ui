@@ -1,8 +1,8 @@
 {
   "name": "bubble",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "chat",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Bubble — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A single chat message bubble — start/end alignment for sent vs. received, several color variants, and an optional reactions pill overlaid on a corner.",
+  "tags": ["chat", "message"]
 }

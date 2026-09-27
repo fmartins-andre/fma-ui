@@ -1,8 +1,8 @@
 {
   "name": "attachment",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "chat",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Attachment — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A file/attachment chip for chat-style UIs — shows a name, optional upload progress or error state, and an independently clickable remove action.",
+  "tags": ["chat", "file-upload"]
 }

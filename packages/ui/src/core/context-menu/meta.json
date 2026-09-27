@@ -1,8 +1,9 @@
 {
   "name": "context-menu",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "overlay",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Context Menu — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). The trigger region must call usePress() — wrap a plain element in react-aria-components' Pressable if it doesn't already.",
+  "description": "A menu that opens on right-click (or long-press on touch) instead of a regular trigger click. Supports nested submenus, separators, and keyboard shortcut display.",
+  "tags": ["react-aria", "menu", "context-menu", "nova"]
 }

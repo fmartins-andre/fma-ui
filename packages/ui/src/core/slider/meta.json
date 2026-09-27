@@ -1,8 +1,8 @@
 {
   "name": "slider",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "forms",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Slider — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value.",
+  "tags": ["forms", "input", "react-aria"]
 }

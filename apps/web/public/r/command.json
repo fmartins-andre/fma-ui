@@ -3,7 +3,7 @@
   "name": "command",
   "title": "Command",
   "author": "@fmartinsandre/ui",
-  "description": "Command — vendored from shadcn/ui. Edit this description.",
+  "description": "A searchable list of commands or actions, filtered live as you type. Export CommandDialog wraps it in a Dialog for a full command-palette (⌘K) pattern.",
   "dependencies": [
     "cn",
     "lucide-react",
@@ -22,12 +22,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "react-aria",
+      "search",
+      "command-palette",
+      "overlay"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "overlay"
   ],
   "type": "registry:ui"
 }

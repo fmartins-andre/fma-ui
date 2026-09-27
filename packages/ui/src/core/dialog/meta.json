@@ -1,8 +1,8 @@
 {
   "name": "dialog",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "overlay",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Dialog — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A modal window layered over the page, requiring explicit action (or Escape) to dismiss. Pair with react-aria-components' DialogTrigger to wire up the trigger and open state.",
+  "tags": ["react-aria", "modal", "overlay"]
 }

@@ -1,8 +1,8 @@
 {
   "name": "alert",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "feedback",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Alert — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with a destructive variant for errors/warnings.",
+  "tags": ["feedback", "callout"]
 }

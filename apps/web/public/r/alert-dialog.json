@@ -3,7 +3,7 @@
   "name": "alert-dialog",
   "title": "Alert Dialog",
   "author": "@fmartinsandre/ui",
-  "description": "Alert Dialog — vendored from shadcn/ui. Edit this description.",
+  "description": "A modal dialog that interrupts the user with important content and expects an explicit response (e.g. confirming a destructive action) — unlike Dialog, it can't be dismissed by clicking outside or pressing Escape.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -20,12 +20,17 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "overlay",
+      "modal",
+      "confirmation",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "overlay"
   ],
   "type": "registry:ui"
 }

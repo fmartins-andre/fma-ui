@@ -3,7 +3,7 @@
   "name": "dialog",
   "title": "Dialog",
   "author": "@fmartinsandre/ui",
-  "description": "Dialog — vendored from shadcn/ui. Edit this description.",
+  "description": "A modal window layered over the page, requiring explicit action (or Escape) to dismiss. Pair with react-aria-components' DialogTrigger to wire up the trigger and open state.",
   "dependencies": [
     "cn",
     "lucide-react",
@@ -21,12 +21,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "react-aria",
+      "modal",
+      "overlay"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "overlay"
   ],
   "type": "registry:ui"
 }

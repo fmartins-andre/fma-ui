@@ -1,8 +1,8 @@
 {
   "name": "combobox",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "forms",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Combobox — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A searchable, filterable select combining a text input with a listbox popover. Supports single selection (ComboboxValue) or a multi-select tag/chip input (ComboboxChips + ComboboxChip).",
+  "tags": ["form", "react-aria", "selection", "autocomplete"]
 }

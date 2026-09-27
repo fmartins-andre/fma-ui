@@ -1,8 +1,8 @@
 {
   "name": "separator",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "layout",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Separator — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A thin visual divider between content, horizontal or vertical.",
+  "tags": ["layout", "divider", "react-aria"]
 }

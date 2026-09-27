@@ -1,8 +1,8 @@
 {
   "name": "chart",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "data-display",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Chart — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "Composable chart primitives (ChartContainer, ChartTooltip, ChartLegend) wrapping Recharts, themed via CSS custom properties from a ChartConfig. Supports area, bar, line, and pie charts.",
+  "tags": ["data-display", "charts", "recharts", "visualization"]
 }

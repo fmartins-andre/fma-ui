@@ -3,7 +3,7 @@
   "name": "aspect-ratio",
   "title": "Aspect Ratio",
   "author": "@fmartinsandre/ui",
-  "description": "Aspect Ratio — vendored from shadcn/ui. Edit this description.",
+  "description": "Constrains content (typically an image or video) to a fixed width/height ratio, so it scales without distortion or layout shift.",
   "dependencies": [
     "cn"
   ],
@@ -16,12 +16,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "media",
+      "layout"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "media"
   ],
   "type": "registry:ui"
 }

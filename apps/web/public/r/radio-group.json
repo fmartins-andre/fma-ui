@@ -3,7 +3,7 @@
   "name": "radio-group",
   "title": "Radio Group",
   "author": "@fmartinsandre/ui",
-  "description": "Radio Group — vendored from shadcn/ui. Edit this description.",
+  "description": "A set of mutually-exclusive radio options. Pair each RadioGroupItem with an external Label via id/htmlFor — its own children slot is for a custom indicator, not label text.",
   "dependencies": [
     "cn",
     "react-aria-components"
@@ -17,12 +17,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "form",
+      "selection",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

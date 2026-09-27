@@ -3,7 +3,7 @@
   "name": "sonner",
   "title": "Sonner",
   "author": "@fmartinsandre/ui",
-  "description": "Sonner — vendored from shadcn/ui. Edit this description.",
+  "description": "A themed wrapper around the sonner toast library. Renders the toast viewport (Toaster); call toast() from \"sonner\" anywhere to actually show one.",
   "dependencies": [
     "lucide-react",
     "next-themes",
@@ -18,12 +18,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "feedback",
+      "toast"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "feedback"
   ],
   "type": "registry:ui"
 }

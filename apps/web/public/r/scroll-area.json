@@ -3,7 +3,7 @@
   "name": "scroll-area",
   "title": "Scroll Area",
   "author": "@fmartinsandre/ui",
-  "description": "Scroll Area — vendored from shadcn/ui. Edit this description.",
+  "description": "A scrollable container with a themeable, always-consistent-looking scrollbar via native scrollbar-width/scrollbar-color — no JS scrollbar emulation.",
   "dependencies": [
     "cn"
   ],
@@ -16,12 +16,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "layout",
+      "scroll"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "layout"
   ],
   "type": "registry:ui"
 }

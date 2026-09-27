@@ -3,7 +3,7 @@
   "name": "accordion",
   "title": "Accordion",
   "author": "@fmartinsandre/ui",
-  "description": "Accordion — vendored from shadcn/ui. Edit this description.",
+  "description": "A vertically stacked set of headers that expand to reveal or hide associated content. Supports single or multiple items open at once.",
   "dependencies": [
     "cn",
     "lucide-react",
@@ -18,12 +18,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "disclosure",
+      "collapsible",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "disclosure"
   ],
   "type": "registry:ui"
 }

@@ -1,8 +1,8 @@
 {
   "name": "toggle",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "buttons",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Toggle — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup.",
+  "tags": ["buttons", "toggle", "react-aria"]
 }

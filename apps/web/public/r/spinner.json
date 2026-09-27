@@ -3,7 +3,7 @@
   "name": "spinner",
   "title": "Spinner",
   "author": "@fmartinsandre/ui",
-  "description": "Spinner — vendored from shadcn/ui. Edit this description.",
+  "description": "A spinning loading indicator icon (role=\"status\"), sized via className — drop it inside a disabled button or empty state while something loads.",
   "dependencies": [
     "cn",
     "lucide-react"
@@ -17,12 +17,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "feedback",
+      "loading"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "feedback"
   ],
   "type": "registry:ui"
 }

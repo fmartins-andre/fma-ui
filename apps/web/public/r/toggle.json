@@ -3,7 +3,7 @@
   "name": "toggle",
   "title": "Toggle",
   "author": "@fmartinsandre/ui",
-  "description": "Toggle — vendored from shadcn/ui. Edit this description.",
+  "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup.",
   "dependencies": [
     "class-variance-authority",
     "cn",
@@ -18,12 +18,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "buttons",
+      "toggle",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "buttons"
   ],
   "type": "registry:ui"
 }

@@ -3,7 +3,7 @@
   "name": "skeleton",
   "title": "Skeleton",
   "author": "@fmartinsandre/ui",
-  "description": "Skeleton — vendored from shadcn/ui. Edit this description.",
+  "description": "A pulsing placeholder block for content that's still loading — size and shape it with className to match whatever it stands in for.",
   "dependencies": [
     "cn"
   ],
@@ -16,12 +16,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "feedback",
+      "loading"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "feedback"
   ],
   "type": "registry:ui"
 }

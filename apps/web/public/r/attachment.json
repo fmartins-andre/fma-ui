@@ -3,7 +3,7 @@
   "name": "attachment",
   "title": "Attachment",
   "author": "@fmartinsandre/ui",
-  "description": "Attachment — vendored from shadcn/ui. Edit this description.",
+  "description": "A file/attachment chip for chat-style UIs — shows a name, optional upload progress or error state, and an independently clickable remove action.",
   "dependencies": [
     "class-variance-authority",
     "cn"
@@ -20,12 +20,15 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "chat",
+      "file-upload"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "chat"
   ],
   "type": "registry:ui"
 }

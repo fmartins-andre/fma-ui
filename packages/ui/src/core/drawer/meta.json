@@ -1,8 +1,9 @@
 {
   "name": "drawer",
-  "category": "uncategorized",
+  "category": "overlay",
   "status": "experimental",
   "source": "shadcn",
-  "description": "Drawer — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "origin": "shadcn/ui, style: aria-nova. Built on @base-ui/react/drawer, not react-aria-components — upstream hasn't ported this component to the aria base yet.",
+  "description": "A panel that slides in from an edge of the screen, with swipe-to-dismiss and snap-point support. Uses @base-ui/react (not react-aria-components), so its API and data attributes differ from this repo's other overlays.",
+  "tags": ["@base-ui/react", "overlay", "modal"]
 }

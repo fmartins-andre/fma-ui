@@ -3,7 +3,7 @@
   "name": "calendar",
   "title": "Calendar",
   "author": "@fmartinsandre/ui",
-  "description": "Calendar — vendored from shadcn/ui. Edit this description.",
+  "description": "A date picker grid for selecting a single date or a range, with month/year dropdown navigation and support for showing multiple months at once.",
   "dependencies": [
     "class-variance-authority",
     "cn",
@@ -23,12 +23,16 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "tags": [
+      "form",
+      "date",
+      "react-aria"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

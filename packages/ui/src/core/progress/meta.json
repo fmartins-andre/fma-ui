@@ -1,8 +1,8 @@
 {
   "name": "progress",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "feedback",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Progress — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A horizontal progress bar communicating the completion of a task, determinate or indeterminate, with optional label/value slots.",
+  "tags": ["feedback", "loading", "react-aria"]
 }

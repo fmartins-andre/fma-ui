@@ -1,8 +1,8 @@
 {
   "name": "calendar",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "forms",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Calendar — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A date picker grid for selecting a single date or a range, with month/year dropdown navigation and support for showing multiple months at once.",
+  "tags": ["form", "date", "react-aria"]
 }

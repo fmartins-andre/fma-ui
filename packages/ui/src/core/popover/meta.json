@@ -1,8 +1,8 @@
 {
   "name": "popover",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "overlay",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Popover — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A non-modal floating panel anchored to a trigger — for supplementary controls or content (e.g. a settings form) that shouldn't block the rest of the page.",
+  "tags": ["overlay", "floating", "react-aria"]
 }

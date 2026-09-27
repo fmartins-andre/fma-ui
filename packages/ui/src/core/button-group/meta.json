@@ -1,8 +1,8 @@
 {
   "name": "button-group",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "buttons",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Button Group — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "Visually joins a row (or column) of buttons into one connected control, with shared borders and rounded end corners. Can include a separator or a plain text segment.",
+  "tags": ["buttons", "layout"]
 }

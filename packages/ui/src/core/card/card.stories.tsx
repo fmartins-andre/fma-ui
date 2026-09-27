@@ -33,6 +33,11 @@ export default componentMeta;
 type Story = StoryObj<typeof componentMeta>;
 
 export const Default: Story = {
+  parameters: {
+    docs: {
+      description: { story: "Header, content, and footer slots — the common composition." },
+    },
+  },
   render: (args) => (
     <Card {...args} className="w-80">
       <CardHeader>
@@ -55,6 +60,14 @@ export const Default: Story = {
 };
 
 export const WithAction: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "CardAction places a control (e.g. a dismiss button) in the header's top-right corner.",
+      },
+    },
+  },
   render: (args) => (
     <Card {...args} className="w-80">
       <CardHeader>
@@ -75,6 +88,9 @@ export const WithAction: Story = {
 
 export const Compact: Story = {
   args: { size: "sm" },
+  parameters: {
+    docs: { description: { story: 'size="sm" tightens the spacing scale for denser layouts.' } },
+  },
   render: (args) => (
     <Card {...args} className="w-72">
       <CardHeader>

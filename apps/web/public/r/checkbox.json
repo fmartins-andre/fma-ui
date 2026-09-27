@@ -3,7 +3,7 @@
   "name": "checkbox",
   "title": "Checkbox",
   "author": "@fmartinsandre/ui",
-  "description": "Checkbox — vendored from shadcn/ui. Edit this description.",
+  "description": "A control for a single on/off/indeterminate value. Pair with an external Label (via id/htmlFor) laid out as a flex row rather than passing label text as children.",
   "dependencies": [
     "cn",
     "lucide-react",
@@ -18,12 +18,18 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "tags": []
+    "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). Pair with an external Label via id/htmlFor — Checkbox's own children slot is for a custom indicator override, not label text.",
+    "tags": [
+      "form",
+      "react-aria",
+      "selection",
+      "nova"
+    ]
   },
   "categories": [
-    "uncategorized"
+    "forms"
   ],
   "type": "registry:ui"
 }

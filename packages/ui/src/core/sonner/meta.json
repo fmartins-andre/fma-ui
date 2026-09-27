@@ -1,8 +1,8 @@
 {
   "name": "sonner",
-  "category": "uncategorized",
-  "status": "experimental",
+  "category": "feedback",
+  "status": "stable",
   "source": "shadcn",
-  "description": "Sonner — vendored from shadcn/ui. Edit this description.",
-  "tags": []
+  "description": "A themed wrapper around the sonner toast library. Renders the toast viewport (Toaster); call toast() from \"sonner\" anywhere to actually show one.",
+  "tags": ["feedback", "toast"]
 }
