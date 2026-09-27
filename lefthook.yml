@@ -1,0 +1,39 @@
+# Local mirror of what CI enforces (see .github/workflows/registry-check.yml),
+# for fast feedback before pushing. CI stays the real, unbypassable gate.
+#
+# Adapted from EMITTE's lefthook.yml (a sibling design system, base-ui-based):
+# same pre-commit/pre-push split, but one "lint" step (Biome does format+lint
+# in one pass — no separate prettier/eslint), and registry-check runs the
+# real build-and-diff inline instead of a separate scripts/registry-check.sh.
+pre-commit:
+  commands:
+    lint:
+      priority: 1
+      glob: "*.{js,jsx,ts,tsx,json,jsonc,css}"
+      run: pnpm exec biome check --no-errors-on-unmatched {staged_files}
+    type-check:
+      priority: 2
+      glob: "*.{ts,tsx}"
+      run: pnpm type-check
+    registry-check:
+      priority: 3
+      glob: "packages/ui/src/core/**/*"
+      run: >-
+        pnpm --filter @fmartinsandre/ui build &&
+        git diff --quiet packages/ui/registry.json apps/web/public/r/ ||
+        (echo 'Registry out of sync — run: pnpm --filter @fmartinsandre/ui build, then git add' && exit 1)
+
+pre-push:
+  commands:
+    type-check:
+      priority: 1
+      run: pnpm type-check
+    test:
+      priority: 2
+      run: pnpm test
+    build:
+      priority: 3
+      run: pnpm build
+    build-storybook:
+      priority: 4
+      run: pnpm --filter @fmartinsandre/ui build-storybook

@@ -2,6 +2,12 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
+# lefthook's postinstall fetches its platform binary — explicitly trusted
+# (pnpm blocks install scripts by default; this is the declarative opt-in
+# instead of the one-off interactive `pnpm approve-builds`).
+onlyBuiltDependencies:
+  - lefthook
+
 catalog:
   react: ^19.3.0
   react-dom: ^19.3.0

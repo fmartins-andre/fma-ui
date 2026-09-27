@@ -134,6 +134,21 @@ Testes rodam via Vitest com dois "projects" (`packages/ui/vitest.config.ts`):
   `.test.tsx` separado). Exige `pnpm exec playwright install chromium` uma vez;
   não roda no CI de PR pra manter o job leve — só `test` (unit) roda lá.
 
+### 2c. Git hooks (lefthook)
+
+Espelha localmente (feedback rápido) o que o CI já garante — o CI continua sendo
+o gate real, não-contornável. `lefthook.yml` na raiz, instalado automaticamente
+via `"prepare": "lefthook install"` (roda no `pnpm install`). Inspirado no
+`lefthook.yml` do EMITTE, adaptado: um único step de lint (Biome faz
+format+lint juntos, sem prettier/eslint separados) e `registry-check` roda o
+build-e-diff direto inline em vez de um script separado.
+
+- **`pre-commit`**: `lint` (Biome nos arquivos staged) → `type-check` → `registry-check`
+  (só quando `packages/ui/src/core/**` muda — rebuilda e falha se `registry.json`/`public/r`
+  ficarem fora de sincronia com o que foi commitado).
+- **`pre-push`**: `type-check` → `test` → `build` → `build-storybook` — rede de segurança
+  mais pesada antes de qualquer push.
+
 ### 3. Gerar e publicar o registro
 
 ```bash
