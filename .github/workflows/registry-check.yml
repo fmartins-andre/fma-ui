@@ -1,0 +1,66 @@
+name: Registry Drift Check
+
+on:
+  pull_request:
+    paths:
+      - "packages/ui/src/**"
+      - "packages/ui/scripts/**"
+      - "packages/ui/package.json"
+  push:
+    branches:
+      - main
+
+jobs:
+  drift-check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    name: Check registry.json / public/r are up to date
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build ui package (regenerates registry.json + public/r)
+        run: pnpm --filter @fmartinsandre/ui build
+
+      - name: Fail if generated output differs from what's committed
+        run: |
+          if git diff --quiet packages/ui/registry.json apps/web/public/r/; then
+            echo "Registry is in sync."
+          else
+            echo "Registry out of sync with source. Run locally and commit:"
+            echo "  pnpm --filter @fmartinsandre/ui build"
+            git diff --name-only packages/ui/registry.json apps/web/public/r/
+            git diff packages/ui/registry.json apps/web/public/r/
+            exit 1
+          fi
+
+  build:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: Build everything
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
