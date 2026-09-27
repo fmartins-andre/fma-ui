@@ -1,0 +1,27 @@
+{
+  "name": "design-system",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Personal shadcn-compatible component registry: official shadcn/ui components, customized variants, and original components — all redistributable through your own registry.",
+  "scripts": {
+    "preinstall": "npx -y only-allow pnpm",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "clean": "turbo clean",
+    "type-check": "turbo type-check",
+    "add:shadcn": "pnpm --filter @fmartinsandre/ui add:shadcn",
+    "add:registry": "pnpm --filter @fmartinsandre/ui add:registry"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "shadcn": "^4.21.0",
+    "turbo": "^2.11.4",
+    "typescript": "catalog:"
+  },
+  "packageManager": "pnpm@10.12.1",
+  "engines": {
+    "node": ">=24.14.0 <25.0.0",
+    "pnpm": ">=10.12.1 <11.0.0"
+  }
+}
