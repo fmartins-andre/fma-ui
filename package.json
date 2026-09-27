@@ -7,7 +7,7 @@
     "preinstall": "npx -y only-allow pnpm",
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
+    "lint": "biome check .",
     "clean": "turbo clean",
     "type-check": "turbo type-check",
     "add:shadcn": "pnpm --filter @fmartinsandre/ui add:shadcn",
