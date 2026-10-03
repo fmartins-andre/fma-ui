@@ -193,8 +193,8 @@ do consumidor instala junto, sem precisar de um item de registro separado pra is
 
 - Node: LTS Krypton (24.x) — `.nvmrc` fixa `24.21.0` pro dev local; `engines.node`
   no `package.json` (`>=24.14.0 <25.0.0`) aceita qualquer patch da mesma LTS.
-- pnpm: `>=10.12.1 <11.0.0`, com `packageManager` fixando `10.12.1` exato via corepack.
-- `.npmrc` tem `engine-strict=true` — instalar com Node/pnpm fora do range **falha**
+- pnpm: `>=12.8.1 <13.0.0`, com `packageManager` fixando `12.8.1` exato via corepack.
+- `pnpm-workspace.yaml` tem `engineStrict: true` — instalar com Node/pnpm fora do range **falha**
   (`ERR_PNPM_UNSUPPORTED_ENGINE`), não só avisa.
 - `preinstall` roda `npx -y only-allow pnpm` — `npm install`/`yarn install` são
   bloqueados na hora.

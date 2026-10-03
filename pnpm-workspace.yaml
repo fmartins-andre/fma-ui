@@ -2,11 +2,17 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
-# lefthook's postinstall fetches its platform binary — explicitly trusted
-# (pnpm blocks install scripts by default; this is the declarative opt-in
-# instead of the one-off interactive `pnpm approve-builds`).
-onlyBuiltDependencies:
-  - lefthook
+# Fail install when Node/pnpm are outside `engines` instead of only warning.
+engineStrict: true
+
+# pnpm blocks install scripts by default and fails install on any undecided
+# one; this is the declarative decision instead of the interactive
+# `pnpm approve-builds`. lefthook's postinstall fetches its platform binary;
+# esbuild's (via storybook) only re-verifies the binary its optional deps
+# already ship, so it stays off.
+allowBuilds:
+  lefthook: true
+  esbuild: false
 
 catalog:
   react: ^19.3.0
