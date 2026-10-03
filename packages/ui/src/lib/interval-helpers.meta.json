@@ -1,0 +1,8 @@
+{
+  "name": "interval-helpers",
+  "category": "date",
+  "status": "stable",
+  "source": "original",
+  "description": "Helpers for inclusive Interval<T> spans (e.g. unavailable date ranges), generic over any T with a .compare() method such as @internationalized/date's DateValue. createIsWithinAnyInterval plugs straight into react-aria's isDateUnavailable prop.",
+  "tags": ["date", "interval"]
+}

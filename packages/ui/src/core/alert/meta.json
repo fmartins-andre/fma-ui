@@ -2,7 +2,7 @@
   "name": "alert",
   "category": "feedback",
   "status": "stable",
-  "source": "shadcn",
-  "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with a destructive variant for errors/warnings.",
+  "source": "customized",
+  "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with semantic variants (destructive/info/success/warning/invert).",
   "tags": ["feedback", "callout"]
 }

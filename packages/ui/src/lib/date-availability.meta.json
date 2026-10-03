@@ -1,0 +1,8 @@
+{
+  "name": "date-availability",
+  "category": "date",
+  "status": "stable",
+  "source": "original",
+  "description": "Finds the nearest date that isn't blocked by min/max or unavailable ranges, and centralizes the travel-or-clear correction policy: a blocked value moves to a valid neighbour instead of being discarded, and is cleared only when no available date exists.",
+  "tags": ["date", "validation"]
+}

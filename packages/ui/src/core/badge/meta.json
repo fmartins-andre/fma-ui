@@ -2,7 +2,7 @@
   "name": "badge",
   "category": "data-display",
   "status": "stable",
-  "source": "shadcn",
-  "description": "A small label for status, count, or category — inline with text or attached to another element. Can also render as a link.",
+  "source": "customized",
+  "description": "A small label for status, count, or category — inline with text or attached to another element. Semantic variants (info/success/warning/destructive/invert) in solid, light and outline styles, plus size and radius options. Can also render as a link.",
   "tags": ["data-display", "status", "label"]
 }

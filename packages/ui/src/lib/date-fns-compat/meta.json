@@ -1,0 +1,8 @@
+{
+  "name": "date-fns-compat",
+  "category": "date",
+  "status": "stable",
+  "source": "original",
+  "description": "date-fns-shaped API (addDays, format, isBefore, TZDate, ...) backed by @internationalized/date: same names and argument order as date-fns/@date-fns/tz, taking and returning plain Date (or TZDate), with DST-safe calendar arithmetic. Also exports toZoned/fromZoned for migrating call sites onto ZonedDateTime directly.",
+  "tags": ["date", "time-zone", "date-fns"]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "use-available-date-correction",
+  "category": "date",
+  "status": "stable",
+  "source": "original",
+  "description": "useAvailableDateCorrection: revalidates an already-committed date value against min/max/unavailable ranges whenever the value or constraints change, correcting it through the date-availability travel-or-clear policy.",
+  "tags": ["date", "hook", "validation"]
+}

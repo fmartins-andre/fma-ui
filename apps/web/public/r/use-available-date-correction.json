@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-available-date-correction",
+  "title": "Use Available Date Correction",
+  "author": "@fma-ui/ui",
+  "description": "useAvailableDateCorrection: revalidates an already-committed date value against min/max/unavailable ranges whenever the value or constraints change, correcting it through the date-availability travel-or-clear policy.",
+  "dependencies": [
+    "@internationalized/date"
+  ],
+  "registryDependencies": [
+    "date-availability",
+    "types"
+  ],
+  "files": [
+    {
+      "path": "src/hooks/use-available-date-correction.ts",
+      "content": "/**\n * useAvailableDateCorrection — revalidates an already-committed date value\n * against `min`/`max`/`unavailableRanges` whenever the value or the\n * constraints change, correcting it through the shared travel-or-clear\n * policy (`lib/date-availability.ts`). Meant for date components such as\n * calendar, date-input and date-picker.\n */\n\nimport type { DateValue } from \"@internationalized/date\";\nimport * as React from \"react\";\nimport {\n  type DateAvailabilityConstraints,\n  travelDatesToAvailable,\n  travelRangeToAvailable,\n} from \"@/lib/date-availability\";\nimport type { Interval } from \"@/lib/types\";\n\ninterface UseAvailableDateCorrectionOptions {\n  value: DateValue[] | undefined;\n  min?: DateValue;\n  max?: DateValue;\n  unavailableRanges?: Interval<DateValue>[];\n  // \"range\" applies the span-aware policy (`travelRangeToAvailable`);\n  // anything else corrects each entry independently.\n  selectionMode?: string;\n  // The owning component's state setters. Read at effect time through a\n  // ref (callers often pass fresh closures every render), so they don't\n  // belong in the effect's dependency list.\n  clearValue: () => void;\n  setValue: (value: DateValue[]) => void;\n}\n\nfunction serializeAttempt(\n  value: DateValue[],\n  { min, max, unavailableRanges }: DateAvailabilityConstraints,\n): string {\n  return [\n    value.map(String).join(\",\"),\n    String(min ?? \"\"),\n    String(max ?? \"\"),\n    (unavailableRanges ?? [])\n      .map((interval) => `${String(interval.from)}/${String(interval.to)}`)\n      .join(\",\"),\n  ].join(\"|\");\n}\n\n/**\n * Date pickers don't revalidate an already-committed `value` when\n * `min`/`max`/`isDateUnavailable` change later — their guards only gate\n * *new* selections/edits (see `isValueBlocked`'s doc comment in\n * lib/interval-helpers.ts). Without this effect, a consumer narrowing the\n * allowed window after a date was already picked/typed would leave that\n * date visually selected while every cell/segment renders it as\n * disabled/unavailable — a contradictory state. Each blocked value travels\n * to its nearest available date; `clearValue` is reserved for the one case\n * where there is truly no available date left to travel to.\n *\n * A correction is attempted at most once per distinct (value, constraints)\n * pair: a controlled parent that never adopts the corrected value but\n * re-renders on every `onValueChange` (fresh array identity of the same\n * blocked date each time) would otherwise re-trigger\n * setValue -> onValueChange -> re-render in an unbounded loop. The\n * attempt key resets as soon as an unblocked value arrives, so a *new*\n * stale state later is corrected normally.\n */\nexport function useAvailableDateCorrection({\n  value,\n  min,\n  max,\n  unavailableRanges,\n  selectionMode,\n  clearValue,\n  setValue,\n}: UseAvailableDateCorrectionOptions): void {\n  const lastAttemptRef = React.useRef<string | null>(null);\n  const clearValueRef = React.useRef(clearValue);\n  clearValueRef.current = clearValue;\n  const setValueRef = React.useRef(setValue);\n  setValueRef.current = setValue;\n\n  React.useEffect(() => {\n    if (!value || value.length === 0) {\n      lastAttemptRef.current = null;\n      return;\n    }\n    const constraints = { min, max, unavailableRanges };\n    const corrected =\n      selectionMode === \"range\"\n        ? travelRangeToAvailable(value, constraints)\n        : travelDatesToAvailable(value, constraints);\n    if (corrected === value) {\n      lastAttemptRef.current = null;\n      return;\n    }\n    const attemptKey = serializeAttempt(value, constraints);\n    if (lastAttemptRef.current === attemptKey) return;\n    lastAttemptRef.current = attemptKey;\n    if (corrected === undefined) {\n      clearValueRef.current();\n    } else {\n      setValueRef.current(corrected);\n    }\n  }, [value, min, max, unavailableRanges, selectionMode]);\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/use-available-date-correction.ts"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "date",
+      "hook",
+      "validation"
+    ]
+  },
+  "categories": [
+    "date"
+  ],
+  "type": "registry:hook"
+}

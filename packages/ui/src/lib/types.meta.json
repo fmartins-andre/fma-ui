@@ -1,0 +1,8 @@
+{
+  "name": "types",
+  "category": "utils",
+  "status": "stable",
+  "source": "original",
+  "description": "Shared type utilities: Brand<T, B> for nominal typing of structurally-identical types, and Interval<T> for inclusive from/to spans.",
+  "tags": ["types", "typescript"]
+}

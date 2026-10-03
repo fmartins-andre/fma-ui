@@ -30,6 +30,17 @@ describe("detectNpmDependencies", () => {
     `;
     expect(detectNpmDependencies(source)).toEqual(["cn"]);
   });
+
+  it("ignores import examples inside comments", () => {
+    const source = `
+      /**
+       *   import { addDays } from 'date-fns'
+       */
+      // import { TZDate } from "@date-fns/tz";
+      import { fromDate } from "@internationalized/date";
+    `;
+    expect(detectNpmDependencies(source)).toEqual(["@internationalized/date"]);
+  });
 });
 
 describe("detectRegistryDependencies", () => {
@@ -46,5 +57,19 @@ describe("detectRegistryDependencies", () => {
   it("excludes a self-referencing import", () => {
     const source = `import { Button } from "@/core/button/button";`;
     expect(detectRegistryDependencies(source, "button")).toEqual([]);
+  });
+
+  it("finds @/lib/<id>, @/lib/<id>/<sub> and @/hooks/<id> imports, skipping @/lib/utils", () => {
+    const source = `
+      import { cn } from "@/lib/utils";
+      import type { Interval } from "@/lib/types";
+      import { cpfMask } from "@/lib/input-masks/cpf-mask";
+      import { useIsMobile } from "@/hooks/use-mobile";
+    `;
+    expect(detectRegistryDependencies(source, "some-component").sort()).toEqual([
+      "input-masks",
+      "types",
+      "use-mobile",
+    ]);
   });
 });

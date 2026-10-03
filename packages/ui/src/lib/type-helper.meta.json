@@ -1,0 +1,8 @@
+{
+  "name": "type-helper",
+  "category": "utils",
+  "status": "stable",
+  "source": "original",
+  "description": "Runtime type-checking helpers (typeHelper.isString/isNumber/isArray/...) built on Object.prototype.toString, usable as TypeScript type guards.",
+  "tags": ["types", "guards"]
+}

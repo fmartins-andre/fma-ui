@@ -2,10 +2,11 @@
 // a colocated story — this is the check EMITTE's registry didn't enforce
 // (see /var/home/fmartinsandre/DevProjects/EMITTE/emitte.design-system.frontend,
 // which relies on developer discipline instead of a hook/CI gate for this).
-import { readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ComponentMetaSchema } from "@fma-ui/registry";
 import { describe, expect, it } from "vitest";
+import { discoverModules } from "../scripts/gen-registry-json";
 
 const CORE_DIR = join(__dirname, "..", "src", "core");
 
@@ -30,3 +31,44 @@ describe.each(componentIds)("src/core/%s", (id) => {
     expect(files).toContain(`${id}.stories.tsx`);
   });
 });
+
+// Libs (src/lib) and hooks (src/hooks) with metadata are published too. They
+// have no story, so the gate is: valid meta.json, at least one source file, and
+// unit tests importing them (tests/**/*.test.ts mentioning "@/lib/<id>" or
+// "@/hooks/<id>") — except type-only modules and the vendored shadcn hook.
+const UI_ROOT = join(__dirname, "..");
+const UNTESTED_MODULES = new Set(["types", "use-mobile"]);
+
+function readTestSources(dir: string): string {
+  return readdirSync(dir, { withFileTypes: true })
+    .map((entry) => {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) return readTestSources(path);
+      return entry.name.endsWith(".test.ts") ? readFileSync(path, "utf8") : "";
+    })
+    .join("\n");
+}
+
+const testSources = readTestSources(join(UI_ROOT, "tests"));
+const modules = discoverModules(UI_ROOT);
+
+describe.each(modules.map((module) => [module.id, module] as const))(
+  "lib/hook %s",
+  (id, module) => {
+    it("has a meta.json that matches ComponentMetaSchema and names itself", () => {
+      const meta = ComponentMetaSchema.parse(
+        JSON.parse(readFileSync(join(UI_ROOT, module.metaPath), "utf8")),
+      );
+      expect(meta.name).toBe(id);
+    });
+
+    it("has at least one source file", () => {
+      expect(module.files.length).toBeGreaterThan(0);
+      for (const file of module.files) expect(existsSync(join(UI_ROOT, file))).toBe(true);
+    });
+
+    it.skipIf(UNTESTED_MODULES.has(id))("is covered by unit tests", () => {
+      expect(testSources).toMatch(new RegExp(`["']@/(lib|hooks)/${id}["/]`));
+    });
+  },
+);
