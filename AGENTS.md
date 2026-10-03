@@ -33,7 +33,8 @@ O ambiente de desenvolvimento esperado é o dev container em `.devcontainer/`. P
 você está rodando dentro dele (`/workspaces/design-system`, usuário `node`).
 
 - **Imagem**: `mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie` (Node 24, Debian
-  trixie). Sem `features`. pnpm vem do corepack via `packageManager`.
+  trixie). Feature `github-cli` (comando `gh`; autenticar com `gh auth login`). pnpm vem do
+  corepack via `packageManager`.
 - **`post-create.sh`** (uma vez, na criação): configura busca de histórico no `~/.inputrc` e
   instala o Claude Code (`~/.local/bin`).
 - **`post-start.sh`** (a cada start): `pnpm install --frozen-lockfile` e instala o Chromium

@@ -5,7 +5,10 @@
   "image": "mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie",
 
   // Features to add to the dev container. More info: https://containers.dev/features.
-  "features": {},
+  "features": {
+    // GitHub CLI (gh) — repo/PR operations from inside the container
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
 
   "forwardPorts": [3000, 6006],
 
