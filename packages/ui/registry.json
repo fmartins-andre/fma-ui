@@ -38,7 +38,7 @@
       "name": "alert",
       "type": "registry:ui",
       "title": "Alert",
-      "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with a destructive variant for errors/warnings.",
+      "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with semantic variants (destructive/info/success/warning/invert).",
       "author": "@fma-ui/ui",
       "categories": [
         "feedback"
@@ -56,7 +56,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "feedback",
           "callout"
@@ -190,7 +190,7 @@
       "name": "badge",
       "type": "registry:ui",
       "title": "Badge",
-      "description": "A small label for status, count, or category — inline with text or attached to another element. Can also render as a link.",
+      "description": "A small label for status, count, or category — inline with text or attached to another element. Semantic variants (info/success/warning/destructive/invert) in solid, light and outline styles, plus size and radius options. Can also render as a link.",
       "author": "@fma-ui/ui",
       "categories": [
         "data-display"
@@ -208,7 +208,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "data-display",
           "status",

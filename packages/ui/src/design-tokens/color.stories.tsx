@@ -63,6 +63,19 @@ const BASE = [
   "--ring",
 ];
 
+const STATUS = [
+  "--destructive",
+  "--destructive-foreground",
+  "--info",
+  "--info-foreground",
+  "--success",
+  "--success-foreground",
+  "--warning",
+  "--warning-foreground",
+  "--invert",
+  "--invert-foreground",
+];
+
 const CHARTS = ["--chart-1", "--chart-2", "--chart-3", "--chart-4", "--chart-5"];
 
 const SIDEBAR = [
@@ -93,6 +106,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Base: Story = {
   render: () => <Group title="Base" tokens={BASE} />,
+};
+
+export const Status: Story = {
+  render: () => <Group title="Status" tokens={STATUS} />,
 };
 
 export const Charts: Story = {
