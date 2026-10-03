@@ -641,6 +641,111 @@
       }
     },
     {
+      "name": "date-availability",
+      "type": "registry:lib",
+      "title": "Date Availability",
+      "description": "Finds the nearest date that isn't blocked by min/max or unavailable ranges, and centralizes the travel-or-clear correction policy: a blocked value moves to a valid neighbour instead of being discarded, and is cleared only when no available date exists.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "date"
+      ],
+      "files": [
+        {
+          "path": "src/lib/date-availability.ts",
+          "target": "lib/date-availability.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "registryDependencies": [
+        "interval-helpers"
+      ],
+      "dependencies": [
+        "@internationalized/date"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "date",
+          "validation"
+        ]
+      }
+    },
+    {
+      "name": "date-fns-compat",
+      "type": "registry:lib",
+      "title": "Date Fns Compat",
+      "description": "date-fns-shaped API (addDays, format, isBefore, TZDate, ...) backed by @internationalized/date: same names and argument order as date-fns/@date-fns/tz, taking and returning plain Date (or TZDate), with DST-safe calendar arithmetic. Also exports toZoned/fromZoned for migrating call sites onto ZonedDateTime directly.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "date"
+      ],
+      "files": [
+        {
+          "path": "src/lib/date-fns-compat/arithmetic.ts",
+          "target": "lib/date-fns-compat/arithmetic.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/boundaries.ts",
+          "target": "lib/date-fns-compat/boundaries.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/comparison.ts",
+          "target": "lib/date-fns-compat/comparison.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/context.ts",
+          "target": "lib/date-fns-compat/context.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/convert.ts",
+          "target": "lib/date-fns-compat/convert.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/difference.ts",
+          "target": "lib/date-fns-compat/difference.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/format.ts",
+          "target": "lib/date-fns-compat/format.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/index.ts",
+          "target": "lib/date-fns-compat/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/tz.ts",
+          "target": "lib/date-fns-compat/tz.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/date-fns-compat/week.ts",
+          "target": "lib/date-fns-compat/week.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [
+        "@internationalized/date"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "date",
+          "time-zone",
+          "date-fns"
+        ]
+      }
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
@@ -931,6 +1036,106 @@
       }
     },
     {
+      "name": "input-masks",
+      "type": "registry:lib",
+      "title": "Input Masks",
+      "description": "Input-mask system built on Maskito: mask option hooks, formatters and remover utilities for Brazilian documents and common formats (CPF, CNPJ, CPF-or-CNPJ, CEP, phone, credit card, date, date range, date-time, time, decimal).",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/lib/input-masks/cep-mask.ts",
+          "target": "lib/input-masks/cep-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/cnpj-mask.ts",
+          "target": "lib/input-masks/cnpj-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/cnpj-or-cpf-mask.ts",
+          "target": "lib/input-masks/cnpj-or-cpf-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/cpf-mask.ts",
+          "target": "lib/input-masks/cpf-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/credit-card-mask.ts",
+          "target": "lib/input-masks/credit-card-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/date-mask.ts",
+          "target": "lib/input-masks/date-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/date-range-mask.ts",
+          "target": "lib/input-masks/date-range-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/date-time-mask.ts",
+          "target": "lib/input-masks/date-time-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/decimal-mask.ts",
+          "target": "lib/input-masks/decimal-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/index.ts",
+          "target": "lib/input-masks/index.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/pattern-mask.ts",
+          "target": "lib/input-masks/pattern-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/phone-mask.ts",
+          "target": "lib/input-masks/phone-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/stable-mask.ts",
+          "target": "lib/input-masks/stable-mask.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/input-masks/time-mask.ts",
+          "target": "lib/input-masks/time-mask.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "registryDependencies": [
+        "type-helper",
+        "types"
+      ],
+      "dependencies": [
+        "@maskito/core",
+        "@maskito/kit"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "forms",
+          "mask",
+          "input",
+          "pt-BR"
+        ]
+      }
+    },
+    {
       "name": "input-otp",
       "type": "registry:ui",
       "title": "Input Otp",
@@ -959,6 +1164,35 @@
           "forms",
           "input",
           "otp"
+        ]
+      }
+    },
+    {
+      "name": "interval-helpers",
+      "type": "registry:lib",
+      "title": "Interval Helpers",
+      "description": "Helpers for inclusive Interval<T> spans (e.g. unavailable date ranges), generic over any T with a .compare() method such as @internationalized/date's DateValue. createIsWithinAnyInterval plugs straight into react-aria's isDateUnavailable prop.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "date"
+      ],
+      "files": [
+        {
+          "path": "src/lib/interval-helpers.ts",
+          "target": "lib/interval-helpers.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "registryDependencies": [
+        "types"
+      ],
+      "dependencies": [],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "date",
+          "interval"
         ]
       }
     },
@@ -1869,6 +2103,91 @@
         "tags": [
           "overlay",
           "react-aria"
+        ]
+      }
+    },
+    {
+      "name": "type-helper",
+      "type": "registry:lib",
+      "title": "Type Helper",
+      "description": "Runtime type-checking helpers (typeHelper.isString/isNumber/isArray/...) built on Object.prototype.toString, usable as TypeScript type guards.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/lib/type-helper.ts",
+          "target": "lib/type-helper.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "types",
+          "guards"
+        ]
+      }
+    },
+    {
+      "name": "types",
+      "type": "registry:lib",
+      "title": "Types",
+      "description": "Shared type utilities: Brand<T, B> for nominal typing of structurally-identical types, and Interval<T> for inclusive from/to spans.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/lib/types.ts",
+          "target": "lib/types.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "types",
+          "typescript"
+        ]
+      }
+    },
+    {
+      "name": "use-available-date-correction",
+      "type": "registry:hook",
+      "title": "Use Available Date Correction",
+      "description": "useAvailableDateCorrection: revalidates an already-committed date value against min/max/unavailable ranges whenever the value or constraints change, correcting it through the date-availability travel-or-clear policy.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "date"
+      ],
+      "files": [
+        {
+          "path": "src/hooks/use-available-date-correction.ts",
+          "target": "hooks/use-available-date-correction.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "registryDependencies": [
+        "date-availability",
+        "types"
+      ],
+      "dependencies": [
+        "@internationalized/date"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "date",
+          "hook",
+          "validation"
         ]
       }
     },

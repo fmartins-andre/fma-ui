@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "interval-helpers",
+  "title": "Interval Helpers",
+  "author": "@fma-ui/ui",
+  "description": "Helpers for inclusive Interval<T> spans (e.g. unavailable date ranges), generic over any T with a .compare() method such as @internationalized/date's DateValue. createIsWithinAnyInterval plugs straight into react-aria's isDateUnavailable prop.",
+  "dependencies": [],
+  "registryDependencies": [
+    "types"
+  ],
+  "files": [
+    {
+      "path": "src/lib/interval-helpers.ts",
+      "content": "/**\n * Shared helpers for inclusive `Interval<T>` spans (`lib/types.ts`) — e.g.\n * \"unavailable ranges\" of days already booked — layered on top of the\n * `isDateUnavailable` prop that react-aria-components' Calendar,\n * RangeCalendar, DateField and DatePicker share, so the same interval list\n * blocks selection/typing consistently across all of them.\n *\n * Generic over any `T` exposing a `.compare(other: T): number` method (e.g.\n * `@internationalized/date`'s `DateValue`) rather than hardcoding that type\n * — this file has no import of (or dependency on) a specific date library;\n * callers supply `T` via `Interval<DateValue>` etc. Not generic over *every*\n * orderable type, though: a plain `Date`/`number`/`string` has no\n * `.compare()` method, so using this with one of those would need a small\n * wrapper implementing `Comparable`, not a bare value.\n */\n\nimport type { Interval } from \"@/lib/types\";\n\ninterface Comparable<T> {\n  compare(other: T): number;\n}\n\n/**\n * The constraints under which a value counts as \"blocked\": outside the\n * inclusive `[min, max]` window, or inside any of the `unavailableRanges`\n * intervals. The field is named after the public `unavailableRanges` prop\n * on `calendar`/`date-input`/`date-picker` so call sites can build this\n * object with plain `{ min, max, unavailableRanges }` shorthand.\n */\nexport interface AvailabilityConstraints<T> {\n  min?: T;\n  max?: T;\n  unavailableRanges?: Interval<T>[];\n}\n\n/** Whether `value` falls inside the inclusive `interval`. An inverted interval (`from > to`) contains nothing. */\nexport function isWithinInterval<T extends Comparable<T>>(\n  value: T,\n  interval: Interval<T>,\n): boolean {\n  return value.compare(interval.from) >= 0 && value.compare(interval.to) <= 0;\n}\n\n/** Whether `value` falls inside any interval of the list (`false` for `undefined`/empty lists). */\nexport function isWithinAnyInterval<T extends Comparable<T>>(\n  value: T,\n  intervals: Interval<T>[] | undefined,\n): boolean {\n  return !!intervals?.some((interval) => isWithinInterval(value, interval));\n}\n\n// Factory form of `isWithinAnyInterval`, shaped to slot straight into\n// react-aria-components' `isDateUnavailable` prop (`(date) => boolean`).\n// Returns `undefined` (instead of an always-false predicate) for an\n// `undefined`/empty list so the prop can stay unset entirely.\nexport function createIsWithinAnyInterval<T extends Comparable<T>>(\n  intervals: Interval<T>[] | undefined,\n): ((value: T) => boolean) | undefined {\n  if (!intervals || intervals.length === 0) return undefined;\n  return (value: T) => isWithinAnyInterval(value, intervals);\n}\n\n/** Whether two inclusive intervals share at least one point (touching edges count). */\nexport function intervalsOverlap<T extends Comparable<T>>(a: Interval<T>, b: Interval<T>): boolean {\n  return a.from.compare(b.to) <= 0 && b.from.compare(a.to) <= 0;\n}\n\n/** Whether `interval` overlaps any interval of the list (`false` for `undefined`/empty lists). */\nexport function overlapsAnyInterval<T extends Comparable<T>>(\n  interval: Interval<T>,\n  intervals: Interval<T>[] | undefined,\n): boolean {\n  return !!intervals?.some((other) => intervalsOverlap(interval, other));\n}\n\n// Whether a single value is blocked under the given constraints. Needed\n// because neither Zag machine revalidates an already-committed `value`\n// reactively when these props change later — confirmed by reading\n// date-picker.machine.mjs's `watch()`, which tracks locale/focusedValue/\n// startValue/etc. but never min/max/value together. `calendar`/`date-input`\n// use this (via lib/date-availability.ts's travel helpers) to correct a\n// `value` that went stale (e.g. a parent widened `unavailableRanges` to now\n// cover a date the user already picked) rather than leaving it\n// selected-but-disabled.\nexport function isValueBlocked<T extends Comparable<T>>(\n  value: T,\n  constraints: AvailabilityConstraints<T>,\n): boolean {\n  const { min, max, unavailableRanges } = constraints;\n  return (\n    (!!min && value.compare(min) < 0) ||\n    (!!max && value.compare(max) > 0) ||\n    isWithinAnyInterval(value, unavailableRanges)\n  );\n}\n\n/** Whether at least one value in the list is blocked (`false` for `undefined`/empty lists). */\nexport function isAnyValueBlocked<T extends Comparable<T>>(\n  values: T[] | undefined,\n  constraints: AvailabilityConstraints<T>,\n): boolean {\n  return !!values?.some((value) => isValueBlocked(value, constraints));\n}\n",
+      "type": "registry:lib",
+      "target": "lib/interval-helpers.ts"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "date",
+      "interval"
+    ]
+  },
+  "categories": [
+    "date"
+  ],
+  "type": "registry:lib"
+}

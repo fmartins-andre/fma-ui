@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "types",
+  "title": "Types",
+  "author": "@fma-ui/ui",
+  "description": "Shared type utilities: Brand<T, B> for nominal typing of structurally-identical types, and Interval<T> for inclusive from/to spans.",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "src/lib/types.ts",
+      "content": "/**\n * Brand<T, B> — generic nominal-typing utility for distinguishing structurally-identical types (e.g. StableMaskitoOptions).\n */\n\ndeclare const __brand: unique symbol;\n\nexport type Brand<T, B extends string> = T & { readonly [__brand]: B };\n\n/** An inclusive from/to span of any orderable `T` (e.g. an unavailable-date range). */\nexport type Interval<T> = { from: T; to: T };\n",
+      "type": "registry:lib",
+      "target": "lib/types.ts"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "types",
+      "typescript"
+    ]
+  },
+  "categories": [
+    "utils"
+  ],
+  "type": "registry:lib"
+}
