@@ -1,0 +1,267 @@
+# Contribuindo com o fma-ui
+
+Este guia explica como o repositório funciona por dentro: preparar o ambiente, adicionar ou
+customizar componentes, testar e publicar o registro.
+
+> Usando um agente de IA? As regras resumidas para agentes estão em [`AGENTS.md`](AGENTS.md).
+
+## Sumário
+
+- [Ambiente](#ambiente)
+- [Estrutura do repositório](#estrutura-do-repositório)
+- [Comandos](#comandos)
+- [Adicionando componentes](#adicionando-componentes)
+- [Anatomia de um componente](#anatomia-de-um-componente)
+- [Storybook e testes](#storybook-e-testes)
+- [Gerando e publicando o registro](#gerando-e-publicando-o-registro)
+- [Git hooks e CI](#git-hooks-e-ci)
+- [Commits e pull requests](#commits-e-pull-requests)
+- [Notas de versão](#notas-de-versão)
+
+## Ambiente
+
+### Dev container (recomendado)
+
+O repositório traz um dev container em `.devcontainer/`. Abra a pasta no VS Code e escolha
+**Reopen in Container**. Ele já vem com:
+
+- Node 24, pnpm (via corepack) e o GitHub CLI (`gh`);
+- `pnpm install` e o Chromium do Playwright instalados a cada start;
+- portas `3000` (app web) e `6006` (Storybook) encaminhadas;
+- Biome configurado como formatter, com organize imports ao salvar.
+
+### Setup manual
+
+Se preferir rodar sem o dev container:
+
+- **Node** 24.x (LTS Krypton). O `.nvmrc` fixa a versão de desenvolvimento; `engines.node`
+  aceita `>=24.14.0 <25.0.0`.
+- **pnpm** 12.x, com `packageManager` fixando a versão exata via corepack.
+
+```bash
+corepack enable
+pnpm install
+pnpm --filter @fma-ui/ui exec playwright install --with-deps chromium  # só para test:storybook
+```
+
+O `pnpm-workspace.yaml` tem `engineStrict: true`: instalar com Node ou pnpm fora do range
+**falha** (`ERR_PNPM_UNSUPPORTED_ENGINE`), não apenas avisa. O `preinstall` roda
+`only-allow pnpm`, então `npm install` e `yarn install` são bloqueados.
+
+## Estrutura do repositório
+
+```
+packages/
+  registry/   → schemas zod do formato registry.json do shadcn (@fma-ui/registry)
+  ui/         → os componentes (@fma-ui/ui)
+    src/core/<nome>/             → um componente por pasta
+    src/design-tokens/           → stories dos tokens (cor, tipografia, espaçamento...)
+    src/styles.css               → tokens e variantes do Tailwind v4
+    scripts/gen-registry-json.ts → gera registry.json a partir de src/core/**/meta.json
+    scripts/add-shadcn.ts        → baixa componentes oficiais do shadcn/ui
+    scripts/add-from-registry.ts → baixa componentes de registros de terceiros
+    tests/                       → testes unitários e gates estruturais
+apps/
+  web/        → TanStack Start; serve os itens finais em /r/<nome>.json
+```
+
+Monorepo com pnpm workspaces + Turborepo. Versões compartilhadas (react, typescript, vite,
+tailwind, `@types/*`) ficam no `catalog:` do `pnpm-workspace.yaml`.
+
+## Comandos
+
+```bash
+pnpm install                 # instala tudo
+pnpm dev                     # turbo dev em todos os pacotes (app web na porta 3000)
+pnpm build                   # build completo (inclui gerar + compilar o registro)
+pnpm lint                    # Biome (format + lint)
+pnpm type-check              # tsc --noEmit em todos os pacotes
+pnpm test                    # testes unitários (vitest --project unit)
+pnpm storybook               # Storybook na porta 6006
+pnpm build-storybook         # build estático em storybook-static/
+pnpm add:shadcn <nomes...>   # baixa componente(s) do shadcn/ui oficial
+pnpm add:shadcn all          # baixa todos os componentes oficiais
+pnpm add:registry <ref>      # baixa componente de um registro de terceiros
+```
+
+## Adicionando componentes
+
+Cada componente declara sua origem no campo `source` do `meta.json`, propagado para o
+`registry.json`:
+
+| `source`      | Significado                                                        |
+| ------------- | ------------------------------------------------------------------ |
+| `shadcn`      | componente oficial vendorizado sem alterações                      |
+| `customized`  | componente oficial com ajustes nossos                              |
+| `original`    | componente criado do zero aqui                                     |
+| `third-party` | componente de outro registro (exige `origin` com a URL/ref)        |
+
+### Do shadcn/ui oficial
+
+```bash
+pnpm add:shadcn button card alert-dialog
+pnpm add:shadcn all   # todos de uma vez
+```
+
+O script roda o `shadcn add` de verdade (instalando as dependências npm), move o resultado de
+`components/ui/<nome>.tsx` para `src/core/<nome>/<nome>.tsx` e cria um `meta.json` stub com
+`"source": "shadcn"`. Depois, edite descrição, categoria e tags.
+
+Como o `components.json` usa `"style": "aria-nova"`, a versão baixada já vem baseada em
+react-aria-components. Com `all`, o script usa a flag `--all` do próprio CLI e descobre os
+componentes pelo que de fato caiu na pasta de staging.
+
+### De um registro de terceiros
+
+```bash
+# por URL direta (qualquer registro shadcn-compatível)
+pnpm add:registry https://exemplo.com/r/fancy-button.json
+
+# por namespace (configure "registries" em packages/ui/components.json)
+pnpm add:registry @acme/fancy-button
+```
+
+```json
+{
+  "registries": {
+    "@acme": "https://exemplo.com/r/{name}.json"
+  }
+}
+```
+
+O `meta.json` sai com `"source": "third-party"` e `"origin"` apontando para a ref usada.
+**Confira a licença do registro de origem antes de republicar.**
+
+### Customizando ou criando
+
+- **Customizar:** edite o `.tsx` e mude `meta.json` para `"source": "customized"`.
+- **Criar:** crie `src/core/<nome>/` com `<nome>.tsx`, `meta.json` (`"source": "original"`) e
+  `<nome>.stories.tsx`.
+
+## Anatomia de um componente
+
+```
+src/core/<nome>/
+  <nome>.tsx           → código
+  meta.json            → metadata (categoria, status, source, tags, descrição)
+  <nome>.stories.tsx   → story do Storybook (obrigatória)
+```
+
+Exemplo de `meta.json` (validado contra `ComponentMetaSchema` em
+`packages/registry/src/schema.ts`):
+
+```json
+{
+  "name": "button",
+  "category": "forms",
+  "status": "stable",
+  "source": "shadcn",
+  "description": "Displays a button, or a component that looks like one...",
+  "tags": ["form", "interactive", "react-aria"]
+}
+```
+
+Convenções:
+
+- **`description` é a única fonte da descrição.** O `registry.json` e a story
+  (`parameters.docs.description.component: meta.description`) leem dela; não duplique o texto.
+- **`cn`** vem do pacote npm [`cn`](https://github.com/shadcn-ui/cn)
+  (`import { cn } from "cn"`). `src/lib/utils.ts` é só um re-export, mantido por compatibilidade.
+- **Outros componentes do registro** são importados via `@/core/<outro>/<outro>`.
+- **Dependências são detectadas automaticamente** a partir dos imports
+  (`detectNpmDependencies` e `detectRegistryDependencies` em `gen-registry-json.ts`): qualquer
+  pacote novo entra sozinho em `dependencies` / `registryDependencies`. O pacote só precisa
+  estar em `packages/ui/package.json`.
+- **API react-aria:** `isDisabled` em vez de `disabled`, `onPress` em vez de `onClick`, sem
+  `asChild`.
+- **Variantes de estado** (`data-checked:`, `data-selected:`, `data-open:`...) dependem do CSS
+  de variantes customizadas de `shadcn/tailwind.css`; veja o comentário em
+  `packages/ui/src/styles.css`.
+
+## Storybook e testes
+
+```bash
+pnpm storybook                               # dev server, porta 6006
+pnpm --filter @fma-ui/ui build-storybook     # build estático
+```
+
+Os testes rodam no Vitest com dois projects (`packages/ui/vitest.config.ts`):
+
+- **`unit`** (`pnpm test`): ambiente Node, sem navegador. Cobre:
+  - funções puras dos scripts (`tests/gen-registry-json.test.ts`);
+  - **gate estrutural** (`tests/registry-consistency.test.ts`): todo componente em `src/core/`
+    precisa de `meta.json` válido e de um `<nome>.stories.tsx` ao lado;
+  - **gate de dependências** (`tests/registry-dependencies.test.ts`): as dependências declaradas
+    no `registry.json` precisam bater com os imports reais, e todo pacote importado precisa
+    estar instalado.
+- **`storybook`** (`pnpm --filter @fma-ui/ui test:storybook`): roda as stories como testes de
+  interação num Chromium headless via Playwright (`@storybook/addon-vitest`). A story **é** o
+  teste: use `play` functions com `storybook/test`, sem arquivo `.test.tsx` separado. Não roda
+  no CI de PR, para manter o job leve.
+
+## Gerando e publicando o registro
+
+```bash
+pnpm build
+# ou só o pacote ui:
+pnpm --filter @fma-ui/ui build
+```
+
+Isso roda, em sequência:
+
+1. `tsc --noEmit`: type-check.
+2. `generate:registry`: varre `src/core/**/meta.json` e escreve `packages/ui/registry.json`.
+3. `registry:build`: roda `shadcn build`, que compila o `registry.json` em
+   `apps/web/public/r/<nome>.json`, o formato consumido pelo CLI do shadcn.
+
+> **`registry.json` e `apps/web/public/r/` são gerados: não edite à mão.** Depois de mudar
+> qualquer componente, rode o build e **commite os arquivos gerados junto**.
+
+Para testar o consumo localmente:
+
+```bash
+pnpm dev   # apps/web na porta 3000
+npx shadcn add http://localhost:3000/r/button.json   # em outro projeto
+```
+
+## Git hooks e CI
+
+Hooks do [lefthook](https://lefthook.dev) (instalados automaticamente no `pnpm install`) espelham
+localmente o que o CI garante:
+
+- **pre-commit:** `lint` (Biome nos arquivos staged) → `type-check` → `registry-check` (quando
+  `packages/ui/src/core/**` muda: rebuilda e falha se o registro estiver fora de sincronia).
+- **pre-push:** `type-check` → `test` → `build` → `build-storybook`.
+
+O CI (`.github/workflows/registry-check.yml`) é o gate real:
+
+- **em PRs:** roda os testes unitários, rebuilda o registro e falha se `registry.json` ou
+  `apps/web/public/r/` estiverem desatualizados;
+- **em push no `main`:** roda o build completo.
+
+Não use `--no-verify`; corrija a causa.
+
+## Commits e pull requests
+
+- [Conventional Commits](https://www.conventionalcommits.org) em inglês, atômicos, com escopo
+  quando fizer sentido: `feat(ui): ...`, `fix(web): ...`, `chore(devcontainer): ...`,
+  `test(ui): ...`, `ci: ...`, `docs: ...`.
+- Estilo de código garantido pelo Biome: 2 espaços, aspas duplas, ponto e vírgula, trailing
+  commas, largura 100. Rode `pnpm exec biome check --write <arquivos>` para corrigir.
+- Antes de abrir um PR:
+
+  ```bash
+  pnpm lint && pnpm type-check && pnpm test && pnpm --filter @fma-ui/ui build
+  git status   # inclua registry.json / public/r se mudaram
+  ```
+
+## Notas de versão
+
+- **TypeScript 7** removeu `baseUrl` (use só `paths`, relativo ao tsconfig) e não faz mais
+  auto-discovery de `@types/node` em pacotes com `scripts/` fora de `src/`. Por isso
+  `packages/ui/tsconfig.json` declara `"types": ["node"]` explicitamente.
+- **nitro** está fixado em `3.0.260903-beta` (sem `^`) de propósito: a tag `latest` aponta para
+  essa beta e não existe stable mais nova que a `3.0.0`, antiga demais para o
+  `@tanstack/react-start` atual. Fixei na versão validada (`vite build` +
+  `node .output/server/index.mjs` respondendo `/` e `/r/button.json`) para não flutuar para uma
+  beta futura sem aviso.

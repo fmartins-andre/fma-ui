@@ -2,7 +2,7 @@
 
 Instruções para agentes de IA que trabalham neste repositório. Esta é a **fonte única**
 de verdade — `CLAUDE.md`, `GEMINI.md` e `.github/copilot-instructions.md` apenas apontam
-pra cá. Edite só este arquivo. Detalhes adicionais e motivações estão no `README.md`.
+pra cá. Edite só este arquivo. Detalhes adicionais e motivações estão no `CONTRIBUTING.md`.
 
 ## O que é
 
