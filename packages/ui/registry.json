@@ -344,7 +344,7 @@
       "name": "calendar",
       "type": "registry:ui",
       "title": "Calendar",
-      "description": "A date picker grid for selecting a single date or a range, with month/year dropdown navigation and support for showing multiple months at once.",
+      "description": "A date grid for selecting a single date, multiple dates or a range. The header opens month and year grids for fast navigation, and `granularity` switches the selection to whole months or years. `unavailableRanges` blocks booked spans, and an already-selected value that becomes blocked travels to the nearest available date.",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"
@@ -358,9 +358,13 @@
       ],
       "registryDependencies": [
         "button",
-        "select"
+        "select",
+        "use-available-date-correction",
+        "interval-helpers",
+        "types"
       ],
       "dependencies": [
+        "@internationalized/date",
         "class-variance-authority",
         "cn",
         "lucide-react",
@@ -368,7 +372,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "form",
           "date",
