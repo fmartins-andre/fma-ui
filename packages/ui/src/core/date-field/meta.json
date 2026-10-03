@@ -1,0 +1,8 @@
+{
+  "name": "date-field",
+  "category": "forms",
+  "status": "stable",
+  "source": "original",
+  "description": "A segmented, keyboard-editable date input. `granularity` also accepts \"month\" and \"year\" for month- or year-only fields. Values blocked by `minValue`/`maxValue` or `unavailableRanges` move to the nearest available date once the field loses focus, so typing is never interrupted. Exports `DateInput` for composing date pickers.",
+  "tags": ["form", "date", "react-aria"]
+}

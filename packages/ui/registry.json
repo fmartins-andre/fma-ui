@@ -360,6 +360,7 @@
         "button",
         "select",
         "use-available-date-correction",
+        "date-granularity",
         "interval-helpers",
         "types"
       ],
@@ -676,6 +677,43 @@
       }
     },
     {
+      "name": "date-field",
+      "type": "registry:ui",
+      "title": "Date Field",
+      "description": "A segmented, keyboard-editable date input. `granularity` also accepts \"month\" and \"year\" for month- or year-only fields. Values blocked by `minValue`/`maxValue` or `unavailableRanges` move to the nearest available date once the field loses focus, so typing is never interrupted. Exports `DateInput` for composing date pickers.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/date-field/date-field.tsx",
+          "target": "components/ui/date-field.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "use-available-date-correction",
+        "date-granularity",
+        "interval-helpers",
+        "types"
+      ],
+      "dependencies": [
+        "@internationalized/date",
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "form",
+          "date",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "date-fns-compat",
       "type": "registry:lib",
       "title": "Date Fns Compat",
@@ -746,6 +784,74 @@
           "date",
           "time-zone",
           "date-fns"
+        ]
+      }
+    },
+    {
+      "name": "date-granularity",
+      "type": "registry:lib",
+      "title": "Date Granularity",
+      "description": "Period helpers for month/year date selection: period start/end, same-period comparison, period-widened min/max bounds, and lifting a day-level isDateUnavailable predicate to whole months or years.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "date"
+      ],
+      "files": [
+        {
+          "path": "src/lib/date-granularity.ts",
+          "target": "lib/date-granularity.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [
+        "@internationalized/date"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "date",
+          "granularity"
+        ]
+      }
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "Date Picker",
+      "description": "A typed date input paired with a calendar popover over one value, for single dates (`DatePicker`) or ranges (`DateRangePicker`). Supports month- and year-only granularity, `unavailableRanges`, and a non-modal popover: the input stays editable while the calendar is open, and the calendar follows what is typed.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/date-picker/date-picker.tsx",
+          "target": "components/ui/date-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "calendar",
+        "date-field",
+        "input-group",
+        "popover",
+        "date-granularity",
+        "types"
+      ],
+      "dependencies": [
+        "@internationalized/date",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "form",
+          "date",
+          "react-aria"
         ]
       }
     },
