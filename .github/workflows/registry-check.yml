@@ -30,10 +30,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Unit tests (meta.json + story presence, pure-function tests)
-        run: pnpm --filter @fmartinsandre/ui test
+        run: pnpm --filter @fma-ui/ui test
 
       - name: Build ui package (regenerates registry.json + public/r)
-        run: pnpm --filter @fmartinsandre/ui build
+        run: pnpm --filter @fma-ui/ui build
 
       - name: Fail if generated output differs from what's committed
         run: |
@@ -41,7 +41,7 @@ jobs:
             echo "Registry is in sync."
           else
             echo "Registry out of sync with source. Run locally and commit:"
-            echo "  pnpm --filter @fmartinsandre/ui build"
+            echo "  pnpm --filter @fma-ui/ui build"
             git diff --name-only packages/ui/registry.json apps/web/public/r/
             git diff packages/ui/registry.json apps/web/public/r/
             exit 1

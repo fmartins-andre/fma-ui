@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "breadcrumb",
   "title": "Breadcrumb",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Shows the user's current location within a hierarchy, as a trail of links back to parent pages, with an ellipsis for collapsing long paths.",
   "dependencies": [
     "cn",

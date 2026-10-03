@@ -13,5 +13,5 @@ pnpm install --frozen-lockfile
 # Only the OS deps (apt-get) need root; sudo resets PATH (secure_path) and
 # can't see pnpm/node_modules binaries, so call playwright by absolute path
 # and forward PATH so the bin shim can find node.
-pnpm --filter @fmartinsandre/ui exec playwright install chromium
+pnpm --filter @fma-ui/ui exec playwright install chromium
 sudo env "PATH=$PATH" "$PWD/packages/ui/node_modules/.bin/playwright" install-deps chromium

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "pagination",
   "title": "Pagination",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Page-number navigation built from LinkButton — previous/next controls, numbered links, and an ellipsis for collapsed ranges.",
   "dependencies": [
     "cn",

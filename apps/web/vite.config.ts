@@ -17,7 +17,7 @@ export default defineConfig({
     nitro(),
     // react's vite plugin must come after start's vite plugin
     viteReact(),
-    // compiles @fmartinsandre/ui's styles.css (imported in src/routes/__root.tsx)
+    // compiles @fma-ui/ui's styles.css (imported in src/routes/__root.tsx)
     tailwindcss(),
   ],
 });

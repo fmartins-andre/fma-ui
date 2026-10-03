@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "button",
   "title": "Button",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Displays a button, or a component that looks like one, with a set of visual variants and sizes. Also exports LinkButton (react-aria-components' Link, same variants) for link-as-button use cases.",
   "dependencies": [
     "class-variance-authority",

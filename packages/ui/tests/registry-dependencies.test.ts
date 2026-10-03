@@ -4,7 +4,7 @@
 // catches a real npm dependency being used but never installed.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Registry } from "@fmartinsandre/registry";
+import type { Registry } from "@fma-ui/registry";
 import { describe, expect, it } from "vitest";
 import { detectNpmDependencies, detectRegistryDependencies } from "../scripts/gen-registry-json";
 

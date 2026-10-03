@@ -17,7 +17,7 @@ const config: StorybookConfig = {
     disableTelemetry: true,
   },
   // Nothing else in this repo has ever wired Tailwind v4 into a Vite build —
-  // "tailwindcss" is only a peerDependency of @fmartinsandre/ui (the consumer
+  // "tailwindcss" is only a peerDependency of @fma-ui/ui (the consumer
   // supplies it). Storybook needs its own copy to actually compile
   // src/styles.css's `@import "tailwindcss"` into real utility classes;
   // without this plugin only the plain CSS custom properties (:root vars)

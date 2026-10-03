@@ -1,5 +1,5 @@
 {
-  "name": "@fmartinsandre",
+  "name": "@fma-ui",
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "homepage": "https://ui.fmartinsandre.dev",
   "items": [
@@ -8,7 +8,7 @@
       "type": "registry:ui",
       "title": "Accordion",
       "description": "A vertically stacked set of headers that expand to reveal or hide associated content. Supports single or multiple items open at once.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "disclosure"
       ],
@@ -39,7 +39,7 @@
       "type": "registry:ui",
       "title": "Alert",
       "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with a destructive variant for errors/warnings.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "feedback"
       ],
@@ -68,7 +68,7 @@
       "type": "registry:ui",
       "title": "Alert Dialog",
       "description": "A modal dialog that interrupts the user with important content and expects an explicit response (e.g. confirming a destructive action) — unlike Dialog, it can't be dismissed by clicking outside or pressing Escape.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -102,7 +102,7 @@
       "type": "registry:ui",
       "title": "Aspect Ratio",
       "description": "Constrains content (typically an image or video) to a fixed width/height ratio, so it scales without distortion or layout shift.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "media"
       ],
@@ -130,7 +130,7 @@
       "type": "registry:ui",
       "title": "Attachment",
       "description": "A file/attachment chip for chat-style UIs — shows a name, optional upload progress or error state, and an independently clickable remove action.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "chat"
       ],
@@ -162,7 +162,7 @@
       "type": "registry:ui",
       "title": "Avatar",
       "description": "A user/entity image with a text or icon fallback for when the image fails to load. Composes into overlapping groups for showing multiple participants.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "data-display"
       ],
@@ -191,7 +191,7 @@
       "type": "registry:ui",
       "title": "Badge",
       "description": "A small label for status, count, or category — inline with text or attached to another element. Can also render as a link.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "data-display"
       ],
@@ -221,7 +221,7 @@
       "type": "registry:ui",
       "title": "Breadcrumb",
       "description": "Shows the user's current location within a hierarchy, as a trail of links back to parent pages, with an ellipsis for collapsing long paths.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "navigation"
       ],
@@ -251,7 +251,7 @@
       "type": "registry:ui",
       "title": "Bubble",
       "description": "A single chat message bubble — start/end alignment for sent vs. received, several color variants, and an optional reactions pill overlaid on a corner.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "chat"
       ],
@@ -280,7 +280,7 @@
       "type": "registry:ui",
       "title": "Button",
       "description": "Displays a button, or a component that looks like one, with a set of visual variants and sizes. Also exports LinkButton (react-aria-components' Link, same variants) for link-as-button use cases.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -313,7 +313,7 @@
       "type": "registry:ui",
       "title": "Button Group",
       "description": "Visually joins a row (or column) of buttons into one connected control, with shared borders and rounded end corners. Can include a separator or a plain text segment.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "buttons"
       ],
@@ -345,7 +345,7 @@
       "type": "registry:ui",
       "title": "Calendar",
       "description": "A date picker grid for selecting a single date or a range, with month/year dropdown navigation and support for showing multiple months at once.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -381,7 +381,7 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "A container for grouping related content, with header, title, description, action, content, and footer slots. Supports a compact size=\"sm\" variant.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "layout"
       ],
@@ -411,7 +411,7 @@
       "type": "registry:ui",
       "title": "Carousel",
       "description": "A carousel for cycling through slides (images, cards, or any content) with keyboard, swipe, and button navigation. Built on embla-carousel-react; CarouselPrevious/CarouselNext are Buttons wired to the carousel API.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "data-display"
       ],
@@ -446,7 +446,7 @@
       "type": "registry:ui",
       "title": "Chart",
       "description": "Composable chart primitives (ChartContainer, ChartTooltip, ChartLegend) wrapping Recharts, themed via CSS custom properties from a ChartConfig. Supports area, bar, line, and pie charts.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "data-display"
       ],
@@ -477,7 +477,7 @@
       "type": "registry:ui",
       "title": "Checkbox",
       "description": "A control for a single on/off/indeterminate value. Pair with an external Label (via id/htmlFor) laid out as a flex row rather than passing label text as children.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -510,7 +510,7 @@
       "type": "registry:ui",
       "title": "Collapsible",
       "description": "Shows or hides a single section of content behind a trigger. A thin wrapper around react-aria-components' Disclosure — for several mutually-exclusive sections, use Accordion instead.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "disclosure"
       ],
@@ -539,7 +539,7 @@
       "type": "registry:ui",
       "title": "Combobox",
       "description": "A searchable, filterable select combining a text input with a listbox popover. Supports single selection (ComboboxValue) or a multi-select tag/chip input (ComboboxChips + ComboboxChip).",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -575,7 +575,7 @@
       "type": "registry:ui",
       "title": "Command",
       "description": "A searchable list of commands or actions, filtered live as you type. Export CommandDialog wraps it in a Dialog for a full command-palette (⌘K) pattern.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -611,7 +611,7 @@
       "type": "registry:ui",
       "title": "Context Menu",
       "description": "A menu that opens on right-click (or long-press on touch) instead of a regular trigger click. Supports nested submenus, separators, and keyboard shortcut display.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -645,7 +645,7 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "A modal window layered over the page, requiring explicit action (or Escape) to dismiss. Pair with react-aria-components' DialogTrigger to wire up the trigger and open state.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -679,7 +679,7 @@
       "type": "registry:ui",
       "title": "Direction",
       "description": "Sets LTR/RTL text-direction context for descendant react-aria-components — a compatibility shim so a Radix/Base UI-style `direction` prop keeps working via react-aria's locale system.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "layout"
       ],
@@ -708,7 +708,7 @@
       "type": "registry:ui",
       "title": "Drawer",
       "description": "A panel that slides in from an edge of the screen, with swipe-to-dismiss and snap-point support. Uses @base-ui/react (not react-aria-components), so its API and data attributes differ from this repo's other overlays.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -739,7 +739,7 @@
       "type": "registry:ui",
       "title": "Dropdown Menu",
       "description": "A menu of actions or options triggered by clicking a button. Supports nested submenus, separators, labels, and a shortcut-display slot for each item.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -771,7 +771,7 @@
       "type": "registry:ui",
       "title": "Empty",
       "description": "A placeholder for empty states — no data, no search results, nothing configured yet. Composes an icon/media, title, description, and optional call-to-action content.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "feedback"
       ],
@@ -801,7 +801,7 @@
       "type": "registry:ui",
       "title": "Field",
       "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -836,7 +836,7 @@
       "type": "registry:ui",
       "title": "Hover Card",
       "description": "A popover that shows on hover or focus instead of click, for previewing content (a profile card, a link preview) without navigating away. Unlike a tooltip, it can contain interactive content.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -867,7 +867,7 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "A single-line text input, styled to match the rest of the registry. Plain native attributes (disabled, not isDisabled) since it wraps react-aria-components' bare Input rather than a higher-level field primitive.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -898,7 +898,7 @@
       "type": "registry:ui",
       "title": "Input Group",
       "description": "Wraps an Input or Textarea with leading/trailing addons (icons, text, or buttons) inside one bordered container, so the whole group shares a single focus ring and border.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -935,7 +935,7 @@
       "type": "registry:ui",
       "title": "Input Otp",
       "description": "A one-time-password / verification-code input rendered as individual boxed slots, backed by a single hidden text input for real typing, paste, and autofill behavior.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -967,7 +967,7 @@
       "type": "registry:ui",
       "title": "Item",
       "description": "A generic row layout for lists of things — media/icon, title, description, and trailing actions — that renders as a <div> or, when given an href, a real link. Use ItemGroup to stack several with consistent spacing.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "layout"
       ],
@@ -1002,7 +1002,7 @@
       "type": "registry:ui",
       "title": "Kbd",
       "description": "Displays a keyboard key or shortcut (e.g. ⌘K) inline, styled as a small pill. KbdGroup lays out several keys side by side for combos like ⌘+Shift+P.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "data-display"
       ],
@@ -1033,7 +1033,7 @@
       "type": "registry:ui",
       "title": "Label",
       "description": "A form field label. Pair it with a control via id/htmlFor rather than passing label text as the control's own children — several toggle-style primitives (Checkbox, Switch, RadioGroupItem) render their children inside a small fixed-size box meant for a custom indicator, not prose.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -1064,7 +1064,7 @@
       "type": "registry:ui",
       "title": "Marker",
       "description": "A small inline label used in chat/message timelines — a date separator, a status note, or similar metadata — rendered in muted text with an optional icon.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "chat"
       ],
@@ -1094,7 +1094,7 @@
       "type": "registry:ui",
       "title": "Message",
       "description": "Layout for one message row in a chat UI — avatar, header, footer, and a content column that aligns to the start or end depending on who sent it. Pairs with Bubble for the actual message content.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "chat"
       ],
@@ -1123,7 +1123,7 @@
       "type": "registry:ui",
       "title": "Message Scroller",
       "description": "An auto-scrolling viewport for chat message lists: sticks to the latest message as new ones arrive, and shows a jump-to-end/start button once the user scrolls away. Marked experimental here because it doesn't sit on react-aria-components like the rest of this registry.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "chat"
       ],
@@ -1158,7 +1158,7 @@
       "type": "registry:ui",
       "title": "Native Select",
       "description": "A styled wrapper around the real, native <select> — use it when you need actual native select behavior (mobile OS pickers, form autofill, no JS dependency) instead of react-aria-components' custom Select.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -1188,7 +1188,7 @@
       "type": "registry:ui",
       "title": "Pagination",
       "description": "Page-number navigation built from LinkButton — previous/next controls, numbered links, and an ellipsis for collapsed ranges.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "navigation"
       ],
@@ -1221,7 +1221,7 @@
       "type": "registry:ui",
       "title": "Popover",
       "description": "A non-modal floating panel anchored to a trigger — for supplementary controls or content (e.g. a settings form) that shouldn't block the rest of the page.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -1251,7 +1251,7 @@
       "type": "registry:ui",
       "title": "Progress",
       "description": "A horizontal progress bar communicating the completion of a task, determinate or indeterminate, with optional label/value slots.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "feedback"
       ],
@@ -1281,7 +1281,7 @@
       "type": "registry:ui",
       "title": "Questionnaire",
       "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "chat"
       ],
@@ -1315,7 +1315,7 @@
       "type": "registry:ui",
       "title": "Radio Group",
       "description": "A set of mutually-exclusive radio options. Pair each RadioGroupItem with an external Label via id/htmlFor — its own children slot is for a custom indicator, not label text.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -1345,7 +1345,7 @@
       "type": "registry:ui",
       "title": "Resizable",
       "description": "Resizable split panes (panel group, panel, drag handle) built on react-resizable-panels — for layouts like a sidebar/editor split the user can drag to resize.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "layout"
       ],
@@ -1375,7 +1375,7 @@
       "type": "registry:ui",
       "title": "Scroll Area",
       "description": "A scrollable container with a themeable, always-consistent-looking scrollbar via native scrollbar-width/scrollbar-color — no JS scrollbar emulation.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "layout"
       ],
@@ -1403,7 +1403,7 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "A listbox-style picker (react-aria-components' Select) with a trigger, popover, groups, and an optional search input — richer than the native <select> (see native-select for that).",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -1437,7 +1437,7 @@
       "type": "registry:ui",
       "title": "Separator",
       "description": "A thin visual divider between content, horizontal or vertical.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "layout"
       ],
@@ -1467,7 +1467,7 @@
       "type": "registry:ui",
       "title": "Sheet",
       "description": "A modal panel that slides in from an edge of the screen (top/right/bottom/left) — for navigation drawers, filters, or forms that need more room than a popover.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],
@@ -1502,7 +1502,7 @@
       "type": "registry:ui",
       "title": "Sidebar",
       "description": "A collapsible application sidebar with a mobile drawer fallback, a Cmd/Ctrl+B keyboard shortcut, and composable header/content/footer/menu slots.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "navigation"
       ],
@@ -1542,7 +1542,7 @@
       "type": "registry:ui",
       "title": "Skeleton",
       "description": "A pulsing placeholder block for content that's still loading — size and shape it with className to match whatever it stands in for.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "feedback"
       ],
@@ -1570,7 +1570,7 @@
       "type": "registry:ui",
       "title": "Slider",
       "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -1600,7 +1600,7 @@
       "type": "registry:ui",
       "title": "Sonner",
       "description": "A themed wrapper around the sonner toast library. Renders the toast viewport (Toaster); call toast() from \"sonner\" anywhere to actually show one.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "feedback"
       ],
@@ -1630,7 +1630,7 @@
       "type": "registry:ui",
       "title": "Spinner",
       "description": "A spinning loading indicator icon (role=\"status\"), sized via className — drop it inside a disabled button or empty state while something loads.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "feedback"
       ],
@@ -1659,7 +1659,7 @@
       "type": "registry:ui",
       "title": "Switch",
       "description": "A two-state on/off toggle switch, in default and compact sizes.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -1690,7 +1690,7 @@
       "type": "registry:ui",
       "title": "Table",
       "description": "Semantic table primitives (header, body, rows, cells, footer, caption) built on react-aria-components' Table for accessible, sorting/selection-ready markup.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "data-display"
       ],
@@ -1720,7 +1720,7 @@
       "type": "registry:ui",
       "title": "Tabs",
       "description": "A tab list and its panels for switching between related views, with default and line visual variants, horizontal or vertical orientation.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "navigation"
       ],
@@ -1751,7 +1751,7 @@
       "type": "registry:ui",
       "title": "Textarea",
       "description": "A multi-line text input that auto-sizes to its content by default (field-sizing-content), rather than staying a fixed number of rows.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "forms"
       ],
@@ -1781,7 +1781,7 @@
       "type": "registry:ui",
       "title": "Toggle",
       "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "buttons"
       ],
@@ -1812,7 +1812,7 @@
       "type": "registry:ui",
       "title": "Toggle Group",
       "description": "A connected row (or column) of Toggle buttons sharing one visual variant/size/spacing, for grouped single- or multi-select controls (e.g. text formatting).",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "buttons"
       ],
@@ -1846,7 +1846,7 @@
       "type": "registry:ui",
       "title": "Tooltip",
       "description": "A short, non-interactive hint that appears on hover or keyboard focus of its trigger.",
-      "author": "@fmartinsandre/ui",
+      "author": "@fma-ui/ui",
       "categories": [
         "overlay"
       ],

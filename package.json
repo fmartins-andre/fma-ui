@@ -1,5 +1,5 @@
 {
-  "name": "design-system",
+  "name": "fma-ui",
   "private": true,
   "version": "0.1.0",
   "description": "Personal shadcn-compatible component registry: official shadcn/ui components, customized variants, and original components — all redistributable through your own registry.",
@@ -12,10 +12,10 @@
     "clean": "turbo clean",
     "type-check": "turbo type-check",
     "test": "turbo test",
-    "storybook": "pnpm --filter @fmartinsandre/ui storybook",
-    "build-storybook": "pnpm --filter @fmartinsandre/ui build-storybook",
-    "add:shadcn": "pnpm --filter @fmartinsandre/ui add:shadcn",
-    "add:registry": "pnpm --filter @fmartinsandre/ui add:registry"
+    "storybook": "pnpm --filter @fma-ui/ui storybook",
+    "build-storybook": "pnpm --filter @fma-ui/ui build-storybook",
+    "add:shadcn": "pnpm --filter @fma-ui/ui add:shadcn",
+    "add:registry": "pnpm --filter @fma-ui/ui add:registry"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",

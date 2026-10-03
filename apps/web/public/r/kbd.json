@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "kbd",
   "title": "Kbd",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Displays a keyboard key or shortcut (e.g. ⌘K) inline, styled as a small pill. KbdGroup lays out several keys side by side for combos like ⌘+Shift+P.",
   "dependencies": [
     "cn",

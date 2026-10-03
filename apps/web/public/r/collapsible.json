@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "collapsible",
   "title": "Collapsible",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Shows or hides a single section of content behind a trigger. A thin wrapper around react-aria-components' Disclosure — for several mutually-exclusive sections, use Accordion instead.",
   "dependencies": [
     "react-aria-components"

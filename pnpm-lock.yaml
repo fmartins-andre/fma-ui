@@ -242,7 +242,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@fmartinsandre/ui':
+      '@fma-ui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-router':
@@ -304,7 +304,7 @@ importers:
       '@base-ui/react':
         specifier: ^1.8.0
         version: 1.8.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@fmartinsandre/registry':
+      '@fma-ui/registry':
         specifier: workspace:*
         version: link:../registry
       '@fontsource-variable/geist':

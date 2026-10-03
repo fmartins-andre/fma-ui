@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "chart",
   "title": "Chart",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Composable chart primitives (ChartContainer, ChartTooltip, ChartLegend) wrapping Recharts, themed via CSS custom properties from a ChartConfig. Supports area, bar, line, and pie charts.",
   "dependencies": [
     "cn",

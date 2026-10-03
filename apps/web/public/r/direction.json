@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "direction",
   "title": "Direction",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Sets LTR/RTL text-direction context for descendant react-aria-components — a compatibility shim so a Radix/Base UI-style `direction` prop keeps working via react-aria's locale system.",
   "dependencies": [
     "react-aria-components"

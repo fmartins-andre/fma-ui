@@ -19,9 +19,9 @@ pre-commit:
       priority: 3
       glob: "packages/ui/src/core/**/*"
       run: >-
-        pnpm --filter @fmartinsandre/ui build &&
+        pnpm --filter @fma-ui/ui build &&
         git diff --quiet packages/ui/registry.json apps/web/public/r/ ||
-        (echo 'Registry out of sync — run: pnpm --filter @fmartinsandre/ui build, then git add' && exit 1)
+        (echo 'Registry out of sync — run: pnpm --filter @fma-ui/ui build, then git add' && exit 1)
 
 pre-push:
   commands:
@@ -36,4 +36,4 @@ pre-push:
       run: pnpm build
     build-storybook:
       priority: 4
-      run: pnpm --filter @fmartinsandre/ui build-storybook
+      run: pnpm --filter @fma-ui/ui build-storybook

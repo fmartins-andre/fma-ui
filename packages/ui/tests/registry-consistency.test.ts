@@ -4,7 +4,7 @@
 // which relies on developer discipline instead of a hook/CI gate for this).
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { ComponentMetaSchema } from "@fmartinsandre/registry";
+import { ComponentMetaSchema } from "@fma-ui/registry";
 import { describe, expect, it } from "vitest";
 
 const CORE_DIR = join(__dirname, "..", "src", "core");

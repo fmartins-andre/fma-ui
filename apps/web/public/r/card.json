@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "card",
   "title": "Card",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "A container for grouping related content, with header, title, description, action, content, and footer slots. Supports a compact size=\"sm\" variant.",
   "dependencies": [
     "cn"

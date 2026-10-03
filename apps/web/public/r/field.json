@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "field",
   "title": "Field",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends.",
   "dependencies": [
     "class-variance-authority",

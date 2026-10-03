@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "empty",
   "title": "Empty",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "A placeholder for empty states — no data, no search results, nothing configured yet. Composes an icon/media, title, description, and optional call-to-action content.",
   "dependencies": [
     "class-variance-authority",

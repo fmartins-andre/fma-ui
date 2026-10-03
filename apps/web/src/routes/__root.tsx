@@ -1,13 +1,13 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import "@fmartinsandre/ui/styles.css";
+import "@fma-ui/ui/styles.css";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "@fmartinsandre/ui registry" },
+      { title: "fma-ui registry" },
     ],
   }),
   component: RootComponent,

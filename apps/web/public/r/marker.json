@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "marker",
   "title": "Marker",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "A small inline label used in chat/message timelines — a date separator, a status note, or similar metadata — rendered in muted text with an optional icon.",
   "dependencies": [
     "class-variance-authority",

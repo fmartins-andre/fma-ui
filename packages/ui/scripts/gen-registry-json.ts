@@ -5,8 +5,8 @@
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Registry, RegistryItem } from "@fmartinsandre/registry";
-import { ComponentMetaSchema } from "@fmartinsandre/registry";
+import type { Registry, RegistryItem } from "@fma-ui/registry";
+import { ComponentMetaSchema } from "@fma-ui/registry";
 
 const CORE_DIR = "src/core";
 const OUTPUT_FILE = "registry.json";
@@ -88,7 +88,7 @@ function processComponent(componentId: string): RegistryItem | null {
     type: "registry:ui",
     title: toTitle(componentId),
     description: meta.description,
-    author: "@fmartinsandre/ui",
+    author: "@fma-ui/ui",
     categories: [meta.category],
     files: [
       {
@@ -129,7 +129,7 @@ export function main() {
   items.sort((a, b) => a.name.localeCompare(b.name));
 
   const registry: Registry = {
-    name: "@fmartinsandre",
+    name: "@fma-ui",
     $schema: "https://ui.shadcn.com/schema/registry.json",
     // shadcn's `build` command requires this to be a valid URL, even locally.
     // Update once the registry has a real domain (see apps/web).

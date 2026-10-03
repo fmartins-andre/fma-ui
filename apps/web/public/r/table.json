@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "table",
   "title": "Table",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "Semantic table primitives (header, body, rows, cells, footer, caption) built on react-aria-components' Table for accessible, sorting/selection-ready markup.",
   "dependencies": [
     "cn",

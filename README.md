@@ -1,4 +1,4 @@
-# @fmartinsandre/ui
+# fma-ui
 
 Biblioteca de componentes pessoal, 100% compatível com o formato de registro do
 [shadcn/ui](https://ui.shadcn.com). Três tipos de componente convivem aqui:
@@ -35,8 +35,8 @@ a versão react-aria-components direto, porque nosso `components.json` está com
 
 ```
 packages/
-  registry/   → schemas zod do formato shadcn registry.json (@fmartinsandre/registry)
-  ui/         → os componentes em si (@fmartinsandre/ui)
+  registry/   → schemas zod do formato shadcn registry.json (@fma-ui/registry)
+  ui/         → os componentes em si (@fma-ui/ui)
     src/core/<nome>/<nome>.tsx   → código do componente
     src/core/<nome>/meta.json    → metadata (categoria, status, source, tags, descrição)
     scripts/gen-registry-json.ts → gera registry.json a partir de src/core/**/meta.json
@@ -124,20 +124,20 @@ o EMITTE faz, com JSDoc em inglês + `docs.description` em português repetindo 
 mesmo conteúdo).
 
 ```bash
-pnpm --filter @fmartinsandre/ui storybook        # dev server, porta 6006
-pnpm --filter @fmartinsandre/ui build-storybook  # build estático em storybook-static/
+pnpm --filter @fma-ui/ui storybook        # dev server, porta 6006
+pnpm --filter @fma-ui/ui build-storybook  # build estático em storybook-static/
 ```
 
 Testes rodam via Vitest com dois "projects" (`packages/ui/vitest.config.ts`):
 
-- **`unit`** (`pnpm --filter @fmartinsandre/ui test`) — ambiente Node, sem browser.
+- **`unit`** (`pnpm --filter @fma-ui/ui test`) — ambiente Node, sem browser.
   Cobre funções puras dos scripts (`tests/gen-registry-json.test.ts`) e um gate
   estrutural (`tests/registry-consistency.test.ts`): **todo componente em
   `src/core/` precisa ter `meta.json` válido contra `ComponentMetaSchema` e um
   `<nome>.stories.tsx` colocado ao lado** — falha o teste (e o CI) se faltar. É
   o gate que o registro do EMITTE não tem (lá, cobrir uma story é convenção, não
   verificado automaticamente).
-- **`storybook`** (`pnpm --filter @fmartinsandre/ui test:storybook`) — roda as
+- **`storybook`** (`pnpm --filter @fma-ui/ui test:storybook`) — roda as
   próprias stories como testes de interação num Chromium headless via Playwright
   (`@storybook/addon-vitest`), usando `play` functions dentro da story
   (padrão emprestado do EMITTE: a story É o teste de interação, sem arquivo
@@ -164,7 +164,7 @@ build-e-diff direto inline em vez de um script separado.
 ```bash
 pnpm build
 # equivalente, rodando só no pacote ui:
-pnpm --filter @fmartinsandre/ui build
+pnpm --filter @fma-ui/ui build
 ```
 
 Isso roda, em sequência:

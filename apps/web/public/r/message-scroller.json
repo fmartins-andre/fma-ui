@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "message-scroller",
   "title": "Message Scroller",
-  "author": "@fmartinsandre/ui",
+  "author": "@fma-ui/ui",
   "description": "An auto-scrolling viewport for chat message lists: sticks to the latest message as new ones arrive, and shows a jump-to-end/start button once the user scrolls away. Marked experimental here because it doesn't sit on react-aria-components like the rest of this registry.",
   "dependencies": [
     "@shadcn/react",

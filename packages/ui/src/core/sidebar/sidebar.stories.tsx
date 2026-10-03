@@ -44,7 +44,7 @@ export const Default: Story = {
   render: () => (
     <SidebarProvider className="h-96">
       <Sidebar>
-        <SidebarHeader>@fmartinsandre/ui</SidebarHeader>
+        <SidebarHeader>fma-ui</SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
