@@ -1,14 +1,26 @@
-// Scans src/core/*/meta.json + the matching <name>.tsx, and produces registry.json
-// (the shadcn-schema file that `shadcn build` then compiles into apps/web/public/r/*.json).
+// Scans src/core/*/meta.json + the matching <name>.tsx (registry:ui), plus the
+// libs in src/lib and hooks in src/hooks that have metadata (registry:lib /
+// registry:hook), and produces registry.json (the shadcn-schema file that
+// `shadcn build` then compiles into apps/web/public/r/*.json).
 //
 // Run via `pnpm generate:registry` (packages/ui) or `pnpm build` at the repo root.
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Registry, RegistryItem } from "@fma-ui/registry";
+import type { ComponentMeta, Registry, RegistryItem } from "@fma-ui/registry";
 import { ComponentMetaSchema } from "@fma-ui/registry";
 
 const CORE_DIR = "src/core";
+
+// Non-component modules published as their own registry items. Two shapes:
+//   <dir>/<name>/meta.json       → every .ts/.tsx file in that folder (e.g. lib/input-masks/)
+//   <dir>/<name>.meta.json       → the single <dir>/<name>.ts(x) next to it (e.g. lib/types.ts)
+// Files keep their path under lib/ or hooks/ on install, so "@/lib/<name>"
+// imports resolve the same in the consumer as they do here.
+const MODULE_DIRS = [
+  { dir: "src/lib", target: "lib", type: "registry:lib" },
+  { dir: "src/hooks", target: "hooks", type: "registry:hook" },
+] as const;
 const OUTPUT_FILE = "registry.json";
 
 function toTitle(id: string): string {
@@ -65,14 +77,21 @@ export function detectNpmDependencies(source: string): string[] {
 export function detectRegistryDependencies(source: string, componentId: string): string[] {
   const code = stripComments(source);
   const deps = new Set<string>();
-  // src/core/<id>/<id>.tsx importing another core component via the "@/core/x/x" alias
-  const aliasImportRegex = /from\s+["']@\/core\/([^/"']+)\/\1["']/g;
-  let match: RegExpExecArray | null;
-  // biome-ignore lint/suspicious/noAssignInExpressions: loop over all matches
-  while ((match = aliasImportRegex.exec(code)) !== null) {
-    // biome-ignore lint/style/noNonNullAssertion: capture group 1 always matches when the regex matches
-    const depId = match[1]!;
-    if (depId !== componentId) deps.add(depId);
+  // Another core component via the "@/core/x/x" alias, or a published lib/hook
+  // via "@/lib/x", "@/lib/x/sub" or "@/hooks/x". "@/lib/utils" is skipped: it's
+  // the standard shadcn alias every consumer already has, not a registry item.
+  const aliasImportRegexes = [
+    /from\s+["']@\/core\/([^/"']+)\/\1["']/g,
+    /from\s+["']@\/(?:lib|hooks)\/([^/"']+)(?:\/[^"']*)?["']/g,
+  ];
+  for (const regex of aliasImportRegexes) {
+    let match: RegExpExecArray | null;
+    // biome-ignore lint/suspicious/noAssignInExpressions: loop over all matches
+    while ((match = regex.exec(code)) !== null) {
+      // biome-ignore lint/style/noNonNullAssertion: capture group 1 always matches when the regex matches
+      const depId = match[1]!;
+      if (depId !== componentId && depId !== "utils") deps.add(depId);
+    }
   }
   return [...deps];
 }
@@ -108,12 +127,72 @@ function processComponent(componentId: string): RegistryItem | null {
     ],
     ...(registryDependencies.length > 0 && { registryDependencies }),
     dependencies: detectNpmDependencies(source),
-    meta: {
-      status: meta.status,
-      source: meta.source,
-      ...(meta.origin && { origin: meta.origin }),
-      tags: meta.tags,
-    },
+    meta: toItemMeta(meta),
+  };
+}
+
+function toItemMeta(meta: ComponentMeta): RegistryItem["meta"] {
+  return {
+    status: meta.status,
+    source: meta.source,
+    ...(meta.origin && { origin: meta.origin }),
+    tags: meta.tags,
+  };
+}
+
+const isSourceFile = (file: string) => /\.tsx?$/.test(file) && !file.endsWith(".stories.tsx");
+
+// Finds every lib/hook with metadata, in either shape described at MODULE_DIRS.
+// Returned paths are relative to `root` (the packages/ui directory).
+export function discoverModules(root = "."): { id: string; metaPath: string; files: string[] }[] {
+  const modules: { id: string; metaPath: string; files: string[] }[] = [];
+  for (const { dir } of MODULE_DIRS) {
+    if (!existsSync(join(root, dir))) continue;
+    for (const entry of readdirSync(join(root, dir), { withFileTypes: true })) {
+      if (entry.isDirectory() && existsSync(join(root, dir, entry.name, "meta.json"))) {
+        const files = readdirSync(join(root, dir, entry.name))
+          .filter(isSourceFile)
+          .sort()
+          .map((file) => join(dir, entry.name, file));
+        modules.push({ id: entry.name, metaPath: join(dir, entry.name, "meta.json"), files });
+      } else if (entry.isFile() && entry.name.endsWith(".meta.json")) {
+        const id = entry.name.slice(0, -".meta.json".length);
+        const files = [`${id}.ts`, `${id}.tsx`]
+          .map((file) => join(dir, file))
+          .filter((file) => existsSync(join(root, file)));
+        modules.push({ id, metaPath: join(dir, entry.name), files });
+      }
+    }
+  }
+  return modules;
+}
+
+function processModule(module: { id: string; metaPath: string; files: string[] }): RegistryItem {
+  // biome-ignore lint/style/noNonNullAssertion: discoverModules only returns paths under a MODULE_DIRS entry
+  const base = MODULE_DIRS.find(({ dir }) => module.metaPath.startsWith(`${dir}/`))!;
+  if (module.files.length === 0) {
+    throw new Error(`${module.metaPath} has no source file next to it`);
+  }
+
+  const meta = ComponentMetaSchema.parse(JSON.parse(readFileSync(module.metaPath, "utf8")));
+  const source = module.files.map((file) => readFileSync(file, "utf8")).join("\n");
+  const registryDependencies = detectRegistryDependencies(source, module.id);
+
+  return {
+    name: module.id,
+    type: base.type,
+    title: toTitle(module.id),
+    description: meta.description,
+    author: "@fma-ui/ui",
+    categories: [meta.category],
+    files: module.files.map((file) => ({
+      path: file,
+      target: `${base.target}/${file.slice(base.dir.length + 1)}`,
+      type: base.type,
+    })),
+    ...(registryDependencies.length > 0 && { registryDependencies }),
+    dependencies: detectNpmDependencies(source),
+    meta: toItemMeta(meta),
   };
 }
 
@@ -133,6 +212,14 @@ export function main() {
       items.push(item);
       console.log(`Processed ${item.name}`);
     }
+  }
+
+  const modules = discoverModules();
+  console.log(`Found ${modules.length} libs/hooks`);
+  for (const module of modules) {
+    const item = processModule(module);
+    items.push(item);
+    console.log(`Processed ${item.name} (${item.type})`);
   }
 
   items.sort((a, b) => a.name.localeCompare(b.name));

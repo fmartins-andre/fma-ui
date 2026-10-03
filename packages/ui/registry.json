@@ -1519,7 +1519,8 @@
         "separator",
         "sheet",
         "skeleton",
-        "tooltip"
+        "tooltip",
+        "use-mobile"
       ],
       "dependencies": [
         "class-variance-authority",
@@ -1868,6 +1869,32 @@
         "tags": [
           "overlay",
           "react-aria"
+        ]
+      }
+    },
+    {
+      "name": "use-mobile",
+      "type": "registry:hook",
+      "title": "Use Mobile",
+      "description": "useIsMobile: reports whether the viewport is below the 768px mobile breakpoint, updating on resize. Used by sidebar.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/hooks/use-mobile.ts",
+          "target": "hooks/use-mobile.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "dependencies": [],
+      "meta": {
+        "status": "stable",
+        "source": "shadcn",
+        "tags": [
+          "hook",
+          "responsive"
         ]
       }
     }

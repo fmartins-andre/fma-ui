@@ -1,0 +1,8 @@
+{
+  "name": "use-mobile",
+  "category": "utils",
+  "status": "stable",
+  "source": "shadcn",
+  "description": "useIsMobile: reports whether the viewport is below the 768px mobile breakpoint, updating on resize. Used by sidebar.",
+  "tags": ["hook", "responsive"]
+}

@@ -22,9 +22,9 @@ const registryItemNames = new Set(registry.items.map((item) => item.name));
 describe.each(registry.items.map((item) => [item.name, item] as const))(
   "registry item: %s",
   (name, item) => {
-    const file = item.files[0];
-    if (!file) throw new Error(`${name} declares no files`);
-    const source = readFileSync(join(ROOT, file.path), "utf8");
+    if (item.files.length === 0) throw new Error(`${name} declares no files`);
+    // Multi-file libs (e.g. input-masks) declare the union of all their files' imports.
+    const source = item.files.map((file) => readFileSync(join(ROOT, file.path), "utf8")).join("\n");
 
     it("declares exactly the npm dependencies its source actually imports", () => {
       expect(new Set(item.dependencies ?? [])).toEqual(new Set(detectNpmDependencies(source)));
@@ -45,7 +45,7 @@ describe.each(registry.items.map((item) => [item.name, item] as const))(
       }
     });
 
-    it("every declared registryDependency points at a real component in this registry", () => {
+    it("every declared registryDependency points at a real item in this registry", () => {
       for (const dep of item.registryDependencies ?? []) {
         expect(
           registryItemNames.has(dep),

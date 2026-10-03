@@ -7,6 +7,9 @@ import { defineConfig } from "vitest/config";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  // Resolve the "@/*" alias from tsconfig.json — src/lib and src/hooks import
+  // each other through it (e.g. "@/lib/types"), same as Storybook's viteFinal.
+  resolve: { tsconfigPaths: true },
   test: {
     projects: [
       {
@@ -27,6 +30,9 @@ export default defineConfig({
         test: {
           name: "unit",
           environment: "node",
+          // Date libs (input-masks, date-fns-compat) have tests that assume a
+          // fixed zone; pin it so results don't depend on the machine's TZ.
+          env: { TZ: "UTC" },
           include: ["tests/**/*.test.ts"],
         },
       },
