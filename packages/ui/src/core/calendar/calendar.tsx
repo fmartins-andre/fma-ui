@@ -3,11 +3,8 @@
 import {
   type CalendarDate,
   DateFormatter,
-  endOfMonth,
   endOfYear,
   isSameMonth,
-  isSameYear,
-  startOfMonth,
   startOfYear,
   toCalendar,
   toCalendarDate,
@@ -48,6 +45,14 @@ import {
   SelectValue,
 } from "@/core/select/select";
 import { useAvailableDateCorrection } from "@/hooks/use-available-date-correction";
+import {
+  type DateGranularity,
+  isFullyUnavailable,
+  isSamePeriod,
+  type PeriodGranularity,
+  periodBounds,
+  periodEnd,
+} from "@/lib/date-granularity";
 import { createIsWithinAnyInterval } from "@/lib/interval-helpers";
 import type { Interval } from "@/lib/types";
 
@@ -58,13 +63,14 @@ import type { Interval } from "@/lib/types";
  * In a `RangeCalendar` the committed `end` is the period's *last* day, so the
  * range stays inclusive (e.g. Mar–May → 03-01 … 05-31).
  */
-type CalendarGranularity = "day" | "month" | "year";
-type PeriodView = Exclude<CalendarGranularity, "day">;
+type CalendarGranularity = DateGranularity;
+type PeriodView = PeriodGranularity;
 
 // Views from the most detailed to the least. A calendar only offers the views
 // at or above its granularity: day → [day, month, year], month → [month, year].
 const VIEW_ORDER: readonly CalendarGranularity[] = ["day", "month", "year"];
 const PERIOD_COLUMNS = 3;
+const NEVER_UNAVAILABLE = () => false;
 const CELL_FOCUS_TARGET = '[role="gridcell"] [tabindex="0"]';
 
 type AnyCalendarState = CalendarState<"single" | "multiple"> | RangeCalendarState;
@@ -95,6 +101,12 @@ interface CalendarExtraProps {
   unavailableRanges?: Interval<DateValue>[];
   /** Always render 6 week rows, so the height doesn't change between months. */
   fixedWeeks?: boolean;
+  /**
+   * Travel/clear a selected value that becomes blocked (default `true`). Turn
+   * off when another component owns that correction — e.g. `DatePicker`,
+   * which defers it until its field loses focus so typing isn't interrupted.
+   */
+  correctBlockedValue?: boolean;
 }
 
 const ROOT_CLASSES =
@@ -159,18 +171,6 @@ function captionButtonClasses(variant: ButtonVariant) {
   return cn(buttonVariants({ variant, size: "sm" }), "h-(--cell-size) px-1.5 font-medium");
 }
 
-function periodStart<D extends DateValue>(date: D, period: PeriodView): D {
-  return (period === "month" ? startOfMonth(date) : startOfYear(date)) as D;
-}
-
-function periodEnd<D extends DateValue>(date: D, period: PeriodView): D {
-  return (period === "month" ? endOfMonth(date) : endOfYear(date)) as D;
-}
-
-function isSamePeriod(a: DateValue, b: DateValue, period: PeriodView): boolean {
-  return period === "month" ? isSameMonth(a, b) : isSameYear(a, b);
-}
-
 // Month/year granularity compares whole periods: `minValue` 2026-03-15 must
 // still allow picking March, whose committed value is 2026-03-01.
 function useGranularityBounds(
@@ -178,13 +178,10 @@ function useGranularityBounds(
   minValue: DateValue | null | undefined,
   maxValue: DateValue | null | undefined,
 ) {
-  return React.useMemo(() => {
-    if (granularity === "day") return { minValue, maxValue };
-    return {
-      minValue: minValue && periodStart(minValue, granularity),
-      maxValue: maxValue && periodEnd(maxValue, granularity),
-    };
-  }, [granularity, minValue, maxValue]);
+  return React.useMemo(
+    () => periodBounds(granularity, minValue, maxValue),
+    [granularity, minValue, maxValue],
+  );
 }
 
 // `isDateUnavailable` OR "inside one of `unavailableRanges`". Stays
@@ -211,6 +208,7 @@ function Calendar<T extends DateValue, M extends "single" | "multiple" = "single
   granularity = "day",
   unavailableRanges,
   fixedWeeks = true,
+  correctBlockedValue = true,
   minValue,
   maxValue,
   isDateUnavailable,
@@ -226,10 +224,11 @@ function Calendar<T extends DateValue, M extends "single" | "multiple" = "single
       data-slot="calendar"
       minValue={bounds.minValue}
       maxValue={bounds.maxValue}
-      // Month/year cells evaluate unavailability per period (see PeriodView);
+      // Month/year cells evaluate unavailability per period (see PeriodGrid);
       // handing the day predicate to react-aria there would make it reject
-      // the period's first day instead.
-      isDateUnavailable={granularity === "day" ? isUnavailable : undefined}
+      // the period's first day instead. An explicit "never" (not `undefined`)
+      // also keeps a parent DatePicker's context predicate from leaking in.
+      isDateUnavailable={granularity === "day" ? isUnavailable : NEVER_UNAVAILABLE}
       weeksInMonth={fixedWeeks ? 6 : undefined}
       visibleDuration={{ months: granularity === "day" ? numberOfMonths : 1 }}
       className={(renderProps) =>
@@ -245,7 +244,7 @@ function Calendar<T extends DateValue, M extends "single" | "multiple" = "single
         renderCell={renderCell}
         granularity={granularity}
         isPeriodUnavailable={isUnavailable}
-        correction={{ minValue, maxValue, unavailableRanges }}
+        correction={correctBlockedValue ? { minValue, maxValue, unavailableRanges } : null}
       />
     </AriaCalendar>
   );
@@ -261,6 +260,7 @@ function RangeCalendar<T extends DateValue>({
   granularity = "day",
   unavailableRanges,
   fixedWeeks = true,
+  correctBlockedValue = true,
   minValue,
   maxValue,
   isDateUnavailable,
@@ -288,7 +288,7 @@ function RangeCalendar<T extends DateValue>({
       onChange={handleChange}
       minValue={bounds.minValue}
       maxValue={bounds.maxValue}
-      isDateUnavailable={granularity === "day" ? isUnavailable : undefined}
+      isDateUnavailable={granularity === "day" ? isUnavailable : NEVER_UNAVAILABLE}
       weeksInMonth={fixedWeeks ? 6 : undefined}
       visibleDuration={{ months: granularity === "day" ? numberOfMonths : 1 }}
       className={(renderProps) =>
@@ -304,7 +304,7 @@ function RangeCalendar<T extends DateValue>({
         renderCell={renderCell}
         granularity={granularity}
         isPeriodUnavailable={isPeriodUnavailable}
-        correction={{ minValue, maxValue, unavailableRanges }}
+        correction={correctBlockedValue ? { minValue, maxValue, unavailableRanges } : null}
         isRange
       />
     </AriaRangeCalendar>
@@ -324,7 +324,7 @@ interface CalendarInnerProps {
     minValue?: DateValue | null;
     maxValue?: DateValue | null;
     unavailableRanges?: Interval<DateValue>[];
-  };
+  } | null;
   isRange?: boolean;
 }
 
@@ -423,10 +423,10 @@ function CalendarViews({
 
   useAvailableDateCorrection({
     // Travel/clear works on days; month/year values are validated per period.
-    value: granularity === "day" ? selectedDates : undefined,
-    min: correction.minValue ?? undefined,
-    max: correction.maxValue ?? undefined,
-    unavailableRanges: correction.unavailableRanges,
+    value: correction && granularity === "day" ? selectedDates : undefined,
+    min: correction?.minValue ?? undefined,
+    max: correction?.maxValue ?? undefined,
+    unavailableRanges: correction?.unavailableRanges,
     // RangeCalendarState also carries the base state's `selectionMode: "single"`.
     selectionMode: rangeState
       ? "range"
@@ -670,17 +670,6 @@ interface PeriodCell {
   isSelected: boolean;
   isRangeStart: boolean;
   isRangeEnd: boolean;
-}
-
-function isFullyUnavailable(
-  start: CalendarDate,
-  end: CalendarDate,
-  isUnavailable: (date: DateValue) => boolean,
-) {
-  for (let day = start; day.compare(end) <= 0; day = day.add({ days: 1 })) {
-    if (!isUnavailable(day)) return false;
-  }
-  return true;
 }
 
 // Month (3×4 for the focused year) or year (3×4 for the focused decade ± 1

@@ -1,0 +1,8 @@
+{
+  "name": "date-granularity",
+  "category": "date",
+  "status": "stable",
+  "source": "original",
+  "description": "Period helpers for month/year date selection: period start/end, same-period comparison, period-widened min/max bounds, and lifting a day-level isDateUnavailable predicate to whole months or years.",
+  "tags": ["date", "granularity"]
+}
