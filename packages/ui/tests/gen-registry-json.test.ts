@@ -30,6 +30,17 @@ describe("detectNpmDependencies", () => {
     `;
     expect(detectNpmDependencies(source)).toEqual(["cn"]);
   });
+
+  it("ignores import examples inside comments", () => {
+    const source = `
+      /**
+       *   import { addDays } from 'date-fns'
+       */
+      // import { TZDate } from "@date-fns/tz";
+      import { fromDate } from "@internationalized/date";
+    `;
+    expect(detectNpmDependencies(source)).toEqual(["@internationalized/date"]);
+  });
 });
 
 describe("detectRegistryDependencies", () => {

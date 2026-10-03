@@ -29,12 +29,20 @@ function toPackageName(spec: string): string {
   return spec.startsWith("@") ? parts.slice(0, 2).join("/") : parts[0]!;
 }
 
+// Drops block comments and whole-line "//" comments so import examples in
+// docs (e.g. "import { addDays } from 'date-fns'" in a JSDoc) aren't mistaken
+// for real imports.
+function stripComments(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}
+
 export function detectNpmDependencies(source: string): string[] {
+  const code = stripComments(source);
   const deps = new Set<string>();
   const importRegex = /from\s+["']([^"']+)["']/g;
   let match: RegExpExecArray | null;
   // biome-ignore lint/suspicious/noAssignInExpressions: loop over all matches
-  while ((match = importRegex.exec(source)) !== null) {
+  while ((match = importRegex.exec(code)) !== null) {
     // biome-ignore lint/style/noNonNullAssertion: capture group 1 always matches when the regex matches
     const spec = match[1]!;
     // Skip relative imports, our own "@/..." alias, node builtins, and react
@@ -55,12 +63,13 @@ export function detectNpmDependencies(source: string): string[] {
 }
 
 export function detectRegistryDependencies(source: string, componentId: string): string[] {
+  const code = stripComments(source);
   const deps = new Set<string>();
   // src/core/<id>/<id>.tsx importing another core component via the "@/core/x/x" alias
   const aliasImportRegex = /from\s+["']@\/core\/([^/"']+)\/\1["']/g;
   let match: RegExpExecArray | null;
   // biome-ignore lint/suspicious/noAssignInExpressions: loop over all matches
-  while ((match = aliasImportRegex.exec(source)) !== null) {
+  while ((match = aliasImportRegex.exec(code)) !== null) {
     // biome-ignore lint/style/noNonNullAssertion: capture group 1 always matches when the regex matches
     const depId = match[1]!;
     if (depId !== componentId) deps.add(depId);
