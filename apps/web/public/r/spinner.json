@@ -6,7 +6,7 @@
   "description": "A spinning loading indicator icon (role=\"status\"), sized via className — drop it inside a disabled button or empty state while something loads.",
   "dependencies": [
     "cn@^0.4.0",
-    "lucide-react@^1.48.0"
+    "lucide-react@^1.52.0"
   ],
   "files": [
     {

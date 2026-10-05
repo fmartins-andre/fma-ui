@@ -7,7 +7,7 @@
   "dependencies": [
     "@shadcn/react@^0.3.1",
     "cn@^0.4.0",
-    "lucide-react@^1.48.0"
+    "lucide-react@^1.52.0"
   ],
   "registryDependencies": [
     "@fma-ui/button"

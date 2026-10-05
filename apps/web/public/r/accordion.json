@@ -6,7 +6,7 @@
   "description": "A vertically stacked set of headers that expand to reveal or hide associated content. Supports single or multiple items open at once.",
   "dependencies": [
     "cn@^0.4.0",
-    "lucide-react@^1.48.0",
+    "lucide-react@^1.52.0",
     "react-aria-components@^1.21.1"
   ],
   "files": [
