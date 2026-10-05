@@ -1115,6 +1115,116 @@
       }
     },
     {
+      "name": "event-calendar",
+      "type": "registry:block",
+      "title": "Event Calendar",
+      "description": "A headless-first event calendar: month, week, day, N-day, agenda and resource views, recurring events (structured rules or RRULE strings), time zones, drag to move/resize and drag to create, i18n with RTL, and a subscribable store (`useEventCalendar`, `useEventCalendarSelector`). Compose `<EventCalendar>` with `EventCalendarNav` and `EventCalendarContent`, or build your own parts from the hooks. Events are controlled (`events`/`onEventsChange`) or not (`defaultEvents`); `onEventUpdate` accepts, rejects or adjusts each drag. The nav, view switcher, date picker and \"+N more\" popover use the registry's react-aria Button, Tooltip, DropdownMenu, Popover and Calendar.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/event-calendar/event-calendar-agenda-view.tsx",
+          "target": "components/event-calendar/event-calendar-agenda-view.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-content.tsx",
+          "target": "components/event-calendar/event-calendar-content.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-dnd.tsx",
+          "target": "components/event-calendar/event-calendar-dnd.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-event.tsx",
+          "target": "components/event-calendar/event-calendar-event.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-i18n.tsx",
+          "target": "components/event-calendar/event-calendar-i18n.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-lib.tsx",
+          "target": "components/event-calendar/event-calendar-lib.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-merge-props.ts",
+          "target": "components/event-calendar/event-calendar-merge-props.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-month-view.tsx",
+          "target": "components/event-calendar/event-calendar-month-view.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-nav.tsx",
+          "target": "components/event-calendar/event-calendar-nav.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-recurrence.tsx",
+          "target": "components/event-calendar/event-calendar-recurrence.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-resource-view.tsx",
+          "target": "components/event-calendar/event-calendar-resource-view.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-time-grid.tsx",
+          "target": "components/event-calendar/event-calendar-time-grid.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar-types.tsx",
+          "target": "components/event-calendar/event-calendar-types.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/event-calendar/event-calendar.tsx",
+          "target": "components/event-calendar/event-calendar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "icon-stack",
+        "scroll-area",
+        "tooltip",
+        "popover",
+        "button",
+        "calendar",
+        "dropdown-menu",
+        "date-fns-compat"
+      ],
+      "dependencies": [
+        "cn",
+        "lucide-react",
+        "react-aria-components",
+        "@internationalized/date"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/event-calendar, MIT), via EMITTE; overlays rebuilt on the registry's react-aria components",
+        "tags": [
+          "block",
+          "calendar",
+          "scheduler",
+          "events",
+          "recurrence"
+        ]
+      }
+    },
+    {
       "name": "field",
       "type": "registry:ui",
       "title": "Field",
