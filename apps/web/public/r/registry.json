@@ -2221,6 +2221,37 @@
       }
     },
     {
+      "name": "timeline",
+      "type": "registry:ui",
+      "title": "Timeline",
+      "description": "A vertical or horizontal timeline rendered as an ordered list. `value` is the current step: items with `step <= value` get `data-completed` (filled indicator and separator) and the current one gets `aria-current=\"step\"`. Compose each `TimelineItem` from `TimelineHeader` (`TimelineDate`, `TimelineTitle`, `TimelineIndicator`), `TimelineSeparator` and `TimelineContent`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/timeline/timeline.tsx",
+          "target": "components/ui/timeline.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/timeline, MIT), via EMITTE",
+        "tags": [
+          "data-display",
+          "timeline",
+          "steps",
+          "progress"
+        ]
+      }
+    },
+    {
       "name": "toggle",
       "type": "registry:ui",
       "title": "Toggle",
