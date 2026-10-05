@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "Sets LTR/RTL text-direction context for descendant react-aria-components — a compatibility shim so a Radix/Base UI-style `direction` prop keeps working via react-aria's locale system.",
   "dependencies": [
-    "react-aria-components"
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {

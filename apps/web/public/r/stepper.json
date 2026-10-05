@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "Multi-step navigation, horizontal or vertical, built on react-aria `Tabs`: arrow keys, Home and End move between steps and Enter or Space selects one (manual activation). `value`/`defaultValue`/`onValueChange` hold the current step. Each `StepperItem` is a tab whose `data-state` is `completed` (before the current step, or `isCompleted`), `active` or `inactive`; `isDisabled` skips it and `isLoading` shows the loading indicator. `indicators` swaps an indicator's content per state. `StepperContent` panels show the current step's content.",
   "dependencies": [
-    "cn",
-    "react-aria-components"
+    "cn@^0.4.0",
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {

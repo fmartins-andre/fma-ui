@@ -20,6 +20,24 @@ export const NAMESPACE = "@fma-ui";
 const INSTALL_DIR = "fma-ui";
 const toRegistryDependency = (id: string) => `${NAMESPACE}/${id}`;
 
+// npm dependencies ship with the range from package.json ("pkg@^8.21.3"), so
+// consumers get the major these components were tested against, not whatever
+// "latest" is (a new major can break them, as TanStack Table v9 would).
+const PACKAGE_RANGES: Record<string, string> = JSON.parse(
+  readFileSync("package.json", "utf8"),
+).dependencies;
+
+export function withVersion(name: string, ranges = PACKAGE_RANGES): string {
+  const range = ranges[name];
+  return range && !/^(catalog|workspace):/.test(range) ? `${name}@${range}` : name;
+}
+
+/** "pkg@^1.0.0" or "@scope/pkg@^1.0.0" → the package name. */
+export function packageName(dependency: string): string {
+  const at = dependency.lastIndexOf("@");
+  return at > 0 ? dependency.slice(0, at) : dependency;
+}
+
 // Modules published as their own registry items, besides src/core. Two shapes:
 //   <dir>/<name>/meta.json       → every .ts/.tsx file in that folder (e.g. lib/input-masks/)
 //   <dir>/<name>.meta.json       → the single <dir>/<name>.ts(x) next to it (e.g. lib/types.ts)
@@ -140,7 +158,7 @@ export function processComponent(componentId: string): RegistryItem | null {
     ...(registryDependencies.length > 0 && {
       registryDependencies: registryDependencies.map(toRegistryDependency),
     }),
-    dependencies: detectNpmDependencies(source),
+    dependencies: detectNpmDependencies(source).map((name) => withVersion(name)),
     meta: toItemMeta(meta),
   };
 }
@@ -211,7 +229,7 @@ export function processModule(module: {
     ...(registryDependencies.length > 0 && {
       registryDependencies: registryDependencies.map(toRegistryDependency),
     }),
-    dependencies: detectNpmDependencies(source),
+    dependencies: detectNpmDependencies(source).map((name) => withVersion(name)),
     meta: toItemMeta(meta),
   };
 }

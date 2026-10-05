@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "Semantic table primitives (header, body, rows, cells, footer, caption) built on react-aria-components' Table for accessible, sorting/selection-ready markup.",
   "dependencies": [
-    "cn",
-    "react-aria-components"
+    "cn@^0.4.0",
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {

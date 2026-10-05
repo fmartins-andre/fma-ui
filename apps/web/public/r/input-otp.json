@@ -5,9 +5,9 @@
   "author": "@fma-ui/ui",
   "description": "A one-time-password / verification-code input rendered as individual boxed slots, backed by a single hidden text input for real typing, paste, and autofill behavior.",
   "dependencies": [
-    "cn",
-    "input-otp",
-    "lucide-react"
+    "cn@^0.4.0",
+    "input-otp@^1.5.0",
+    "lucide-react@^1.48.0"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "Layout for one message row in a chat UI — avatar, header, footer, and a content column that aligns to the start or end depending on who sent it. Pairs with Bubble for the actual message content.",
   "dependencies": [
-    "cn"
+    "cn@^0.4.0"
   ],
   "files": [
     {

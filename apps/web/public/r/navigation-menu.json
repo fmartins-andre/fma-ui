@@ -5,10 +5,10 @@
   "author": "@fma-ui/ui",
   "description": "Site-header navigation: a `<nav>` list of top-level links and disclosure dropdowns. A `NavigationMenuItem` holds either a `NavigationMenuLink` or a `NavigationMenuTrigger` (a button with `aria-expanded`) plus its `NavigationMenuContent` (a popover). Escape or a click outside closes the dropdown and returns focus to the trigger; following a link closes it too. Style plain links like triggers with `navigationMenuTriggerStyle()`, and mark the current page with `aria-current=\"page\"`. Dropdowns open on press, not hover. For app command menus use `Menubar` or `DropdownMenu`.",
   "dependencies": [
-    "class-variance-authority",
-    "cn",
-    "lucide-react",
-    "react-aria-components"
+    "class-variance-authority@^0.7.1",
+    "cn@^0.4.0",
+    "lucide-react@^1.48.0",
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {

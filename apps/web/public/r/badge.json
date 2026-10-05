@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "A small label for status, count, or category — inline with text or attached to another element. Semantic variants (info/success/warning/destructive/invert) in solid, light and outline styles, plus size and radius options. Can also render as a link.",
   "dependencies": [
-    "class-variance-authority",
-    "cn"
+    "class-variance-authority@^0.7.1",
+    "cn@^0.4.0"
   ],
   "files": [
     {

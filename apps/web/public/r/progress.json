@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "A horizontal progress bar communicating the completion of a task, determinate or indeterminate, with optional label/value slots.",
   "dependencies": [
-    "cn",
-    "react-aria-components"
+    "cn@^0.4.0",
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {

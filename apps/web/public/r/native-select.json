@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "A styled wrapper around the real, native <select> — use it when you need actual native select behavior (mobile OS pickers, form autofill, no JS dependency) instead of react-aria-components' custom Select.",
   "dependencies": [
-    "cn",
-    "lucide-react"
+    "cn@^0.4.0",
+    "lucide-react@^1.48.0"
   ],
   "files": [
     {

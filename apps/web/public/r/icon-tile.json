@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "A square surface that gives icons a consistent footprint. `variant`: `outline` (bordered), `elevated` (raised chip), `soft` (tinted double container), `solid` (filled) or `frame` (double container matching `Card`); `soft` and `solid` follow `currentColor`, so a text color class retints them. `size` goes from `xs` to `xl`; `radius` is `default` (clamped to the tile) or `full` (circular). Renders a `<span>`; wrap it in a `Button` or `Link` to make it interactive.",
   "dependencies": [
-    "class-variance-authority",
-    "cn"
+    "class-variance-authority@^0.7.1",
+    "cn@^0.4.0"
   ],
   "files": [
     {

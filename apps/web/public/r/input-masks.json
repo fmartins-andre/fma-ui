@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "Input-mask system built on Maskito: mask option hooks, formatters and remover utilities for Brazilian documents and common formats (CPF, CNPJ, CPF-or-CNPJ, CEP, phone, credit card, date, date range, date-time, time, decimal).",
   "dependencies": [
-    "@maskito/core",
-    "@maskito/kit"
+    "@maskito/core@^5.6.0",
+    "@maskito/kit@^5.6.0"
   ],
   "registryDependencies": [
     "@fma-ui/type-helper",

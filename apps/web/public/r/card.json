@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "A container for grouping related content, with header, title, description, action, content, and footer slots. Supports a compact size=\"sm\" variant.",
   "dependencies": [
-    "cn"
+    "cn@^0.4.0"
   ],
   "files": [
     {

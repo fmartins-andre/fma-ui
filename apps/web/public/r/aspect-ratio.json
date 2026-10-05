@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "Constrains content (typically an image or video) to a fixed width/height ratio, so it scales without distortion or layout shift.",
   "dependencies": [
-    "cn"
+    "cn@^0.4.0"
   ],
   "files": [
     {

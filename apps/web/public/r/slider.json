@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value.",
   "dependencies": [
-    "cn",
-    "react-aria-components"
+    "cn@^0.4.0",
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {

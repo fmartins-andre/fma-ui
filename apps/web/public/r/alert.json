@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "A callout for important, static information — supports an icon, title, description, and an optional action, with semantic variants (destructive/info/success/warning/invert).",
   "dependencies": [
-    "class-variance-authority",
-    "cn"
+    "class-variance-authority@^0.7.1",
+    "cn@^0.4.0"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "A scrollable container with a themeable, always-consistent-looking scrollbar via native scrollbar-width/scrollbar-color — no JS scrollbar emulation.",
   "dependencies": [
-    "cn"
+    "cn@^0.4.0"
   ],
   "files": [
     {

@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "Resizable split panes (panel group, panel, drag handle) built on react-resizable-panels — for layouts like a sidebar/editor split the user can drag to resize.",
   "dependencies": [
-    "cn",
-    "react-resizable-panels"
+    "cn@^0.4.0",
+    "react-resizable-panels@^4.14.1"
   ],
   "files": [
     {

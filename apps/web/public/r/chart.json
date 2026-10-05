@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "Composable chart primitives (ChartContainer, ChartTooltip, ChartLegend) wrapping Recharts, themed via CSS custom properties from a ChartConfig. Supports area, bar, line, and pie charts.",
   "dependencies": [
-    "cn",
-    "recharts"
+    "cn@^0.4.0",
+    "recharts@3.8.0"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "Shows or hides a single section of content behind a trigger. A thin wrapper around react-aria-components' Disclosure — for several mutually-exclusive sections, use Accordion instead.",
   "dependencies": [
-    "react-aria-components"
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {

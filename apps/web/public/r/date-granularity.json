@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "Period helpers for month/year date selection: period start/end, same-period comparison, period-widened min/max bounds, and lifting a day-level isDateUnavailable predicate to whole months or years.",
   "dependencies": [
-    "@internationalized/date"
+    "@internationalized/date@^3.12.4"
   ],
   "files": [
     {

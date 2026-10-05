@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "Visually joins a row (or column) of buttons into one connected control, with shared borders and rounded end corners. Can include a separator or a plain text segment.",
   "dependencies": [
-    "class-variance-authority",
-    "cn"
+    "class-variance-authority@^0.7.1",
+    "cn@^0.4.0"
   ],
   "registryDependencies": [
     "@fma-ui/separator"

@@ -4,8 +4,10 @@ import {
   detectRegistryDependencies,
   discoverModules,
   NAMESPACE,
+  packageName,
   processComponent,
   processModule,
+  withVersion,
 } from "../scripts/gen-registry-json";
 
 describe("detectNpmDependencies", () => {
@@ -115,5 +117,24 @@ describe("generated items", () => {
       "components/fma-ui/app-sidebar/app-sidebar.tsx",
     );
     expect(block.registryDependencies).toContain(`${NAMESPACE}/sidebar`);
+  });
+});
+
+describe("npm dependency versions", () => {
+  it("pins dependencies to the package.json range", () => {
+    const ranges = { "@tanstack/react-table": "^8.21.3", react: "catalog:" };
+    expect(withVersion("@tanstack/react-table", ranges)).toBe("@tanstack/react-table@^8.21.3");
+    expect(withVersion("react", ranges)).toBe("react");
+    expect(withVersion("unknown", ranges)).toBe("unknown");
+  });
+
+  it("reads package names back from pinned dependencies", () => {
+    expect(packageName("@tanstack/react-table@^8.21.3")).toBe("@tanstack/react-table");
+    expect(packageName("cn@^0.4.0")).toBe("cn");
+    expect(packageName("@internationalized/date")).toBe("@internationalized/date");
+  });
+
+  it("ships the tested TanStack Table major with the data grid", () => {
+    expect(processComponent("data-grid")?.dependencies).toContain("@tanstack/react-table@^8.21.3");
   });
 });

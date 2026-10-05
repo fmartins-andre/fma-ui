@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "A pulsing placeholder block for content that's still loading — size and shape it with className to match whatever it stands in for.",
   "dependencies": [
-    "cn"
+    "cn@^0.4.0"
   ],
   "files": [
     {

@@ -5,10 +5,10 @@
   "author": "@fma-ui/ui",
   "description": "A data grid driven by a TanStack Table instance (`useReactTable`) and rendered with react-aria's `Table`, which brings cell keyboard navigation, `aria-sort`, selection, column resizing, row drag and drop and virtualization. Wrap parts in `DataGrid table={table} recordCount={…}`: `DataGridTable`, `DataGridPagination`, `DataGridColumnHeader` (sort indicator, plus a menu for pinning, moving and visibility when `tableLayout` enables them), `DataGridColumnVisibility`, `DataGridColumnFilter` (faceted, use `filterFn: \"arrIncludesSome\"`), `DataGridRowSelect` (with `enableRowSelection`), `DataGridRowPin` and `DataGridRowDragHandle` (with `onRowsReorder`). Sorting is wired when the table has `getSortedRowModel` or `manualSorting`. `isLoading` shows skeleton rows (`meta.skeleton`) or a spinner; `meta.autoSize` columns take the remaining width.",
   "dependencies": [
-    "@tanstack/react-table",
-    "cn",
-    "lucide-react",
-    "react-aria-components"
+    "@tanstack/react-table@^8.21.3",
+    "cn@^0.4.0",
+    "lucide-react@^1.48.0",
+    "react-aria-components@^1.21.1"
   ],
   "registryDependencies": [
     "@fma-ui/badge",

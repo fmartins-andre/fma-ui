@@ -10,6 +10,7 @@ import {
   detectNpmDependencies,
   detectRegistryDependencies,
   NAMESPACE,
+  packageName,
 } from "../scripts/gen-registry-json";
 
 const ROOT = join(__dirname, "..");
@@ -31,7 +32,9 @@ describe.each(registry.items.map((item) => [item.name, item] as const))(
     const source = item.files.map((file) => readFileSync(join(ROOT, file.path), "utf8")).join("\n");
 
     it("declares exactly the npm dependencies its source actually imports", () => {
-      expect(new Set(item.dependencies ?? [])).toEqual(new Set(detectNpmDependencies(source)));
+      expect(new Set((item.dependencies ?? []).map(packageName))).toEqual(
+        new Set(detectNpmDependencies(source)),
+      );
     });
 
     it("declares exactly the registryDependencies its source actually cross-imports", () => {
@@ -41,7 +44,8 @@ describe.each(registry.items.map((item) => [item.name, item] as const))(
     });
 
     it("every declared npm dependency is actually installed in package.json", () => {
-      for (const dep of item.dependencies ?? []) {
+      for (const dependency of item.dependencies ?? []) {
+        const dep = packageName(dependency);
         expect(
           installedDeps.has(dep),
           `"${dep}" is imported by ${name} but missing from packages/ui/package.json dependencies`,

@@ -5,9 +5,9 @@
   "author": "@fma-ui/ui",
   "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet.",
   "dependencies": [
-    "@shadcn/react",
-    "cn",
-    "lucide-react"
+    "@shadcn/react@^0.3.1",
+    "cn@^0.4.0",
+    "lucide-react@^1.48.0"
   ],
   "registryDependencies": [
     "@fma-ui/button"

@@ -5,9 +5,9 @@
   "author": "@fma-ui/ui",
   "description": "A themed wrapper around the sonner toast library. Renders the toast viewport (Toaster); call toast() from \"sonner\" anywhere to actually show one.",
   "dependencies": [
-    "lucide-react",
-    "next-themes",
-    "sonner"
+    "lucide-react@^1.48.0",
+    "next-themes@^0.4.6",
+    "sonner@^2.0.8"
   ],
   "files": [
     {

@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "useAvailableDateCorrection: revalidates an already-committed date value against min/max/unavailable ranges whenever the value or constraints change, correcting it through the date-availability travel-or-clear policy.",
   "dependencies": [
-    "@internationalized/date"
+    "@internationalized/date@^3.12.4"
   ],
   "registryDependencies": [
     "@fma-ui/date-availability",

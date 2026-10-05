@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "A layered icon illustration for empty states: three receding cards drawn from `currentColor`, with an optional glyph (`children`) laid flat on the front card. Pairs with `EmptyMedia`. Decorative: the SVG is hidden from assistive tech, so give the glyph `aria-hidden` too.",
   "dependencies": [
-    "cn"
+    "cn@^0.4.0"
   ],
   "files": [
     {

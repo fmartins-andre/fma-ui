@@ -5,8 +5,8 @@
   "author": "@fma-ui/ui",
   "description": "A panel that slides in from an edge of the screen, with swipe-to-dismiss and snap-point support. Uses @base-ui/react (not react-aria-components), so its API and data attributes differ from this repo's other overlays.",
   "dependencies": [
-    "@base-ui/react",
-    "cn"
+    "@base-ui/react@^1.8.0",
+    "cn@^0.4.0"
   ],
   "files": [
     {
