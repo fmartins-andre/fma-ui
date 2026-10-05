@@ -15,9 +15,27 @@ import {
   type PopoverProps,
 } from "react-aria-components";
 
+type MenuContextValue = {
+  openId: string | null;
+  /** The open item was opened by hover: a non-modal "peek" that keeps focus where it was. */
+  isPeek: boolean;
+  open: (id: string | null, options?: { peek?: boolean }) => void;
+  openOnHover: boolean;
+  delay: number;
+  closeDelay: number;
+  timer: React.RefObject<ReturnType<typeof setTimeout> | undefined>;
+  /** Latest open state, for handlers react-aria may hold from an earlier render. */
+  current: React.RefObject<{ openId: string | null; isPeek: boolean }>;
+};
+
+const MenuContext = React.createContext<MenuContextValue | null>(null);
+
 type ItemContextValue = {
   isOpen: boolean;
+  isPeek: boolean;
   setOpen: (isOpen: boolean) => void;
+  /** Pointer entered/left the trigger (hover mode only). */
+  hover: (isHovered: boolean) => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
 };
 
@@ -30,16 +48,98 @@ function useItem(part: string) {
   return context;
 }
 
-function NavigationMenu({ className, ...props }: React.ComponentProps<"nav">) {
+type NavigationMenuProps = React.ComponentProps<"nav"> & {
+  /**
+   * Also open dropdowns when the pointer rests on a trigger. A hover-opened
+   * dropdown is non-modal and leaves focus alone; pressing the trigger then
+   * keeps it open as a regular (modal) dropdown. Pressing still works as
+   * without this prop, so hover is never the only way in.
+   */
+  openOnHover?: boolean;
+  /** Milliseconds the pointer rests on a trigger before it opens. @default 150 */
+  delay?: number;
+  /** Milliseconds before a hover-opened dropdown closes once the pointer leaves. @default 300 */
+  closeDelay?: number;
+};
+
+function NavigationMenu({
+  className,
+  openOnHover = false,
+  delay = 150,
+  closeDelay = 300,
+  ...props
+}: NavigationMenuProps) {
+  const [state, setState] = React.useState<{ openId: string | null; isPeek: boolean }>({
+    openId: null,
+    isPeek: false,
+  });
+  const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const current = React.useRef(state);
+  current.current = state;
+
+  React.useEffect(() => () => clearTimeout(timer.current), []);
+
+  // A peek never holds focus, so react-aria's Escape handling never sees it;
+  // and it closes once the pointer is neither on its trigger nor its content.
+  const navRef = React.useRef<HTMLElement>(null);
+  React.useEffect(() => {
+    if (!state.isPeek) return;
+    let closing = false;
+    const close = () => setState({ openId: null, isPeek: false });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === "touch" || !(event.target instanceof Element)) return;
+      const inside =
+        event.target.closest("[data-slot=navigation-menu-content][data-peek]") ||
+        (event.target.closest("[data-slot=navigation-menu-trigger][aria-expanded=true]") &&
+          navRef.current?.contains(event.target));
+      if (inside) {
+        if (closing) clearTimeout(timer.current);
+        closing = false;
+      } else if (!closing) {
+        closing = true;
+        clearTimeout(timer.current);
+        timer.current = setTimeout(close, closeDelay);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointermove", onPointerMove);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointermove", onPointerMove);
+    };
+  }, [state.isPeek, closeDelay]);
+
+  const context = React.useMemo<MenuContextValue>(
+    () => ({
+      ...state,
+      open: (openId, options) => {
+        clearTimeout(timer.current);
+        setState({ openId, isPeek: openId !== null && !!options?.peek });
+      },
+      openOnHover,
+      delay,
+      closeDelay,
+      timer,
+      current,
+    }),
+    [state, openOnHover, delay, closeDelay],
+  );
+
   return (
-    <nav
-      data-slot="navigation-menu"
-      className={cn(
-        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
-        className,
-      )}
-      {...props}
-    />
+    <MenuContext.Provider value={context}>
+      <nav
+        ref={navRef}
+        data-slot="navigation-menu"
+        className={cn(
+          "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+          className,
+        )}
+        {...props}
+      />
+    </MenuContext.Provider>
   );
 }
 
@@ -55,9 +155,39 @@ function NavigationMenuList({ className, ...props }: React.ComponentProps<"ul">)
 
 /** A top-level entry: a plain `NavigationMenuLink`, or a trigger with its content. */
 function NavigationMenuItem({ className, ...props }: React.ComponentProps<"li">) {
-  const [isOpen, setOpen] = React.useState(false);
+  const id = React.useId();
+  const menu = React.useContext(MenuContext);
+  // Standalone items (outside a NavigationMenu) keep their own state.
+  const [ownOpen, setOwnOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
-  const context = React.useMemo(() => ({ isOpen, setOpen, triggerRef }), [isOpen]);
+  const isOpen = menu ? menu.openId === id : ownOpen;
+  const isPeek = isOpen && !!menu?.isPeek;
+
+  const context = React.useMemo<ItemContextValue>(
+    () => ({
+      isOpen,
+      isPeek,
+      triggerRef,
+      setOpen: (open) => {
+        if (!menu) return setOwnOpen(open);
+        if (open) menu.open(id);
+        else if (menu.openId === id) menu.open(null);
+      },
+      hover: (isHovered) => {
+        if (!menu?.openOnHover) return;
+        const { openId, isPeek } = menu.current.current;
+        if (openId === id) return;
+        clearTimeout(menu.timer.current);
+        if (!isHovered) return;
+        // Moving from one open dropdown to another trigger switches at once.
+        if (openId !== null && isPeek) menu.open(id, { peek: true });
+        else if (openId === null)
+          menu.timer.current = setTimeout(() => menu.open(id, { peek: true }), menu.delay);
+      },
+    }),
+    [id, menu, isOpen, isPeek],
+  );
+
   return (
     <ItemContext.Provider value={context}>
       <li data-slot="navigation-menu-item" className={cn("relative", className)} {...props} />
@@ -70,13 +200,15 @@ const navigationMenuTriggerStyle = cva(
 );
 
 function NavigationMenuTrigger({ className, children, ...props }: ButtonProps) {
-  const { isOpen, setOpen, triggerRef } = useItem("NavigationMenuTrigger");
+  const { isOpen, isPeek, setOpen, hover, triggerRef } = useItem("NavigationMenuTrigger");
   return (
     <Button
       ref={triggerRef}
       data-slot="navigation-menu-trigger"
       aria-expanded={isOpen}
-      onPress={() => setOpen(!isOpen)}
+      // Pressing a hover-opened dropdown keeps it open (now modal) instead of closing it.
+      onPress={() => setOpen(isPeek || !isOpen)}
+      onHoverChange={hover}
       className={composeRenderProps(className, (className) =>
         cn(navigationMenuTriggerStyle(), className),
       )}
@@ -106,7 +238,8 @@ type NavigationMenuContentProps = Omit<
 
 /**
  * The dropdown of an item. Escape or a click outside closes it and returns
- * focus to the trigger; following a link inside closes it too.
+ * focus to the trigger; following a link inside closes it too. Opened by
+ * hover (`openOnHover`), it is non-modal and closes when the pointer leaves.
  */
 function NavigationMenuContent({
   className,
@@ -116,13 +249,19 @@ function NavigationMenuContent({
   offset = 8,
   ...props
 }: NavigationMenuContentProps) {
-  const { isOpen, setOpen, triggerRef } = useItem("NavigationMenuContent");
+  const { isOpen, isPeek, setOpen, triggerRef } = useItem("NavigationMenuContent");
+  const label = ariaLabel ?? triggerRef.current?.textContent ?? undefined;
   return (
     <Popover
+      // Remount when a peek turns modal: switching modality in place makes
+      // react-aria dismiss the popover.
+      key={isPeek ? "peek" : "modal"}
       data-slot="navigation-menu-content"
+      data-peek={isPeek || undefined}
       triggerRef={triggerRef}
       isOpen={isOpen}
       onOpenChange={setOpen}
+      isNonModal={isPeek}
       placement={placement}
       offset={offset}
       className={composeRenderProps(className, (className) =>
@@ -133,12 +272,16 @@ function NavigationMenuContent({
       )}
       {...props}
     >
-      <Dialog
-        aria-label={ariaLabel ?? triggerRef.current?.textContent ?? undefined}
-        className="outline-none"
-      >
-        {children}
-      </Dialog>
+      {isPeek ? (
+        // A peek must not take focus, which a Dialog does on mount.
+        <div role="group" aria-label={label}>
+          {children}
+        </div>
+      ) : (
+        <Dialog aria-label={label} className="outline-none">
+          {children}
+        </Dialog>
+      )}
     </Popover>
   );
 }
@@ -163,7 +306,7 @@ function NavigationMenuLink({ className, onPress, ...props }: LinkProps) {
   );
 }
 
-export type { NavigationMenuContentProps };
+export type { NavigationMenuContentProps, NavigationMenuProps };
 export {
   NavigationMenu,
   NavigationMenuContent,
