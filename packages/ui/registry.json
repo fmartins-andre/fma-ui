@@ -2052,6 +2052,40 @@
       }
     },
     {
+      "name": "simple-time-picker",
+      "type": "registry:ui",
+      "title": "Simple Time Picker",
+      "description": "A button showing a time that opens a popover with columns for hours, minutes, seconds and AM/PM. Values are `@internationalized/date` `Time` objects (`value`/`defaultValue`/`onChange`), like the registry's DateField. `granularity` (\"hour\", \"minute\", \"second\"; default \"minute\") picks the columns and `hourCycle={12}` adds AM/PM. `minValue`/`maxValue` disable out-of-range options and clamp picks to the nearest allowed time. Each column is a react-aria `ListBox`: arrow keys and typing move within it, Tab moves between columns, Escape closes. For typed entry use `DateField` with `granularity=\"minute\"` or react-aria's `TimeField`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/simple-time-picker/simple-time-picker.tsx",
+          "target": "components/ui/simple-time-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "@internationalized/date",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "huybuidac/shadcn-datetime-picker (https://github.com/huybuidac/shadcn-datetime-picker, MIT), via EMITTE; rebuilt on react-aria ListBox",
+        "tags": [
+          "forms",
+          "time",
+          "picker",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
