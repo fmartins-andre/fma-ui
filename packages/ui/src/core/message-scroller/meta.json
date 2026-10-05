@@ -4,6 +4,6 @@
   "status": "experimental",
   "source": "shadcn",
   "origin": "shadcn/ui, style: aria-nova. Built on @shadcn/react/message-scroller, not react-aria-components — upstream hasn't ported this one to the aria base yet.",
-  "description": "An auto-scrolling viewport for chat message lists: sticks to the latest message as new ones arrive, and shows a jump-to-end/start button once the user scrolls away. Marked experimental here because it doesn't sit on react-aria-components like the rest of this registry.",
+  "description": "An auto-scrolling viewport for chat message lists: sticks to the latest message as new ones arrive, and shows a jump-to-end/start button once the user scrolls away. Experimental: it doesn't sit on react-aria-components like the rest of this registry, and @shadcn/react is still pre-1.0.",
   "tags": ["chat", "scroll", "@shadcn/react"]
 }

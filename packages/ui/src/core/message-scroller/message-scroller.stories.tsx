@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, waitFor } from "storybook/test";
 import { Message, MessageContent } from "../message/message";
 import {
   MessageScroller,
@@ -44,4 +45,21 @@ export const Default: Story = {
       </MessageScroller>
     </MessageScrollerProvider>
   ),
+  // Starts at the latest message; scrolling away shows the jump-to-end button.
+  play: async ({ canvasElement, canvas }) => {
+    const viewport = canvasElement.querySelector<HTMLElement>(
+      "[data-slot=message-scroller-viewport]",
+    );
+    if (!viewport) throw new Error("viewport not rendered");
+    const atEnd = () => viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 2;
+    const button = canvas.getByRole("button", { name: "Scroll to end", hidden: true });
+    await waitFor(() => expect(atEnd()).toBe(true));
+    await expect(button).toHaveAttribute("data-active", "false");
+
+    viewport.scrollTo({ top: 0 });
+    await waitFor(() => expect(button).toHaveAttribute("data-active", "true"));
+    await userEvent.click(button);
+    await waitFor(() => expect(atEnd()).toBe(true));
+    await waitFor(() => expect(button).toHaveAttribute("data-active", "false"));
+  },
 };
