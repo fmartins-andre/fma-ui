@@ -319,6 +319,9 @@ importers:
       '@maskito/kit':
         specifier: ^5.6.0
         version: 5.6.0(@maskito/core@5.6.0)
+      '@maskito/react':
+        specifier: ^5.6.0
+        version: 5.6.0(@maskito/core@5.6.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@shadcn/react':
         specifier: ^0.3.1
         version: 0.3.1(@types/react@19.3.0)(react@19.3.0)
@@ -903,6 +906,13 @@ packages:
     resolution: {integrity: sha512-QbOElQlC/fUlZG7KhNKDDTovXCp1hnm9BT6JzffW/y3hKEepDn3iWAbUxi4mHnQEkrWw24LWI1j8VENdlGgmbQ==}
     peerDependencies:
       '@maskito/core': ^5.6.0
+
+  '@maskito/react@5.6.0':
+    resolution: {integrity: sha512-X9S7cNSkQboQ54FMcCLXnsm0+MRBrQG9HRo1qlGOTVMgfzaCTDUcB/l4FlFQLVRfYvyw55KWxSLlvAmqXHE/IQ==}
+    peerDependencies:
+      '@maskito/core': ^5.6.0
+      react: '>=16.8'
+      react-dom: '>=16.8'
 
   '@mdx-js/react@3.1.1':
     resolution: {integrity: sha512-f++rKLQgUVYDAtECQ6fn/is15GkEH9+nZPM3MS0RcxVqoTfawHvDlSCH7JbMhAM6uJ32v3eXLvLmLvjGu7PTQw==}
@@ -4535,6 +4545,12 @@ snapshots:
   '@maskito/kit@5.6.0(@maskito/core@5.6.0)':
     dependencies:
       '@maskito/core': 5.6.0
+
+  '@maskito/react@5.6.0(@maskito/core@5.6.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      '@maskito/core': 5.6.0
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
 
   '@mdx-js/react@3.1.1(@types/react@19.3.0)(react@19.3.0)':
     dependencies:
