@@ -1,0 +1,9 @@
+{
+  "name": "navigation-menu",
+  "category": "navigation",
+  "status": "stable",
+  "source": "original",
+  "origin": "API of shadcn/ui's NavigationMenu (via EMITTE), rebuilt on react-aria Button, Popover, Dialog and Link",
+  "description": "Site-header navigation: a `<nav>` list of top-level links and disclosure dropdowns. A `NavigationMenuItem` holds either a `NavigationMenuLink` or a `NavigationMenuTrigger` (a button with `aria-expanded`) plus its `NavigationMenuContent` (a popover). Escape or a click outside closes the dropdown and returns focus to the trigger; following a link closes it too. Style plain links like triggers with `navigationMenuTriggerStyle()`, and mark the current page with `aria-current=\"page\"`. Dropdowns open on press, not hover. For app command menus use `Menubar` or `DropdownMenu`.",
+  "tags": ["navigation", "menu", "header", "react-aria"]
+}
