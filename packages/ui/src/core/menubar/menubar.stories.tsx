@@ -179,3 +179,77 @@ export const SelectableItems: Story = {
     );
   },
 };
+
+/** With a menu open, hovering another trigger switches to its menu. */
+export const HoverSwitch: Story = {
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "File" }));
+    await body().findByRole("menuitem", { name: /New Tab/ });
+
+    // The open menu makes the rest of the page inert, so the pointer lands on
+    // the body: move it there, over the Edit trigger (userEvent.hover refuses
+    // inert targets).
+    const edit = canvas.getByRole("button", { name: "Edit" }).getBoundingClientRect();
+    document.body.dispatchEvent(
+      new PointerEvent("pointermove", {
+        bubbles: true,
+        clientX: edit.left + edit.width / 2,
+        clientY: edit.top + edit.height / 2,
+        pointerType: "mouse",
+      }),
+    );
+    await body().findByRole("menuitem", { name: /Undo/ });
+    await waitFor(() =>
+      expect(document.activeElement?.closest("[role=menu]")).toHaveAttribute(
+        "aria-labelledby",
+        canvas.getByRole("button", { name: "Edit" }).id,
+      ),
+    );
+    // The previous menu is gone (after its exit animation).
+    await waitFor(() => expect(body().getAllByRole("menu")).toHaveLength(1));
+    await expect(canvas.getByRole("button", { name: "Edit" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    await expect(canvas.getByRole("button", { name: "File" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(body().queryByRole("menu")).toBeNull());
+    // Closed: hovering a trigger does not open anything.
+    await userEvent.hover(canvas.getByRole("button", { name: "View" }));
+    await expect(body().queryByRole("menu")).toBeNull();
+  },
+};
+
+/** With a menu open, ArrowRight/ArrowLeft move to the neighbouring menu (wrapping). */
+export const ArrowsBetweenMenus: Story = {
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "File" }));
+    await body().findByRole("menu");
+    await waitFor(() => expect(document.activeElement?.closest("[role=menu]")).not.toBeNull());
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() =>
+      expect(canvas.getByRole("button", { name: "Edit" })).toHaveAttribute("aria-expanded", "true"),
+    );
+    await waitFor(() => expect(document.activeElement?.closest("[role=menu]")).not.toBeNull());
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() =>
+      expect(canvas.getByRole("button", { name: "View" })).toHaveAttribute("aria-expanded", "true"),
+    );
+    await waitFor(() => expect(document.activeElement?.closest("[role=menu]")).not.toBeNull());
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() =>
+      expect(canvas.getByRole("button", { name: "File" })).toHaveAttribute("aria-expanded", "true"),
+    );
+    await userEvent.keyboard("{ArrowLeft}");
+    await waitFor(() =>
+      expect(canvas.getByRole("button", { name: "View" })).toHaveAttribute("aria-expanded", "true"),
+    );
+    await waitFor(() => expect(body().getAllByRole("menu")).toHaveLength(1));
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(body().queryByRole("menu")).toBeNull());
+  },
+};
