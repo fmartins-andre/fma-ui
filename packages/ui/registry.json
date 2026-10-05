@@ -1533,6 +1533,42 @@
       }
     },
     {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "description": "An app-style menu bar (File, Edit, View…). `Menubar` is a react-aria `Toolbar`, so arrow keys move between menus; each `MenubarMenu` pairs a `MenubarTrigger` with a `MenubarContent` built on `DropdownMenu`, including submenus (`MenubarSub`). Checkbox- and radio-like items come from react-aria selection: give a `MenubarGroup` `selectionMode` (\"multiple\" or \"single\") and `selectedKeys`/`onSelectionChange`, and its items show a check when selected. Menus open on press or Enter/Space/ArrowDown.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "src/core/menubar/menubar.tsx",
+          "target": "components/ui/menubar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "dropdown-menu"
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "origin": "API of shadcn/ui's Menubar (via EMITTE), rebuilt on react-aria Toolbar and the registry's DropdownMenu",
+        "tags": [
+          "navigation",
+          "menu",
+          "menubar",
+          "toolbar",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "message",
       "type": "registry:ui",
       "title": "Message",
@@ -1623,6 +1659,40 @@
           "form",
           "select",
           "native"
+        ]
+      }
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation Menu",
+      "description": "Site-header navigation: a `<nav>` list of top-level links and disclosure dropdowns. A `NavigationMenuItem` holds either a `NavigationMenuLink` or a `NavigationMenuTrigger` (a button with `aria-expanded`) plus its `NavigationMenuContent` (a popover). Escape or a click outside closes the dropdown and returns focus to the trigger; following a link closes it too. Style plain links like triggers with `navigationMenuTriggerStyle()`, and mark the current page with `aria-current=\"page\"`. Dropdowns open on press, not hover. For app command menus use `Menubar` or `DropdownMenu`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "src/core/navigation-menu/navigation-menu.tsx",
+          "target": "components/ui/navigation-menu.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "origin": "API of shadcn/ui's NavigationMenu (via EMITTE), rebuilt on react-aria Button, Popover, Dialog and Link",
+        "tags": [
+          "navigation",
+          "menu",
+          "header",
+          "react-aria"
         ]
       }
     },
