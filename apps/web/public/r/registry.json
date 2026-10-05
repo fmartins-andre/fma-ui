@@ -2099,6 +2099,39 @@
       }
     },
     {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "Multi-step navigation, horizontal or vertical, built on react-aria `Tabs`: arrow keys, Home and End move between steps and Enter or Space selects one (manual activation). `value`/`defaultValue`/`onValueChange` hold the current step. Each `StepperItem` is a tab whose `data-state` is `completed` (before the current step, or `isCompleted`), `active` or `inactive`; `isDisabled` skips it and `isLoading` shows the loading indicator. `indicators` swaps an indicator's content per state. `StepperContent` panels show the current step's content.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "src/core/stepper/stepper.tsx",
+          "target": "components/ui/stepper.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/stepper, MIT), via EMITTE; rebuilt on react-aria Tabs",
+        "tags": [
+          "navigation",
+          "stepper",
+          "wizard",
+          "tabs",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Switch",
@@ -2217,6 +2250,37 @@
           "forms",
           "input",
           "react-aria"
+        ]
+      }
+    },
+    {
+      "name": "timeline",
+      "type": "registry:ui",
+      "title": "Timeline",
+      "description": "A vertical or horizontal timeline rendered as an ordered list. `value` is the current step: items with `step <= value` get `data-completed` (filled indicator and separator) and the current one gets `aria-current=\"step\"`. Compose each `TimelineItem` from `TimelineHeader` (`TimelineDate`, `TimelineTitle`, `TimelineIndicator`), `TimelineSeparator` and `TimelineContent`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/timeline/timeline.tsx",
+          "target": "components/ui/timeline.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/timeline, MIT), via EMITTE",
+        "tags": [
+          "data-display",
+          "timeline",
+          "steps",
+          "progress"
         ]
       }
     },

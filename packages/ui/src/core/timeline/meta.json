@@ -1,0 +1,9 @@
+{
+  "name": "timeline",
+  "category": "data-display",
+  "status": "stable",
+  "source": "third-party",
+  "origin": "reui.io (https://reui.io/docs/components/base/timeline, MIT), via EMITTE",
+  "description": "A vertical or horizontal timeline rendered as an ordered list. `value` is the current step: items with `step <= value` get `data-completed` (filled indicator and separator) and the current one gets `aria-current=\"step\"`. Compose each `TimelineItem` from `TimelineHeader` (`TimelineDate`, `TimelineTitle`, `TimelineIndicator`), `TimelineSeparator` and `TimelineContent`.",
+  "tags": ["data-display", "timeline", "steps", "progress"]
+}
