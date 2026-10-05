@@ -161,3 +161,72 @@ export const ClosesOnNavigate: Story = {
     );
   },
 };
+
+// In the test runner, userEvent.hover's events carry (0, 0) and the runner's
+// real pointer fires its own pointerover elsewhere, which ends react-aria's
+// hover at once. Fire the pointer events a mouse would, at the element's centre.
+let lastHovered: Element | null = null;
+function pointTo(el: Element) {
+  const box = el.getBoundingClientRect();
+  const init = {
+    bubbles: true,
+    pointerType: "mouse",
+    clientX: box.left + box.width / 2,
+    clientY: box.top + box.height / 2,
+  };
+  lastHovered?.dispatchEvent(new PointerEvent("pointerout", { ...init, relatedTarget: el }));
+  el.dispatchEvent(new PointerEvent("pointerover", { ...init, relatedTarget: lastHovered }));
+  el.dispatchEvent(new PointerEvent("pointermove", init));
+  lastHovered = el;
+}
+
+/**
+ * With `openOnHover`, resting on a trigger opens a non-modal dropdown that
+ * leaves focus alone and closes when the pointer leaves; moving to another
+ * trigger switches at once. Pressing the trigger keeps it open as a dialog.
+ */
+export const OpenOnHover: Story = {
+  args: { openOnHover: true },
+  play: async ({ canvas }) => {
+    // Park the runner's real pointer first, so a late pointerover from it
+    // doesn't end the synthetic hovers below.
+    await userEvent.hover(canvas.getByRole("link", { name: "Overview" }));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    lastHovered = null;
+    const docs = canvas.getByRole("button", { name: "Documentation" });
+    const company = canvas.getByRole("button", { name: "Company" });
+
+    pointTo(docs);
+    const peek = await body().findByRole("group", { name: "Documentation" });
+    await expect(docs).toHaveAttribute("aria-expanded", "true");
+    await expect(peek).not.toContainElement(document.activeElement as HTMLElement);
+
+    pointTo(company);
+    await body().findByRole("group", { name: "Company" });
+    await expect(docs).toHaveAttribute("aria-expanded", "false");
+
+    // Resting on the dropdown keeps it open; leaving it closes it.
+    pointTo(body().getByRole("link", { name: "Careers" }));
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await expect(company).toHaveAttribute("aria-expanded", "true");
+    pointTo(canvas.getByRole("link", { name: "Overview" }));
+    await waitFor(() => expect(company).toHaveAttribute("aria-expanded", "false"));
+
+    // Escape closes a hover-opened dropdown too.
+    pointTo(company);
+    await body().findByRole("group", { name: "Company" });
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(company).toHaveAttribute("aria-expanded", "false"));
+
+    // Pressing turns the peek into a regular dropdown that takes focus.
+    pointTo(canvas.getByRole("link", { name: "Overview" }));
+    pointTo(docs);
+    await body().findByRole("group", { name: "Documentation" });
+    await userEvent.click(docs);
+    const dialog = await body().findByRole("dialog", { name: "Documentation" });
+    await waitFor(() => expect(dialog).toContainElement(document.activeElement as HTMLElement));
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(body().queryByRole("dialog")).toBeNull());
+    await waitFor(() => expect(docs).toHaveFocus());
+  },
+};
