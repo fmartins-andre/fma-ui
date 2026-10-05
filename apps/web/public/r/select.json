@@ -6,7 +6,7 @@
   "description": "A listbox-style picker (react-aria-components' Select) with a trigger, popover, groups, and an optional search input — richer than the native <select> (see native-select for that).",
   "dependencies": [
     "cn@^0.4.0",
-    "lucide-react@^1.48.0",
+    "lucide-react@^1.52.0",
     "react-aria-components@^1.21.1"
   ],
   "registryDependencies": [

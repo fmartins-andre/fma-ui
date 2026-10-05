@@ -6,7 +6,7 @@
   "description": "A searchable list of commands or actions, filtered live as you type. Export CommandDialog wraps it in a Dialog for a full command-palette (⌘K) pattern. Pass `CommandEmpty` through `CommandList`'s `renderEmptyState`, not as a child: the list only accepts items, groups and separators.",
   "dependencies": [
     "cn@^0.4.0",
-    "lucide-react@^1.48.0",
+    "lucide-react@^1.52.0",
     "react-aria-components@^1.21.1"
   ],
   "registryDependencies": [

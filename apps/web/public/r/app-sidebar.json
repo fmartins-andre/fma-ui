@@ -5,7 +5,7 @@
   "author": "@fma-ui/ui",
   "description": "An app-shell sidebar block, collapsible to icons: a team switcher (or a static logo), one navigation section per `data.nav` entry and a user menu. Driven by an `AppSidebarData` object, so teams, sections and items are data. Items with sub-items expand inline (`variant: \"collapse\"`) or open a menu (`\"dropdown\"`, and always while collapsed to icons). Links are react-aria `Link`s: wrap the app in `RouterProvider` for client-side routing. `onTeamChange`, `onAddTeam` and `onUserAction` handle the menus. Render inside a `SidebarProvider`.",
   "dependencies": [
-    "lucide-react@^1.48.0"
+    "lucide-react@^1.52.0"
   ],
   "registryDependencies": [
     "@fma-ui/sidebar",

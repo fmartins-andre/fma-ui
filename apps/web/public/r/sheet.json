@@ -6,7 +6,7 @@
   "description": "A modal panel that slides in from an edge of the screen (top/right/bottom/left) — for navigation drawers, filters, or forms that need more room than a popover.",
   "dependencies": [
     "cn@^0.4.0",
-    "lucide-react@^1.48.0",
+    "lucide-react@^1.52.0",
     "react-aria-components@^1.21.1"
   ],
   "registryDependencies": [

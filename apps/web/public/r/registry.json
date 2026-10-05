@@ -21,7 +21,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -140,7 +140,7 @@
         "@fma-ui/avatar"
       ],
       "dependencies": [
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "stable",
@@ -291,7 +291,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -425,7 +425,7 @@
         "@internationalized/date@^3.12.4",
         "class-variance-authority@^0.7.1",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -490,7 +490,7 @@
       "dependencies": [
         "cn@^0.4.0",
         "embla-carousel-react@^8.6.0",
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "stable",
@@ -552,7 +552,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -618,7 +618,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -654,7 +654,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -687,7 +687,7 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -732,7 +732,7 @@
       "dependencies": [
         "@tanstack/react-table@^8.21.3",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -945,7 +945,7 @@
       "dependencies": [
         "@internationalized/date@^3.12.4",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -979,7 +979,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -1071,7 +1071,7 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -1207,7 +1207,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1",
         "@internationalized/date@^3.12.4"
       ],
@@ -1544,7 +1544,7 @@
       "dependencies": [
         "cn@^0.4.0",
         "input-otp@^1.5.0",
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "stable",
@@ -1832,7 +1832,7 @@
       "dependencies": [
         "@shadcn/react@^0.3.1",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "experimental",
@@ -1863,7 +1863,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "stable",
@@ -1894,7 +1894,7 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -1930,7 +1930,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "stable",
@@ -2024,7 +2024,7 @@
       "dependencies": [
         "@shadcn/react@^0.3.1",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "experimental",
@@ -2084,7 +2084,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "react-resizable-panels@^4.14.1"
+        "react-resizable-panels@^4.14.2"
       ],
       "meta": {
         "status": "stable",
@@ -2145,7 +2145,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -2209,7 +2209,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -2251,7 +2251,7 @@
       "dependencies": [
         "class-variance-authority@^0.7.1",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -2283,7 +2283,7 @@
       "dependencies": [
         "@internationalized/date@^3.12.4",
         "cn@^0.4.0",
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"
       ],
       "meta": {
@@ -2373,7 +2373,7 @@
         }
       ],
       "dependencies": [
-        "lucide-react@^1.48.0",
+        "lucide-react@^1.52.0",
         "next-themes@^0.4.6",
         "sonner@^2.0.8"
       ],
@@ -2404,7 +2404,7 @@
       ],
       "dependencies": [
         "cn@^0.4.0",
-        "lucide-react@^1.48.0"
+        "lucide-react@^1.52.0"
       ],
       "meta": {
         "status": "stable",
