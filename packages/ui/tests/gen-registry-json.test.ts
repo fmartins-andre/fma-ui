@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   detectNpmDependencies,
@@ -134,7 +136,9 @@ describe("npm dependency versions", () => {
     expect(packageName("@internationalized/date")).toBe("@internationalized/date");
   });
 
-  it("ships the tested TanStack Table major with the data grid", () => {
-    expect(processComponent("data-grid")?.dependencies).toContain("@tanstack/react-table@^8.21.3");
+  it("ships the data grid with the TanStack Table range it was tested against", () => {
+    const range = JSON.parse(readFileSync(join(__dirname, "..", "package.json"), "utf8"))
+      .dependencies["@tanstack/react-table"];
+    expect(processComponent("data-grid")?.dependencies).toContain(`@tanstack/react-table@${range}`);
   });
 });
