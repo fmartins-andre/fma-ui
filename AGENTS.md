@@ -21,6 +21,8 @@ packages/ui/        → @fma-ui/ui: os componentes
   src/core/<nome>/<nome>.stories.tsx  story do Storybook (obrigatória)
   src/lib/, src/hooks/                libs e hooks publicados como registry:lib / registry:hook
                                       (<nome>.ts + <nome>.meta.json, ou pasta <nome>/ com meta.json)
+  src/blocks/<nome>/                  blocos (registry:block): composições multi-arquivo de
+                                      componentes, com meta.json e <nome>.stories.tsx
   src/design-tokens/                  stories dos tokens; tokens em src/styles.css (Tailwind v4)
   scripts/                            gen-registry-json, add-shadcn, add-from-registry
   tests/                              testes unit (vitest) + gates estruturais
@@ -93,6 +95,8 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
    (`<nome>.meta.json` ao lado do arquivo, ou `meta.json` dentro da pasta da lib); em vez de
    story, exigem testes unit em `tests/` importando `@/lib/<nome>` / `@/hooks/<nome>`.
    `src/lib/utils.ts` não é publicado. Testes unit rodam com `TZ=UTC`.
+   Blocos em `src/blocks/<nome>/` publicam todos os `.ts(x)` da pasta (menos stories) e
+   instalam em `components/<nome>/`; em vez de teste unit, exigem `<nome>.stories.tsx`.
 3. **`meta.json`**:
    - `source`: `"shadcn"` (vendorizado como está), `"customized"` (oficial alterado — mude
      pra isso ao editar um componente `shadcn`), `"original"` (nosso) ou `"third-party"`

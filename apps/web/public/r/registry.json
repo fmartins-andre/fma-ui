@@ -98,6 +98,63 @@
       }
     },
     {
+      "name": "app-sidebar",
+      "type": "registry:block",
+      "title": "App Sidebar",
+      "description": "An app-shell sidebar block, collapsible to icons: a team switcher (or a static logo), one navigation section per `data.nav` entry and a user menu. Driven by an `AppSidebarData` object, so teams, sections and items are data. Items with sub-items expand inline (`variant: \"collapse\"`) or open a menu (`\"dropdown\"`, and always while collapsed to icons). Links are react-aria `Link`s: wrap the app in `RouterProvider` for client-side routing. `onTeamChange`, `onAddTeam` and `onUserAction` handle the menus. Render inside a `SidebarProvider`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/app-sidebar/app-sidebar.tsx",
+          "target": "components/app-sidebar/app-sidebar.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/app-sidebar/nav-section.tsx",
+          "target": "components/app-sidebar/nav-section.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/app-sidebar/nav-user.tsx",
+          "target": "components/app-sidebar/nav-user.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/app-sidebar/team-switcher.tsx",
+          "target": "components/app-sidebar/team-switcher.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/blocks/app-sidebar/types.ts",
+          "target": "components/app-sidebar/types.ts",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "sidebar",
+        "collapsible",
+        "dropdown-menu",
+        "avatar"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "origin": "shadcn/ui block sidebar-07 (via EMITTE), rebuilt on the registry's react-aria Sidebar, Collapsible and DropdownMenu",
+        "tags": [
+          "block",
+          "sidebar",
+          "navigation",
+          "app-shell"
+        ]
+      }
+    },
+    {
       "name": "aspect-ratio",
       "type": "registry:ui",
       "title": "Aspect Ratio",

@@ -1,6 +1,6 @@
 // Scans src/core/*/meta.json + the matching <name>.tsx (registry:ui), plus the
-// libs in src/lib and hooks in src/hooks that have metadata (registry:lib /
-// registry:hook), and produces registry.json (the shadcn-schema file that
+// libs, hooks and blocks in src/lib, src/hooks and src/blocks that have
+// metadata (registry:lib / registry:hook / registry:block), and produces registry.json (the shadcn-schema file that
 // `shadcn build` then compiles into apps/web/public/r/*.json).
 //
 // Run via `pnpm generate:registry` (packages/ui) or `pnpm build` at the repo root.
@@ -12,14 +12,17 @@ import { ComponentMetaSchema } from "@fma-ui/registry";
 
 const CORE_DIR = "src/core";
 
-// Non-component modules published as their own registry items. Two shapes:
+// Modules published as their own registry items, besides src/core. Two shapes:
 //   <dir>/<name>/meta.json       → every .ts/.tsx file in that folder (e.g. lib/input-masks/)
 //   <dir>/<name>.meta.json       → the single <dir>/<name>.ts(x) next to it (e.g. lib/types.ts)
-// Files keep their path under lib/ or hooks/ on install, so "@/lib/<name>"
-// imports resolve the same in the consumer as they do here.
+// Files keep their path under lib/, hooks/ or components/ on install, so
+// "@/lib/<name>" imports resolve the same in the consumer as they do here.
+// Blocks (src/blocks/<name>/) are multi-file compositions of core components,
+// installed as components/<name>/; their stories are left out like core's.
 const MODULE_DIRS = [
   { dir: "src/lib", target: "lib", type: "registry:lib" },
   { dir: "src/hooks", target: "hooks", type: "registry:hook" },
+  { dir: "src/blocks", target: "components", type: "registry:block" },
 ] as const;
 const OUTPUT_FILE = "registry.json";
 
@@ -188,7 +191,7 @@ function processModule(module: { id: string; metaPath: string; files: string[] }
     files: module.files.map((file) => ({
       path: file,
       target: `${base.target}/${file.slice(base.dir.length + 1)}`,
-      type: base.type,
+      type: base.type === "registry:block" ? "registry:component" : base.type,
     })),
     ...(registryDependencies.length > 0 && { registryDependencies }),
     dependencies: detectNpmDependencies(source),
@@ -215,7 +218,7 @@ export function main() {
   }
 
   const modules = discoverModules();
-  console.log(`Found ${modules.length} libs/hooks`);
+  console.log(`Found ${modules.length} libs/hooks/blocks`);
   for (const module of modules) {
     const item = processModule(module);
     items.push(item);
