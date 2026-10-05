@@ -15,6 +15,10 @@ export default defineConfig({
       {
         extends: true,
         plugins: [storybookTest({ configDir: path.join(dirname, ".storybook") })],
+        // react-stately's Virtualizer reads process.env.VIRT_ON when NODE_ENV is
+        // "test", and there's no `process` in the browser. Setting it also keeps
+        // real virtualization on (it's off under test by default).
+        define: { "process.env.VIRT_ON": "true" },
         test: {
           name: "storybook",
           browser: {
