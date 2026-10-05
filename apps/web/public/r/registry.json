@@ -1078,6 +1078,37 @@
       }
     },
     {
+      "name": "icon-stack",
+      "type": "registry:ui",
+      "title": "Icon Stack",
+      "description": "A layered icon illustration for empty states: three receding cards drawn from `currentColor`, with an optional glyph (`children`) laid flat on the front card. Pairs with `EmptyMedia`. Decorative: the SVG is hidden from assistive tech, so give the glyph `aria-hidden` too.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "feedback"
+      ],
+      "files": [
+        {
+          "path": "src/core/icon-stack/icon-stack.tsx",
+          "target": "components/ui/icon-stack.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/icon-stack, MIT), via EMITTE",
+        "tags": [
+          "feedback",
+          "empty-state",
+          "illustration",
+          "icon"
+        ]
+      }
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
