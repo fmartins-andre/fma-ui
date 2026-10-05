@@ -1452,7 +1452,16 @@ interface EventCalendarViewConfig<TData = unknown> {
   interval: number;
   maxEventsPerCell: number | "auto";
   showWeekNumbers: boolean;
+  /**
+   * Single-key view shortcuts (`labels.viewShortcuts`, and each day-count
+   * preset's number), also shown as hints in the view switcher. Ignored with
+   * a modifier held, while typing in a field, or inside an overlay.
+   */
   enableShortcuts: boolean;
+  /**
+   * "focus-within" (default): keys work only while focus is inside the
+   * calendar. "global": keys work anywhere on the page.
+   */
   shortcutsScope: "focus-within" | "global";
   /**
    * "contained" (default): the calendar fills its container and views scroll
@@ -1796,6 +1805,61 @@ function splitOptions<TData>(props: Record<string, unknown>): {
   };
 }
 
+const SHORTCUT_IGNORED_TARGETS =
+  "input, textarea, select, [contenteditable]:not([contenteditable=false]), [role=dialog], [role=alertdialog], [role=menu], [role=listbox]";
+
+/**
+ * Switches views on single-key shortcuts. Listens natively, in the capture
+ * phase, on the root ("focus-within") or on `window` ("global"): react-aria
+ * stops keydown propagation in its components, so a React `onKeyDown` on the
+ * root would miss keys pressed on a focused button. A native listener on the
+ * root also never sees keys from portaled surfaces (popovers, menus).
+ */
+function useViewShortcuts<TData>(
+  instance: EventCalendarInstance<TData>,
+  viewConfig: Pick<
+    EventCalendarViewConfig,
+    "enableShortcuts" | "shortcutsScope" | "dayCountPresets"
+  >,
+  rootRef: RefObject<HTMLElement | null>,
+) {
+  const presetsRef = useRef(viewConfig.dayCountPresets);
+  presetsRef.current = viewConfig.dayCountPresets;
+  const { enableShortcuts, shortcutsScope } = viewConfig;
+
+  useEffect(() => {
+    const target = shortcutsScope === "global" ? window : rootRef.current;
+    if (!enableShortcuts || !target) return;
+
+    const onKeyDown = (event: Event) => {
+      if (!(event instanceof KeyboardEvent) || event.repeat) return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (!(event.target instanceof Element)) return;
+      if (event.target.closest(SHORTCUT_IGNORED_TARGETS)) return;
+
+      const key = event.key.toLowerCase();
+      const { views, i18n } = instance.settings;
+      for (const view of views) {
+        if (view === "days") {
+          const count = presetsRef.current.find((n) => String(n) === key);
+          if (count === undefined) continue;
+          event.preventDefault();
+          instance.api.setView("days", { dayCount: count });
+          return;
+        }
+        if (i18n.labels.viewShortcuts[view]?.toLowerCase() === key) {
+          event.preventDefault();
+          instance.api.setView(view);
+          return;
+        }
+      }
+    };
+
+    target.addEventListener("keydown", onKeyDown, true);
+    return () => target.removeEventListener("keydown", onKeyDown, true);
+  }, [instance, enableShortcuts, shortcutsScope, rootRef]);
+}
+
 /**
  * Root provider + container. Composition contract:
  * <EventCalendar><EventCalendarNav/><EventCalendarToolbar/><EventCalendarContent/></EventCalendar>
@@ -1825,10 +1889,15 @@ function EventCalendar<TData = unknown>({
 
   // Register the root element so the drag engine can find day cells even when a
   // gesture starts from a portaled surface (the "+N more" popover).
+  const rootRef = useRef<HTMLElement | null>(null);
   const registerRoot = useCallback(
-    (el: HTMLElement | null) => instance.internals.setRootEl(el),
+    (el: HTMLElement | null) => {
+      rootRef.current = el;
+      instance.internals.setRootEl(el);
+    },
     [instance],
   );
+  useViewShortcuts(instance, viewConfig, rootRef);
 
   const defaultProps = {
     "data-slot": "event-calendar",

@@ -263,3 +263,56 @@ export const ControlledView: Story = {
     await waitFor(() => expect(canvas.getByTestId("view")).toHaveTextContent("month"));
   },
 };
+
+function ShortcutsDemo() {
+  return (
+    <div className="flex h-[560px] w-[720px] flex-col gap-2">
+      <input aria-label="Outside" className="rounded border px-2" />
+      <div className="flex min-h-0 flex-1 flex-col rounded-lg border">
+        <EventCalendar
+          defaultEvents={EVENTS}
+          defaultView="week"
+          defaultDate={TODAY}
+          timeZone="UTC"
+          locale="en-US"
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <input aria-label="Inside" className="rounded border px-2" />
+          <EventCalendarNav />
+          <EventCalendarContent />
+        </EventCalendar>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The keys hinted in the view switcher switch views while focus is inside the
+ * calendar (`shortcutsScope="focus-within"`), but not while typing in a field.
+ */
+export const KeyboardShortcuts: Story = {
+  render: () => <ShortcutsDemo />,
+  play: async ({ canvasElement, canvas }) => {
+    const view = () => slot(canvasElement, "event-calendar-content")?.getAttribute("data-view");
+    await expect(view()).toBe("week");
+
+    await userEvent.click(canvas.getByRole("textbox", { name: "Outside" }));
+    await userEvent.keyboard("m");
+    await userEvent.click(canvas.getByRole("textbox", { name: "Inside" }));
+    await userEvent.keyboard("m");
+    await expect(view()).toBe("week");
+
+    // The switcher stays mounted across views, so focus stays in the calendar.
+    const switcher = canvas.getByRole("button", { name: /Select view/ });
+    switcher.focus();
+    await userEvent.keyboard("{Control>}m{/Control}");
+    await expect(view()).toBe("week");
+    await userEvent.keyboard("m");
+    await waitFor(() => expect(view()).toBe("month"));
+    await userEvent.keyboard("D");
+    await waitFor(() => expect(view()).toBe("day"));
+    await userEvent.keyboard("5");
+    await waitFor(() => expect(view()).toBe("days"));
+    await expect(switcher).toHaveTextContent(/5/);
+  },
+};
