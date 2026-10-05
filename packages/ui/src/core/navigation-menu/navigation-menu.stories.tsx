@@ -6,6 +6,7 @@ import meta from "./meta.json";
 import {
   NavigationMenu,
   NavigationMenuContent,
+  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
@@ -96,6 +97,7 @@ const componentMeta = {
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
+      <NavigationMenuIndicator />
     </NavigationMenu>
   ),
 } satisfies Meta<typeof NavigationMenu>;
@@ -228,5 +230,31 @@ export const OpenOnHover: Story = {
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(body().queryByRole("dialog")).toBeNull());
     await waitFor(() => expect(docs).toHaveFocus());
+  },
+};
+
+/** `NavigationMenuIndicator` sits under the open item's trigger and follows it. */
+export const Indicator: Story = {
+  play: async ({ canvasElement, canvas }) => {
+    const indicator = canvasElement.querySelector<HTMLElement>(
+      "[data-slot=navigation-menu-indicator]",
+    );
+    await expect(indicator).toHaveAttribute("data-state", "hidden");
+    const centre = (el: Element) => {
+      const box = el.getBoundingClientRect();
+      return box.left + box.width / 2;
+    };
+    for (const name of ["Documentation", "Company"]) {
+      const trigger = canvas.getByRole("button", { name });
+      await userEvent.click(trigger);
+      await body().findByRole("dialog", { name });
+      await waitFor(() => expect(indicator).toHaveAttribute("data-state", "visible"));
+      // Wait out the slide transition.
+      await waitFor(() =>
+        expect(Math.abs(centre(indicator as HTMLElement) - centre(trigger))).toBeLessThan(1),
+      );
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => expect(indicator).toHaveAttribute("data-state", "hidden"));
+    }
   },
 };

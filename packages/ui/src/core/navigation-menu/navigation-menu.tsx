@@ -26,6 +26,7 @@ type MenuContextValue = {
   timer: React.RefObject<ReturnType<typeof setTimeout> | undefined>;
   /** Latest open state, for handlers react-aria may hold from an earlier render. */
   current: React.RefObject<{ openId: string | null; isPeek: boolean }>;
+  navRef: React.RefObject<HTMLElement | null>;
 };
 
 const MenuContext = React.createContext<MenuContextValue | null>(null);
@@ -124,6 +125,7 @@ function NavigationMenu({
       closeDelay,
       timer,
       current,
+      navRef,
     }),
     [state, openOnHover, delay, closeDelay],
   );
@@ -286,6 +288,46 @@ function NavigationMenuContent({
   );
 }
 
+/**
+ * Optional arrow under the open item's trigger that slides to the next one
+ * when another dropdown opens. Place it inside `NavigationMenu`, after the list.
+ */
+function NavigationMenuIndicator({ className, style, ...props }: React.ComponentProps<"div">) {
+  const menu = React.useContext(MenuContext);
+  const [box, setBox] = React.useState<{ left: number; width: number } | null>(null);
+  const openId = menu?.openId ?? null;
+  const navRef = menu?.navRef;
+
+  React.useLayoutEffect(() => {
+    if (openId === null) return;
+    const nav = navRef?.current;
+    const trigger = nav?.querySelector<HTMLElement>(
+      "[data-slot=navigation-menu-trigger][aria-expanded=true]",
+    );
+    if (!nav || !trigger) return;
+    const navBox = nav.getBoundingClientRect();
+    const triggerBox = trigger.getBoundingClientRect();
+    setBox({ left: triggerBox.left - navBox.left, width: triggerBox.width });
+  }, [openId, navRef]);
+
+  // Keeps its last position while hidden, so it fades out in place.
+  return (
+    <div
+      aria-hidden="true"
+      data-slot="navigation-menu-indicator"
+      data-state={openId !== null && box ? "visible" : "hidden"}
+      className={cn(
+        "pointer-events-none absolute top-full left-0 z-60 flex h-2 items-end justify-center overflow-hidden transition-[translate,width,opacity] duration-200 data-[state=hidden]:opacity-0",
+        className,
+      )}
+      style={{ translate: `${box?.left ?? 0}px 0`, width: box?.width ?? 0, ...style }}
+      {...props}
+    >
+      <div className="relative top-[60%] size-2 rotate-45 rounded-tl-sm bg-popover ring-1 ring-foreground/10" />
+    </div>
+  );
+}
+
 function NavigationMenuLink({ className, onPress, ...props }: LinkProps) {
   const item = React.useContext(ItemContext);
   return (
@@ -310,6 +352,7 @@ export type { NavigationMenuContentProps, NavigationMenuProps };
 export {
   NavigationMenu,
   NavigationMenuContent,
+  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
