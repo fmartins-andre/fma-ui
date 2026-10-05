@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "masked-input",
+  "title": "Masked Input",
+  "author": "@fma-ui/ui",
+  "description": "An `Input` with live Maskito formatting. `mask` takes a preset name (\"cpf\", \"cnpj\", \"cpf-cnpj\", \"cep\", \"phone\", \"credit-card\", \"date\", \"time\", \"date-time\", \"date-range\", \"decimal\"), a parameterized preset such as `{ type: \"decimal\", prefix: \"R$ \" }` (safe to write inline), or custom Maskito options. Presets set `inputMode`, `autoComplete` and a placeholder. `onValueChange` receives the raw value (digits, ISO date, dot-decimal) and the masked text; `value` may be either, so a form can store only the raw value. Works inside a react-aria `TextField`. For other inputs, such as `InputGroupInput`, spread `useMask(...).inputProps` instead.",
+  "dependencies": [],
+  "registryDependencies": [
+    "input",
+    "use-mask"
+  ],
+  "files": [
+    {
+      "path": "src/core/masked-input/masked-input.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Input } from \"@/core/input/input\";\nimport { type UseMaskOptions, useMask } from \"@/hooks/use-mask\";\n\ntype MaskedInputProps = Omit<React.ComponentProps<typeof Input>, \"value\" | \"defaultValue\"> &\n  UseMaskOptions;\n\nfunction MaskedInput({\n  mask,\n  value,\n  defaultValue,\n  onValueChange,\n  onChange,\n  ref: forwardedRef,\n  ...props\n}: MaskedInputProps) {\n  const { inputProps } = useMask({ mask, value, defaultValue, onValueChange });\n  const { ref: maskRef, onChange: onMaskChange, ...maskProps } = inputProps;\n\n  // Stable, so Maskito isn't detached and re-attached on every render.\n  const setRef = React.useCallback(\n    (node: HTMLInputElement | null) => {\n      maskRef(node);\n      if (typeof forwardedRef === \"function\") forwardedRef(node);\n      else if (forwardedRef) forwardedRef.current = node;\n    },\n    [maskRef, forwardedRef],\n  );\n\n  return (\n    <Input\n      data-slot=\"masked-input\"\n      {...maskProps}\n      {...props}\n      value={maskProps.value}\n      ref={setRef}\n      onChange={(event) => {\n        onMaskChange(event);\n        onChange?.(event);\n      }}\n    />\n  );\n}\n\nexport type { MaskedInputProps };\nexport { MaskedInput };\n",
+      "type": "registry:component",
+      "target": "components/ui/masked-input.tsx"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "forms",
+      "input",
+      "mask",
+      "pt-BR"
+    ]
+  },
+  "categories": [
+    "forms"
+  ],
+  "type": "registry:ui"
+}

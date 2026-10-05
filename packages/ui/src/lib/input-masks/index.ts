@@ -12,5 +12,6 @@ export * from "./date-range-mask";
 export * from "./date-time-mask";
 export * from "./decimal-mask";
 export * from "./phone-mask";
+export * from "./presets";
 export * from "./stable-mask";
 export * from "./time-mask";

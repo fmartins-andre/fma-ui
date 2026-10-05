@@ -1216,6 +1216,11 @@
           "type": "registry:lib"
         },
         {
+          "path": "src/lib/input-masks/presets.ts",
+          "target": "lib/input-masks/presets.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "src/lib/input-masks/stable-mask.ts",
           "target": "lib/input-masks/stable-mask.ts",
           "type": "registry:lib"
@@ -1430,6 +1435,38 @@
         "tags": [
           "chat",
           "data-display"
+        ]
+      }
+    },
+    {
+      "name": "masked-input",
+      "type": "registry:ui",
+      "title": "Masked Input",
+      "description": "An `Input` with live Maskito formatting. `mask` takes a preset name (\"cpf\", \"cnpj\", \"cpf-cnpj\", \"cep\", \"phone\", \"credit-card\", \"date\", \"time\", \"date-time\", \"date-range\", \"decimal\"), a parameterized preset such as `{ type: \"decimal\", prefix: \"R$ \" }` (safe to write inline), or custom Maskito options. Presets set `inputMode`, `autoComplete` and a placeholder. `onValueChange` receives the raw value (digits, ISO date, dot-decimal) and the masked text; `value` may be either, so a form can store only the raw value. Works inside a react-aria `TextField`. For other inputs, such as `InputGroupInput`, spread `useMask(...).inputProps` instead.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/masked-input/masked-input.tsx",
+          "target": "components/ui/masked-input.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "input",
+        "use-mask"
+      ],
+      "dependencies": [],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "forms",
+          "input",
+          "mask",
+          "pt-BR"
         ]
       }
     },
@@ -2298,6 +2335,40 @@
           "date",
           "hook",
           "validation"
+        ]
+      }
+    },
+    {
+      "name": "use-mask",
+      "type": "registry:hook",
+      "title": "Use Mask",
+      "description": "useMask: applies an input-masks preset (\"cpf\", \"phone\", { type: \"decimal\", prefix: \"R$ \" }…) or custom Maskito options to any input. Spread `inputProps` onto Input, InputGroupInput or a native input; it carries the masked value, Maskito's ref, and per-preset inputMode, autoComplete and placeholder. Reports the raw value through onValueChange, accepts a raw or masked controlled value, and reads the value of an enclosing react-aria TextField.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/hooks/use-mask.ts",
+          "target": "hooks/use-mask.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "registryDependencies": [
+        "input-masks"
+      ],
+      "dependencies": [
+        "@maskito/react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "hook",
+          "forms",
+          "mask",
+          "pt-BR"
         ]
       }
     },

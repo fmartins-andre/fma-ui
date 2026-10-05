@@ -1,0 +1,8 @@
+{
+  "name": "use-mask",
+  "category": "forms",
+  "status": "stable",
+  "source": "original",
+  "description": "useMask: applies an input-masks preset (\"cpf\", \"phone\", { type: \"decimal\", prefix: \"R$ \" }…) or custom Maskito options to any input. Spread `inputProps` onto Input, InputGroupInput or a native input; it carries the masked value, Maskito's ref, and per-preset inputMode, autoComplete and placeholder. Reports the raw value through onValueChange, accepts a raw or masked controlled value, and reads the value of an enclosing react-aria TextField.",
+  "tags": ["hook", "forms", "mask", "pt-BR"]
+}
