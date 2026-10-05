@@ -1,0 +1,988 @@
+"use client";
+
+import {
+  flexRender,
+  type RowData,
+  type Column as TanstackColumn,
+  type Row as TanstackRow,
+  type Table as TanstackTable,
+} from "@tanstack/react-table";
+import { cn } from "cn";
+import {
+  ArrowDownIcon,
+  ArrowLeftIcon,
+  ArrowLeftToLineIcon,
+  ArrowRightIcon,
+  ArrowRightToLineIcon,
+  ArrowUpIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsUpDownIcon,
+  CirclePlusIcon,
+  GripVerticalIcon,
+  PinIcon,
+  PinOffIcon,
+} from "lucide-react";
+import * as React from "react";
+import {
+  Button as AriaButton,
+  Cell,
+  Column,
+  ColumnResizer,
+  Dialog,
+  DialogTrigger,
+  type DragAndDropOptions,
+  type Key,
+  ListBox,
+  ListBoxItem,
+  ResizableTableContainer,
+  Row,
+  type Selection,
+  type SortDescriptor,
+  Table,
+  TableBody,
+  TableHeader,
+  TableLayout,
+  useDragAndDrop,
+  Virtualizer,
+} from "react-aria-components";
+import { Badge } from "@/core/badge/badge";
+import { Button } from "@/core/button/button";
+import { Checkbox } from "@/core/checkbox/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/core/dropdown-menu/dropdown-menu";
+import { Input } from "@/core/input/input";
+import { Popover } from "@/core/popover/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/select/select";
+import { Skeleton } from "@/core/skeleton/skeleton";
+import { Spinner } from "@/core/spinner/spinner";
+
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    /** Label for the header menu, visibility menu and filters. */
+    headerTitle?: string;
+    headerClassName?: string;
+    cellClassName?: string;
+    /** Placeholder shown in this column's cells while loading. */
+    skeleton?: React.ReactNode;
+    /** Takes the remaining width (a `1fr` column). */
+    autoSize?: boolean;
+  }
+}
+
+/** Label for a column: `meta.headerTitle`, a string `columnDef.header`, or `column.id`. */
+function getColumnHeaderLabel<TData, TValue>(column: TanstackColumn<TData, TValue>): string {
+  const { meta, header } = column.columnDef;
+  if (typeof meta?.headerTitle === "string") return meta.headerTitle;
+  if (typeof header === "string") return header;
+  return column.id;
+}
+
+type DataGridLayout = {
+  /** Tighter cell padding. */
+  dense?: boolean;
+  cellBorder?: boolean;
+  /** Borders between rows. Defaults to true. */
+  rowBorder?: boolean;
+  /** Alternating row background. */
+  stripped?: boolean;
+  headerBackground?: boolean;
+  /** Keeps the header visible while the body scrolls (give the grid a height). */
+  headerSticky?: boolean;
+  /** "fixed" (default) sizes columns from `size`; "auto" lets the content decide. */
+  width?: "auto" | "fixed";
+  /** Lets users drag column edges to resize (fixed width only). */
+  columnsResizable?: boolean;
+  /** Adds pin left/right to `DataGridColumnHeader` menus. */
+  columnsPinnable?: boolean;
+  /** Adds move left/right to `DataGridColumnHeader` menus. */
+  columnsMovable?: boolean;
+  /** Adds a column visibility submenu to `DataGridColumnHeader` menus that ask for it. */
+  columnsVisibility?: boolean;
+};
+
+type DataGridProps<TData> = {
+  table: TanstackTable<TData>;
+  /** Total rows across pages (the server's total with manual pagination). */
+  recordCount: number;
+  isLoading?: boolean;
+  /** "skeleton" (default) shows placeholder rows; "spinner" overlays the current rows. */
+  loadingMode?: "skeleton" | "spinner";
+  emptyMessage?: React.ReactNode;
+  /** Makes rows actionable: pressing one (or Enter on it) calls this. */
+  onRowClick?: (row: TData) => void;
+  tableLayout?: DataGridLayout;
+  className?: string;
+  children?: React.ReactNode;
+};
+
+type DataGridContextValue = Omit<DataGridProps<unknown>, "table" | "children"> & {
+  table: TanstackTable<unknown>;
+  layout: DataGridLayout;
+};
+
+const DataGridContext = React.createContext<DataGridContextValue | null>(null);
+
+function useDataGrid<TData = unknown>() {
+  const context = React.useContext(DataGridContext);
+  if (!context) throw new Error("useDataGrid must be used within a DataGrid");
+  return context as Omit<DataGridContextValue, "table"> & { table: TanstackTable<TData> };
+}
+
+/** Provides the TanStack `table` to the grid parts (table, pagination, headers). */
+function DataGrid<TData>({
+  table,
+  tableLayout,
+  className,
+  children,
+  ...props
+}: DataGridProps<TData>) {
+  // Rebuilt every render on purpose: the table instance is stable while its
+  // state changes, and the parts must re-render with it.
+  const value: DataGridContextValue = {
+    // The context is untyped; useDataGrid<TData>() restores the row type.
+    ...(props as Omit<DataGridProps<unknown>, "table" | "children">),
+    table: table as TanstackTable<unknown>,
+    layout: { rowBorder: true, width: "fixed", ...tableLayout },
+  };
+  return (
+    <DataGridContext.Provider value={value}>
+      <div data-slot="data-grid" className={cn("flex w-full flex-col gap-2.5", className)}>
+        {children}
+      </div>
+    </DataGridContext.Provider>
+  );
+}
+
+/** Frames the table: border, rounded corners and clipping. */
+function DataGridContainer({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="data-grid-container"
+      className={cn("w-full overflow-hidden rounded-lg border", className)}
+      {...props}
+    />
+  );
+}
+
+function pinningStyle<TData>(column: TanstackColumn<TData>): React.CSSProperties | undefined {
+  const pinned = column.getIsPinned();
+  if (!pinned) return undefined;
+  return {
+    position: "sticky",
+    zIndex: 1,
+    ...(pinned === "left"
+      ? { left: column.getStart("left") }
+      : { right: column.getAfter("right") }),
+  };
+}
+
+type DataGridTableProps = {
+  "aria-label"?: string;
+  className?: string;
+  /**
+   * Enables row reordering by drag and drop (rows need a `DataGridRowDragHandle`).
+   * Receives react-aria's reorder event: the dragged keys (row ids) and the target.
+   */
+  onRowsReorder?: DragAndDropOptions["onReorder"];
+  /** Renders only the visible rows. Give the table a fixed height through `className`. */
+  isVirtualized?: boolean;
+  /** Row height for virtualization, in pixels. */
+  rowHeight?: number;
+};
+
+/**
+ * Renders the grid with react-aria's `Table`: keyboard navigation between
+ * cells, `aria-sort`, selection and resizing come from react-aria while
+ * TanStack holds the data model.
+ */
+function DataGridTable({
+  "aria-label": ariaLabel = "Data grid",
+  className,
+  onRowsReorder,
+  isVirtualized,
+  rowHeight = 40,
+}: DataGridTableProps) {
+  const {
+    table,
+    layout,
+    isLoading,
+    loadingMode = "skeleton",
+    emptyMessage,
+    onRowClick,
+  } = useDataGrid();
+  const state = table.getState();
+  const columns = [
+    ...table.getLeftVisibleLeafColumns(),
+    ...table.getCenterVisibleLeafColumns(),
+    ...table.getRightVisibleLeafColumns(),
+  ];
+  // The first column holding data names each row (not a checkbox or handle).
+  const rowHeaderId = (columns.find((column) => column.accessorFn) ?? columns[0])?.id;
+  const headers = new Map(
+    table.getFlatHeaders().map((header) => [header.column.id, header] as const),
+  );
+  const rows = [...table.getTopRows(), ...table.getCenterRows()];
+  const rowsById = new Map(rows.map((row) => [row.id, row]));
+  const showSkeleton = isLoading && loadingMode === "skeleton";
+  const skeletonIds = Array.from(
+    { length: state.pagination.pageSize || 5 },
+    (_, index) => `skeleton-${index}`,
+  );
+
+  const { enableRowSelection } = table.options;
+  const isSelectable = enableRowSelection === true || typeof enableRowSelection === "function";
+  const canSortRows = !!(table.options.getSortedRowModel || table.options.manualSorting);
+  const sorting = state.sorting[0];
+  const sortDescriptor: SortDescriptor | undefined = sorting && {
+    column: sorting.id,
+    direction: sorting.desc ? "descending" : "ascending",
+  };
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    getItems: (keys) => [...keys].map((key) => ({ "text/plain": String(key) })),
+    onReorder: onRowsReorder,
+    isDisabled: !onRowsReorder,
+  });
+
+  const fixed = layout.width === "fixed";
+  const cellPadding = layout.dense ? "px-2.5 py-1.5" : "px-4 py-2.5";
+
+  const onSelectionChange = (keys: Selection) => {
+    const pageIds = new Set(rows.map((row) => row.id));
+    const selected = keys === "all" ? [...pageIds] : [...keys].map(String);
+    // Keep selections made on other pages.
+    const next: Record<string, boolean> = {};
+    for (const [id, isSelected] of Object.entries(state.rowSelection)) {
+      if (isSelected && !pageIds.has(id)) next[id] = true;
+    }
+    for (const id of selected) next[id] = true;
+    table.setRowSelection(next);
+  };
+
+  let content = (
+    <Table
+      aria-label={ariaLabel}
+      data-slot="data-grid-table"
+      sortDescriptor={sortDescriptor}
+      onSortChange={(descriptor) =>
+        table.setSorting([
+          { id: String(descriptor.column), desc: descriptor.direction === "descending" },
+        ])
+      }
+      selectionMode={isSelectable && !showSkeleton ? "multiple" : "none"}
+      selectedKeys={Object.keys(state.rowSelection).filter((id) => state.rowSelection[id])}
+      onSelectionChange={onSelectionChange}
+      disabledKeys={rows.filter((row) => isSelectable && !row.getCanSelect()).map((row) => row.id)}
+      onRowAction={
+        onRowClick && !showSkeleton
+          ? (key) => {
+              const row = rowsById.get(String(key));
+              if (row) onRowClick(row.original);
+            }
+          : undefined
+      }
+      dragAndDropHooks={onRowsReorder ? dragAndDropHooks : undefined}
+      className={cn(
+        "w-full caption-bottom border-separate border-spacing-0 text-sm outline-none",
+        fixed && "table-fixed",
+      )}
+    >
+      <TableHeader
+        className={cn(
+          layout.headerBackground && "bg-muted/40",
+          layout.headerSticky && "sticky top-0 z-10 bg-background",
+        )}
+      >
+        {columns.map((column) => {
+          const header = headers.get(column.id);
+          const width = column.columnDef.meta?.autoSize ? "1fr" : column.getSize();
+          return (
+            <Column
+              key={column.id}
+              id={column.id}
+              isRowHeader={column.id === rowHeaderId}
+              allowsSorting={canSortRows && column.getCanSort() && !showSkeleton}
+              width={fixed ? width : undefined}
+              minWidth={fixed ? column.columnDef.minSize : undefined}
+              style={pinningStyle(column)}
+              className={cn(
+                "group/column relative h-10 border-b text-left align-middle font-medium whitespace-nowrap text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
+                isVirtualized && "flex items-center",
+                layout.dense ? "px-2.5" : "px-4",
+                layout.cellBorder && "border-e last:border-e-0",
+                column.getIsPinned() && "bg-background",
+                column.columnDef.meta?.headerClassName,
+              )}
+            >
+              <div className="flex items-center gap-1">
+                <div className="min-w-0 flex-1">
+                  {header && !header.isPlaceholder
+                    ? flexRender(column.columnDef.header, header.getContext())
+                    : null}
+                </div>
+                {layout.columnsResizable && fixed && column.getCanResize() && (
+                  <ColumnResizer
+                    aria-label={`Resize ${getColumnHeaderLabel(column)}`}
+                    className="absolute inset-y-0 -end-px z-10 w-1.5 cursor-col-resize touch-none bg-transparent outline-none data-focus-visible:bg-ring data-hovered:bg-border data-resizing:bg-ring"
+                  />
+                )}
+              </div>
+            </Column>
+          );
+        })}
+      </TableHeader>
+      <TableBody
+        renderEmptyState={() => (
+          <div className="py-10 text-center text-sm text-muted-foreground">
+            {emptyMessage ?? "No data available."}
+          </div>
+        )}
+      >
+        {showSkeleton
+          ? skeletonIds.map((id) => (
+              <Row key={id} id={id} className={rowClassName(layout, isVirtualized)}>
+                {columns.map((column) => (
+                  <Cell
+                    key={column.id}
+                    className={cn(cellPadding, cellClassName(layout, isVirtualized))}
+                  >
+                    {column.columnDef.meta?.skeleton ?? <Skeleton className="h-4 w-full" />}
+                  </Cell>
+                ))}
+              </Row>
+            ))
+          : rows.map((row) => (
+              <Row
+                key={row.id}
+                id={row.id}
+                // Names the row in drag-and-drop and selection announcements.
+                textValue={String((rowHeaderId && row.getValue(rowHeaderId)) ?? row.id)}
+                data-pinned={row.getIsPinned() || undefined}
+                className={cn(
+                  rowClassName(layout, isVirtualized),
+                  onRowClick && "cursor-pointer",
+                  "data-pinned:bg-muted/40",
+                )}
+              >
+                {[
+                  ...row.getLeftVisibleCells(),
+                  ...row.getCenterVisibleCells(),
+                  ...row.getRightVisibleCells(),
+                ].map((cell) => (
+                  <Cell
+                    key={cell.id}
+                    style={pinningStyle(cell.column)}
+                    className={cn(
+                      cellPadding,
+                      cellClassName(layout, isVirtualized),
+                      cell.column.getIsPinned() && "bg-background",
+                      cell.column.columnDef.meta?.cellClassName,
+                    )}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Cell>
+                ))}
+              </Row>
+            ))}
+      </TableBody>
+    </Table>
+  );
+
+  if (isVirtualized) {
+    content = (
+      <Virtualizer layout={TableLayout} layoutOptions={{ rowHeight, headingHeight: rowHeight }}>
+        {content}
+      </Virtualizer>
+    );
+  }
+
+  return (
+    <div
+      data-slot="data-grid-table-container"
+      aria-busy={isLoading || undefined}
+      className="relative"
+    >
+      <ResizableTableContainer
+        onResize={(widths) => {
+          const sizing: Record<string, number> = {};
+          for (const [id, width] of widths)
+            if (typeof width === "number") sizing[String(id)] = width;
+          table.setColumnSizing((old) => ({ ...old, ...sizing }));
+        }}
+        className={cn("relative w-full overflow-auto", className)}
+      >
+        {content}
+      </ResizableTableContainer>
+      {isLoading && loadingMode === "spinner" && (
+        <div
+          data-slot="data-grid-loading"
+          className="absolute inset-0 z-20 flex items-center justify-center bg-background/60"
+        >
+          <Spinner className="size-6" aria-label="Loading" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Native table rows can't draw borders (border-separate), so cells do. A
+// virtualized table renders positioned divs instead: the row draws the border
+// and cells center their content with flex.
+function rowClassName(layout: DataGridLayout, isVirtualized?: boolean) {
+  return cn(
+    "outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset data-hovered:bg-muted/40 data-selected:bg-muted data-dragging:opacity-50 data-drop-target:bg-accent",
+    layout.stripped && "odd:bg-muted/30",
+    isVirtualized && layout.rowBorder && "border-b",
+  );
+}
+
+function cellClassName(layout: DataGridLayout, isVirtualized?: boolean) {
+  return cn(
+    "align-middle outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
+    isVirtualized && "flex items-center",
+    !isVirtualized && layout.rowBorder && "border-b [tr:last-child>&]:border-b-0",
+    layout.cellBorder && "border-e last:border-e-0",
+  );
+}
+
+/** Row selection checkbox: in a header it selects the page, in a cell its row. */
+function DataGridRowSelect(props: Omit<React.ComponentProps<typeof Checkbox>, "slot">) {
+  return <Checkbox slot="selection" {...props} />;
+}
+
+/** Drag handle for `onRowsReorder`; put it in a cell. */
+function DataGridRowDragHandle({ className, ...props }: React.ComponentProps<typeof AriaButton>) {
+  return (
+    <AriaButton
+      slot="drag"
+      className={cn(
+        "flex size-7 cursor-grab items-center justify-center rounded-md text-muted-foreground outline-none data-focus-visible:ring-2 data-focus-visible:ring-ring/50 data-hovered:bg-muted",
+        className as string,
+      )}
+      {...props}
+    >
+      <GripVerticalIcon aria-hidden="true" className="size-4" />
+    </AriaButton>
+  );
+}
+
+/** Pins a row to the top (TanStack row pinning); put it in a cell. */
+function DataGridRowPin<TData>({ row }: { row: TanstackRow<TData> }) {
+  const isPinned = row.getIsPinned();
+  return (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label={isPinned ? "Unpin row" : "Pin row"}
+      aria-pressed={!!isPinned}
+      onPress={() => row.pin(isPinned ? false : "top")}
+    >
+      {isPinned ? <PinOffIcon aria-hidden="true" /> : <PinIcon aria-hidden="true" />}
+    </Button>
+  );
+}
+
+type DataGridColumnHeaderProps<TData, TValue> = {
+  column: TanstackColumn<TData, TValue>;
+  /** Defaults to `getColumnHeaderLabel(column)`. */
+  title?: string;
+  icon?: React.ReactNode;
+  /** Adds the column visibility submenu (with `tableLayout.columnsVisibility`). */
+  visibility?: boolean;
+  className?: string;
+};
+
+/**
+ * A header with a sort indicator. With pinning, moving or visibility enabled
+ * in `tableLayout`, the title opens a menu with those actions and sorting.
+ */
+function DataGridColumnHeader<TData, TValue>({
+  column,
+  title,
+  icon,
+  visibility = false,
+  className,
+}: DataGridColumnHeaderProps<TData, TValue>) {
+  const { table, layout, isLoading } = useDataGrid<TData>();
+  const label = title ?? getColumnHeaderLabel(column);
+  const sorted = column.getIsSorted();
+  const pinned = column.getIsPinned();
+  const canSort = column.getCanSort();
+  const canPin = !!layout.columnsPinnable && column.getCanPin();
+  const order = table.getState().columnOrder.length
+    ? table.getState().columnOrder
+    : table.getAllLeafColumns().map((leaf) => leaf.id);
+  const index = order.indexOf(column.id);
+
+  const sortIcon = canSort ? (
+    sorted === "desc" ? (
+      <ArrowDownIcon aria-hidden="true" className="size-3.5" />
+    ) : sorted === "asc" ? (
+      <ArrowUpIcon aria-hidden="true" className="size-3.5" />
+    ) : (
+      <ChevronsUpDownIcon aria-hidden="true" className="size-3.5 opacity-60" />
+    )
+  ) : null;
+
+  const hasMenu = canPin || layout.columnsMovable || (layout.columnsVisibility && visibility);
+
+  if (!hasMenu) {
+    return (
+      <span className={cn("inline-flex items-center gap-1.5", className)}>
+        {icon}
+        {label}
+        {sortIcon}
+      </span>
+    );
+  }
+
+  const move = (offset: number) => {
+    const next = [...order];
+    const [moved] = next.splice(index, 1);
+    if (moved === undefined) return;
+    next.splice(index + offset, 0, moved);
+    table.setColumnOrder(next);
+  };
+
+  const onAction = (key: Key) => {
+    switch (key) {
+      case "asc":
+      case "desc":
+        if (sorted === key) column.clearSorting();
+        else column.toggleSorting(key === "desc");
+        break;
+      case "pin-left":
+        column.pin(pinned === "left" ? false : "left");
+        break;
+      case "pin-right":
+        column.pin(pinned === "right" ? false : "right");
+        break;
+      case "move-left":
+        move(-1);
+        break;
+      case "move-right":
+        move(1);
+        break;
+      default:
+        table.getColumn(String(key))?.toggleVisibility();
+    }
+  };
+
+  const hideable = table.getAllLeafColumns().filter((leaf) => leaf.getCanHide());
+  const check = (isOn: boolean) =>
+    isOn ? <CheckIcon aria-hidden="true" className="ml-auto text-primary" /> : null;
+
+  return (
+    <div className="-ms-2 flex items-center gap-1">
+      <DropdownMenuTrigger>
+        <Button
+          variant="ghost"
+          size="sm"
+          isDisabled={isLoading}
+          className={cn("h-7 gap-1.5 px-2 font-medium text-muted-foreground", className)}
+        >
+          {icon}
+          {label}
+          {sortIcon}
+        </Button>
+        <DropdownMenu aria-label={`${label} column`} className="w-44" onAction={onAction}>
+          {canSort && (
+            <DropdownMenuGroup aria-label="Sort">
+              <DropdownMenuItem id="asc" textValue="Ascending">
+                <ArrowUpIcon aria-hidden="true" />
+                Ascending
+                {check(sorted === "asc")}
+              </DropdownMenuItem>
+              <DropdownMenuItem id="desc" textValue="Descending">
+                <ArrowDownIcon aria-hidden="true" />
+                Descending
+                {check(sorted === "desc")}
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          )}
+          {canPin && (
+            <>
+              {canSort && <DropdownMenuSeparator />}
+              <DropdownMenuGroup aria-label="Pin">
+                <DropdownMenuItem id="pin-left" textValue="Pin to left">
+                  <ArrowLeftToLineIcon aria-hidden="true" />
+                  Pin to left
+                  {check(pinned === "left")}
+                </DropdownMenuItem>
+                <DropdownMenuItem id="pin-right" textValue="Pin to right">
+                  <ArrowRightToLineIcon aria-hidden="true" />
+                  Pin to right
+                  {check(pinned === "right")}
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </>
+          )}
+          {layout.columnsMovable && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup aria-label="Move">
+                <DropdownMenuItem id="move-left" isDisabled={index <= 0 || !!pinned}>
+                  <ArrowLeftIcon aria-hidden="true" />
+                  Move left
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  id="move-right"
+                  isDisabled={index >= order.length - 1 || !!pinned}
+                >
+                  <ArrowRightIcon aria-hidden="true" />
+                  Move right
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </>
+          )}
+          {layout.columnsVisibility && visibility && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup aria-label="Columns">
+                <DropdownMenuLabel>Columns</DropdownMenuLabel>
+                {hideable.map((leaf) => (
+                  <DropdownMenuItem
+                    key={leaf.id}
+                    id={leaf.id}
+                    textValue={getColumnHeaderLabel(leaf)}
+                  >
+                    {getColumnHeaderLabel(leaf)}
+                    {check(leaf.getIsVisible())}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            </>
+          )}
+        </DropdownMenu>
+      </DropdownMenuTrigger>
+      {canPin && pinned && (
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          aria-label={`Unpin ${label} column`}
+          onPress={() => column.pin(false)}
+        >
+          <PinOffIcon aria-hidden="true" className="opacity-60" />
+        </Button>
+      )}
+    </div>
+  );
+}
+
+/** A menu to show or hide columns; `trigger` is the button that opens it. */
+function DataGridColumnVisibility<TData>({
+  table,
+  trigger,
+}: {
+  table: TanstackTable<TData>;
+  trigger: React.ReactElement;
+}) {
+  const hideable = table.getAllLeafColumns().filter((column) => column.getCanHide());
+  return (
+    <DropdownMenuTrigger>
+      {trigger}
+      <DropdownMenu
+        aria-label="Columns"
+        placement="bottom end"
+        className="min-w-40"
+        selectionMode="multiple"
+        selectedKeys={hideable.filter((column) => column.getIsVisible()).map((column) => column.id)}
+        onSelectionChange={(keys) => {
+          const visible = keys === "all" ? null : new Set([...keys].map(String));
+          for (const column of hideable)
+            column.toggleVisibility(!visible || visible.has(column.id));
+        }}
+      >
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+          {hideable.map((column) => (
+            <DropdownMenuItem
+              key={column.id}
+              id={column.id}
+              textValue={getColumnHeaderLabel(column)}
+            >
+              {getColumnHeaderLabel(column)}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenu>
+    </DropdownMenuTrigger>
+  );
+}
+
+type DataGridColumnFilterProps<TData, TValue> = {
+  column?: TanstackColumn<TData, TValue>;
+  title?: string;
+  options: { label: string; value: string; icon?: React.ComponentType<{ className?: string }> }[];
+};
+
+/**
+ * A faceted filter: a button opening a searchable list of options. The
+ * column's filter value becomes the array of selected values (pair it with
+ * `filterFn: "arrIncludesSome"`); counts come from `getFacetedUniqueValues`.
+ */
+function DataGridColumnFilter<TData, TValue>({
+  column,
+  title,
+  options,
+}: DataGridColumnFilterProps<TData, TValue>) {
+  const [query, setQuery] = React.useState("");
+  const facets = column?.getFacetedUniqueValues?.();
+  const value = column?.getFilterValue();
+  const selected = new Set(Array.isArray(value) ? (value as string[]) : []);
+  const shown = options.filter((option) =>
+    option.label.toLowerCase().includes(query.toLowerCase()),
+  );
+  const setSelected = (values: string[]) =>
+    column?.setFilterValue(values.length ? values : undefined);
+
+  return (
+    <DialogTrigger>
+      <Button variant="outline" size="sm" className="border-dashed">
+        <CirclePlusIcon aria-hidden="true" />
+        {title}
+        {selected.size > 0 && (
+          <Badge variant="secondary" className="ms-1 px-1 font-normal">
+            {selected.size > 2
+              ? `${selected.size} selected`
+              : options
+                  .filter((option) => selected.has(option.value))
+                  .map((option) => option.label)
+                  .join(", ")}
+          </Badge>
+        )}
+      </Button>
+      <Popover placement="bottom start" className="w-56 gap-0 p-0">
+        <Dialog aria-label={title ?? "Filter"} className="outline-none">
+          <div className="p-2">
+            <Input
+              aria-label={`Search ${title ?? "options"}`}
+              placeholder={title}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="h-8"
+            />
+          </div>
+          <ListBox
+            aria-label={title ?? "Options"}
+            selectionMode="multiple"
+            // Escape closes the popover instead of clearing the filter.
+            escapeKeyBehavior="none"
+            selectedKeys={selected}
+            onSelectionChange={(keys) =>
+              setSelected(
+                keys === "all" ? options.map((option) => option.value) : [...keys].map(String),
+              )
+            }
+            items={shown}
+            renderEmptyState={() => (
+              <div className="py-6 text-center text-sm text-muted-foreground">
+                No results found.
+              </div>
+            )}
+            className="max-h-72 overflow-y-auto p-1 outline-none"
+          >
+            {(option) => (
+              <ListBoxItem
+                id={option.value}
+                textValue={option.label}
+                className="group/option flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none data-focused:bg-accent data-focused:text-accent-foreground"
+              >
+                <span className="flex size-4 items-center justify-center rounded-sm border border-primary opacity-50 group-data-selected/option:bg-primary group-data-selected/option:text-primary-foreground group-data-selected/option:opacity-100">
+                  <CheckIcon
+                    aria-hidden="true"
+                    className="size-3.5 invisible group-data-selected/option:visible"
+                  />
+                </span>
+                {option.icon && <option.icon className="size-4 text-muted-foreground" />}
+                <span>{option.label}</span>
+                {facets?.get(option.value) !== undefined && (
+                  <span className="ms-auto font-mono text-xs">{facets.get(option.value)}</span>
+                )}
+              </ListBoxItem>
+            )}
+          </ListBox>
+          {selected.size > 0 && (
+            <div className="border-t p-1">
+              <Button variant="ghost" size="sm" className="w-full" onPress={() => setSelected([])}>
+                Clear filters
+              </Button>
+            </div>
+          )}
+        </Dialog>
+      </Popover>
+    </DialogTrigger>
+  );
+}
+
+type DataGridPaginationProps = {
+  sizes?: number[];
+  /** "{from}", "{to}" and "{count}" are replaced. */
+  info?: string;
+  rowsPerPageLabel?: string;
+  previousPageLabel?: string;
+  nextPageLabel?: string;
+  /** How many page buttons show at once before an ellipsis. */
+  moreLimit?: number;
+  className?: string;
+};
+
+function DataGridPagination({
+  sizes = [5, 10, 25, 50, 100],
+  info = "{from} - {to} of {count}",
+  rowsPerPageLabel = "Rows per page",
+  previousPageLabel = "Previous page",
+  nextPageLabel = "Next page",
+  moreLimit = 5,
+  className,
+}: DataGridPaginationProps) {
+  const { table, recordCount, isLoading } = useDataGrid();
+  const { pageIndex, pageSize } = table.getState().pagination;
+  const pageCount = table.getPageCount();
+  const from = recordCount === 0 ? 0 : pageIndex * pageSize + 1;
+  const to = Math.min((pageIndex + 1) * pageSize, recordCount);
+  const groupStart = Math.floor(pageIndex / moreLimit) * moreLimit;
+  const groupEnd = Math.min(groupStart + moreLimit, pageCount);
+  const pages = Array.from({ length: groupEnd - groupStart }, (_, i) => groupStart + i);
+
+  if (isLoading) {
+    return (
+      <div data-slot="data-grid-pagination" className={cn("flex justify-between", className)}>
+        <Skeleton className="h-8 w-44" />
+        <Skeleton className="h-8 w-60" />
+      </div>
+    );
+  }
+
+  return (
+    <nav
+      aria-label="Pagination"
+      data-slot="data-grid-pagination"
+      className={cn(
+        "flex flex-col flex-wrap items-center justify-between gap-2.5 sm:flex-row",
+        className,
+      )}
+    >
+      <div className="flex items-center gap-2.5">
+        <Select
+          aria-label={rowsPerPageLabel}
+          value={String(pageSize)}
+          onChange={(key) => table.setPageSize(Number(key))}
+          className="flex items-center gap-2.5"
+        >
+          <span className="text-sm text-muted-foreground">{rowsPerPageLabel}</span>
+          <SelectTrigger size="sm" className="w-18">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {sizes.map((size) => (
+              <SelectItem key={size} id={String(size)}>
+                {String(size)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col items-center gap-2.5 sm:flex-row">
+        <span className="text-sm text-nowrap text-muted-foreground">
+          {info
+            .replaceAll("{from}", String(from))
+            .replaceAll("{to}", String(to))
+            .replaceAll("{count}", String(recordCount))}
+        </span>
+        {pageCount > 1 && (
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label={previousPageLabel}
+              isDisabled={!table.getCanPreviousPage()}
+              onPress={() => table.previousPage()}
+            >
+              <ChevronLeftIcon aria-hidden="true" className="rtl:rotate-180" />
+            </Button>
+            {groupStart > 0 && (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Page ${groupStart}`}
+                onPress={() => table.setPageIndex(groupStart - 1)}
+              >
+                …
+              </Button>
+            )}
+            {pages.map((page) => (
+              <Button
+                key={page}
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Page ${page + 1}`}
+                aria-current={page === pageIndex ? "page" : undefined}
+                className="text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-accent-foreground"
+                onPress={() => table.setPageIndex(page)}
+              >
+                {page + 1}
+              </Button>
+            ))}
+            {groupEnd < pageCount && (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Page ${groupEnd + 1}`}
+                onPress={() => table.setPageIndex(groupEnd)}
+              >
+                …
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label={nextPageLabel}
+              isDisabled={!table.getCanNextPage()}
+              onPress={() => table.nextPage()}
+            >
+              <ChevronRightIcon aria-hidden="true" className="rtl:rotate-180" />
+            </Button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+export type {
+  DataGridColumnFilterProps,
+  DataGridColumnHeaderProps,
+  DataGridLayout,
+  DataGridPaginationProps,
+  DataGridProps,
+  DataGridTableProps,
+};
+export {
+  DataGrid,
+  DataGridColumnFilter,
+  DataGridColumnHeader,
+  DataGridColumnVisibility,
+  DataGridContainer,
+  DataGridPagination,
+  DataGridRowDragHandle,
+  DataGridRowPin,
+  DataGridRowSelect,
+  DataGridTable,
+  getColumnHeaderLabel,
+  useDataGrid,
+};

@@ -703,6 +703,52 @@
       }
     },
     {
+      "name": "data-grid",
+      "type": "registry:ui",
+      "title": "Data Grid",
+      "description": "A data grid driven by a TanStack Table instance (`useReactTable`) and rendered with react-aria's `Table`, which brings cell keyboard navigation, `aria-sort`, selection, column resizing, row drag and drop and virtualization. Wrap parts in `DataGrid table={table} recordCount={…}`: `DataGridTable`, `DataGridPagination`, `DataGridColumnHeader` (sort indicator, plus a menu for pinning, moving and visibility when `tableLayout` enables them), `DataGridColumnVisibility`, `DataGridColumnFilter` (faceted, use `filterFn: \"arrIncludesSome\"`), `DataGridRowSelect` (with `enableRowSelection`), `DataGridRowPin` and `DataGridRowDragHandle` (with `onRowsReorder`). Sorting is wired when the table has `getSortedRowModel` or `manualSorting`. `isLoading` shows skeleton rows (`meta.skeleton`) or a spinner; `meta.autoSize` columns take the remaining width.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/data-grid/data-grid.tsx",
+          "target": "components/ui/data-grid.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "checkbox",
+        "dropdown-menu",
+        "input",
+        "popover",
+        "select",
+        "skeleton",
+        "spinner"
+      ],
+      "dependencies": [
+        "@tanstack/react-table",
+        "cn",
+        "lucide-react",
+        "react-aria-components"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/data-grid, MIT), via EMITTE; rendering rebuilt on react-aria Table",
+        "tags": [
+          "data-display",
+          "table",
+          "grid",
+          "tanstack",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "date-availability",
       "type": "registry:lib",
       "title": "Date Availability",
