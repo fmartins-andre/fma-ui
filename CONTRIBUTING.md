@@ -221,8 +221,16 @@ Para testar o consumo localmente:
 
 ```bash
 pnpm dev   # apps/web na porta 3000
-npx shadcn add http://localhost:3000/r/button.json   # em outro projeto
+# em outro projeto, com "registries": { "@fma-ui": "http://localhost:3000/r/{name}.json" }
+# no components.json:
+npx shadcn add @fma-ui/button
 ```
+
+Os itens instalam em `components/fma-ui/`, `hooks/fma-ui/` e `lib/fma-ui/` e dependem uns dos
+outros por `@fma-ui/<nome>` (veja `scripts/gen-registry-json.ts`). O CLI reescreve os imports
+entre itens para esses caminhos, mas só quando o import nomeia um arquivo: importe libs em pasta
+por um arquivo (`@/lib/date-fns-compat/index`), nunca pela pasta — o teste
+`registry-consistency` barra isso.
 
 ## Git hooks e CI
 

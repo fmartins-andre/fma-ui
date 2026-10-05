@@ -12,7 +12,7 @@
       "path": "src/core/collapsible/collapsible.tsx",
       "content": "import {\n  type ButtonProps,\n  DisclosurePanel as CollapsibleContentPrimitive,\n  Disclosure as CollapsiblePrimitive,\n  Button as CollapsibleTriggerPrimitive,\n  type DisclosurePanelProps,\n  type DisclosureProps,\n} from \"react-aria-components\";\n\nfunction Collapsible({ ...props }: DisclosureProps) {\n  return <CollapsiblePrimitive data-slot=\"collapsible\" {...props} />;\n}\n\nfunction CollapsibleTrigger({ ...props }: ButtonProps) {\n  return <CollapsibleTriggerPrimitive slot=\"trigger\" data-slot=\"collapsible-trigger\" {...props} />;\n}\n\nfunction CollapsibleContent({ ...props }: DisclosurePanelProps) {\n  return <CollapsibleContentPrimitive data-slot=\"collapsible-content\" {...props} />;\n}\n\nexport { Collapsible, CollapsibleContent, CollapsibleTrigger };\n",
       "type": "registry:component",
-      "target": "components/ui/collapsible.tsx"
+      "target": "components/fma-ui/collapsible.tsx"
     }
   ],
   "meta": {

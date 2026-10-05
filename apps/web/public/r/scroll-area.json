@@ -12,7 +12,7 @@
       "path": "src/core/scroll-area/scroll-area.tsx",
       "content": "import { cn } from \"cn\";\nimport type * as React from \"react\";\n\nfunction ScrollArea({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  // Use native scrollbar-width and scrollbar-color to customize the scrollbar.\n  return (\n    <div\n      data-slot=\"scroll-area\"\n      className={cn(\n        \"relative [scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent] overflow-auto outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1\",\n        className,\n      )}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}\n\nexport { ScrollArea };\n",
       "type": "registry:component",
-      "target": "components/ui/scroll-area.tsx"
+      "target": "components/fma-ui/scroll-area.tsx"
     }
   ],
   "meta": {

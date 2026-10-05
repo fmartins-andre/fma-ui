@@ -12,7 +12,7 @@
       "path": "src/core/skeleton/skeleton.tsx",
       "content": "import { cn } from \"cn\";\n\nfunction Skeleton({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"skeleton\"\n      className={cn(\"animate-pulse rounded-md bg-muted\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { Skeleton };\n",
       "type": "registry:component",
-      "target": "components/ui/skeleton.tsx"
+      "target": "components/fma-ui/skeleton.tsx"
     }
   ],
   "meta": {

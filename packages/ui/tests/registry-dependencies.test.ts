@@ -6,7 +6,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Registry } from "@fma-ui/registry";
 import { describe, expect, it } from "vitest";
-import { detectNpmDependencies, detectRegistryDependencies } from "../scripts/gen-registry-json";
+import {
+  detectNpmDependencies,
+  detectRegistryDependencies,
+  NAMESPACE,
+} from "../scripts/gen-registry-json";
 
 const ROOT = join(__dirname, "..");
 
@@ -32,7 +36,7 @@ describe.each(registry.items.map((item) => [item.name, item] as const))(
 
     it("declares exactly the registryDependencies its source actually cross-imports", () => {
       expect(new Set(item.registryDependencies ?? [])).toEqual(
-        new Set(detectRegistryDependencies(source, name)),
+        new Set(detectRegistryDependencies(source, name).map((id) => `${NAMESPACE}/${id}`)),
       );
     });
 
@@ -47,8 +51,10 @@ describe.each(registry.items.map((item) => [item.name, item] as const))(
 
     it("every declared registryDependency points at a real item in this registry", () => {
       for (const dep of item.registryDependencies ?? []) {
+        // Namespaced, so the shadcn CLI resolves it here and not in the official registry.
+        expect(dep.startsWith(`${NAMESPACE}/`), `"${dep}" isn't namespaced`).toBe(true);
         expect(
-          registryItemNames.has(dep),
+          registryItemNames.has(dep.slice(NAMESPACE.length + 1)),
           `registryDependency "${dep}" declared by ${name} doesn't exist in registry.json`,
         ).toBe(true);
       }

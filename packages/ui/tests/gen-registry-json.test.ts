@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { detectNpmDependencies, detectRegistryDependencies } from "../scripts/gen-registry-json";
+import {
+  detectNpmDependencies,
+  detectRegistryDependencies,
+  discoverModules,
+  NAMESPACE,
+  processComponent,
+  processModule,
+} from "../scripts/gen-registry-json";
 
 describe("detectNpmDependencies", () => {
   it("collects real npm package imports", () => {
@@ -71,5 +78,42 @@ describe("detectRegistryDependencies", () => {
       "types",
       "use-mobile",
     ]);
+  });
+});
+
+// Built from the real sources: everything installs under "fma-ui" folders and
+// depends on other items through the namespace, so a consumer's official
+// shadcn components can't overwrite or stand in for ours.
+describe("generated items", () => {
+  const moduleItem = (id: string) => {
+    const module = discoverModules().find((candidate) => candidate.id === id);
+    if (!module) throw new Error(`No module ${id}`);
+    return processModule(module);
+  };
+
+  it("installs components into components/fma-ui with namespaced dependencies", () => {
+    const item = processComponent("menubar");
+    expect(item?.files).toEqual([
+      expect.objectContaining({ target: "components/fma-ui/menubar.tsx" }),
+    ]);
+    expect(item?.registryDependencies).toEqual([`${NAMESPACE}/dropdown-menu`]);
+  });
+
+  it("installs hooks and libs into hooks/fma-ui and lib/fma-ui", () => {
+    const hook = moduleItem("use-mask");
+    expect(hook.files.map((file) => file.target)).toEqual(["hooks/fma-ui/use-mask.ts"]);
+    expect(hook.registryDependencies).toEqual([`${NAMESPACE}/input-masks`]);
+
+    const lib = moduleItem("input-masks");
+    expect(lib.files.map((file) => file.target)).toContain("lib/fma-ui/input-masks/cpf-mask.ts");
+  });
+
+  it("installs blocks into their own folder under components/fma-ui", () => {
+    const block = moduleItem("app-sidebar");
+    expect(block.type).toBe("registry:block");
+    expect(block.files.map((file) => file.target)).toContain(
+      "components/fma-ui/app-sidebar/app-sidebar.tsx",
+    );
+    expect(block.registryDependencies).toContain(`${NAMESPACE}/sidebar`);
   });
 });

@@ -6,7 +6,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ComponentMetaSchema } from "@fma-ui/registry";
 import { describe, expect, it } from "vitest";
-import { discoverModules } from "../scripts/gen-registry-json";
+import { discoverModules, stripComments } from "../scripts/gen-registry-json";
 
 const CORE_DIR = join(__dirname, "..", "src", "core");
 
@@ -79,3 +79,26 @@ describe.each(modules.map((module) => [module.id, module] as const))(
     });
   },
 );
+
+// The shadcn CLI rewrites imports between registry files to their installed
+// paths (under lib/fma-ui/ etc.), but only imports naming a file: a bare
+// folder import ("@/lib/date-fns-compat") is left pointing at the old path
+// and breaks in the consumer. Import folder modules through a file, e.g.
+// "@/lib/date-fns-compat/index".
+describe("published imports", () => {
+  const folderModules = modules
+    .filter((module) => module.metaPath.endsWith("/meta.json"))
+    .filter((module) => !module.metaPath.startsWith("src/blocks/"));
+  const publishedFiles = [
+    ...componentIds.map((id) => join("src/core", id, `${id}.tsx`)),
+    ...modules.flatMap((module) => module.files),
+  ];
+
+  it.each(publishedFiles)("%s imports folder modules through a file", (file) => {
+    const source = stripComments(readFileSync(join(UI_ROOT, file), "utf8"));
+    for (const module of folderModules) {
+      const base = module.metaPath.startsWith("src/hooks/") ? "hooks" : "lib";
+      expect(source).not.toMatch(new RegExp(`from\\s+["']@/${base}/${module.id}["']`));
+    }
+  });
+});

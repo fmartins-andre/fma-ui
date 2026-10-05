@@ -12,17 +12,26 @@ import { ComponentMetaSchema } from "@fma-ui/registry";
 
 const CORE_DIR = "src/core";
 
+// Everything installs under "fma-ui" folders and depends on other items
+// through the "@fma-ui" namespace, so a consumer's official shadcn
+// components (components/ui, hooks, lib) can never overwrite or stand in for
+// ours. Consumers register the namespace in their components.json.
+export const NAMESPACE = "@fma-ui";
+const INSTALL_DIR = "fma-ui";
+const toRegistryDependency = (id: string) => `${NAMESPACE}/${id}`;
+
 // Modules published as their own registry items, besides src/core. Two shapes:
 //   <dir>/<name>/meta.json       → every .ts/.tsx file in that folder (e.g. lib/input-masks/)
 //   <dir>/<name>.meta.json       → the single <dir>/<name>.ts(x) next to it (e.g. lib/types.ts)
-// Files keep their path under lib/, hooks/ or components/ on install, so
-// "@/lib/<name>" imports resolve the same in the consumer as they do here.
+// Files keep their relative path under lib/fma-ui/, hooks/fma-ui/ or
+// components/fma-ui/ on install; the shadcn CLI rewrites imports between
+// registry files to their installed paths.
 // Blocks (src/blocks/<name>/) are multi-file compositions of core components,
 // installed as components/<name>/; their stories are left out like core's.
 const MODULE_DIRS = [
-  { dir: "src/lib", target: "lib", type: "registry:lib" },
-  { dir: "src/hooks", target: "hooks", type: "registry:hook" },
-  { dir: "src/blocks", target: "components", type: "registry:block" },
+  { dir: "src/lib", target: `lib/${INSTALL_DIR}`, type: "registry:lib" },
+  { dir: "src/hooks", target: `hooks/${INSTALL_DIR}`, type: "registry:hook" },
+  { dir: "src/blocks", target: `components/${INSTALL_DIR}`, type: "registry:block" },
 ] as const;
 const OUTPUT_FILE = "registry.json";
 
@@ -47,7 +56,7 @@ function toPackageName(spec: string): string {
 // Drops block comments and whole-line "//" comments so import examples in
 // docs (e.g. "import { addDays } from 'date-fns'" in a JSDoc) aren't mistaken
 // for real imports.
-function stripComments(source: string): string {
+export function stripComments(source: string): string {
   return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
 }
 
@@ -99,7 +108,7 @@ export function detectRegistryDependencies(source: string, componentId: string):
   return [...deps];
 }
 
-function processComponent(componentId: string): RegistryItem | null {
+export function processComponent(componentId: string): RegistryItem | null {
   const dir = join(CORE_DIR, componentId);
   const metaPath = join(dir, "meta.json");
   const sourcePath = join(dir, `${componentId}.tsx`);
@@ -124,11 +133,13 @@ function processComponent(componentId: string): RegistryItem | null {
     files: [
       {
         path: `src/core/${componentId}/${componentId}.tsx`,
-        target: `components/ui/${componentId}.tsx`,
+        target: `components/${INSTALL_DIR}/${componentId}.tsx`,
         type: "registry:component",
       },
     ],
-    ...(registryDependencies.length > 0 && { registryDependencies }),
+    ...(registryDependencies.length > 0 && {
+      registryDependencies: registryDependencies.map(toRegistryDependency),
+    }),
     dependencies: detectNpmDependencies(source),
     meta: toItemMeta(meta),
   };
@@ -170,7 +181,11 @@ export function discoverModules(root = "."): { id: string; metaPath: string; fil
   return modules;
 }
 
-function processModule(module: { id: string; metaPath: string; files: string[] }): RegistryItem {
+export function processModule(module: {
+  id: string;
+  metaPath: string;
+  files: string[];
+}): RegistryItem {
   // biome-ignore lint/style/noNonNullAssertion: discoverModules only returns paths under a MODULE_DIRS entry
   const base = MODULE_DIRS.find(({ dir }) => module.metaPath.startsWith(`${dir}/`))!;
   if (module.files.length === 0) {
@@ -193,7 +208,9 @@ function processModule(module: { id: string; metaPath: string; files: string[] }
       target: `${base.target}/${file.slice(base.dir.length + 1)}`,
       type: base.type === "registry:block" ? "registry:component" : base.type,
     })),
-    ...(registryDependencies.length > 0 && { registryDependencies }),
+    ...(registryDependencies.length > 0 && {
+      registryDependencies: registryDependencies.map(toRegistryDependency),
+    }),
     dependencies: detectNpmDependencies(source),
     meta: toItemMeta(meta),
   };

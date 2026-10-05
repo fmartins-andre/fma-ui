@@ -13,7 +13,7 @@
       "path": "src/core/hover-card/hover-card.tsx",
       "content": "import { cn } from \"cn\";\nimport {\n  Popover as PopoverPrimitive,\n  type PopoverProps as PopoverPrimitiveProps,\n  PreviewTrigger as PreviewTriggerPrimitive,\n  type PreviewTriggerProps,\n} from \"react-aria-components\";\n\nfunction HoverCardTrigger({ children, ...props }: PreviewTriggerProps) {\n  return (\n    <PreviewTriggerPrimitive data-slot=\"hover-card-trigger\" {...props}>\n      {children}\n    </PreviewTriggerPrimitive>\n  );\n}\n\nfunction HoverCard({\n  className,\n  placement = \"bottom\",\n  offset = 4,\n  crossOffset = 0,\n  ...props\n}: Omit<PopoverPrimitiveProps, \"className\"> & {\n  className?: string;\n}) {\n  return (\n    <PopoverPrimitive\n      data-slot=\"hover-card-content\"\n      placement={placement}\n      offset={offset}\n      crossOffset={crossOffset}\n      className={cn(\n        \"z-50 w-64 origin-(--trigger-anchor-point) rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-entering:animate-in data-entering:fade-in-0 data-entering:zoom-in-95 data-exiting:animate-out data-exiting:fade-out-0 data-exiting:zoom-out-95 data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { HoverCard, HoverCardTrigger };\n",
       "type": "registry:component",
-      "target": "components/ui/hover-card.tsx"
+      "target": "components/fma-ui/hover-card.tsx"
     }
   ],
   "meta": {

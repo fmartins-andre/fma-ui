@@ -26,10 +26,11 @@ componente é entregue como código-fonte direto no seu projeto, via o CLI do sh
 seu: leia, ajuste, apague o que não usa.
 
 ```bash
-npx shadcn@latest add https://ui.fmartinsandre.dev/r/button.json
+npx shadcn@latest add @fma-ui/button
 ```
 
-Pronto: `button.tsx` cai no seu projeto, com as dependências npm já instaladas.
+Pronto: `components/fma-ui/button.tsx` cai no seu projeto, com as dependências npm já
+instaladas.
 
 ## Por que fma-ui?
 
@@ -56,15 +57,9 @@ Se o seu projeto ainda não usa shadcn/ui, inicialize com a base react-aria:
 npx shadcn@latest init --base aria
 ```
 
-### 2. Adicione componentes
+### 2. Registre o namespace
 
-Pela URL direta:
-
-```bash
-npx shadcn@latest add https://ui.fmartinsandre.dev/r/button.json
-```
-
-Ou registre o namespace uma vez no seu `components.json`:
+Uma vez, no `components.json` do projeto:
 
 ```json
 {
@@ -74,16 +69,24 @@ Ou registre o namespace uma vez no seu `components.json`:
 }
 ```
 
-e use o atalho:
+É obrigatório: os itens dependem uns dos outros por `@fma-ui/<nome>`, e é o namespace que faz
+o CLI buscá-los aqui, e não no registro oficial do shadcn.
+
+### 3. Adicione componentes
 
 ```bash
 npx shadcn@latest add @fma-ui/button @fma-ui/dialog @fma-ui/select
 ```
 
-### 3. Use
+Tudo é instalado em pastas próprias: `components/fma-ui/`, `hooks/fma-ui/` e `lib/fma-ui/`
+(blocos em `components/fma-ui/<bloco>/`). Os componentes oficiais do shadcn continuam em
+`components/ui/`, então um `shadcn add` de lá nunca sobrescreve um componente do fma-ui, e os
+dois convivem no mesmo projeto.
+
+### 4. Use
 
 ```tsx
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/fma-ui/button";
 
 export function Example() {
   return <Button onPress={() => alert("Olá!")}>Clique aqui</Button>;
