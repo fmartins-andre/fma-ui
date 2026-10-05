@@ -446,7 +446,10 @@ function rowClassName(layout: DataGridLayout, isVirtualized?: boolean) {
   return cn(
     "outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset data-hovered:bg-muted/40 data-selected:bg-muted data-dragging:opacity-50 data-drop-target:bg-accent",
     layout.stripped && "odd:bg-muted/30",
-    isVirtualized && layout.rowBorder && "border-b",
+    // Virtualized rows are zero-height boxes (cells are positioned), so this
+    // border draws at each row's top: skip the first body row (rowindex 2,
+    // after the header), which sits right under the header's own border.
+    isVirtualized && layout.rowBorder && "border-b aria-[rowindex=2]:border-b-0",
   );
 }
 

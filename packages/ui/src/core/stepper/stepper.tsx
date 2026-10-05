@@ -132,7 +132,7 @@ function StepperItem({
       data-loading={loading || undefined}
       className={composeRenderProps(className, (className) =>
         cn(
-          "group/step flex items-center justify-center outline-none not-last:flex-1 group-data-[orientation=horizontal]/stepper-nav:flex-row group-data-[orientation=vertical]/stepper-nav:flex-col group-data-[orientation=vertical]/stepper-nav:items-start data-disabled:opacity-60",
+          "group/step flex items-center justify-center outline-none not-last:flex-1 group-data-[orientation=horizontal]/stepper-nav:flex-row group-data-[orientation=vertical]/stepper-nav:flex-col group-data-[orientation=horizontal]/stepper-nav:items-start group-data-[orientation=vertical]/stepper-nav:items-start data-disabled:opacity-60",
           className,
         ),
       )}
@@ -146,8 +146,9 @@ function StepperItem({
 }
 
 /** The clickable-looking part of a step; carries the focus ring. */
-// In vertical steppers the separator's start margin (11px) centers it under
-// the 24px indicator, so keep the indicator first in the trigger.
+// The separator's 11px offset (top when horizontal, start when vertical)
+// lines it up with the center of the 24px indicator, so keep the indicator
+// first in the trigger.
 function StepperTrigger({ className, ...props }: React.ComponentProps<"span">) {
   const { state, isLoading } = useStepItem();
   return (
@@ -192,7 +193,7 @@ function StepperSeparator({ className, ...props }: React.ComponentProps<"div">) 
       data-slot="stepper-separator"
       data-state={state}
       className={cn(
-        "m-0.5 rounded-sm bg-muted data-[state=completed]:bg-primary group-data-[orientation=horizontal]/stepper-nav:h-0.5 group-data-[orientation=horizontal]/stepper-nav:flex-1 group-data-[orientation=vertical]/stepper-nav:ms-[11px] group-data-[orientation=vertical]/stepper-nav:h-12 group-data-[orientation=vertical]/stepper-nav:w-0.5",
+        "m-0.5 rounded-sm bg-muted data-[state=completed]:bg-primary group-data-[orientation=horizontal]/stepper-nav:mt-[11px] group-data-[orientation=horizontal]/stepper-nav:h-0.5 group-data-[orientation=horizontal]/stepper-nav:flex-1 group-data-[orientation=vertical]/stepper-nav:ms-[11px] group-data-[orientation=vertical]/stepper-nav:h-12 group-data-[orientation=vertical]/stepper-nav:w-0.5",
         className,
       )}
       {...props}
