@@ -32,10 +32,11 @@ describe.each(componentIds)("src/core/%s", (id) => {
   });
 });
 
-// Libs (src/lib) and hooks (src/hooks) with metadata are published too. They
-// have no story, so the gate is: valid meta.json, at least one source file, and
-// unit tests importing them (tests/**/*.test.ts mentioning "@/lib/<id>" or
-// "@/hooks/<id>") — except type-only modules and the vendored shadcn hook.
+// Libs (src/lib), hooks (src/hooks) and blocks (src/blocks) with metadata are
+// published too. The gate is: valid meta.json, at least one source file, and
+// either unit tests importing them (libs/hooks: tests/**/*.test.ts mentioning
+// "@/lib/<id>" or "@/hooks/<id>", except type-only modules and the vendored
+// shadcn hook) or, for blocks, a colocated <id>.stories.tsx.
 const UI_ROOT = join(__dirname, "..");
 const UNTESTED_MODULES = new Set(["types", "use-mobile"]);
 
@@ -67,8 +68,14 @@ describe.each(modules.map((module) => [module.id, module] as const))(
       for (const file of module.files) expect(existsSync(join(UI_ROOT, file))).toBe(true);
     });
 
-    it.skipIf(UNTESTED_MODULES.has(id))("is covered by unit tests", () => {
+    const isBlock = module.metaPath.startsWith("src/blocks/");
+
+    it.skipIf(isBlock || UNTESTED_MODULES.has(id))("is covered by unit tests", () => {
       expect(testSources).toMatch(new RegExp(`["']@/(lib|hooks)/${id}["/]`));
+    });
+
+    it.runIf(isBlock)(`has a colocated ${id}.stories.tsx`, () => {
+      expect(existsSync(join(UI_ROOT, "src/blocks", id, `${id}.stories.tsx`))).toBe(true);
     });
   },
 );

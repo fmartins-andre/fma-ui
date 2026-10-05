@@ -5,6 +5,8 @@ const config: StorybookConfig = {
   stories: [
     // Colocated, one convention with meta.json: src/core/<name>/<name>.stories.tsx
     "../src/core/**/*.stories.tsx",
+    // Blocks: multi-file compositions, src/blocks/<name>/<name>.stories.tsx
+    "../src/blocks/**/*.stories.tsx",
     // Doc-only token catalogs (color/radius/typography) — no meta.json, not registry items.
     "../src/design-tokens/**/*.stories.tsx",
   ],
