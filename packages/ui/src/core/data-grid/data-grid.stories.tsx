@@ -599,6 +599,12 @@ export const Virtualized: Story = {
     const grid = canvas.getByRole("grid", { name: "Users" });
     await expect(grid).toHaveAttribute("aria-rowcount", "1001");
     await expect(canvas.getAllByRole("row").length).toBeLessThan(40);
+    // Rows scroll under the header, so its cells must paint an opaque background.
+    for (const header of canvas.getAllByRole("columnheader")) {
+      const { backgroundColor } = getComputedStyle(header);
+      await expect(backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+      await expect(backgroundColor).not.toMatch(/\/ 0?\.\d+\)$/);
+    }
   },
 };
 

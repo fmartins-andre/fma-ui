@@ -322,6 +322,7 @@ function DataGridTable({
   });
 
   const fixed = layout.width === "fixed";
+  const overlapsRows = layout.headerSticky || isVirtualized;
   const cellPadding = layout.dense ? "px-2.5 py-1.5" : "px-4 py-2.5";
 
   const onSelectionChange = (keys: Selection) => {
@@ -364,12 +365,7 @@ function DataGridTable({
         fixed && "table-fixed",
       )}
     >
-      <TableHeader
-        className={cn(
-          layout.headerBackground && "bg-muted/40",
-          layout.headerSticky && "sticky top-0 z-10 bg-background",
-        )}
-      >
+      <TableHeader className={cn(layout.headerSticky && "sticky top-0", overlapsRows && "z-10")}>
         {columns.map((column) => {
           const header = headers.get(column.id);
           const width = column.columnDef.meta?.autoSize ? "1fr" : column.getSize();
@@ -387,7 +383,11 @@ function DataGridTable({
                 isVirtualized && "flex items-center",
                 layout.dense ? "px-2.5" : "px-4",
                 layout.cellBorder && "border-e last:border-e-0",
-                column.getIsPinned() && "bg-background",
+                // Opaque backgrounds on the cells: rows scroll under a sticky or virtualized
+                // header, and the virtualized header row group paints no background.
+                layout.headerBackground
+                  ? "bg-[color-mix(in_oklab,var(--color-muted)_40%,var(--color-background))]"
+                  : (overlapsRows || column.getIsPinned()) && "bg-background",
                 column.columnDef.meta?.headerClassName,
               )}
             >
