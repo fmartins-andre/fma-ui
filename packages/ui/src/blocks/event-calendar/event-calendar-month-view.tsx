@@ -20,7 +20,7 @@ import {
 import { Dialog } from "react-aria-components";
 import { Popover } from "@/core/popover/popover";
 import { ScrollArea } from "@/core/scroll-area/scroll-area";
-import { addDays, format, getWeek } from "@/lib/date-fns-compat";
+import { addDays, format, getWeek } from "@/lib/date-fns-compat/index";
 import {
   EventCalendarViewContext,
   useEventCalendar,

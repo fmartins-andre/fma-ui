@@ -8,7 +8,7 @@ import { RepeatIcon } from "lucide-react";
 import type * as React from "react";
 import { type CSSProperties, createContext, type ReactNode, useContext, useMemo } from "react";
 import { Tooltip, TooltipTrigger } from "@/core/tooltip/tooltip";
-import { addDays, format } from "@/lib/date-fns-compat";
+import { addDays, format } from "@/lib/date-fns-compat/index";
 import {
   useEventCalendar,
   useEventCalendarSelector,

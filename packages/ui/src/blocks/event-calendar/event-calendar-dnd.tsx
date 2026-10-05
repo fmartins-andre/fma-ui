@@ -4,7 +4,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
-import { addDays, addMinutes, differenceInCalendarDays } from "@/lib/date-fns-compat";
+import { addDays, addMinutes, differenceInCalendarDays } from "@/lib/date-fns-compat/index";
 import {
   type EventCalendarInstance,
   useEventCalendar,
