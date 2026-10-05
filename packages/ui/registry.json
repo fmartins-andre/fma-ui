@@ -1042,9 +1042,9 @@
         "cn@^0.4.0"
       ],
       "meta": {
-        "status": "experimental",
+        "status": "stable",
         "source": "shadcn",
-        "origin": "shadcn/ui, style: aria-nova. Built on @base-ui/react/drawer, not react-aria-components — upstream hasn't ported this component to the aria base yet.",
+        "origin": "shadcn/ui, style: aria-nova. Built on @base-ui/react/drawer (stable 1.x), not react-aria-components — upstream hasn't ported this component to the aria base yet; vendored unchanged.",
         "tags": [
           "@base-ui/react",
           "overlay",
@@ -1814,7 +1814,7 @@
       "name": "message-scroller",
       "type": "registry:ui",
       "title": "Message Scroller",
-      "description": "An auto-scrolling viewport for chat message lists: sticks to the latest message as new ones arrive, and shows a jump-to-end/start button once the user scrolls away. Marked experimental here because it doesn't sit on react-aria-components like the rest of this registry.",
+      "description": "An auto-scrolling viewport for chat message lists: sticks to the latest message as new ones arrive, and shows a jump-to-end/start button once the user scrolls away. Experimental: it doesn't sit on react-aria-components like the rest of this registry, and @shadcn/react is still pre-1.0.",
       "author": "@fma-ui/ui",
       "categories": [
         "chat"
@@ -2006,7 +2006,7 @@
       "name": "questionnaire",
       "type": "registry:ui",
       "title": "Questionnaire",
-      "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet.",
+      "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet. Experimental while @shadcn/react is pre-1.0.",
       "author": "@fma-ui/ui",
       "categories": [
         "chat"

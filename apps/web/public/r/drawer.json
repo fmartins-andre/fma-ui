@@ -17,9 +17,9 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "shadcn",
-    "origin": "shadcn/ui, style: aria-nova. Built on @base-ui/react/drawer, not react-aria-components — upstream hasn't ported this component to the aria base yet.",
+    "origin": "shadcn/ui, style: aria-nova. Built on @base-ui/react/drawer (stable 1.x), not react-aria-components — upstream hasn't ported this component to the aria base yet; vendored unchanged.",
     "tags": [
       "@base-ui/react",
       "overlay",

@@ -3,7 +3,7 @@
   "name": "questionnaire",
   "title": "Questionnaire",
   "author": "@fma-ui/ui",
-  "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet.",
+  "description": "A multi-step form/survey block (progress, choices, text input, previous/skip/next/submit) for chat-kit style conversational flows. Built on @shadcn/react, not react-aria-components — upstream hasn't ported it to the aria base yet. Experimental while @shadcn/react is pre-1.0.",
   "dependencies": [
     "@shadcn/react@^0.3.1",
     "cn@^0.4.0",
