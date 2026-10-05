@@ -99,7 +99,7 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
    story, exigem testes unit em `tests/` importando `@/lib/<nome>` / `@/hooks/<nome>`.
    `src/lib/utils.ts` não é publicado. Testes unit rodam com `TZ=UTC`.
    Blocos em `src/blocks/<nome>/` publicam todos os `.ts(x)` da pasta (menos stories) e
-   instalam em `components/<nome>/`; em vez de teste unit, exigem `<nome>.stories.tsx`.
+   instalam em `components/fma-ui/<nome>/`; em vez de teste unit, exigem `<nome>.stories.tsx`.
 3. **`meta.json`**:
    - `source`: `"shadcn"` (vendorizado como está), `"customized"` (oficial alterado — mude
      pra isso ao editar um componente `shadcn`), `"original"` (nosso) ou `"third-party"`
