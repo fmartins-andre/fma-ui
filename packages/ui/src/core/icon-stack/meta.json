@@ -1,0 +1,9 @@
+{
+  "name": "icon-stack",
+  "category": "feedback",
+  "status": "stable",
+  "source": "third-party",
+  "origin": "reui.io (https://reui.io/docs/components/base/icon-stack, MIT), via EMITTE",
+  "description": "A layered icon illustration for empty states: three receding cards drawn from `currentColor`, with an optional glyph (`children`) laid flat on the front card. Pairs with `EmptyMedia`. Decorative: the SVG is hidden from assistive tech, so give the glyph `aria-hidden` too.",
+  "tags": ["feedback", "empty-state", "illustration", "icon"]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "icon-tile",
+  "category": "data-display",
+  "status": "stable",
+  "source": "third-party",
+  "origin": "reui.io (https://reui.io/docs/components/base/icon-tile, MIT), via EMITTE",
+  "description": "A square surface that gives icons a consistent footprint. `variant`: `outline` (bordered), `elevated` (raised chip), `soft` (tinted double container), `solid` (filled) or `frame` (double container matching `Card`); `soft` and `solid` follow `currentColor`, so a text color class retints them. `size` goes from `xs` to `xl`; `radius` is `default` (clamped to the tile) or `full` (circular). Renders a `<span>`; wrap it in a `Button` or `Link` to make it interactive.",
+  "tags": ["data-display", "icon", "surface"]
+}

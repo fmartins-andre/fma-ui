@@ -1078,6 +1078,68 @@
       }
     },
     {
+      "name": "icon-stack",
+      "type": "registry:ui",
+      "title": "Icon Stack",
+      "description": "A layered icon illustration for empty states: three receding cards drawn from `currentColor`, with an optional glyph (`children`) laid flat on the front card. Pairs with `EmptyMedia`. Decorative: the SVG is hidden from assistive tech, so give the glyph `aria-hidden` too.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "feedback"
+      ],
+      "files": [
+        {
+          "path": "src/core/icon-stack/icon-stack.tsx",
+          "target": "components/ui/icon-stack.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/icon-stack, MIT), via EMITTE",
+        "tags": [
+          "feedback",
+          "empty-state",
+          "illustration",
+          "icon"
+        ]
+      }
+    },
+    {
+      "name": "icon-tile",
+      "type": "registry:ui",
+      "title": "Icon Tile",
+      "description": "A square surface that gives icons a consistent footprint. `variant`: `outline` (bordered), `elevated` (raised chip), `soft` (tinted double container), `solid` (filled) or `frame` (double container matching `Card`); `soft` and `solid` follow `currentColor`, so a text color class retints them. `size` goes from `xs` to `xl`; `radius` is `default` (clamped to the tile) or `full` (circular). Renders a `<span>`; wrap it in a `Button` or `Link` to make it interactive.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/icon-tile/icon-tile.tsx",
+          "target": "components/ui/icon-tile.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority",
+        "cn"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/icon-tile, MIT), via EMITTE",
+        "tags": [
+          "data-display",
+          "icon",
+          "surface"
+        ]
+      }
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
