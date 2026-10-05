@@ -51,7 +51,7 @@
       }
     },
     {
-      "includes": ["packages/ui/src/core/**"],
+      "includes": ["packages/ui/src/core/**", "packages/ui/src/blocks/**"],
       "linter": {
         "rules": {
           "a11y": {
@@ -59,6 +59,16 @@
             "useKeyWithClickEvents": "off",
             "useFocusableInteractive": "off"
           }
+        }
+      }
+    },
+    {
+      "includes": ["packages/ui/src/blocks/event-calendar/**"],
+      "linter": {
+        "rules": {
+          "a11y": { "noStaticElementInteractions": "off" },
+          "style": { "noNonNullAssertion": "off" },
+          "suspicious": { "noConfusingVoidType": "off" }
         }
       }
     }
