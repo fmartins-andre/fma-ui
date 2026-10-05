@@ -17,7 +17,11 @@ pre-commit:
       run: pnpm type-check
     registry-check:
       priority: 3
-      glob: "packages/ui/src/core/**/*"
+      glob:
+        - "packages/ui/src/core/**/*"
+        - "packages/ui/src/blocks/**/*"
+        - "packages/ui/src/lib/**/*"
+        - "packages/ui/src/hooks/**/*"
       run: >-
         pnpm --filter @fma-ui/ui build &&
         git diff --quiet packages/ui/registry.json apps/web/public/r/ ||
