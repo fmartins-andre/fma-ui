@@ -527,7 +527,7 @@ function EventCalendarMonthWeek({
                 )}
                 style={
                   {
-                    "--ec-event-color": dragGhost.color ?? "var(--color-primary)",
+                    "--ec-event-color": dragGhost.color ?? "var(--primary)",
                   } as CSSProperties
                 }
               >
@@ -762,7 +762,7 @@ function EventCalendarMonthCell({
       )}
       style={
         {
-          "--ec-event-color": inlineDrop.color ?? "var(--color-primary)",
+          "--ec-event-color": inlineDrop.color ?? "var(--primary)",
           height: "calc(var(--ec-month-bar-h, 1.75rem) - 0.125rem)",
         } as CSSProperties
       }
@@ -1034,7 +1034,7 @@ function EventCalendarMoreIndicator({
         style={
           dropInto
             ? ({
-                "--ec-event-color": dropInto.color ?? "var(--color-primary)",
+                "--ec-event-color": dropInto.color ?? "var(--primary)",
                 height: "calc(var(--ec-month-bar-h, 1.75rem) - 0.125rem)",
               } as CSSProperties)
             : undefined

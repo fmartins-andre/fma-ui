@@ -613,3 +613,27 @@ export const Layout: Story = {
   args: { layout: { dense: true, cellBorder: true, stripped: true, headerBackground: true } },
   render: (args) => <Demo {...args} />,
 };
+
+/**
+ * Dark mode scoped to a subtree (`.dark` on a wrapper, not on <html>): the
+ * tinted header follows the dark tokens instead of the page's light ones.
+ */
+export const ScopedDarkHeader: Story = {
+  args: { layout: { headerBackground: true } },
+  render: (args) => (
+    <div className="dark rounded-lg bg-background p-2 text-foreground">
+      <Demo {...args} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const ctx = document.createElement("canvas").getContext("2d");
+    if (!ctx) throw new Error("no 2d context");
+    for (const header of canvas.getAllByRole("columnheader")) {
+      ctx.fillStyle = getComputedStyle(header).backgroundColor;
+      ctx.fillRect(0, 0, 1, 1);
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      // Dark background (~10) tinted by muted (~37) at 40%: around 21.
+      await expect(Math.max(r, g, b)).toBeLessThan(40);
+    }
+  },
+};

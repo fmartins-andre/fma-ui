@@ -413,7 +413,7 @@ function EventCalendarEvent<TData = unknown>({
     "aria-hidden": preview || undefined,
     tabIndex: preview ? -1 : undefined,
     style: {
-      "--ec-event-color": event.color ?? "var(--color-primary)",
+      "--ec-event-color": event.color ?? "var(--primary)",
     } as CSSProperties,
     onPointerDown: (e: React.PointerEvent) => {
       e.stopPropagation();

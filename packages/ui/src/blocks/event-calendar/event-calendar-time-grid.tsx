@@ -591,7 +591,7 @@ function EventCalendarAllDayBars({
                 )}
                 style={
                   {
-                    "--ec-event-color": dragGhost.color ?? "var(--color-primary)",
+                    "--ec-event-color": dragGhost.color ?? "var(--primary)",
                   } as CSSProperties
                 }
               >
@@ -990,7 +990,7 @@ function EventCalendarDayColumn({
       )}
       style={{
         height: `calc(var(--ec-hour-height) * ${boundsMinutes / 60})`,
-        backgroundImage: `repeating-linear-gradient(to bottom, transparent, transparent calc(var(--ec-hour-height) * ${interval / 60} - var(--ec-slot-line-width, 1px)), var(--ec-slot-line-color, var(--color-border)) calc(var(--ec-hour-height) * ${interval / 60} - var(--ec-slot-line-width, 1px)), var(--ec-slot-line-color, var(--color-border)) calc(var(--ec-hour-height) * ${interval / 60}))`,
+        backgroundImage: `repeating-linear-gradient(to bottom, transparent, transparent calc(var(--ec-hour-height) * ${interval / 60} - var(--ec-slot-line-width, 1px)), var(--ec-slot-line-color, var(--border)) calc(var(--ec-hour-height) * ${interval / 60} - var(--ec-slot-line-width, 1px)), var(--ec-slot-line-color, var(--border)) calc(var(--ec-hour-height) * ${interval / 60}))`,
       }}
       onPointerDown={(e) => {
         if (e.target === e.currentTarget) gestures.beginCreate(e, day, false);
@@ -1075,7 +1075,7 @@ function EventCalendarDayColumn({
           style={
             {
               ...minuteBlockStyle(dragGhost.window[0], dragGhost.window[1], boundsStartMin),
-              "--ec-event-color": dragGhost.color ?? "var(--color-primary)",
+              "--ec-event-color": dragGhost.color ?? "var(--primary)",
             } as CSSProperties
           }
         >
