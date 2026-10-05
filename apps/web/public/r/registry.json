@@ -1749,7 +1749,7 @@
       "name": "menubar",
       "type": "registry:ui",
       "title": "Menubar",
-      "description": "An app-style menu bar (File, Edit, View…). `Menubar` is a react-aria `Toolbar`, so arrow keys move between menus; each `MenubarMenu` pairs a `MenubarTrigger` with a `MenubarContent` built on `DropdownMenu`, including submenus (`MenubarSub`). Checkbox- and radio-like items come from react-aria selection: give a `MenubarGroup` `selectionMode` (\"multiple\" or \"single\") and `selectedKeys`/`onSelectionChange`, and its items show a check when selected. Menus open on press or Enter/Space/ArrowDown.",
+      "description": "An app-style menu bar (File, Edit, View…). `Menubar` is a react-aria `Toolbar`, so arrow keys move between menus; each `MenubarMenu` pairs a `MenubarTrigger` with a `MenubarContent` built on `DropdownMenu`, including submenus (`MenubarSub`). Checkbox- and radio-like items come from react-aria selection: give a `MenubarGroup` `selectionMode` (\"multiple\" or \"single\") and `selectedKeys`/`onSelectionChange`, and its items show a check when selected. Menus open on press or Enter/Space/ArrowDown; while one is open, hovering another trigger or pressing ArrowLeft/ArrowRight opens the neighbouring menu.",
       "author": "@fma-ui/ui",
       "categories": [
         "navigation"
