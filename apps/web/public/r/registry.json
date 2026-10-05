@@ -1216,6 +1216,11 @@
           "type": "registry:lib"
         },
         {
+          "path": "src/lib/input-masks/presets.ts",
+          "target": "lib/input-masks/presets.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "src/lib/input-masks/stable-mask.ts",
           "target": "lib/input-masks/stable-mask.ts",
           "type": "registry:lib"
