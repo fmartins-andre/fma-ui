@@ -37,7 +37,7 @@
     "@maskito/kit": "^5.6.0",
     "@maskito/react": "^5.6.0",
     "@shadcn/react": "^0.3.1",
-    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-table": "^9.2.5",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "embla-carousel-react": "^8.6.0",

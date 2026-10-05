@@ -1,11 +1,32 @@
 "use client";
 
 import {
+  type CellData,
+  columnFacetingFeature,
+  columnFilteringFeature,
+  columnOrderingFeature,
+  columnPinningFeature,
+  columnResizingFeature,
+  columnSizingFeature,
+  columnVisibilityFeature,
+  createFacetedRowModel,
+  createFacetedUniqueValues,
+  createFilteredRowModel,
+  createPaginatedRowModel,
+  createSortedRowModel,
+  filterFns,
   flexRender,
   type RowData,
+  type RowSelectionState,
+  rowPaginationFeature,
+  rowPinningFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
+  sortFns,
   type Column as TanstackColumn,
   type Row as TanstackRow,
   type Table as TanstackTable,
+  tableFeatures,
 } from "@tanstack/react-table";
 import { cn } from "cn";
 import {
@@ -70,21 +91,58 @@ import {
 import { Skeleton } from "@/core/skeleton/skeleton";
 import { Spinner } from "@/core/spinner/spinner";
 
-declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends RowData, TValue> {
-    /** Label for the header menu, visibility menu and filters. */
-    headerTitle?: string;
-    headerClassName?: string;
-    cellClassName?: string;
-    /** Placeholder shown in this column's cells while loading. */
-    skeleton?: React.ReactNode;
-    /** Takes the remaining width (a `1fr` column). */
-    autoSize?: boolean;
-  }
-}
+type DataGridColumnMeta = {
+  /** Label for the header menu, visibility menu and filters. */
+  headerTitle?: string;
+  headerClassName?: string;
+  cellClassName?: string;
+  /** Placeholder shown in this column's cells while loading. */
+  skeleton?: React.ReactNode;
+  /** Takes the remaining width (a `1fr` column). */
+  autoSize?: boolean;
+};
+
+/**
+ * The TanStack Table features the grid relies on, with client-side sorting,
+ * filtering, faceting and pagination. Create the table with
+ * `useTable({ features: dataGridFeatures, ... })`; for server-side data set
+ * `manualSorting`/`manualFiltering`/`manualPagination` and pass the page.
+ * Column `meta` takes `headerTitle`, `skeleton`, `autoSize` and class names.
+ */
+const dataGridFeatures = tableFeatures({
+  columnFilteringFeature,
+  columnFacetingFeature,
+  columnOrderingFeature,
+  columnPinningFeature,
+  columnSizingFeature,
+  columnResizingFeature,
+  columnVisibilityFeature,
+  rowPaginationFeature,
+  rowPinningFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
+  filteredRowModel: createFilteredRowModel(),
+  facetedRowModel: createFacetedRowModel(),
+  facetedUniqueValues: createFacetedUniqueValues(),
+  paginatedRowModel: createPaginatedRowModel(),
+  sortedRowModel: createSortedRowModel(),
+  filterFns,
+  sortFns,
+  columnMeta: {} as DataGridColumnMeta,
+});
+
+type DataGridFeatures = typeof dataGridFeatures;
+
+type DataGridColumn<TData extends RowData, TValue extends CellData = CellData> = TanstackColumn<
+  DataGridFeatures,
+  TData,
+  TValue
+>;
 
 /** Label for a column: `meta.headerTitle`, a string `columnDef.header`, or `column.id`. */
-function getColumnHeaderLabel<TData, TValue>(column: TanstackColumn<TData, TValue>): string {
+function getColumnHeaderLabel<TData extends RowData, TValue extends CellData>(
+  column: DataGridColumn<TData, TValue>,
+): string {
   const { meta, header } = column.columnDef;
   if (typeof meta?.headerTitle === "string") return meta.headerTitle;
   if (typeof header === "string") return header;
@@ -106,7 +164,7 @@ type DataGridLayout = {
   width?: "auto" | "fixed";
   /** Lets users drag column edges to resize (fixed width only). */
   columnsResizable?: boolean;
-  /** Adds pin left/right to `DataGridColumnHeader` menus. */
+  /** Adds pin to start/end to `DataGridColumnHeader` menus. */
   columnsPinnable?: boolean;
   /** Adds move left/right to `DataGridColumnHeader` menus. */
   columnsMovable?: boolean;
@@ -114,8 +172,9 @@ type DataGridLayout = {
   columnsVisibility?: boolean;
 };
 
-type DataGridProps<TData> = {
-  table: TanstackTable<TData>;
+type DataGridProps<TData extends RowData> = {
+  /** A table created with `useTable({ features: dataGridFeatures, ... })`. */
+  table: TanstackTable<DataGridFeatures, TData>;
   /** Total rows across pages (the server's total with manual pagination). */
   recordCount: number;
   isLoading?: boolean;
@@ -129,21 +188,23 @@ type DataGridProps<TData> = {
   children?: React.ReactNode;
 };
 
-type DataGridContextValue = Omit<DataGridProps<unknown>, "table" | "children"> & {
-  table: TanstackTable<unknown>;
+type DataGridContextValue = Omit<DataGridProps<RowData>, "table" | "children"> & {
+  table: TanstackTable<DataGridFeatures, RowData>;
   layout: DataGridLayout;
 };
 
 const DataGridContext = React.createContext<DataGridContextValue | null>(null);
 
-function useDataGrid<TData = unknown>() {
+function useDataGrid<TData extends RowData = RowData>() {
   const context = React.useContext(DataGridContext);
   if (!context) throw new Error("useDataGrid must be used within a DataGrid");
-  return context as Omit<DataGridContextValue, "table"> & { table: TanstackTable<TData> };
+  return context as Omit<DataGridContextValue, "table"> & {
+    table: TanstackTable<DataGridFeatures, TData>;
+  };
 }
 
 /** Provides the TanStack `table` to the grid parts (table, pagination, headers). */
-function DataGrid<TData>({
+function DataGrid<TData extends RowData>({
   table,
   tableLayout,
   className,
@@ -154,8 +215,8 @@ function DataGrid<TData>({
   // state changes, and the parts must re-render with it.
   const value: DataGridContextValue = {
     // The context is untyped; useDataGrid<TData>() restores the row type.
-    ...(props as Omit<DataGridProps<unknown>, "table" | "children">),
-    table: table as TanstackTable<unknown>,
+    ...(props as Omit<DataGridProps<RowData>, "table" | "children">),
+    table: table as TanstackTable<DataGridFeatures, RowData>,
     layout: { rowBorder: true, width: "fixed", ...tableLayout },
   };
   return (
@@ -178,15 +239,18 @@ function DataGridContainer({ className, ...props }: React.ComponentProps<"div">)
   );
 }
 
-function pinningStyle<TData>(column: TanstackColumn<TData>): React.CSSProperties | undefined {
+// Logical insets, so pinned columns stick to the correct side in RTL too.
+function pinningStyle<TData extends RowData>(
+  column: DataGridColumn<TData>,
+): React.CSSProperties | undefined {
   const pinned = column.getIsPinned();
   if (!pinned) return undefined;
   return {
     position: "sticky",
     zIndex: 1,
-    ...(pinned === "left"
-      ? { left: column.getStart("left") }
-      : { right: column.getAfter("right") }),
+    ...(pinned === "start"
+      ? { insetInlineStart: column.getStart("start") }
+      : { insetInlineEnd: column.getAfter("end") }),
   };
 }
 
@@ -224,11 +288,11 @@ function DataGridTable({
     emptyMessage,
     onRowClick,
   } = useDataGrid();
-  const state = table.getState();
+  const state = table.store.state;
   const columns = [
-    ...table.getLeftVisibleLeafColumns(),
+    ...table.getStartVisibleLeafColumns(),
     ...table.getCenterVisibleLeafColumns(),
-    ...table.getRightVisibleLeafColumns(),
+    ...table.getEndVisibleLeafColumns(),
   ];
   // The first column holding data names each row (not a checkbox or handle).
   const rowHeaderId = (columns.find((column) => column.accessorFn) ?? columns[0])?.id;
@@ -245,7 +309,6 @@ function DataGridTable({
 
   const { enableRowSelection } = table.options;
   const isSelectable = enableRowSelection === true || typeof enableRowSelection === "function";
-  const canSortRows = !!(table.options.getSortedRowModel || table.options.manualSorting);
   const sorting = state.sorting[0];
   const sortDescriptor: SortDescriptor | undefined = sorting && {
     column: sorting.id,
@@ -265,9 +328,9 @@ function DataGridTable({
     const pageIds = new Set(rows.map((row) => row.id));
     const selected = keys === "all" ? [...pageIds] : [...keys].map(String);
     // Keep selections made on other pages.
-    const next: Record<string, boolean> = {};
-    for (const [id, isSelected] of Object.entries(state.rowSelection)) {
-      if (isSelected && !pageIds.has(id)) next[id] = true;
+    const next: RowSelectionState = {};
+    for (const id of Object.keys(state.rowSelection)) {
+      if (!pageIds.has(id)) next[id] = true;
     }
     for (const id of selected) next[id] = true;
     table.setRowSelection(next);
@@ -284,7 +347,7 @@ function DataGridTable({
         ])
       }
       selectionMode={isSelectable && !showSkeleton ? "multiple" : "none"}
-      selectedKeys={Object.keys(state.rowSelection).filter((id) => state.rowSelection[id])}
+      selectedKeys={Object.keys(state.rowSelection)}
       onSelectionChange={onSelectionChange}
       disabledKeys={rows.filter((row) => isSelectable && !row.getCanSelect()).map((row) => row.id)}
       onRowAction={
@@ -315,7 +378,7 @@ function DataGridTable({
               key={column.id}
               id={column.id}
               isRowHeader={column.id === rowHeaderId}
-              allowsSorting={canSortRows && column.getCanSort() && !showSkeleton}
+              allowsSorting={column.getCanSort() && !showSkeleton}
               width={fixed ? width : undefined}
               minWidth={fixed ? column.columnDef.minSize : undefined}
               style={pinningStyle(column)}
@@ -379,9 +442,9 @@ function DataGridTable({
                 )}
               >
                 {[
-                  ...row.getLeftVisibleCells(),
+                  ...row.getStartVisibleCells(),
                   ...row.getCenterVisibleCells(),
-                  ...row.getRightVisibleCells(),
+                  ...row.getEndVisibleCells(),
                 ].map((cell) => (
                   <Cell
                     key={cell.id}
@@ -484,7 +547,11 @@ function DataGridRowDragHandle({ className, ...props }: React.ComponentProps<typ
 }
 
 /** Pins a row to the top (TanStack row pinning); put it in a cell. */
-function DataGridRowPin<TData>({ row }: { row: TanstackRow<TData> }) {
+function DataGridRowPin<TData extends RowData>({
+  row,
+}: {
+  row: TanstackRow<DataGridFeatures, TData>;
+}) {
   const isPinned = row.getIsPinned();
   return (
     <Button
@@ -499,8 +566,8 @@ function DataGridRowPin<TData>({ row }: { row: TanstackRow<TData> }) {
   );
 }
 
-type DataGridColumnHeaderProps<TData, TValue> = {
-  column: TanstackColumn<TData, TValue>;
+type DataGridColumnHeaderProps<TData extends RowData, TValue extends CellData> = {
+  column: DataGridColumn<TData, TValue>;
   /** Defaults to `getColumnHeaderLabel(column)`. */
   title?: string;
   icon?: React.ReactNode;
@@ -513,7 +580,7 @@ type DataGridColumnHeaderProps<TData, TValue> = {
  * A header with a sort indicator. With pinning, moving or visibility enabled
  * in `tableLayout`, the title opens a menu with those actions and sorting.
  */
-function DataGridColumnHeader<TData, TValue>({
+function DataGridColumnHeader<TData extends RowData, TValue extends CellData>({
   column,
   title,
   icon,
@@ -526,8 +593,8 @@ function DataGridColumnHeader<TData, TValue>({
   const pinned = column.getIsPinned();
   const canSort = column.getCanSort();
   const canPin = !!layout.columnsPinnable && column.getCanPin();
-  const order = table.getState().columnOrder.length
-    ? table.getState().columnOrder
+  const order = table.store.state.columnOrder.length
+    ? table.store.state.columnOrder
     : table.getAllLeafColumns().map((leaf) => leaf.id);
   const index = order.indexOf(column.id);
 
@@ -568,11 +635,11 @@ function DataGridColumnHeader<TData, TValue>({
         if (sorted === key) column.clearSorting();
         else column.toggleSorting(key === "desc");
         break;
-      case "pin-left":
-        column.pin(pinned === "left" ? false : "left");
+      case "pin-start":
+        column.pin(pinned === "start" ? false : "start");
         break;
-      case "pin-right":
-        column.pin(pinned === "right" ? false : "right");
+      case "pin-end":
+        column.pin(pinned === "end" ? false : "end");
         break;
       case "move-left":
         move(-1);
@@ -621,15 +688,15 @@ function DataGridColumnHeader<TData, TValue>({
             <>
               {canSort && <DropdownMenuSeparator />}
               <DropdownMenuGroup aria-label="Pin">
-                <DropdownMenuItem id="pin-left" textValue="Pin to left">
-                  <ArrowLeftToLineIcon aria-hidden="true" />
-                  Pin to left
-                  {check(pinned === "left")}
+                <DropdownMenuItem id="pin-start" textValue="Pin to start">
+                  <ArrowLeftToLineIcon aria-hidden="true" className="rtl:rotate-180" />
+                  Pin to start
+                  {check(pinned === "start")}
                 </DropdownMenuItem>
-                <DropdownMenuItem id="pin-right" textValue="Pin to right">
-                  <ArrowRightToLineIcon aria-hidden="true" />
-                  Pin to right
-                  {check(pinned === "right")}
+                <DropdownMenuItem id="pin-end" textValue="Pin to end">
+                  <ArrowRightToLineIcon aria-hidden="true" className="rtl:rotate-180" />
+                  Pin to end
+                  {check(pinned === "end")}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </>
@@ -687,11 +754,11 @@ function DataGridColumnHeader<TData, TValue>({
 }
 
 /** A menu to show or hide columns; `trigger` is the button that opens it. */
-function DataGridColumnVisibility<TData>({
+function DataGridColumnVisibility<TData extends RowData>({
   table,
   trigger,
 }: {
-  table: TanstackTable<TData>;
+  table: TanstackTable<DataGridFeatures, TData>;
   trigger: React.ReactElement;
 }) {
   const hideable = table.getAllLeafColumns().filter((column) => column.getCanHide());
@@ -727,8 +794,8 @@ function DataGridColumnVisibility<TData>({
   );
 }
 
-type DataGridColumnFilterProps<TData, TValue> = {
-  column?: TanstackColumn<TData, TValue>;
+type DataGridColumnFilterProps<TData extends RowData, TValue extends CellData> = {
+  column?: DataGridColumn<TData, TValue>;
   title?: string;
   options: { label: string; value: string; icon?: React.ComponentType<{ className?: string }> }[];
 };
@@ -736,9 +803,9 @@ type DataGridColumnFilterProps<TData, TValue> = {
 /**
  * A faceted filter: a button opening a searchable list of options. The
  * column's filter value becomes the array of selected values (pair it with
- * `filterFn: "arrIncludesSome"`); counts come from `getFacetedUniqueValues`.
+ * `filterFn: "arrHas"`); counts come from `getFacetedUniqueValues`.
  */
-function DataGridColumnFilter<TData, TValue>({
+function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
   column,
   title,
   options,
@@ -854,7 +921,7 @@ function DataGridPagination({
   className,
 }: DataGridPaginationProps) {
   const { table, recordCount, isLoading } = useDataGrid();
-  const { pageIndex, pageSize } = table.getState().pagination;
+  const { pageIndex, pageSize } = table.store.state.pagination;
   const pageCount = table.getPageCount();
   const from = recordCount === 0 ? 0 : pageIndex * pageSize + 1;
   const to = Math.min((pageIndex + 1) * pageSize, recordCount);
@@ -968,8 +1035,11 @@ function DataGridPagination({
 }
 
 export type {
+  DataGridColumn,
   DataGridColumnFilterProps,
   DataGridColumnHeaderProps,
+  DataGridColumnMeta,
+  DataGridFeatures,
   DataGridLayout,
   DataGridPaginationProps,
   DataGridProps,
@@ -986,6 +1056,7 @@ export {
   DataGridRowPin,
   DataGridRowSelect,
   DataGridTable,
+  dataGridFeatures,
   getColumnHeaderLabel,
   useDataGrid,
 };

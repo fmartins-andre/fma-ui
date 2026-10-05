@@ -706,7 +706,7 @@
       "name": "data-grid",
       "type": "registry:ui",
       "title": "Data Grid",
-      "description": "A data grid driven by a TanStack Table instance (`useReactTable`) and rendered with react-aria's `Table`, which brings cell keyboard navigation, `aria-sort`, selection, column resizing, row drag and drop and virtualization. Wrap parts in `DataGrid table={table} recordCount={…}`: `DataGridTable`, `DataGridPagination`, `DataGridColumnHeader` (sort indicator, plus a menu for pinning, moving and visibility when `tableLayout` enables them), `DataGridColumnVisibility`, `DataGridColumnFilter` (faceted, use `filterFn: \"arrIncludesSome\"`), `DataGridRowSelect` (with `enableRowSelection`), `DataGridRowPin` and `DataGridRowDragHandle` (with `onRowsReorder`). Sorting is wired when the table has `getSortedRowModel` or `manualSorting`. `isLoading` shows skeleton rows (`meta.skeleton`) or a spinner; `meta.autoSize` columns take the remaining width.",
+      "description": "A data grid driven by a TanStack Table v9 instance and rendered with react-aria's `Table`, which brings cell keyboard navigation, `aria-sort`, selection, column resizing, row drag and drop and virtualization. Create the table with `useTable({ features: dataGridFeatures, ... })`: the exported features cover sorting, filtering with facets, pagination, selection, row and column pinning, ordering, visibility and sizing, with client-side row models; for server-side data (or to show every row) set `manualSorting`/`manualFiltering`/`manualPagination`. Column `meta` takes `headerTitle`, `skeleton`, `autoSize`, `headerClassName` and `cellClassName`. Wrap parts in `DataGrid table={table} recordCount={…}`: `DataGridTable`, `DataGridPagination`, `DataGridColumnHeader` (sort indicator, plus a menu for pinning, moving and visibility when `tableLayout` enables them), `DataGridColumnVisibility`, `DataGridColumnFilter` (faceted, use `filterFn: \"arrHas\"`), `DataGridRowSelect` (with `enableRowSelection`), `DataGridRowPin` and `DataGridRowDragHandle` (with `onRowsReorder`). `isLoading` shows skeleton rows (`meta.skeleton`) or a spinner; `meta.autoSize` columns take the remaining width.",
       "author": "@fma-ui/ui",
       "categories": [
         "data-display"
@@ -730,7 +730,7 @@
         "@fma-ui/spinner"
       ],
       "dependencies": [
-        "@tanstack/react-table@^8.21.3",
+        "@tanstack/react-table@^9.2.5",
         "cn@^0.4.0",
         "lucide-react@^1.52.0",
         "react-aria-components@^1.21.1"

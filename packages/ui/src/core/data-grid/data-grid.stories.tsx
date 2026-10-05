@@ -4,18 +4,13 @@ import {
   type ColumnFiltersState,
   type ColumnOrderState,
   type ColumnPinningState,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
+  type ColumnVisibilityState,
   type PaginationState,
   type RowPinningState,
   type RowSelectionState,
   type SortingState,
-  useReactTable,
-  type VisibilityState,
+  type Table,
+  useTable,
 } from "@tanstack/react-table";
 import { Columns3Icon } from "lucide-react";
 import * as React from "react";
@@ -29,12 +24,14 @@ import {
   DataGridColumnHeader,
   DataGridColumnVisibility,
   DataGridContainer,
+  type DataGridFeatures,
   type DataGridLayout,
   DataGridPagination,
   DataGridRowDragHandle,
   DataGridRowPin,
   DataGridRowSelect,
   DataGridTable,
+  dataGridFeatures,
 } from "./data-grid";
 import meta from "./meta.json";
 
@@ -105,6 +102,8 @@ const USERS: User[] = [
   },
 ];
 
+type UserColumn = ColumnDef<DataGridFeatures, User>;
+
 const STATUS_OPTIONS = [
   { label: "Active", value: "Active" },
   { label: "Inactive", value: "Inactive" },
@@ -112,10 +111,10 @@ const STATUS_OPTIONS = [
 ];
 
 const header =
-  (title: string): ColumnDef<User>["header"] =>
+  (title: string): UserColumn["header"] =>
   ({ column }) => <DataGridColumnHeader column={column} title={title} visibility />;
 
-const COLUMNS: ColumnDef<User>[] = [
+const COLUMNS: UserColumn[] = [
   { accessorKey: "id", header: header("ID"), size: 110, meta: { headerTitle: "ID" } },
   {
     accessorKey: "name",
@@ -128,7 +127,7 @@ const COLUMNS: ColumnDef<User>[] = [
     accessorKey: "status",
     header: header("Status"),
     size: 120,
-    filterFn: "arrIncludesSome",
+    filterFn: "arrHas",
     cell: ({ row }) => (
       <Badge variant={row.original.status === "Active" ? "success-light" : "secondary"}>
         {row.original.status}
@@ -139,7 +138,7 @@ const COLUMNS: ColumnDef<User>[] = [
   { accessorKey: "joined", header: header("Joined"), size: 130, meta: { headerTitle: "Joined" } },
 ];
 
-const SELECT_COLUMN: ColumnDef<User> = {
+const SELECT_COLUMN: UserColumn = {
   id: "select",
   size: 48,
   enableSorting: false,
@@ -152,7 +151,7 @@ const SELECT_COLUMN: ColumnDef<User> = {
 
 type DemoProps = {
   data?: User[];
-  columns?: ColumnDef<User>[];
+  columns?: UserColumn[];
   isLoading?: boolean;
   loadingMode?: "skeleton" | "spinner";
   emptyMessage?: React.ReactNode;
@@ -160,7 +159,7 @@ type DemoProps = {
   layout?: DataGridLayout;
   selectable?: boolean;
   pageSize?: number;
-  toolbar?: (table: ReturnType<typeof useReactTable<User>>) => React.ReactNode;
+  toolbar?: (table: Table<DataGridFeatures, User>) => React.ReactNode;
 };
 
 function Demo({
@@ -179,12 +178,16 @@ function Demo({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>({});
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
-  const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>({});
-  const [rowPinning, setRowPinning] = React.useState<RowPinningState>({});
+  const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>({
+    start: [],
+    end: [],
+  });
+  const [rowPinning, setRowPinning] = React.useState<RowPinningState>({ top: [], bottom: [] });
 
-  const table = useReactTable({
+  const table = useTable({
+    features: dataGridFeatures,
     data,
     columns: selectable ? [SELECT_COLUMN, ...columns] : columns,
     getRowId: (row: User) => row.id,
@@ -208,12 +211,6 @@ function Demo({
     onRowPinningChange: setRowPinning,
     enableRowSelection: selectable,
     keepPinnedRows: true,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (
@@ -388,7 +385,7 @@ export const ColumnMenus: Story = {
     await waitFor(() => expect(headers().slice(0, 3)).toEqual(["ID", "Role", "Name"]));
 
     menu = await openMenu("Joined");
-    await userEvent.click(within(menu).getByRole("menuitem", { name: /Pin to left/ }));
+    await userEvent.click(within(menu).getByRole("menuitem", { name: /Pin to start/ }));
     await waitFor(() => expect(headers()[0]).toBe("Joined"));
     await expect(canvas.getByRole("button", { name: "Unpin Joined column" })).toBeInTheDocument();
 
@@ -430,6 +427,14 @@ export const FilterAndVisibility: Story = {
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(bodyRows(canvas)).toHaveLength(2));
     await expect(canvas.getByText("1 - 2 of 2")).toBeInTheDocument();
+
+    // Exact matches: "Active" must not also match "Inactive".
+    await userEvent.click(canvas.getByRole("button", { name: /Status/ }));
+    const reopened = await body().findByRole("listbox", { name: "Status" });
+    await userEvent.click(within(reopened).getByRole("option", { name: /Inactive/ }));
+    await userEvent.click(within(reopened).getByRole("option", { name: /^Active/ }));
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(canvas.getByText("1 - 5 of 5")).toBeInTheDocument());
 
     await userEvent.click(canvas.getByRole("button", { name: "Columns" }));
     const menu = await body().findByRole("menu");
@@ -476,16 +481,18 @@ export const Resizable: Story = {
 
 function ReorderDemo() {
   const [data, setData] = React.useState(USERS.slice(0, 4));
-  const columns: ColumnDef<User>[] = [
+  const columns: UserColumn[] = [
     { id: "drag", size: 48, header: "", cell: () => <DataGridRowDragHandle /> },
     { accessorKey: "name", header: "Name", size: 200 },
     { accessorKey: "role", header: "Role", size: 200 },
   ];
-  const table = useReactTable({
+  const table = useTable({
+    features: dataGridFeatures,
+    // No pagination: every row is already here.
+    manualPagination: true,
     data,
     columns,
     getRowId: (row: User) => row.id,
-    getCoreRowModel: getCoreRowModel(),
   });
   return (
     <DataGrid table={table} recordCount={data.length} className="w-[460px]">
@@ -563,12 +570,13 @@ const MANY = Array.from({ length: 1000 }, (_, i) => ({
 })) satisfies User[];
 
 function VirtualDemo() {
-  const table = useReactTable({
+  const table = useTable({
+    features: dataGridFeatures,
+    // No pagination: every row is already here.
+    manualPagination: true,
     data: MANY,
     columns: COLUMNS,
     getRowId: (row: User) => row.id,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
   return (
     <DataGrid
