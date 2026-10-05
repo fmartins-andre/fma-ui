@@ -128,7 +128,7 @@ const DEFAULT_LABELS: EventCalendarI18nConfig["labels"] = {
     day: "D",
     days: "5",
     agenda: "A",
-    resource: "G",
+    resource: "R",
   },
   toggleDayEvents: (count) => (count === 1 ? "1 event" : `${count} events`),
   eventDetails: (title) => title,
@@ -142,7 +142,7 @@ const DEFAULT_VIEW_NAMES: EventCalendarI18nConfig["viewNames"] = {
   day: "Day",
   days: (count) => (count === 1 ? "1 day" : `${count} days`),
   agenda: "Agenda",
-  resource: "Time Grid",
+  resource: "Resources",
 };
 
 const DEFAULT_FORMATS: EventCalendarI18nConfig["formats"] = {

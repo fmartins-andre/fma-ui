@@ -99,20 +99,23 @@ export function Example() {
 
 ## Componentes
 
-59 componentes, organizados por categoria:
+70 componentes, 2 blocos e as libs e hooks que eles usam, organizados por categoria:
 
-| Categoria       | Componentes                                                                                                           |
-| --------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Formulários** | button · calendar · checkbox · combobox · field · input · input-group · input-otp · label · native-select · radio-group · select · slider · switch · textarea |
-| **Botões**      | button-group · toggle · toggle-group                                                                                  |
-| **Overlays**    | alert-dialog · command · context-menu · dialog · drawer¹ · dropdown-menu · hover-card · popover · sheet · tooltip     |
-| **Navegação**   | breadcrumb · pagination · sidebar · tabs                                                                              |
-| **Dados**       | avatar · badge · carousel · chart · kbd · table                                                                       |
-| **Feedback**    | alert · empty · progress · skeleton · sonner · spinner                                                                |
-| **Layout**      | card · direction · item · resizable · scroll-area · separator                                                         |
-| **Disclosure**  | accordion · collapsible                                                                                               |
-| **Chat**        | attachment · bubble · marker · message · message-scroller¹ · questionnaire¹                                           |
-| **Mídia**       | aspect-ratio                                                                                                          |
+| Categoria       | Componentes |
+| --------------- | ----------- |
+| **Formulários** | button · calendar · checkbox · combobox · date-field · date-picker · field · input · input-group · input-otp · label · masked-input · native-select · radio-group · select · simple-time-picker · slider · switch · textarea |
+| **Botões**      | button-group · toggle · toggle-group |
+| **Overlays**    | alert-dialog · command · context-menu · dialog · drawer¹ · dropdown-menu · hover-card · popover · sheet · tooltip |
+| **Navegação**   | breadcrumb · menubar · navigation-menu · pagination · sidebar · stepper · tabs |
+| **Dados**       | avatar · badge · carousel · chart · data-grid · icon-tile · kbd · table · timeline |
+| **Feedback**    | alert · empty · icon-stack · progress · skeleton · sonner · spinner |
+| **Layout**      | card · direction · item · resizable · scroll-area · separator |
+| **Disclosure**  | accordion · collapsible |
+| **Chat**        | attachment · bubble · marker · message · message-scroller¹ · questionnaire¹ |
+| **Mídia**       | aspect-ratio |
+| **Blocos**      | app-sidebar · event-calendar¹ |
+| **Libs**        | date-availability · date-fns-compat · date-granularity · input-masks · interval-helpers · type-helper · types |
+| **Hooks**       | use-available-date-correction · use-mask · use-mobile |
 
 ¹ experimental: a API ainda pode mudar.
 
