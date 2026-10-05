@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menubar",
+  "title": "Menubar",
+  "author": "@fma-ui/ui",
+  "description": "An app-style menu bar (File, Edit, View…). `Menubar` is a react-aria `Toolbar`, so arrow keys move between menus; each `MenubarMenu` pairs a `MenubarTrigger` with a `MenubarContent` built on `DropdownMenu`, including submenus (`MenubarSub`). Checkbox- and radio-like items come from react-aria selection: give a `MenubarGroup` `selectionMode` (\"multiple\" or \"single\") and `selectedKeys`/`onSelectionChange`, and its items show a check when selected. Menus open on press or Enter/Space/ArrowDown.",
+  "dependencies": [
+    "cn",
+    "react-aria-components"
+  ],
+  "registryDependencies": [
+    "dropdown-menu"
+  ],
+  "files": [
+    {
+      "path": "src/core/menubar/menubar.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"cn\";\nimport type * as React from \"react\";\nimport {\n  Button,\n  type ButtonProps,\n  composeRenderProps,\n  MenuTrigger,\n  type MenuTriggerProps,\n  Toolbar,\n  type ToolbarProps,\n} from \"react-aria-components\";\nimport {\n  DropdownMenu,\n  DropdownMenuGroup,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuShortcut,\n  DropdownMenuSub,\n  DropdownMenuSubContent,\n  DropdownMenuSubTrigger,\n} from \"@/core/dropdown-menu/dropdown-menu\";\n\n/** A react-aria `Toolbar`: arrow keys move between the menus' triggers. */\nfunction Menubar({ className, ...props }: ToolbarProps) {\n  return (\n    <Toolbar\n      data-slot=\"menubar\"\n      className={composeRenderProps(className, (className) =>\n        cn(\"flex h-8 items-center gap-0.5 rounded-lg border p-[3px]\", className),\n      )}\n      {...props}\n    />\n  );\n}\n\n/** One menu: a `MenubarTrigger` followed by its `MenubarContent`. */\nfunction MenubarMenu(props: MenuTriggerProps) {\n  return <MenuTrigger {...props} />;\n}\n\nfunction MenubarTrigger({ className, ...props }: ButtonProps) {\n  return (\n    <Button\n      data-slot=\"menubar-trigger\"\n      className={composeRenderProps(className, (className) =>\n        cn(\n          \"flex items-center rounded-sm px-1.5 py-[2px] text-sm font-medium outline-hidden select-none data-focus-visible:ring-3 data-focus-visible:ring-ring/50 data-hovered:bg-muted data-pressed:bg-muted aria-expanded:bg-muted\",\n          className,\n        ),\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction MenubarContent({\n  className,\n  placement = \"bottom start\",\n  offset = 8,\n  crossOffset = -4,\n  ...props\n}: React.ComponentProps<typeof DropdownMenu>) {\n  return (\n    <DropdownMenu\n      data-slot=\"menubar-content\"\n      placement={placement}\n      offset={offset}\n      crossOffset={crossOffset}\n      className={cn(\"w-auto min-w-36\", className)}\n      {...props}\n    />\n  );\n}\n\n/**\n * Groups items under an optional `MenubarLabel`. Set `selectionMode` (\"single\"\n * for radio-like, \"multiple\" for checkbox-like items) with\n * `selectedKeys`/`onSelectionChange` to make its items selectable.\n */\nconst MenubarGroup = DropdownMenuGroup;\nconst MenubarItem = DropdownMenuItem;\nconst MenubarLabel = DropdownMenuLabel;\nconst MenubarSeparator = DropdownMenuSeparator;\nconst MenubarShortcut = DropdownMenuShortcut;\nconst MenubarSub = DropdownMenuSub;\nconst MenubarSubTrigger = DropdownMenuSubTrigger;\nconst MenubarSubContent = DropdownMenuSubContent;\n\nexport {\n  Menubar,\n  MenubarContent,\n  MenubarGroup,\n  MenubarItem,\n  MenubarLabel,\n  MenubarMenu,\n  MenubarSeparator,\n  MenubarShortcut,\n  MenubarSub,\n  MenubarSubContent,\n  MenubarSubTrigger,\n  MenubarTrigger,\n};\n",
+      "type": "registry:component",
+      "target": "components/ui/menubar.tsx"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "origin": "API of shadcn/ui's Menubar (via EMITTE), rebuilt on react-aria Toolbar and the registry's DropdownMenu",
+    "tags": [
+      "navigation",
+      "menu",
+      "menubar",
+      "toolbar",
+      "react-aria"
+    ]
+  },
+  "categories": [
+    "navigation"
+  ],
+  "type": "registry:ui"
+}
