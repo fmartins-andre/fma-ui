@@ -20,7 +20,7 @@ import {
 } from "@/core/dropdown-menu/dropdown-menu";
 import { Popover } from "@/core/popover/popover";
 import { Tooltip, TooltipTrigger } from "@/core/tooltip/tooltip";
-import { format } from "@/lib/date-fns-compat";
+import { format } from "@/lib/date-fns-compat/index";
 import {
   useEventCalendarNavigation,
   useEventCalendarSettings,

@@ -5,15 +5,15 @@
   "author": "@fma-ui/ui",
   "description": "A styled wrapper around the real, native <select> — use it when you need actual native select behavior (mobile OS pickers, form autofill, no JS dependency) instead of react-aria-components' custom Select.",
   "dependencies": [
-    "cn",
-    "lucide-react"
+    "cn@^0.4.0",
+    "lucide-react@^1.48.0"
   ],
   "files": [
     {
       "path": "src/core/native-select/native-select.tsx",
       "content": "import { cn } from \"cn\";\nimport { ChevronDownIcon } from \"lucide-react\";\nimport type * as React from \"react\";\n\ntype NativeSelectProps = Omit<React.ComponentProps<\"select\">, \"size\"> & {\n  size?: \"sm\" | \"default\";\n};\n\nfunction NativeSelect({ className, size = \"default\", ...props }: NativeSelectProps) {\n  return (\n    <div\n      className={cn(\n        \"group/native-select relative w-fit has-[select:disabled]:opacity-50\",\n        className,\n      )}\n      data-slot=\"native-select-wrapper\"\n      data-size={size}\n    >\n      <select\n        data-slot=\"native-select\"\n        data-size={size}\n        className=\"h-8 w-full min-w-0 appearance-none rounded-lg border border-input bg-transparent py-1 pr-8 pl-2.5 text-sm transition-colors outline-none select-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] data-[size=sm]:py-0.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40\"\n        {...props}\n      />\n      <ChevronDownIcon\n        className=\"pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2 text-muted-foreground select-none\"\n        aria-hidden=\"true\"\n        data-slot=\"native-select-icon\"\n      />\n    </div>\n  );\n}\n\nfunction NativeSelectOption({ className, ...props }: React.ComponentProps<\"option\">) {\n  return (\n    <option\n      data-slot=\"native-select-option\"\n      className={cn(\"bg-[Canvas] text-[CanvasText]\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction NativeSelectOptGroup({ className, ...props }: React.ComponentProps<\"optgroup\">) {\n  return (\n    <optgroup\n      data-slot=\"native-select-optgroup\"\n      className={cn(\"bg-[Canvas] text-[CanvasText]\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { NativeSelect, NativeSelectOptGroup, NativeSelectOption };\n",
       "type": "registry:component",
-      "target": "components/ui/native-select.tsx"
+      "target": "components/fma-ui/native-select.tsx"
     }
   ],
   "meta": {

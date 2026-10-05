@@ -7,7 +7,7 @@ import { cn } from "cn";
 import type * as React from "react";
 import { type CSSProperties, useEffect, useMemo, useRef } from "react";
 import { ScrollArea } from "@/core/scroll-area/scroll-area";
-import { addDays, addMinutes } from "@/lib/date-fns-compat";
+import { addDays, addMinutes } from "@/lib/date-fns-compat/index";
 import {
   EventCalendarViewContext,
   useEventCalendar,

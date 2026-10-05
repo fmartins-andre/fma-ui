@@ -5,14 +5,14 @@
   "author": "@fma-ui/ui",
   "description": "Shows or hides a single section of content behind a trigger. A thin wrapper around react-aria-components' Disclosure — for several mutually-exclusive sections, use Accordion instead.",
   "dependencies": [
-    "react-aria-components"
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {
       "path": "src/core/collapsible/collapsible.tsx",
       "content": "import {\n  type ButtonProps,\n  DisclosurePanel as CollapsibleContentPrimitive,\n  Disclosure as CollapsiblePrimitive,\n  Button as CollapsibleTriggerPrimitive,\n  type DisclosurePanelProps,\n  type DisclosureProps,\n} from \"react-aria-components\";\n\nfunction Collapsible({ ...props }: DisclosureProps) {\n  return <CollapsiblePrimitive data-slot=\"collapsible\" {...props} />;\n}\n\nfunction CollapsibleTrigger({ ...props }: ButtonProps) {\n  return <CollapsibleTriggerPrimitive slot=\"trigger\" data-slot=\"collapsible-trigger\" {...props} />;\n}\n\nfunction CollapsibleContent({ ...props }: DisclosurePanelProps) {\n  return <CollapsibleContentPrimitive data-slot=\"collapsible-content\" {...props} />;\n}\n\nexport { Collapsible, CollapsibleContent, CollapsibleTrigger };\n",
       "type": "registry:component",
-      "target": "components/ui/collapsible.tsx"
+      "target": "components/fma-ui/collapsible.tsx"
     }
   ],
   "meta": {

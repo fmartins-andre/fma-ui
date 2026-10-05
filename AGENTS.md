@@ -7,8 +7,11 @@ pra cá. Edite só este arquivo. Detalhes adicionais e motivações estão no `C
 ## O que é
 
 `fma-ui`: registro pessoal de componentes compatível com o formato do
-[shadcn/ui](https://ui.shadcn.com). Os componentes são distribuídos via `shadcn add <url>`,
-não publicados no npm. Base de interação: **react-aria-components** (style `aria-nova` do
+[shadcn/ui](https://ui.shadcn.com). Os componentes são distribuídos via
+`shadcn add @fma-ui/<nome>` (o consumidor registra o namespace no `components.json`), não
+publicados no npm. Tudo instala em pastas `fma-ui` (`components/fma-ui/`, `hooks/fma-ui/`,
+`lib/fma-ui/`) e as dependências entre itens são `@fma-ui/<nome>`, para nunca colidir com o
+shadcn oficial. Base de interação: **react-aria-components** (style `aria-nova` do
 shadcn CLI, em `packages/ui/components.json`).
 
 ## Estrutura
@@ -96,7 +99,7 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
    story, exigem testes unit em `tests/` importando `@/lib/<nome>` / `@/hooks/<nome>`.
    `src/lib/utils.ts` não é publicado. Testes unit rodam com `TZ=UTC`.
    Blocos em `src/blocks/<nome>/` publicam todos os `.ts(x)` da pasta (menos stories) e
-   instalam em `components/<nome>/`; em vez de teste unit, exigem `<nome>.stories.tsx`.
+   instalam em `components/fma-ui/<nome>/`; em vez de teste unit, exigem `<nome>.stories.tsx`.
 3. **`meta.json`**:
    - `source`: `"shadcn"` (vendorizado como está), `"customized"` (oficial alterado — mude
      pra isso ao editar um componente `shadcn`), `"original"` (nosso) ou `"third-party"`
@@ -109,7 +112,9 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
    `packages/ui/package.json#dependencies` (verificado por `tests/registry-dependencies.test.ts`).
 5. **Imports nos componentes**: `cn` vem do pacote npm `cn` (`import { cn } from "cn"`);
    `src/lib/utils.ts` é só re-export. Outros componentes do registro via
-   `@/core/<outro>/<outro>` ou `../<outro>/<outro>`. Variantes com `class-variance-authority`.
+   `@/core/<outro>/<outro>` ou `../<outro>/<outro>`. Libs em pasta são importadas por um
+   arquivo (`@/lib/date-fns-compat/index`), nunca pela pasta: o CLI do shadcn só reescreve
+   imports que nomeiam arquivos. Variantes com `class-variance-authority`.
    Ícones de `lucide-react`.
 6. **API react-aria**: os componentes seguem a API do react-aria-components, não a do Radix
    (ex.: `isDisabled` em vez de `disabled`, sem `asChild` — `LinkButton` pra link com cara

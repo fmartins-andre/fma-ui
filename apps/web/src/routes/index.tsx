@@ -10,9 +10,13 @@ function Home() {
   return (
     <div style={{ padding: "2rem", fontFamily: "system-ui, sans-serif", maxWidth: 720 }}>
       <h1>{registry.name} registry</h1>
-      <p>Add any item to a shadcn-compatible project with:</p>
+      <p>
+        Register the namespace in your <code>components.json</code> (
+        <code>{'"registries": { "@fma-ui": "<this-site-url>/r/{name}.json" }'}</code>), then add any
+        item:
+      </p>
       <pre style={{ background: "#f4f4f5", padding: "0.75rem 1rem", borderRadius: 6 }}>
-        npx shadcn add {"<this-site-url>"}/r/&lt;name&gt;.json
+        npx shadcn add @fma-ui/&lt;name&gt;
       </pre>
       <ul>
         {registry.items.map((item) => (

@@ -9,7 +9,7 @@ import type * as React from "react";
 import { useMemo } from "react";
 import { IconStack } from "@/core/icon-stack/icon-stack";
 import { ScrollArea } from "@/core/scroll-area/scroll-area";
-import { addDays, format } from "@/lib/date-fns-compat";
+import { addDays, format } from "@/lib/date-fns-compat/index";
 import {
   EventCalendarViewContext,
   useEventCalendar,

@@ -15,14 +15,14 @@
       "files": [
         {
           "path": "src/core/accordion/accordion.tsx",
-          "target": "components/ui/accordion.tsx",
+          "target": "components/fma-ui/accordion.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -46,13 +46,13 @@
       "files": [
         {
           "path": "src/core/alert/alert.tsx",
-          "target": "components/ui/alert.tsx",
+          "target": "components/fma-ui/alert.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -75,16 +75,16 @@
       "files": [
         {
           "path": "src/core/alert-dialog/alert-dialog.tsx",
-          "target": "components/ui/alert-dialog.tsx",
+          "target": "components/fma-ui/alert-dialog.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -109,38 +109,38 @@
       "files": [
         {
           "path": "src/blocks/app-sidebar/app-sidebar.tsx",
-          "target": "components/app-sidebar/app-sidebar.tsx",
+          "target": "components/fma-ui/app-sidebar/app-sidebar.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/app-sidebar/nav-section.tsx",
-          "target": "components/app-sidebar/nav-section.tsx",
+          "target": "components/fma-ui/app-sidebar/nav-section.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/app-sidebar/nav-user.tsx",
-          "target": "components/app-sidebar/nav-user.tsx",
+          "target": "components/fma-ui/app-sidebar/nav-user.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/app-sidebar/team-switcher.tsx",
-          "target": "components/app-sidebar/team-switcher.tsx",
+          "target": "components/fma-ui/app-sidebar/team-switcher.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/app-sidebar/types.ts",
-          "target": "components/app-sidebar/types.ts",
+          "target": "components/fma-ui/app-sidebar/types.ts",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "sidebar",
-        "collapsible",
-        "dropdown-menu",
-        "avatar"
+        "@fma-ui/sidebar",
+        "@fma-ui/collapsible",
+        "@fma-ui/dropdown-menu",
+        "@fma-ui/avatar"
       ],
       "dependencies": [
-        "lucide-react"
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "stable",
@@ -166,12 +166,12 @@
       "files": [
         {
           "path": "src/core/aspect-ratio/aspect-ratio.tsx",
-          "target": "components/ui/aspect-ratio.tsx",
+          "target": "components/fma-ui/aspect-ratio.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -194,16 +194,16 @@
       "files": [
         {
           "path": "src/core/attachment/attachment.tsx",
-          "target": "components/ui/attachment.tsx",
+          "target": "components/fma-ui/attachment.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -226,12 +226,12 @@
       "files": [
         {
           "path": "src/core/avatar/avatar.tsx",
-          "target": "components/ui/avatar.tsx",
+          "target": "components/fma-ui/avatar.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -255,13 +255,13 @@
       "files": [
         {
           "path": "src/core/badge/badge.tsx",
-          "target": "components/ui/badge.tsx",
+          "target": "components/fma-ui/badge.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -285,14 +285,14 @@
       "files": [
         {
           "path": "src/core/breadcrumb/breadcrumb.tsx",
-          "target": "components/ui/breadcrumb.tsx",
+          "target": "components/fma-ui/breadcrumb.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -315,13 +315,13 @@
       "files": [
         {
           "path": "src/core/bubble/bubble.tsx",
-          "target": "components/ui/bubble.tsx",
+          "target": "components/fma-ui/bubble.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -344,14 +344,14 @@
       "files": [
         {
           "path": "src/core/button/button.tsx",
-          "target": "components/ui/button.tsx",
+          "target": "components/fma-ui/button.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -377,16 +377,16 @@
       "files": [
         {
           "path": "src/core/button-group/button-group.tsx",
-          "target": "components/ui/button-group.tsx",
+          "target": "components/fma-ui/button-group.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "separator"
+        "@fma-ui/separator"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -409,24 +409,24 @@
       "files": [
         {
           "path": "src/core/calendar/calendar.tsx",
-          "target": "components/ui/calendar.tsx",
+          "target": "components/fma-ui/calendar.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button",
-        "select",
-        "use-available-date-correction",
-        "date-granularity",
-        "interval-helpers",
-        "types"
+        "@fma-ui/button",
+        "@fma-ui/select",
+        "@fma-ui/use-available-date-correction",
+        "@fma-ui/date-granularity",
+        "@fma-ui/interval-helpers",
+        "@fma-ui/types"
       ],
       "dependencies": [
-        "@internationalized/date",
-        "class-variance-authority",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "@internationalized/date@^3.12.4",
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -450,12 +450,12 @@
       "files": [
         {
           "path": "src/core/card/card.tsx",
-          "target": "components/ui/card.tsx",
+          "target": "components/fma-ui/card.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -480,17 +480,17 @@
       "files": [
         {
           "path": "src/core/carousel/carousel.tsx",
-          "target": "components/ui/carousel.tsx",
+          "target": "components/fma-ui/carousel.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "cn",
-        "embla-carousel-react",
-        "lucide-react"
+        "cn@^0.4.0",
+        "embla-carousel-react@^8.6.0",
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "stable",
@@ -515,13 +515,13 @@
       "files": [
         {
           "path": "src/core/chart/chart.tsx",
-          "target": "components/ui/chart.tsx",
+          "target": "components/fma-ui/chart.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "recharts"
+        "cn@^0.4.0",
+        "recharts@3.8.0"
       ],
       "meta": {
         "status": "stable",
@@ -546,14 +546,14 @@
       "files": [
         {
           "path": "src/core/checkbox/checkbox.tsx",
-          "target": "components/ui/checkbox.tsx",
+          "target": "components/fma-ui/checkbox.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -579,12 +579,12 @@
       "files": [
         {
           "path": "src/core/collapsible/collapsible.tsx",
-          "target": "components/ui/collapsible.tsx",
+          "target": "components/fma-ui/collapsible.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "react-aria-components"
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -608,18 +608,18 @@
       "files": [
         {
           "path": "src/core/combobox/combobox.tsx",
-          "target": "components/ui/combobox.tsx",
+          "target": "components/fma-ui/combobox.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button",
-        "input-group"
+        "@fma-ui/button",
+        "@fma-ui/input-group"
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -644,18 +644,18 @@
       "files": [
         {
           "path": "src/core/command/command.tsx",
-          "target": "components/ui/command.tsx",
+          "target": "components/fma-ui/command.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "dialog",
-        "input-group"
+        "@fma-ui/dialog",
+        "@fma-ui/input-group"
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -680,15 +680,15 @@
       "files": [
         {
           "path": "src/core/context-menu/context-menu.tsx",
-          "target": "components/ui/context-menu.tsx",
+          "target": "components/fma-ui/context-menu.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -714,26 +714,26 @@
       "files": [
         {
           "path": "src/core/data-grid/data-grid.tsx",
-          "target": "components/ui/data-grid.tsx",
+          "target": "components/fma-ui/data-grid.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "badge",
-        "button",
-        "checkbox",
-        "dropdown-menu",
-        "input",
-        "popover",
-        "select",
-        "skeleton",
-        "spinner"
+        "@fma-ui/badge",
+        "@fma-ui/button",
+        "@fma-ui/checkbox",
+        "@fma-ui/dropdown-menu",
+        "@fma-ui/input",
+        "@fma-ui/popover",
+        "@fma-ui/select",
+        "@fma-ui/skeleton",
+        "@fma-ui/spinner"
       ],
       "dependencies": [
-        "@tanstack/react-table",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "@tanstack/react-table@^8.21.3",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -760,15 +760,15 @@
       "files": [
         {
           "path": "src/lib/date-availability.ts",
-          "target": "lib/date-availability.ts",
+          "target": "lib/fma-ui/date-availability.ts",
           "type": "registry:lib"
         }
       ],
       "registryDependencies": [
-        "interval-helpers"
+        "@fma-ui/interval-helpers"
       ],
       "dependencies": [
-        "@internationalized/date"
+        "@internationalized/date@^3.12.4"
       ],
       "meta": {
         "status": "stable",
@@ -791,20 +791,20 @@
       "files": [
         {
           "path": "src/core/date-field/date-field.tsx",
-          "target": "components/ui/date-field.tsx",
+          "target": "components/fma-ui/date-field.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "use-available-date-correction",
-        "date-granularity",
-        "interval-helpers",
-        "types"
+        "@fma-ui/use-available-date-correction",
+        "@fma-ui/date-granularity",
+        "@fma-ui/interval-helpers",
+        "@fma-ui/types"
       ],
       "dependencies": [
-        "@internationalized/date",
-        "cn",
-        "react-aria-components"
+        "@internationalized/date@^3.12.4",
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -828,57 +828,57 @@
       "files": [
         {
           "path": "src/lib/date-fns-compat/arithmetic.ts",
-          "target": "lib/date-fns-compat/arithmetic.ts",
+          "target": "lib/fma-ui/date-fns-compat/arithmetic.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/boundaries.ts",
-          "target": "lib/date-fns-compat/boundaries.ts",
+          "target": "lib/fma-ui/date-fns-compat/boundaries.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/comparison.ts",
-          "target": "lib/date-fns-compat/comparison.ts",
+          "target": "lib/fma-ui/date-fns-compat/comparison.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/context.ts",
-          "target": "lib/date-fns-compat/context.ts",
+          "target": "lib/fma-ui/date-fns-compat/context.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/convert.ts",
-          "target": "lib/date-fns-compat/convert.ts",
+          "target": "lib/fma-ui/date-fns-compat/convert.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/difference.ts",
-          "target": "lib/date-fns-compat/difference.ts",
+          "target": "lib/fma-ui/date-fns-compat/difference.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/format.ts",
-          "target": "lib/date-fns-compat/format.ts",
+          "target": "lib/fma-ui/date-fns-compat/format.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/index.ts",
-          "target": "lib/date-fns-compat/index.ts",
+          "target": "lib/fma-ui/date-fns-compat/index.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/tz.ts",
-          "target": "lib/date-fns-compat/tz.ts",
+          "target": "lib/fma-ui/date-fns-compat/tz.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/date-fns-compat/week.ts",
-          "target": "lib/date-fns-compat/week.ts",
+          "target": "lib/fma-ui/date-fns-compat/week.ts",
           "type": "registry:lib"
         }
       ],
       "dependencies": [
-        "@internationalized/date"
+        "@internationalized/date@^3.12.4"
       ],
       "meta": {
         "status": "stable",
@@ -902,12 +902,12 @@
       "files": [
         {
           "path": "src/lib/date-granularity.ts",
-          "target": "lib/date-granularity.ts",
+          "target": "lib/fma-ui/date-granularity.ts",
           "type": "registry:lib"
         }
       ],
       "dependencies": [
-        "@internationalized/date"
+        "@internationalized/date@^3.12.4"
       ],
       "meta": {
         "status": "stable",
@@ -930,23 +930,23 @@
       "files": [
         {
           "path": "src/core/date-picker/date-picker.tsx",
-          "target": "components/ui/date-picker.tsx",
+          "target": "components/fma-ui/date-picker.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "calendar",
-        "date-field",
-        "input-group",
-        "popover",
-        "date-granularity",
-        "types"
+        "@fma-ui/calendar",
+        "@fma-ui/date-field",
+        "@fma-ui/input-group",
+        "@fma-ui/popover",
+        "@fma-ui/date-granularity",
+        "@fma-ui/types"
       ],
       "dependencies": [
-        "@internationalized/date",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "@internationalized/date@^3.12.4",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -970,17 +970,17 @@
       "files": [
         {
           "path": "src/core/dialog/dialog.tsx",
-          "target": "components/ui/dialog.tsx",
+          "target": "components/fma-ui/dialog.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1004,12 +1004,12 @@
       "files": [
         {
           "path": "src/core/direction/direction.tsx",
-          "target": "components/ui/direction.tsx",
+          "target": "components/fma-ui/direction.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "react-aria-components"
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1033,13 +1033,13 @@
       "files": [
         {
           "path": "src/core/drawer/drawer.tsx",
-          "target": "components/ui/drawer.tsx",
+          "target": "components/fma-ui/drawer.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        "cn"
+        "@base-ui/react@^1.8.0",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "experimental",
@@ -1064,15 +1064,15 @@
       "files": [
         {
           "path": "src/core/dropdown-menu/dropdown-menu.tsx",
-          "target": "components/ui/dropdown-menu.tsx",
+          "target": "components/fma-ui/dropdown-menu.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1096,13 +1096,13 @@
       "files": [
         {
           "path": "src/core/empty/empty.tsx",
-          "target": "components/ui/empty.tsx",
+          "target": "components/fma-ui/empty.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -1126,90 +1126,90 @@
       "files": [
         {
           "path": "src/blocks/event-calendar/event-calendar-agenda-view.tsx",
-          "target": "components/event-calendar/event-calendar-agenda-view.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-agenda-view.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-content.tsx",
-          "target": "components/event-calendar/event-calendar-content.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-content.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-dnd.tsx",
-          "target": "components/event-calendar/event-calendar-dnd.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-dnd.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-event.tsx",
-          "target": "components/event-calendar/event-calendar-event.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-event.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-i18n.tsx",
-          "target": "components/event-calendar/event-calendar-i18n.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-i18n.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-lib.tsx",
-          "target": "components/event-calendar/event-calendar-lib.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-lib.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-merge-props.ts",
-          "target": "components/event-calendar/event-calendar-merge-props.ts",
+          "target": "components/fma-ui/event-calendar/event-calendar-merge-props.ts",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-month-view.tsx",
-          "target": "components/event-calendar/event-calendar-month-view.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-month-view.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-nav.tsx",
-          "target": "components/event-calendar/event-calendar-nav.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-nav.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-recurrence.tsx",
-          "target": "components/event-calendar/event-calendar-recurrence.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-recurrence.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-resource-view.tsx",
-          "target": "components/event-calendar/event-calendar-resource-view.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-resource-view.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-time-grid.tsx",
-          "target": "components/event-calendar/event-calendar-time-grid.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-time-grid.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar-types.tsx",
-          "target": "components/event-calendar/event-calendar-types.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar-types.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/blocks/event-calendar/event-calendar.tsx",
-          "target": "components/event-calendar/event-calendar.tsx",
+          "target": "components/fma-ui/event-calendar/event-calendar.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "icon-stack",
-        "scroll-area",
-        "tooltip",
-        "popover",
-        "button",
-        "calendar",
-        "dropdown-menu",
-        "date-fns-compat"
+        "@fma-ui/icon-stack",
+        "@fma-ui/scroll-area",
+        "@fma-ui/tooltip",
+        "@fma-ui/popover",
+        "@fma-ui/button",
+        "@fma-ui/calendar",
+        "@fma-ui/dropdown-menu",
+        "@fma-ui/date-fns-compat"
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components",
-        "@internationalized/date"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1",
+        "@internationalized/date@^3.12.4"
       ],
       "meta": {
         "status": "experimental",
@@ -1236,17 +1236,17 @@
       "files": [
         {
           "path": "src/core/field/field.tsx",
-          "target": "components/ui/field.tsx",
+          "target": "components/fma-ui/field.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "label",
-        "separator"
+        "@fma-ui/label",
+        "@fma-ui/separator"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -1271,13 +1271,13 @@
       "files": [
         {
           "path": "src/core/hover-card/hover-card.tsx",
-          "target": "components/ui/hover-card.tsx",
+          "target": "components/fma-ui/hover-card.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1302,12 +1302,12 @@
       "files": [
         {
           "path": "src/core/icon-stack/icon-stack.tsx",
-          "target": "components/ui/icon-stack.tsx",
+          "target": "components/fma-ui/icon-stack.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -1333,13 +1333,13 @@
       "files": [
         {
           "path": "src/core/icon-tile/icon-tile.tsx",
-          "target": "components/ui/icon-tile.tsx",
+          "target": "components/fma-ui/icon-tile.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -1364,13 +1364,13 @@
       "files": [
         {
           "path": "src/core/input/input.tsx",
-          "target": "components/ui/input.tsx",
+          "target": "components/fma-ui/input.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1395,19 +1395,19 @@
       "files": [
         {
           "path": "src/core/input-group/input-group.tsx",
-          "target": "components/ui/input-group.tsx",
+          "target": "components/fma-ui/input-group.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button",
-        "input",
-        "textarea"
+        "@fma-ui/button",
+        "@fma-ui/input",
+        "@fma-ui/textarea"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1432,87 +1432,87 @@
       "files": [
         {
           "path": "src/lib/input-masks/cep-mask.ts",
-          "target": "lib/input-masks/cep-mask.ts",
+          "target": "lib/fma-ui/input-masks/cep-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/cnpj-mask.ts",
-          "target": "lib/input-masks/cnpj-mask.ts",
+          "target": "lib/fma-ui/input-masks/cnpj-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/cnpj-or-cpf-mask.ts",
-          "target": "lib/input-masks/cnpj-or-cpf-mask.ts",
+          "target": "lib/fma-ui/input-masks/cnpj-or-cpf-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/cpf-mask.ts",
-          "target": "lib/input-masks/cpf-mask.ts",
+          "target": "lib/fma-ui/input-masks/cpf-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/credit-card-mask.ts",
-          "target": "lib/input-masks/credit-card-mask.ts",
+          "target": "lib/fma-ui/input-masks/credit-card-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/date-mask.ts",
-          "target": "lib/input-masks/date-mask.ts",
+          "target": "lib/fma-ui/input-masks/date-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/date-range-mask.ts",
-          "target": "lib/input-masks/date-range-mask.ts",
+          "target": "lib/fma-ui/input-masks/date-range-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/date-time-mask.ts",
-          "target": "lib/input-masks/date-time-mask.ts",
+          "target": "lib/fma-ui/input-masks/date-time-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/decimal-mask.ts",
-          "target": "lib/input-masks/decimal-mask.ts",
+          "target": "lib/fma-ui/input-masks/decimal-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/index.ts",
-          "target": "lib/input-masks/index.ts",
+          "target": "lib/fma-ui/input-masks/index.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/pattern-mask.ts",
-          "target": "lib/input-masks/pattern-mask.ts",
+          "target": "lib/fma-ui/input-masks/pattern-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/phone-mask.ts",
-          "target": "lib/input-masks/phone-mask.ts",
+          "target": "lib/fma-ui/input-masks/phone-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/presets.ts",
-          "target": "lib/input-masks/presets.ts",
+          "target": "lib/fma-ui/input-masks/presets.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/stable-mask.ts",
-          "target": "lib/input-masks/stable-mask.ts",
+          "target": "lib/fma-ui/input-masks/stable-mask.ts",
           "type": "registry:lib"
         },
         {
           "path": "src/lib/input-masks/time-mask.ts",
-          "target": "lib/input-masks/time-mask.ts",
+          "target": "lib/fma-ui/input-masks/time-mask.ts",
           "type": "registry:lib"
         }
       ],
       "registryDependencies": [
-        "type-helper",
-        "types"
+        "@fma-ui/type-helper",
+        "@fma-ui/types"
       ],
       "dependencies": [
-        "@maskito/core",
-        "@maskito/kit"
+        "@maskito/core@^5.6.0",
+        "@maskito/kit@^5.6.0"
       ],
       "meta": {
         "status": "stable",
@@ -1537,14 +1537,14 @@
       "files": [
         {
           "path": "src/core/input-otp/input-otp.tsx",
-          "target": "components/ui/input-otp.tsx",
+          "target": "components/fma-ui/input-otp.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "input-otp",
-        "lucide-react"
+        "cn@^0.4.0",
+        "input-otp@^1.5.0",
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "stable",
@@ -1569,12 +1569,12 @@
       "files": [
         {
           "path": "src/lib/interval-helpers.ts",
-          "target": "lib/interval-helpers.ts",
+          "target": "lib/fma-ui/interval-helpers.ts",
           "type": "registry:lib"
         }
       ],
       "registryDependencies": [
-        "types"
+        "@fma-ui/types"
       ],
       "dependencies": [],
       "meta": {
@@ -1598,17 +1598,17 @@
       "files": [
         {
           "path": "src/core/item/item.tsx",
-          "target": "components/ui/item.tsx",
+          "target": "components/fma-ui/item.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "separator"
+        "@fma-ui/separator"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1633,13 +1633,13 @@
       "files": [
         {
           "path": "src/core/kbd/kbd.tsx",
-          "target": "components/ui/kbd.tsx",
+          "target": "components/fma-ui/kbd.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1664,13 +1664,13 @@
       "files": [
         {
           "path": "src/core/label/label.tsx",
-          "target": "components/ui/label.tsx",
+          "target": "components/fma-ui/label.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1695,13 +1695,13 @@
       "files": [
         {
           "path": "src/core/marker/marker.tsx",
-          "target": "components/ui/marker.tsx",
+          "target": "components/fma-ui/marker.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -1725,13 +1725,13 @@
       "files": [
         {
           "path": "src/core/masked-input/masked-input.tsx",
-          "target": "components/ui/masked-input.tsx",
+          "target": "components/fma-ui/masked-input.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "input",
-        "use-mask"
+        "@fma-ui/input",
+        "@fma-ui/use-mask"
       ],
       "dependencies": [],
       "meta": {
@@ -1757,16 +1757,16 @@
       "files": [
         {
           "path": "src/core/menubar/menubar.tsx",
-          "target": "components/ui/menubar.tsx",
+          "target": "components/fma-ui/menubar.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "dropdown-menu"
+        "@fma-ui/dropdown-menu"
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1793,12 +1793,12 @@
       "files": [
         {
           "path": "src/core/message/message.tsx",
-          "target": "components/ui/message.tsx",
+          "target": "components/fma-ui/message.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -1822,17 +1822,17 @@
       "files": [
         {
           "path": "src/core/message-scroller/message-scroller.tsx",
-          "target": "components/ui/message-scroller.tsx",
+          "target": "components/fma-ui/message-scroller.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "@shadcn/react",
-        "cn",
-        "lucide-react"
+        "@shadcn/react@^0.3.1",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "experimental",
@@ -1857,13 +1857,13 @@
       "files": [
         {
           "path": "src/core/native-select/native-select.tsx",
-          "target": "components/ui/native-select.tsx",
+          "target": "components/fma-ui/native-select.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "lucide-react"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "stable",
@@ -1887,15 +1887,15 @@
       "files": [
         {
           "path": "src/core/navigation-menu/navigation-menu.tsx",
-          "target": "components/ui/navigation-menu.tsx",
+          "target": "components/fma-ui/navigation-menu.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1921,16 +1921,16 @@
       "files": [
         {
           "path": "src/core/pagination/pagination.tsx",
-          "target": "components/ui/pagination.tsx",
+          "target": "components/fma-ui/pagination.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "cn",
-        "lucide-react"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "stable",
@@ -1954,13 +1954,13 @@
       "files": [
         {
           "path": "src/core/popover/popover.tsx",
-          "target": "components/ui/popover.tsx",
+          "target": "components/fma-ui/popover.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -1984,13 +1984,13 @@
       "files": [
         {
           "path": "src/core/progress/progress.tsx",
-          "target": "components/ui/progress.tsx",
+          "target": "components/fma-ui/progress.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2014,17 +2014,17 @@
       "files": [
         {
           "path": "src/core/questionnaire/questionnaire.tsx",
-          "target": "components/ui/questionnaire.tsx",
+          "target": "components/fma-ui/questionnaire.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "@shadcn/react",
-        "cn",
-        "lucide-react"
+        "@shadcn/react@^0.3.1",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "experimental",
@@ -2048,13 +2048,13 @@
       "files": [
         {
           "path": "src/core/radio-group/radio-group.tsx",
-          "target": "components/ui/radio-group.tsx",
+          "target": "components/fma-ui/radio-group.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2078,13 +2078,13 @@
       "files": [
         {
           "path": "src/core/resizable/resizable.tsx",
-          "target": "components/ui/resizable.tsx",
+          "target": "components/fma-ui/resizable.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-resizable-panels"
+        "cn@^0.4.0",
+        "react-resizable-panels@^4.14.1"
       ],
       "meta": {
         "status": "stable",
@@ -2108,12 +2108,12 @@
       "files": [
         {
           "path": "src/core/scroll-area/scroll-area.tsx",
-          "target": "components/ui/scroll-area.tsx",
+          "target": "components/fma-ui/scroll-area.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -2136,17 +2136,17 @@
       "files": [
         {
           "path": "src/core/select/select.tsx",
-          "target": "components/ui/select.tsx",
+          "target": "components/fma-ui/select.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "input-group"
+        "@fma-ui/input-group"
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2170,13 +2170,13 @@
       "files": [
         {
           "path": "src/core/separator/separator.tsx",
-          "target": "components/ui/separator.tsx",
+          "target": "components/fma-ui/separator.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2200,17 +2200,17 @@
       "files": [
         {
           "path": "src/core/sheet/sheet.tsx",
-          "target": "components/ui/sheet.tsx",
+          "target": "components/fma-ui/sheet.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button"
+        "@fma-ui/button"
       ],
       "dependencies": [
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2235,24 +2235,24 @@
       "files": [
         {
           "path": "src/core/sidebar/sidebar.tsx",
-          "target": "components/ui/sidebar.tsx",
+          "target": "components/fma-ui/sidebar.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "button",
-        "input",
-        "separator",
-        "sheet",
-        "skeleton",
-        "tooltip",
-        "use-mobile"
+        "@fma-ui/button",
+        "@fma-ui/input",
+        "@fma-ui/separator",
+        "@fma-ui/sheet",
+        "@fma-ui/skeleton",
+        "@fma-ui/tooltip",
+        "@fma-ui/use-mobile"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2276,15 +2276,15 @@
       "files": [
         {
           "path": "src/core/simple-time-picker/simple-time-picker.tsx",
-          "target": "components/ui/simple-time-picker.tsx",
+          "target": "components/fma-ui/simple-time-picker.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "@internationalized/date",
-        "cn",
-        "lucide-react",
-        "react-aria-components"
+        "@internationalized/date@^3.12.4",
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2310,12 +2310,12 @@
       "files": [
         {
           "path": "src/core/skeleton/skeleton.tsx",
-          "target": "components/ui/skeleton.tsx",
+          "target": "components/fma-ui/skeleton.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -2338,13 +2338,13 @@
       "files": [
         {
           "path": "src/core/slider/slider.tsx",
-          "target": "components/ui/slider.tsx",
+          "target": "components/fma-ui/slider.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2368,14 +2368,14 @@
       "files": [
         {
           "path": "src/core/sonner/sonner.tsx",
-          "target": "components/ui/sonner.tsx",
+          "target": "components/fma-ui/sonner.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "lucide-react",
-        "next-themes",
-        "sonner"
+        "lucide-react@^1.48.0",
+        "next-themes@^0.4.6",
+        "sonner@^2.0.8"
       ],
       "meta": {
         "status": "stable",
@@ -2398,13 +2398,13 @@
       "files": [
         {
           "path": "src/core/spinner/spinner.tsx",
-          "target": "components/ui/spinner.tsx",
+          "target": "components/fma-ui/spinner.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "lucide-react"
+        "cn@^0.4.0",
+        "lucide-react@^1.48.0"
       ],
       "meta": {
         "status": "stable",
@@ -2427,13 +2427,13 @@
       "files": [
         {
           "path": "src/core/stepper/stepper.tsx",
-          "target": "components/ui/stepper.tsx",
+          "target": "components/fma-ui/stepper.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2460,13 +2460,13 @@
       "files": [
         {
           "path": "src/core/switch/switch.tsx",
-          "target": "components/ui/switch.tsx",
+          "target": "components/fma-ui/switch.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2491,13 +2491,13 @@
       "files": [
         {
           "path": "src/core/table/table.tsx",
-          "target": "components/ui/table.tsx",
+          "target": "components/fma-ui/table.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2521,14 +2521,14 @@
       "files": [
         {
           "path": "src/core/tabs/tabs.tsx",
-          "target": "components/ui/tabs.tsx",
+          "target": "components/fma-ui/tabs.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2552,13 +2552,13 @@
       "files": [
         {
           "path": "src/core/textarea/textarea.tsx",
-          "target": "components/ui/textarea.tsx",
+          "target": "components/fma-ui/textarea.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2582,12 +2582,12 @@
       "files": [
         {
           "path": "src/core/timeline/timeline.tsx",
-          "target": "components/ui/timeline.tsx",
+          "target": "components/fma-ui/timeline.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn"
+        "cn@^0.4.0"
       ],
       "meta": {
         "status": "stable",
@@ -2613,14 +2613,14 @@
       "files": [
         {
           "path": "src/core/toggle/toggle.tsx",
-          "target": "components/ui/toggle.tsx",
+          "target": "components/fma-ui/toggle.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2644,17 +2644,17 @@
       "files": [
         {
           "path": "src/core/toggle-group/toggle-group.tsx",
-          "target": "components/ui/toggle-group.tsx",
+          "target": "components/fma-ui/toggle-group.tsx",
           "type": "registry:component"
         }
       ],
       "registryDependencies": [
-        "toggle"
+        "@fma-ui/toggle"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "cn",
-        "react-aria-components"
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2678,13 +2678,13 @@
       "files": [
         {
           "path": "src/core/tooltip/tooltip.tsx",
-          "target": "components/ui/tooltip.tsx",
+          "target": "components/fma-ui/tooltip.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": [
-        "cn",
-        "react-aria-components"
+        "cn@^0.4.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2708,7 +2708,7 @@
       "files": [
         {
           "path": "src/lib/type-helper.ts",
-          "target": "lib/type-helper.ts",
+          "target": "lib/fma-ui/type-helper.ts",
           "type": "registry:lib"
         }
       ],
@@ -2734,7 +2734,7 @@
       "files": [
         {
           "path": "src/lib/types.ts",
-          "target": "lib/types.ts",
+          "target": "lib/fma-ui/types.ts",
           "type": "registry:lib"
         }
       ],
@@ -2760,16 +2760,16 @@
       "files": [
         {
           "path": "src/hooks/use-available-date-correction.ts",
-          "target": "hooks/use-available-date-correction.ts",
+          "target": "hooks/fma-ui/use-available-date-correction.ts",
           "type": "registry:hook"
         }
       ],
       "registryDependencies": [
-        "date-availability",
-        "types"
+        "@fma-ui/date-availability",
+        "@fma-ui/types"
       ],
       "dependencies": [
-        "@internationalized/date"
+        "@internationalized/date@^3.12.4"
       ],
       "meta": {
         "status": "stable",
@@ -2793,16 +2793,16 @@
       "files": [
         {
           "path": "src/hooks/use-mask.ts",
-          "target": "hooks/use-mask.ts",
+          "target": "hooks/fma-ui/use-mask.ts",
           "type": "registry:hook"
         }
       ],
       "registryDependencies": [
-        "input-masks"
+        "@fma-ui/input-masks"
       ],
       "dependencies": [
-        "@maskito/react",
-        "react-aria-components"
+        "@maskito/react@^5.6.0",
+        "react-aria-components@^1.21.1"
       ],
       "meta": {
         "status": "stable",
@@ -2827,7 +2827,7 @@
       "files": [
         {
           "path": "src/hooks/use-mobile.ts",
-          "target": "hooks/use-mobile.ts",
+          "target": "hooks/fma-ui/use-mobile.ts",
           "type": "registry:hook"
         }
       ],

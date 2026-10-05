@@ -12,7 +12,7 @@ import {
   startOfMonth,
   startOfWeek,
   TZDate,
-} from "@/lib/date-fns-compat";
+} from "@/lib/date-fns-compat/index";
 import { expandRecurrence } from "./event-calendar-recurrence";
 import type {
   CalendarEvent,

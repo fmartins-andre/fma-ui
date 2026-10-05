@@ -5,15 +5,15 @@
   "author": "@fma-ui/ui",
   "description": "A multi-line text input that auto-sizes to its content by default (field-sizing-content), rather than staying a fixed number of rows.",
   "dependencies": [
-    "cn",
-    "react-aria-components"
+    "cn@^0.4.0",
+    "react-aria-components@^1.21.1"
   ],
   "files": [
     {
       "path": "src/core/textarea/textarea.tsx",
       "content": "import { cn } from \"cn\";\nimport type * as React from \"react\";\nimport { composeRenderProps, TextArea as TextareaPrimitive } from \"react-aria-components\";\n\nfunction Textarea({ className, ...props }: React.ComponentProps<typeof TextareaPrimitive>) {\n  return (\n    <TextareaPrimitive\n      data-slot=\"textarea\"\n      className={composeRenderProps(className, (className) =>\n        cn(\n          \"flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40\",\n          className,\n        ),\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { Textarea };\n",
       "type": "registry:component",
-      "target": "components/ui/textarea.tsx"
+      "target": "components/fma-ui/textarea.tsx"
     }
   ],
   "meta": {

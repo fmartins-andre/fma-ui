@@ -1,7 +1,7 @@
 // Title: Event Calendar Recurrence
 // Description: RFC 5545 subset recurrence expansion for the event calendar - structured rules or raw RRULE strings, with a hard occurrence cap.
 
-import { addDays, addMonths, addWeeks, addYears, TZDate } from "@/lib/date-fns-compat";
+import { addDays, addMonths, addWeeks, addYears, TZDate } from "@/lib/date-fns-compat/index";
 import type {
   CalendarEvent,
   EventCalendarDateRange,

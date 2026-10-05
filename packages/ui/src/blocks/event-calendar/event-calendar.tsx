@@ -22,7 +22,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { addDays } from "@/lib/date-fns-compat";
+import { addDays } from "@/lib/date-fns-compat/index";
 import {
   type EventCalendarI18nConfig,
   type EventCalendarI18nOverrides,
@@ -402,6 +402,10 @@ function resolveSettings<TData>(
     activation: options.activation,
   };
 }
+
+// Bundlers replace process.env.NODE_ENV at build time; declared here so
+// consumers don't need @types/node just for this check.
+declare const process: { env: { NODE_ENV?: string } };
 
 const warned = new Set<string>();
 function warnOnce(key: string, message: string) {

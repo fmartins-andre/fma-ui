@@ -6,7 +6,12 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Registry } from "@fma-ui/registry";
 import { describe, expect, it } from "vitest";
-import { detectNpmDependencies, detectRegistryDependencies } from "../scripts/gen-registry-json";
+import {
+  detectNpmDependencies,
+  detectRegistryDependencies,
+  NAMESPACE,
+  packageName,
+} from "../scripts/gen-registry-json";
 
 const ROOT = join(__dirname, "..");
 
@@ -27,17 +32,20 @@ describe.each(registry.items.map((item) => [item.name, item] as const))(
     const source = item.files.map((file) => readFileSync(join(ROOT, file.path), "utf8")).join("\n");
 
     it("declares exactly the npm dependencies its source actually imports", () => {
-      expect(new Set(item.dependencies ?? [])).toEqual(new Set(detectNpmDependencies(source)));
+      expect(new Set((item.dependencies ?? []).map(packageName))).toEqual(
+        new Set(detectNpmDependencies(source)),
+      );
     });
 
     it("declares exactly the registryDependencies its source actually cross-imports", () => {
       expect(new Set(item.registryDependencies ?? [])).toEqual(
-        new Set(detectRegistryDependencies(source, name)),
+        new Set(detectRegistryDependencies(source, name).map((id) => `${NAMESPACE}/${id}`)),
       );
     });
 
     it("every declared npm dependency is actually installed in package.json", () => {
-      for (const dep of item.dependencies ?? []) {
+      for (const dependency of item.dependencies ?? []) {
+        const dep = packageName(dependency);
         expect(
           installedDeps.has(dep),
           `"${dep}" is imported by ${name} but missing from packages/ui/package.json dependencies`,
@@ -47,8 +55,10 @@ describe.each(registry.items.map((item) => [item.name, item] as const))(
 
     it("every declared registryDependency points at a real item in this registry", () => {
       for (const dep of item.registryDependencies ?? []) {
+        // Namespaced, so the shadcn CLI resolves it here and not in the official registry.
+        expect(dep.startsWith(`${NAMESPACE}/`), `"${dep}" isn't namespaced`).toBe(true);
         expect(
-          registryItemNames.has(dep),
+          registryItemNames.has(dep.slice(NAMESPACE.length + 1)),
           `registryDependency "${dep}" declared by ${name} doesn't exist in registry.json`,
         ).toBe(true);
       }
