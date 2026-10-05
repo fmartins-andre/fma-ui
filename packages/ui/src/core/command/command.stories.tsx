@@ -27,8 +27,9 @@ const componentMeta = {
   render: (args) => (
     <Command {...args}>
       <CommandInput placeholder="Type a command or search..." />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+      {/* The empty state goes through renderEmptyState: a plain child in the
+          collection would empty the whole list. */}
+      <CommandList renderEmptyState={() => <CommandEmpty>No results found.</CommandEmpty>}>
         <CommandGroup heading="Suggestions">
           <CommandItem id="calendar">Calendar</CommandItem>
           <CommandItem id="search-emoji">Search Emoji</CommandItem>
@@ -50,7 +51,12 @@ const componentMeta = {
 export default componentMeta;
 type Story = StoryObj<typeof componentMeta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  play: async ({ canvas }) => {
+    await expect(canvas.getAllByRole("menuitem")).toHaveLength(6);
+    await expect(canvas.queryByText(/no results/i)).toBeNull();
+  },
+};
 
 export const FiltersResults: Story = {
   play: async ({ canvasElement }) => {
@@ -62,18 +68,15 @@ export const FiltersResults: Story = {
     // CommandList/CommandItem render react-aria-components' Menu/MenuItem
     // (role="menu"/"menuitem") — not a listbox, so items are "menuitem", not
     // "option".
-    // Filtering runs off Autocomplete's async state — findBy*/waitFor retry
-    // instead of asserting synchronously right after typing.
-    await userEvent.type(input, "calen", { delay: 100 });
-    expect(
-      await canvas.findAllByRole("menuitem", { name: /calendar/i }, { timeout: 5000 }),
-    ).toHaveLength(1);
+    await userEvent.type(input, "calen");
+    await waitFor(() => expect(canvas.getAllByRole("menuitem")).toHaveLength(1));
+    await expect(canvas.getByRole("menuitem", { name: /calendar/i })).toBeVisible();
 
     await userEvent.clear(input);
-    await userEvent.type(input, "story", { delay: 100 });
-    await waitFor(() => expect(canvas.queryAllByRole("menuitem")).toHaveLength(0), {
-      timeout: 5000,
-    });
-    expect(canvas.getByText(/no results/i)).toBeVisible();
+    await userEvent.type(input, "story");
+    // The empty state itself renders in a "menuitem" wrapper, so check the
+    // menu's empty flag instead of counting items.
+    await waitFor(() => expect(canvas.getByRole("menu")).toHaveAttribute("data-empty", "true"));
+    await expect(canvas.getByText(/no results/i)).toBeVisible();
   },
 };
