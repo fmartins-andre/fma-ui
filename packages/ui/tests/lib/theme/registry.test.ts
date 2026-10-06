@@ -47,6 +47,24 @@ describe("themeRegistryItem", () => {
     });
   });
 
+  it("sets font-heading only when the theme picks one", () => {
+    expect(themeRegistryItem(violet).cssVars?.theme?.["font-heading"]).toBeUndefined();
+    const item = themeRegistryItem({
+      ...violet,
+      fonts: { ...violet.fonts, heading: "Fraunces, serif" },
+    });
+    expect(item.cssVars?.theme?.["font-heading"]).toBe("Fraunces, serif");
+    expect(item.dependencies).toContain("@fontsource/fraunces@^5.3.0");
+  });
+
+  it("makes the consumer's tracking scale relative when the theme sets letter spacing", () => {
+    const tracked = themeRegistryItem({ ...violet, letterSpacing: "0.01em" });
+    expect(tracked.cssVars?.theme?.["tracking-widest"]).toBe(
+      "calc(var(--tracking-normal) + 0.1em)",
+    );
+    expect(themeRegistryItem(violet).cssVars?.theme?.["tracking-tight"]).toBeUndefined();
+  });
+
   it("applies letter-spacing to body only when the theme sets it", () => {
     const tracked = themeRegistryItem({ ...violet, letterSpacing: "0.01em" });
     expect(tracked.cssVars?.light["tracking-normal"]).toBe("0.01em");

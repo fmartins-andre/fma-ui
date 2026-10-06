@@ -4,6 +4,7 @@
 // the editor's panels key their non-color controls by EditableSetting, so a new
 // ThemeSchema field without a control fails apps/web's type-check.
 
+import type { FontCategory } from "./fonts";
 import type { ColorToken, Theme, ThemeFonts } from "./schema";
 
 export interface ColorEntry {
@@ -84,8 +85,24 @@ export type EditableSetting = Exclude<keyof Theme, ThemeIdentityField | "light" 
 export type FontSlot = keyof ThemeFonts;
 
 /** The font pickers, one per font slot (Record: a new slot fails type-check until listed). */
-export const FONT_CONTROLS: Record<FontSlot, { label: string; utility: string }> = {
-  sans: { label: "Sans-serif", utility: "font-sans" },
-  serif: { label: "Serif", utility: "font-serif" },
-  mono: { label: "Monospace", utility: "font-mono" },
+export const FONT_CONTROLS: Record<
+  FontSlot,
+  {
+    label: string;
+    utility: string;
+    /** GOOGLE_FONTS categories offered by the picker. */
+    catalog: FontCategory[];
+    /** Generic fallback appended to a picked family. */
+    fallback: FontCategory;
+  }
+> = {
+  sans: { label: "Sans-serif", utility: "font-sans", catalog: ["sans"], fallback: "sans" },
+  serif: { label: "Serif", utility: "font-serif", catalog: ["serif"], fallback: "serif" },
+  mono: { label: "Monospace", utility: "font-mono", catalog: ["mono"], fallback: "mono" },
+  heading: {
+    label: "Headings (default: sans)",
+    utility: "font-heading",
+    catalog: ["sans", "serif"],
+    fallback: "sans",
+  },
 };

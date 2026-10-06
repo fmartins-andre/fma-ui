@@ -9,6 +9,14 @@ import { SHADOW_SIZES, shadowScale } from "./shadows";
 
 export const THEME_ITEM_PREFIX = "theme-";
 
+const TRACKING_SCALE = {
+  "tracking-tighter": "calc(var(--tracking-normal) - 0.05em)",
+  "tracking-tight": "calc(var(--tracking-normal) - 0.025em)",
+  "tracking-wide": "calc(var(--tracking-normal) + 0.025em)",
+  "tracking-wider": "calc(var(--tracking-normal) + 0.05em)",
+  "tracking-widest": "calc(var(--tracking-normal) + 0.1em)",
+};
+
 function modeVars(theme: Theme, mode: ThemeMode): Record<string, string> {
   const vars: Record<string, string> = {};
   for (const token of COLOR_TOKENS) vars[token] = theme[mode][token];
@@ -46,6 +54,9 @@ export function themeRegistryItem(theme: Theme): RegistryItem {
         ...(theme.fonts.sans && { "font-sans": theme.fonts.sans }),
         ...(theme.fonts.serif && { "font-serif": theme.fonts.serif }),
         ...(theme.fonts.mono && { "font-mono": theme.fonts.mono }),
+        ...(theme.fonts.heading && { "font-heading": theme.fonts.heading }),
+        // Like styles.css: the tracking scale follows the theme's body tracking.
+        ...(theme.letterSpacing && TRACKING_SCALE),
       },
       light: {
         ...modeVars(theme, "light"),

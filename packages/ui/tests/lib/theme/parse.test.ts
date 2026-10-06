@@ -1,11 +1,13 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-
-import { generateThemeCss } from "@/lib/theme/css";
+import { generateIndexCss, generateThemeCss } from "@/lib/theme/css";
 import { parseCssVars, parseThemeInput, themeFromCssVars } from "@/lib/theme/parse";
 import { themeRegistryItem } from "@/lib/theme/registry";
 import { DEFAULT_THEME, getTheme, THEMES } from "@/themes/index";
 
 const identity = { name: "imported", title: "Imported" };
+const STYLES = join(__dirname, "..", "..", "..", "src", "styles.css");
 
 describe("parseCssVars", () => {
   it("reads :root and .dark at any depth, ignoring other rules and comments", () => {
@@ -98,6 +100,40 @@ describe("themeFromCssVars", () => {
     });
     expect(theme.shadow?.dark.opacity).toBe(0.5);
     expect(theme.shadow?.dark.blur).toBe("8px");
+  });
+});
+
+describe("themeFromCssVars defaults", () => {
+  it("reads a heading font but not one that just points at another variable", () => {
+    const picked = themeFromCssVars(
+      { light: { "font-heading": "Fraunces, serif" }, dark: {} },
+      DEFAULT_THEME,
+      identity,
+    );
+    expect(picked.fonts.heading).toBe("Fraunces, serif");
+    const aliased = themeFromCssVars(
+      { light: { "font-heading": "var(--font-sans)" }, dark: {} },
+      DEFAULT_THEME,
+      identity,
+    );
+    expect(aliased.fonts.heading).toBeUndefined();
+  });
+
+  it.each(["0em", "0", "normal"])("treats tracking %s as unset", (value) => {
+    const theme = themeFromCssVars(
+      { light: { "tracking-normal": value }, dark: {} },
+      DEFAULT_THEME,
+      identity,
+    );
+    expect(theme.letterSpacing).toBeUndefined();
+  });
+
+  it("re-imports the default index.css export as the default theme's settings", () => {
+    const css = generateIndexCss(DEFAULT_THEME, readFileSync(STYLES, "utf8"));
+    const theme = parseThemeInput(css, DEFAULT_THEME, identity);
+    expect(theme.letterSpacing).toBeUndefined();
+    expect(theme.fonts.heading).toBeUndefined();
+    expect(theme.light).toEqual(DEFAULT_THEME.light);
   });
 });
 

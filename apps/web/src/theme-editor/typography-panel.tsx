@@ -13,7 +13,6 @@ import {
 import {
   type EditableSetting,
   FONT_CONTROLS,
-  type FontCategory,
   type FontSlot,
   fontStack,
   GOOGLE_FONTS,
@@ -30,27 +29,21 @@ const DEFAULT_KEY = "__default";
 const CUSTOM_KEY = "__custom";
 
 function FontField({
-  category,
-  label,
-  utility,
+  slot,
   value,
   onChange,
 }: {
-  category: FontCategory;
-  label: string;
-  utility: string;
+  slot: FontSlot;
   value: string | undefined;
   onChange: (value: string | undefined) => void;
 }) {
   const id = useId();
+  const { label, utility, catalog, fallback } = FONT_CONTROLS[slot];
+  const fonts = catalog.flatMap((category) => GOOGLE_FONTS[category]);
   const [draft, setDraft] = useState(value ?? "");
   useEffect(() => setDraft(value ?? ""), [value]);
   const family = value ? primaryFamily(value) : undefined;
-  const selected = !family
-    ? DEFAULT_KEY
-    : GOOGLE_FONTS[category].includes(family)
-      ? family
-      : CUSTOM_KEY;
+  const selected = !family ? DEFAULT_KEY : fonts.includes(family) ? family : CUSTOM_KEY;
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -62,7 +55,12 @@ function FontField({
         selectedKey={selected}
         onSelectionChange={(key) => {
           if (key === DEFAULT_KEY) onChange(undefined);
-          else if (key !== CUSTOM_KEY && key !== null) onChange(fontStack(String(key), category));
+          else if (key !== CUSTOM_KEY && key !== null) {
+            const font = String(key);
+            // A serif picked for headings falls back to serif, not sans.
+            const category = catalog.find((item) => GOOGLE_FONTS[item].includes(font));
+            onChange(fontStack(font, category ?? fallback));
+          }
         }}
       >
         <SelectTrigger className="w-full">
@@ -72,7 +70,7 @@ function FontField({
           <SelectItem id={DEFAULT_KEY}>Default (styles.css)</SelectItem>
           {selected === CUSTOM_KEY && <SelectItem id={CUSTOM_KEY}>{family}</SelectItem>}
           <SelectSeparator />
-          {GOOGLE_FONTS[category].map((font) => (
+          {fonts.map((font) => (
             <SelectItem key={font} id={font} textValue={font}>
               <span style={{ fontFamily: `"${font}"` }}>{font}</span>
             </SelectItem>
@@ -113,9 +111,7 @@ export function TypographyPanel({
         {(Object.keys(FONT_CONTROLS) as FontSlot[]).map((key) => (
           <FontField
             key={key}
-            category={key}
-            label={FONT_CONTROLS[key].label}
-            utility={FONT_CONTROLS[key].utility}
+            slot={key}
             value={theme.fonts[key]}
             onChange={(value) =>
               edit((current) => ({ ...current, fonts: { ...current.fonts, [key]: value } }))

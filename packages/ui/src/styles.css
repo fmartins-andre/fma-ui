@@ -6,12 +6,12 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Fonts, shadows and colors are plain variables in :root/.dark, mapped here
- * with `inline` so a theme (src/themes, applied by src/lib/theme) can change
- * them at runtime. The :root defaults below equal Tailwind's own.
+ * Theme tokens (colors, fonts, shadows, tracking) are plain variables in
+ * :root/.dark, mapped here with `inline` so they can change at runtime. The
+ * non-color :root defaults equal Tailwind's own.
  */
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-heading);
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
@@ -22,6 +22,12 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  /* Relative to the body tracking, so a theme's letter spacing shifts the whole scale. */
+  --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+  --tracking-tight: calc(var(--tracking-normal) - 0.025em);
+  --tracking-wide: calc(var(--tracking-normal) + 0.025em);
+  --tracking-wider: calc(var(--tracking-normal) + 0.05em);
+  --tracking-widest: calc(var(--tracking-normal) + 0.1em);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -114,6 +120,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   --font-sans: "Geist Variable", sans-serif;
+  --font-heading: var(--font-sans);
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
@@ -125,6 +132,7 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tracking-normal: 0em;
 }
 
 .dark {
@@ -176,8 +184,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Set by themes with a letterSpacing; unset → normal. */
-    letter-spacing: var(--tracking-normal, normal);
+    letter-spacing: var(--tracking-normal);
   }
   html {
     @apply font-sans;
