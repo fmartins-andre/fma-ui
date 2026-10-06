@@ -10,6 +10,8 @@ interface EventCalendarI18nConfig {
     previous: string;
     next: string;
     addEvent: string;
+    /** Aria-label of a day's add button; `date` is formatted with `formats.dayAria`. */
+    addEventOn: (date: string) => string;
     allDay: string;
     more: (count: number) => string;
     noEvents: string;
@@ -108,6 +110,7 @@ const DEFAULT_LABELS: EventCalendarI18nConfig["labels"] = {
   previous: "Previous",
   next: "Next",
   addEvent: "Add event",
+  addEventOn: (date) => `Add event on ${date}`,
   allDay: "All day",
   more: (count) => `+${count} more`,
   noEvents: "No events",

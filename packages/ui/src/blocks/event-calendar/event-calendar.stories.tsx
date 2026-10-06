@@ -316,3 +316,48 @@ export const KeyboardShortcuts: Story = {
     await expect(switcher).toHaveTextContent(/5/);
   },
 };
+
+const onSlotClick = fn();
+
+/**
+ * Drag-to-create needs a pointer; with `showDayAddButton` every day (month
+ * cells, time-grid day headers) gets a labelled "+" button that fires
+ * `onSlotClick` for that day, reachable with Tab.
+ */
+export const KeyboardCreate: Story = {
+  render: () => (
+    <div className="flex h-[560px] w-[860px] flex-col rounded-lg border">
+      <EventCalendar
+        defaultEvents={EVENTS}
+        defaultView="week"
+        defaultDate={TODAY}
+        timeZone="UTC"
+        locale="en-US"
+        showDayAddButton
+        onSlotClick={onSlotClick}
+        className="flex min-h-0 flex-1 flex-col"
+      >
+        <EventCalendarNav />
+        <EventCalendarContent />
+      </EventCalendar>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    onSlotClick.mockClear();
+    const add = canvas.getByRole("button", { name: /^Add event on .*March 11/ });
+    add.focus();
+    await userEvent.keyboard("{Enter}");
+    await expect(onSlotClick).toHaveBeenCalledTimes(1);
+    const [slot] = onSlotClick.mock.lastCall ?? [];
+    await expect(slot).toMatchObject({ allDay: true, view: "week" });
+    await expect((slot as { date: Date }).date.getTime()).toBe(at(11).getTime());
+
+    // The month view has one per cell too.
+    await userEvent.keyboard("m");
+    const monthAdd = await canvas.findByRole("button", { name: /^Add event on .*March 18/ });
+    monthAdd.focus();
+    await userEvent.keyboard(" ");
+    await expect(onSlotClick).toHaveBeenCalledTimes(2);
+    await expect(onSlotClick.mock.lastCall?.[0]).toMatchObject({ view: "month" });
+  },
+};

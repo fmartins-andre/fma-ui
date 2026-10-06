@@ -4,7 +4,6 @@
 "use client";
 
 import { cn } from "cn";
-import { PlusIcon } from "lucide-react";
 import type * as React from "react";
 import {
   type CSSProperties,
@@ -35,6 +34,7 @@ import { useEventCalendarGestures, wasRecentChipPress, wasRecentDrag } from "./e
 import {
   EVENT_CALENDAR_GHOST,
   EVENT_CALENDAR_SLOT_DRAFT,
+  EventCalendarDayAddButton,
   EventCalendarEvent,
 } from "./event-calendar-event";
 import {
@@ -844,22 +844,7 @@ function EventCalendarMonthCell({
         )}
       >
         {viewConfig.showDayAddButton && !isInteracting && (
-          <button
-            type="button"
-            data-slot="event-calendar-day-add"
-            aria-label={settings.i18n.labels.addEvent}
-            // a different icon/markup is a renderMonthCell job
-            className={cn(
-              "bg-primary text-primary-foreground flex size-5 cursor-pointer items-center justify-center rounded-sm opacity-0 transition-opacity group-hover/ec-cell:opacity-100 focus-visible:opacity-100",
-              viewConfig.classNames?.dayAddButton,
-            )}
-            onClick={(e) => {
-              e.stopPropagation();
-              settings.onSlotClick?.({ date: day, allDay: true, view: "month" }, e);
-            }}
-          >
-            <PlusIcon className="size-3.5" aria-hidden="true" />
-          </button>
+          <EventCalendarDayAddButton day={day} view="month" />
         )}
         <span
           data-slot="event-calendar-month-day-number"

@@ -1118,7 +1118,7 @@
       "name": "event-calendar",
       "type": "registry:block",
       "title": "Event Calendar",
-      "description": "A headless-first event calendar: month, week, day, N-day, agenda and resource views, recurring events (structured rules or RRULE strings), time zones, drag to move/resize and drag to create, i18n with RTL, and a subscribable store (`useEventCalendar`, `useEventCalendarSelector`). Compose `<EventCalendar>` with `EventCalendarNav` and `EventCalendarContent`, or build your own parts from the hooks. Events are controlled (`events`/`onEventsChange`) or not (`defaultEvents`); `onEventUpdate` accepts, rejects or adjusts each drag. The nav, view switcher, date picker and \"+N more\" popover use the registry's react-aria Button, Tooltip, DropdownMenu, Popover and Calendar.",
+      "description": "A headless-first event calendar: month, week, day, N-day, agenda and resource views, recurring events (structured rules or RRULE strings), time zones, drag to move/resize and drag to create (keyboard users create through `showDayAddButton`'s per-day buttons), i18n with RTL, and a subscribable store (`useEventCalendar`, `useEventCalendarSelector`). Compose `<EventCalendar>` with `EventCalendarNav` and `EventCalendarContent`, or build your own parts from the hooks. Events are controlled (`events`/`onEventsChange`) or not (`defaultEvents`); `onEventUpdate` accepts, rejects or adjusts each drag. The nav, view switcher, date picker and \"+N more\" popover use the registry's react-aria Button, Tooltip, DropdownMenu, Popover and Calendar.",
       "author": "@fma-ui/ui",
       "categories": [
         "blocks"
