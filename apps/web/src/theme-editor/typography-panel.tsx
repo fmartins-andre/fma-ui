@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useId, useState } from "react";
 import { Button } from "@/core/button/button";
 import { Input } from "@/core/input/input";
 import { Label } from "@/core/label/label";
@@ -11,7 +11,10 @@ import {
   SelectValue,
 } from "@/core/select/select";
 import {
+  type EditableSetting,
+  FONT_CONTROLS,
   type FontCategory,
+  type FontSlot,
   fontStack,
   GOOGLE_FONTS,
   primaryFamily,
@@ -19,11 +22,9 @@ import {
 } from "@/lib/theme/index";
 import { Section, SliderField } from "./fields";
 
-const CATEGORIES: { key: FontCategory; label: string; utility: string }[] = [
-  { key: "sans", label: "Sans-serif", utility: "font-sans" },
-  { key: "serif", label: "Serif", utility: "font-serif" },
-  { key: "mono", label: "Monospace", utility: "font-mono" },
-];
+/** The theme settings this panel edits; see SETTINGS_COVERED in editor.tsx. */
+export const TYPOGRAPHY_SETTINGS = ["fonts", "letterSpacing"] as const satisfies EditableSetting[];
+type TypographySetting = (typeof TYPOGRAPHY_SETTINGS)[number];
 
 const DEFAULT_KEY = "__default";
 const CUSTOM_KEY = "__custom";
@@ -102,19 +103,19 @@ export function TypographyPanel({
   edit: (update: (theme: Theme) => Theme) => void;
 }) {
   const tracking = Number.parseFloat(theme.letterSpacing ?? "0") || 0;
-  return (
-    <div className="flex flex-col gap-6">
+  const sections: Record<TypographySetting, ReactNode> = {
+    fonts: (
       <Section title="Font family">
         <p className="text-xs text-muted-foreground">
           Google Fonts load here automatically. In your app, load them yourself (next/font,
           @fontsource or a &lt;link&gt;); the registry item says which.
         </p>
-        {CATEGORIES.map(({ key, label, utility }) => (
+        {(Object.keys(FONT_CONTROLS) as FontSlot[]).map((key) => (
           <FontField
             key={key}
             category={key}
-            label={label}
-            utility={utility}
+            label={FONT_CONTROLS[key].label}
+            utility={FONT_CONTROLS[key].utility}
             value={theme.fonts[key]}
             onChange={(value) =>
               edit((current) => ({ ...current, fonts: { ...current.fonts, [key]: value } }))
@@ -122,6 +123,8 @@ export function TypographyPanel({
           />
         ))}
       </Section>
+    ),
+    letterSpacing: (
       <Section title="Letter spacing">
         <SliderField
           label="Tracking (body)"
@@ -148,6 +151,13 @@ export function TypographyPanel({
           </Button>
         )}
       </Section>
+    ),
+  };
+  return (
+    <div className="flex flex-col gap-6">
+      {TYPOGRAPHY_SETTINGS.map((setting) => (
+        <Fragment key={setting}>{sections[setting]}</Fragment>
+      ))}
     </div>
   );
 }

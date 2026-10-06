@@ -236,6 +236,13 @@ undo/redo (Ctrl+Z) e contraste ao vivo. O preview usa os nossos componentes reai
 `npx shadcn add ./theme-<nome>.json`) ou o JSON do tema — que, salvo em
 `packages/ui/src/themes/`, vira tema curado.
 
+**Todo token de tema tem que ser editável aqui.** A cadeia é verificada automaticamente:
+variável em `styles.css` → algo que um `Theme` consegue gerar (`src/lib/theme/css.ts`) →
+controle no editor (`COLOR_GROUPS` para cores, `FONT_CONTROLS` para fontes, painéis do
+`apps/web` para o resto). `tests/theme-editor-coverage.test.ts` cobre os dois primeiros elos e
+as cores/fontes; o type-check do `apps/web` (`SETTINGS_COVERED` em `editor.tsx`) falha se um
+campo novo do `ThemeSchema` não tiver controle. O CI de PR roda os dois.
+
 O editor aplica o tema no `<html>` inteiro (inclusive no próprio painel), para que popovers e
 dialogs portados para o `<body>` também o recebam. A lógica (estado, histórico, HSL) fica em
 `packages/ui/src/lib/theme/editor.ts`, com testes unitários.

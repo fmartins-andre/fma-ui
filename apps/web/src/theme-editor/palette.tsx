@@ -1,6 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/core/table/table";
-import { checkContrast, type Theme, type ThemeMode } from "@/lib/theme/index";
-import { COLOR_GROUPS } from "./colors-panel";
+import { COLOR_GROUPS, checkContrast, type Theme, type ThemeMode } from "@/lib/theme/index";
 import { ContrastBadge } from "./fields";
 
 export function Palette({ theme, mode }: { theme: Theme; mode: ThemeMode }) {
