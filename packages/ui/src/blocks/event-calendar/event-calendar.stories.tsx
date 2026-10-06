@@ -361,3 +361,174 @@ export const KeyboardCreate: Story = {
     await expect(onSlotClick.mock.lastCall?.[0]).toMatchObject({ view: "month" });
   },
 };
+
+/** Presses at `from`, moves by (dx, dy) in steps and releases, as a mouse would. */
+function pointerDrag(target: Element, from: { x: number; y: number }, dx: number, dy: number) {
+  const fire = (type: string, on: EventTarget, step: number) =>
+    on.dispatchEvent(
+      new PointerEvent(type, {
+        bubbles: true,
+        clientX: from.x + dx * step,
+        clientY: from.y + dy * step,
+        pointerId: 1,
+        pointerType: "mouse",
+        button: 0,
+        buttons: type === "pointerup" ? 0 : 1,
+        isPrimary: true,
+      }),
+    );
+  fire("pointerdown", target, 0);
+  for (let step = 1; step <= 5; step++) fire("pointermove", window, step / 5);
+  fire("pointerup", window, 1);
+}
+
+const centre = (el: Element) => {
+  const box = el.getBoundingClientRect();
+  return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+};
+
+type Update = {
+  source: string;
+  start: Date;
+  end: Date;
+  resourceId?: string;
+  occurrence: { isRecurring: boolean; start: Date };
+};
+const lastUpdate = (mock: unknown) =>
+  ((mock as ReturnType<typeof fn>).mock.lastCall?.[0] ?? {}) as Update;
+
+/** Dragging a timed chip's bottom edge proposes a longer event (`source: "resize-end"`). */
+export const ResizeEvent: Story = {
+  play: async ({ canvas, args }) => {
+    const chip = canvas.getByRole("button", { name: /Design review/ });
+    const handle = chip.querySelector("[data-slot=event-calendar-resize-handle][data-edge=end]");
+    if (!handle) throw new Error("no end resize handle");
+    pointerDrag(handle, centre(handle), 0, 48);
+    await waitFor(() => expect(args.onEventUpdate).toHaveBeenCalled());
+    const update = lastUpdate(args.onEventUpdate);
+    await expect(update.source).toBe("resize-end");
+    await expect(update.start.getTime()).toBe(at(10, 11).getTime());
+    await expect(update.end.getTime()).toBeGreaterThan(at(10, 12).getTime());
+  },
+};
+
+/** In the resource view, dragging a chip into another member's column reassigns it. */
+export const DragBetweenResources: Story = {
+  args: { view: "resource" },
+  play: async ({ canvas, args }) => {
+    const chip = canvas.getByRole("button", { name: /Product demo/ });
+    // Column headers carry the members' names; move from Sam's to Mia's column.
+    const [mia] = canvas.getAllByText("Mia");
+    const [sam] = canvas.getAllByText("Sam");
+    if (!mia || !sam) throw new Error("resource headers not rendered");
+    const from = { x: centre(chip).x, y: chip.getBoundingClientRect().top + 4 };
+    pointerDrag(chip, from, centre(mia).x - centre(sam).x, 0);
+    await waitFor(() => expect(args.onEventUpdate).toHaveBeenCalled());
+    const update = lastUpdate(args.onEventUpdate);
+    await expect(update.source).toBe("drag");
+    await expect(update.resourceId).toBe("mia");
+    await expect(update.start.getTime()).toBe(at(11, 15).getTime());
+  },
+};
+
+function SingleOccurrenceDemo() {
+  const [events, setEvents] = React.useState<CalendarEvent[]>(EVENTS);
+  return (
+    <div className="flex h-[640px] w-[960px] flex-col rounded-lg border">
+      <EventCalendar
+        events={events}
+        onEventsChange={setEvents}
+        // "This occurrence only": add an override of that occurrence
+        // (RECURRENCE-ID semantics) and keep the series as it is.
+        onEventUpdate={({ event, occurrence, start, end, allDay }) => {
+          if (!occurrence?.isRecurring) return;
+          setEvents((current) => [
+            ...current,
+            {
+              ...event,
+              id: `${event.id}-${occurrence.start.getTime()}`,
+              recurrence: undefined,
+              recurringEventId: event.id,
+              originalStart: occurrence.start,
+              start,
+              end,
+              allDay,
+            },
+          ]);
+          return false;
+        }}
+        defaultView="week"
+        defaultDate={TODAY}
+        timeZone="UTC"
+        locale="en-US"
+        dayStartHour={7}
+        className="flex min-h-0 flex-1 flex-col"
+      >
+        <EventCalendarNav />
+        <EventCalendarContent />
+      </EventCalendar>
+    </div>
+  );
+}
+
+/**
+ * Moving one occurrence of a recurring event reports that occurrence; the
+ * consumer decides the scope. Here: "this occurrence only".
+ */
+export const EditSingleOccurrence: Story = {
+  render: () => <SingleOccurrenceDemo />,
+  play: async ({ canvas }) => {
+    const standups = () =>
+      canvas
+        .getAllByRole("button", { name: /Standup/ })
+        .map((chip) => chip.closest("[data-ec-day]")?.getAttribute("data-ec-day"));
+    const before = standups();
+    await expect(before).toHaveLength(5);
+
+    // The Wednesday (11th) occurrence: one hour later.
+    const wednesday = String(at(11).getTime());
+    const chip = canvas
+      .getAllByRole("button", { name: /Standup/ })
+      .find((el) => el.closest("[data-ec-day]")?.getAttribute("data-ec-day") === wednesday);
+    if (!chip) throw new Error("no Wednesday standup");
+    pointerDrag(chip, { x: centre(chip).x, y: chip.getBoundingClientRect().top + 4 }, 0, 48);
+
+    // Still five standups: Wednesday's is now a one-off an hour later.
+    const onWednesday = () =>
+      canvas
+        .getAllByRole("button", { name: /Standup/ })
+        .find((el) => el.closest("[data-ec-day]")?.getAttribute("data-ec-day") === wednesday);
+    await waitFor(() => expect(onWednesday()).not.toHaveAttribute("data-recurring"));
+    await expect(standups()).toHaveLength(5);
+    await expect(onWednesday()).not.toHaveAccessibleName(/8:30/);
+    await expect(
+      canvas
+        .getAllByRole("button", { name: /Standup/ })
+        .filter((el) => el.hasAttribute("data-recurring")),
+    ).toHaveLength(4);
+  },
+};
+
+/** `timeZone` sets the wall clock: 09:00 UTC is 06:00 in São Paulo (UTC-3). */
+export const TimeZones: Story = {
+  render: () => (
+    <div className="flex h-[640px] w-[960px] flex-col rounded-lg border">
+      <EventCalendar
+        defaultEvents={EVENTS}
+        defaultView="day"
+        defaultDate={at(9, 12)}
+        timeZone="America/Sao_Paulo"
+        locale="en-US"
+        dayStartHour={5}
+        className="flex min-h-0 flex-1 flex-col"
+      >
+        <EventCalendarNav />
+        <EventCalendarContent />
+      </EventCalendar>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("button", { name: /Team sync/ })).toHaveAccessibleName(/6:00/);
+    await expect(canvas.getByRole("button", { name: /Standup/ })).toHaveAccessibleName(/5:30/);
+  },
+};
