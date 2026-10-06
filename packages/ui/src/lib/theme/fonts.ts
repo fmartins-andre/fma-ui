@@ -128,10 +128,54 @@ const CATALOG_WEIGHTS: Record<string, string> = {
 };
 const CATALOG = new Set(Object.values(GOOGLE_FONTS).flat());
 
+/** Weights loaded for a catalog family (Google Fonts and @fontsource alike). */
+export function catalogWeights(family: string): string[] {
+  return (CATALOG_WEIGHTS[family] ?? "400;500;600;700").split(";");
+}
+
+export function isCatalogFont(family: string): boolean {
+  return CATALOG.has(family);
+}
+
 function familyParam(family: string): string {
   const name = encodeURIComponent(family).replace(/%20/g, "+");
   if (!CATALOG.has(family)) return `family=${name}`;
-  return `family=${name}:wght@${CATALOG_WEIGHTS[family] ?? "400;500;600;700"}`;
+  return `family=${name}:wght@${catalogWeights(family).join(";")}`;
+}
+
+// Every catalog font is published as a static @fontsource/<slug> package (5.x)
+// with one CSS file per weight, and registers the same family name as Google
+// Fonts — so a theme's font stacks work unchanged. Checked against npm when the
+// catalog was assembled; tests/lib/theme/registry.test.ts pins the naming.
+export const FONTSOURCE_RANGE = "^5.3.0";
+
+/** "Plus Jakarta Sans" → "@fontsource/plus-jakarta-sans", for catalog fonts only. */
+export function fontsourcePackage(family: string): string | null {
+  return CATALOG.has(family) ? `@fontsource/${family.toLowerCase().replace(/\s+/g, "-")}` : null;
+}
+
+export interface ThemeFontPackages {
+  /** npm dependencies, e.g. "@fontsource/inter@^5.3.0". */
+  dependencies: string[];
+  /** CSS imports, one per weight, e.g. "@fontsource/inter/400.css". */
+  imports: string[];
+  /** Google Fonts families outside the catalog: the app has to load them itself. */
+  unpackaged: string[];
+}
+
+/** How to install the theme's fonts with @fontsource instead of fetching them from Google. */
+export function themeFontPackages(theme: Pick<Theme, "fonts">): ThemeFontPackages {
+  const result: ThemeFontPackages = { dependencies: [], imports: [], unpackaged: [] };
+  for (const family of googleFontFamilies(theme)) {
+    const pkg = fontsourcePackage(family);
+    if (!pkg) {
+      result.unpackaged.push(family);
+      continue;
+    }
+    result.dependencies.push(`${pkg}@${FONTSOURCE_RANGE}`);
+    for (const weight of catalogWeights(family)) result.imports.push(`${pkg}/${weight}.css`);
+  }
+  return result;
 }
 
 /** Google Fonts CSS2 URL for the given families, or null when there are none. */

@@ -4,6 +4,11 @@
   "title": "Nature",
   "author": "@fma-ui/ui",
   "description": "Forest greens over warm off-white, with Montserrat for UI and Merriweather for serif text.",
+  "dependencies": [
+    "@fontsource/montserrat@^5.3.0",
+    "@fontsource/merriweather@^5.3.0",
+    "@fontsource/source-code-pro@^5.3.0"
+  ],
   "files": [],
   "cssVars": {
     "theme": {
@@ -97,6 +102,20 @@
       "sidebar-ring": "oklch(0.673 0.162 144.208)"
     }
   },
+  "css": {
+    "@import \"@fontsource/montserrat/400.css\"": {},
+    "@import \"@fontsource/montserrat/500.css\"": {},
+    "@import \"@fontsource/montserrat/600.css\"": {},
+    "@import \"@fontsource/montserrat/700.css\"": {},
+    "@import \"@fontsource/merriweather/400.css\"": {},
+    "@import \"@fontsource/merriweather/500.css\"": {},
+    "@import \"@fontsource/merriweather/600.css\"": {},
+    "@import \"@fontsource/merriweather/700.css\"": {},
+    "@import \"@fontsource/source-code-pro/400.css\"": {},
+    "@import \"@fontsource/source-code-pro/500.css\"": {},
+    "@import \"@fontsource/source-code-pro/600.css\"": {},
+    "@import \"@fontsource/source-code-pro/700.css\"": {}
+  },
   "meta": {
     "source": "third-party",
     "origin": "https://tweakcn.com/r/themes/nature.json",
@@ -106,7 +125,6 @@
       "sans"
     ]
   },
-  "docs": "This theme uses Montserrat, Merriweather, Source Code Pro (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [
     "theme"
   ],

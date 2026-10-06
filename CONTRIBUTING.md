@@ -212,6 +212,11 @@ Temas curados ficam em `packages/ui/src/themes/<nome>.json` (schema `ThemeSchema
 - O gerador publica cada um como item `registry:theme` chamado `theme-<nome>`; o consumidor
   instala com `npx shadcn add @fma-ui/theme-<nome>` (o CLI reescreve `:root`/`.dark` e o
   `@theme inline` do CSS dele).
+- **Fontes**: as do catálogo (`GOOGLE_FONTS` em `src/lib/theme/fonts.ts`) entram no item como
+  dependências `@fontsource/<slug>` + um `@import` por peso, então `shadcn add` já instala e
+  carrega as fontes no app consumidor. Fonte fora do catálogo só aparece na nota `docs` do
+  item; temas curados só podem usar fontes do catálogo (o teste confere). Fonte nova no
+  catálogo: confirme que `@fontsource/<slug>` existe com os pesos de `catalogWeights`.
 - `default.json` espelha o `styles.css`; o teste `themes.test.ts` falha se divergirem.
 - Todo tema novo entra na lista de `src/themes/index.ts` (o teste confere).
 - Gate de contraste (`themes.test.ts`): texto principal ≥ 4.5:1, preenchimentos com texto

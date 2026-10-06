@@ -4,6 +4,11 @@
   "title": "Elegant Luxury",
   "author": "@fma-ui/ui",
   "description": "Burgundy primary with cream and gold accents, Poppins and Libre Baskerville.",
+  "dependencies": [
+    "@fontsource/poppins@^5.3.0",
+    "@fontsource/libre-baskerville@^5.3.0",
+    "@fontsource/ibm-plex-mono@^5.3.0"
+  ],
   "files": [],
   "cssVars": {
     "theme": {
@@ -111,6 +116,18 @@
       "shadow-2xl": "1px 1px 16px -2px oklch(0.279 0.087 24.82 / 30%)"
     }
   },
+  "css": {
+    "@import \"@fontsource/poppins/400.css\"": {},
+    "@import \"@fontsource/poppins/500.css\"": {},
+    "@import \"@fontsource/poppins/600.css\"": {},
+    "@import \"@fontsource/poppins/700.css\"": {},
+    "@import \"@fontsource/libre-baskerville/400.css\"": {},
+    "@import \"@fontsource/libre-baskerville/700.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/400.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/500.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/600.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/700.css\"": {}
+  },
   "meta": {
     "source": "third-party",
     "origin": "https://tweakcn.com/r/themes/elegant-luxury.json",
@@ -139,7 +156,6 @@
       }
     }
   },
-  "docs": "This theme uses Poppins, Libre Baskerville, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [
     "theme"
   ],

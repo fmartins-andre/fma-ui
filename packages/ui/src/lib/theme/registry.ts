@@ -3,7 +3,7 @@
 // into its @theme block. Same shape tweakcn serves from /r/themes/<id>.json.
 
 import type { RegistryItem } from "@fma-ui/registry";
-import { googleFontFamilies } from "./fonts";
+import { themeFontPackages } from "./fonts";
 import { COLOR_TOKENS, type Theme, type ThemeMode } from "./schema";
 import { SHADOW_SIZES, shadowScale } from "./shadows";
 
@@ -21,7 +21,14 @@ function modeVars(theme: Theme, mode: ThemeMode): Record<string, string> {
 }
 
 export function themeRegistryItem(theme: Theme): RegistryItem {
-  const fonts = googleFontFamilies(theme);
+  // Catalog fonts install as @fontsource packages imported into the consumer's
+  // CSS; anything else is only named in `docs` for the app to load.
+  const fonts = themeFontPackages(theme);
+  const css: Record<string, unknown> = {};
+  for (const path of fonts.imports) css[`@import "${path}"`] = {};
+  if (theme.letterSpacing) {
+    css["@layer base"] = { body: { "letter-spacing": "var(--tracking-normal)" } };
+  }
   return {
     name: `${THEME_ITEM_PREFIX}${theme.name}`,
     type: "registry:theme",
@@ -29,9 +36,10 @@ export function themeRegistryItem(theme: Theme): RegistryItem {
     description: theme.description,
     author: "@fma-ui/ui",
     categories: ["theme"],
-    ...(fonts.length > 0 && {
-      docs: `This theme uses ${fonts.join(", ")} (Google Fonts). Load ${fonts.length > 1 ? "them" : "it"} in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.`,
+    ...(fonts.unpackaged.length > 0 && {
+      docs: `This theme also uses ${fonts.unpackaged.join(", ")}, which isn't installed for you. Load ${fonts.unpackaged.length > 1 ? "them" : "it"} in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.`,
     }),
+    ...(fonts.dependencies.length > 0 && { dependencies: fonts.dependencies }),
     files: [],
     cssVars: {
       theme: {
@@ -47,9 +55,7 @@ export function themeRegistryItem(theme: Theme): RegistryItem {
       },
       dark: modeVars(theme, "dark"),
     },
-    ...(theme.letterSpacing && {
-      css: { "@layer base": { body: { "letter-spacing": "var(--tracking-normal)" } } },
-    }),
+    ...(Object.keys(css).length > 0 && { css }),
     meta: {
       source: theme.source,
       ...(theme.origin && { origin: theme.origin }),

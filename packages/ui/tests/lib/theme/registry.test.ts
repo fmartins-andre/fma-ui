@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { fontStack, googleFontFamilies, googleFontsHref, primaryFamily } from "@/lib/theme/fonts";
+import {
+  fontStack,
+  fontsourcePackage,
+  googleFontFamilies,
+  googleFontsHref,
+  primaryFamily,
+  themeFontPackages,
+} from "@/lib/theme/fonts";
 import { themeRegistryItem } from "@/lib/theme/registry";
 import { COLOR_TOKENS } from "@/lib/theme/schema";
 import { shadowScale, TAILWIND_SHADOWS } from "@/lib/theme/shadows";
@@ -43,16 +50,42 @@ describe("themeRegistryItem", () => {
   it("applies letter-spacing to body only when the theme sets it", () => {
     const tracked = themeRegistryItem({ ...violet, letterSpacing: "0.01em" });
     expect(tracked.cssVars?.light["tracking-normal"]).toBe("0.01em");
-    expect(tracked.css).toEqual({
-      "@layer base": { body: { "letter-spacing": "var(--tracking-normal)" } },
+    expect(tracked.css?.["@layer base"]).toEqual({
+      body: { "letter-spacing": "var(--tracking-normal)" },
     });
-    expect(themeRegistryItem(violet).css).toBeUndefined();
+    expect(themeRegistryItem(violet).css?.["@layer base"]).toBeUndefined();
+    expect(themeRegistryItem(DEFAULT_THEME).css).toBeUndefined();
     expect(themeRegistryItem(violet).cssVars?.light["tracking-normal"]).toBeUndefined();
   });
 
-  it("documents the Google Fonts to load, and nothing for the default theme", () => {
-    expect(themeRegistryItem(violet).docs).toContain("Plus Jakarta Sans, Lora, IBM Plex Mono");
+  it("installs the theme's fonts as @fontsource packages imported per weight", () => {
+    const item = themeRegistryItem(violet);
+    expect(item.dependencies).toEqual([
+      "@fontsource/plus-jakarta-sans@^5.3.0",
+      "@fontsource/lora@^5.3.0",
+      "@fontsource/ibm-plex-mono@^5.3.0",
+    ]);
+    expect(Object.keys(item.css ?? {})).toEqual(
+      ["plus-jakarta-sans", "lora", "ibm-plex-mono"].flatMap((slug) =>
+        ["400", "500", "600", "700"].map((weight) => `@import "@fontsource/${slug}/${weight}.css"`),
+      ),
+    );
+    expect(item.docs).toBeUndefined();
+  });
+
+  it("only documents fonts outside the catalog, which it can't install", () => {
+    const item = themeRegistryItem({
+      ...violet,
+      fonts: { sans: "Some Custom, sans-serif", mono: "Fira Code, monospace" },
+    });
+    expect(item.dependencies).toEqual(["@fontsource/fira-code@^5.3.0"]);
+    expect(item.docs).toContain("Some Custom");
+    expect(item.docs).not.toContain("Fira Code");
+  });
+
+  it("adds nothing font-related for the default theme", () => {
     const item = themeRegistryItem(DEFAULT_THEME);
+    expect(item.dependencies).toBeUndefined();
     expect(item.docs).toBeUndefined();
     expect(item.cssVars?.theme).toEqual({});
     expect(item.cssVars?.light["shadow-sm"]).toBeUndefined();
@@ -60,6 +93,16 @@ describe("themeRegistryItem", () => {
 });
 
 describe("fonts", () => {
+  it("maps catalog families to @fontsource packages and their weights", () => {
+    expect(fontsourcePackage("Source Serif 4")).toBe("@fontsource/source-serif-4");
+    expect(fontsourcePackage("Some Custom")).toBeNull();
+    expect(themeFontPackages({ fonts: { sans: "Lato, sans-serif" } })).toEqual({
+      dependencies: ["@fontsource/lato@^5.3.0"],
+      imports: ["@fontsource/lato/400.css", "@fontsource/lato/700.css"],
+      unpackaged: [],
+    });
+  });
+
   it("extracts and builds font stacks", () => {
     expect(primaryFamily('"DM Sans", sans-serif')).toBe("DM Sans");
     expect(primaryFamily("Inter")).toBe("Inter");

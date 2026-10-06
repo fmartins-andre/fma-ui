@@ -4,6 +4,11 @@
   "title": "Clean Slate",
   "author": "@fma-ui/ui",
   "description": "Slate grays with an indigo primary, Inter and a navy dark mode.",
+  "dependencies": [
+    "@fontsource/inter@^5.3.0",
+    "@fontsource/merriweather@^5.3.0",
+    "@fontsource/jetbrains-mono@^5.3.0"
+  ],
   "files": [],
   "cssVars": {
     "theme": {
@@ -111,6 +116,20 @@
       "shadow-2xl": "0px 4px 8px -1px oklch(0 0 0 / 25%)"
     }
   },
+  "css": {
+    "@import \"@fontsource/inter/400.css\"": {},
+    "@import \"@fontsource/inter/500.css\"": {},
+    "@import \"@fontsource/inter/600.css\"": {},
+    "@import \"@fontsource/inter/700.css\"": {},
+    "@import \"@fontsource/merriweather/400.css\"": {},
+    "@import \"@fontsource/merriweather/500.css\"": {},
+    "@import \"@fontsource/merriweather/600.css\"": {},
+    "@import \"@fontsource/merriweather/700.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/400.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/500.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/600.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/700.css\"": {}
+  },
   "meta": {
     "source": "third-party",
     "origin": "https://tweakcn.com/r/themes/clean-slate.json",
@@ -138,7 +157,6 @@
       }
     }
   },
-  "docs": "This theme uses Inter, Merriweather, JetBrains Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [
     "theme"
   ],

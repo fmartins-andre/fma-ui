@@ -4,6 +4,11 @@
   "title": "Violet Bloom",
   "author": "@fma-ui/ui",
   "description": "Vivid violet primary on near-white, Plus Jakarta Sans and very round 1.4rem corners.",
+  "dependencies": [
+    "@fontsource/plus-jakarta-sans@^5.3.0",
+    "@fontsource/lora@^5.3.0",
+    "@fontsource/ibm-plex-mono@^5.3.0"
+  ],
   "files": [],
   "cssVars": {
     "theme": {
@@ -112,6 +117,20 @@
       "shadow-2xl": "0px 2px 3px 0px oklch(0 0 0 / 40%)"
     }
   },
+  "css": {
+    "@import \"@fontsource/plus-jakarta-sans/400.css\"": {},
+    "@import \"@fontsource/plus-jakarta-sans/500.css\"": {},
+    "@import \"@fontsource/plus-jakarta-sans/600.css\"": {},
+    "@import \"@fontsource/plus-jakarta-sans/700.css\"": {},
+    "@import \"@fontsource/lora/400.css\"": {},
+    "@import \"@fontsource/lora/500.css\"": {},
+    "@import \"@fontsource/lora/600.css\"": {},
+    "@import \"@fontsource/lora/700.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/400.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/500.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/600.css\"": {},
+    "@import \"@fontsource/ibm-plex-mono/700.css\"": {}
+  },
   "meta": {
     "source": "third-party",
     "origin": "https://tweakcn.com/r/themes/violet-bloom.json",
@@ -139,7 +158,6 @@
       }
     }
   },
-  "docs": "This theme uses Plus Jakarta Sans, Lora, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [
     "theme"
   ],
