@@ -6,7 +6,9 @@ on:
       - "packages/ui/src/**"
       - "packages/ui/scripts/**"
       - "packages/ui/package.json"
-      - "apps/web/src/**"
+      - "apps/web/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/registry-check.yml"
   push:
     branches:
       - main
@@ -52,6 +54,38 @@ jobs:
             git diff packages/ui/registry.json apps/web/public/r/
             exit 1
           fi
+
+  theme-editor-e2e:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    name: Theme editor end-to-end tests
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # version comes from "packageManager" in package.json
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium for Playwright
+        run: pnpm --filter web exec playwright install --with-deps chromium
+
+      # Builds apps/web and serves the production output (see apps/web/playwright.config.ts).
+      - name: Run apps/web e2e tests
+        run: pnpm --filter web test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/test-results/
+          retention-days: 7
 
   build:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

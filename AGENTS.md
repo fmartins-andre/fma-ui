@@ -84,6 +84,7 @@ pnpm test                              # vitest --project unit
 pnpm build                             # type-check + gera registry.json + public/r
 pnpm --filter @fma-ui/ui build         # build só do pacote ui (regenera o registro)
 pnpm --filter @fma-ui/ui test:storybook  # testes de interação (Playwright/Chromium)
+pnpm --filter web test:e2e             # e2e do editor de temas (build de produção + Playwright)
 pnpm storybook                         # dev server na porta 6006
 pnpm add:shadcn <nomes...> | all       # vendoriza componentes oficiais do shadcn
 pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceiros

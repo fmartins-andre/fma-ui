@@ -248,6 +248,10 @@ controle no editor (`COLOR_GROUPS` para cores, `FONT_CONTROLS` para fontes, pain
 as cores/fontes; o type-check do `apps/web` (`SETTINGS_COVERED` em `editor.tsx`) falha se um
 campo novo do `ThemeSchema` não tiver controle. O CI de PR roda os dois.
 
+Os testes e2e do editor ficam em `apps/web/e2e/` (Playwright, contra o build de produção):
+`pnpm --filter web test:e2e`. O CI de PR roda num job próprio. Mudou o comportamento do
+editor? Atualize ou acrescente um teste lá.
+
 O editor aplica o tema no `<html>` inteiro (inclusive no próprio painel), para que popovers e
 dialogs portados para o `<body>` também o recebam. A lógica (estado, histórico, HSL) fica em
 `packages/ui/src/lib/theme/editor.ts`, com testes unitários.

@@ -7,10 +7,10 @@
     "skipLibCheck": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "paths": {
       "@/*": ["../../packages/ui/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "e2e", "playwright.config.ts"]
 }
