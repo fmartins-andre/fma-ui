@@ -12,19 +12,31 @@ import {
 } from "@/core/select/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/tabs/tabs";
 import { Tooltip, TooltipTrigger } from "@/core/tooltip/tooltip";
-import { sameTheme } from "@/lib/theme/index";
+import { type EditableSetting, sameTheme } from "@/lib/theme/index";
 import { getTheme, THEMES } from "@/themes/index";
 import { ColorsPanel } from "./colors-panel";
 import { ExportDialog } from "./export-dialog";
 import { ImportDialog } from "./import-dialog";
-import { OtherPanel } from "./other-panel";
+import { type OTHER_SETTINGS, OtherPanel } from "./other-panel";
 import { Palette, TypographySample } from "./palette";
 import { Showcase } from "./showcase";
 import { SidebarPreview } from "./sidebar-preview";
-import { TypographyPanel } from "./typography-panel";
+import { type TYPOGRAPHY_SETTINGS, TypographyPanel } from "./typography-panel";
 import { useThemeEditor } from "./use-theme-editor";
 
 const CUSTOM_KEY = "__custom";
+
+// Every styling field of ThemeSchema must have a control in some panel (colors
+// are covered by COLOR_GROUPS, checked in packages/ui's
+// tests/theme-editor-coverage.test.ts). Adding a field to ThemeSchema without
+// listing it in TYPOGRAPHY_SETTINGS or OTHER_SETTINGS — and rendering it there,
+// which their Record types force — fails this type-check.
+type UncoveredSetting = Exclude<
+  EditableSetting,
+  (typeof TYPOGRAPHY_SETTINGS)[number] | (typeof OTHER_SETTINGS)[number]
+>;
+const SETTINGS_COVERED: [UncoveredSetting] extends [never] ? true : UncoveredSetting = true;
+void SETTINGS_COVERED;
 
 function IconButton({
   label,

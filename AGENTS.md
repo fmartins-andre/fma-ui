@@ -136,6 +136,15 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
    e linha em `src/themes/THIRD_PARTY_NOTICES.md`. Nossos `*-foreground` de status são texto
    sobre o fundo **tingido**, não sobre a cor sólida (diferente do shadcn/tweakcn). O
    `tests/themes.test.ts` impõe isso e um gate de contraste.
+10. **Todo token de tema é editável no editor (`/themes`)**. Token novo: declare em
+   `styles.css` (`:root`, `.dark`, `@theme inline`), em `COLOR_TOKENS`
+   (`src/lib/theme/schema.ts`) **e** em `tests/required-tokens.ts`, adicione-o a um grupo
+   de `COLOR_GROUPS` (`src/lib/theme/editor-controls.ts`) e preencha-o em todos os
+   `src/themes/*.json`. Configuração nova que não seja cor (campo no `ThemeSchema`): gere a
+   variável em `src/lib/theme/css.ts` e renderize um controle num painel de
+   `apps/web/src/theme-editor/` (listado em `TYPOGRAPHY_SETTINGS` ou `OTHER_SETTINGS`).
+   `tests/theme-editor-coverage.test.ts` e o type-check do `apps/web` (`SETTINGS_COVERED`)
+   falham se faltar algum elo.
 
 ## Estilo de código
 

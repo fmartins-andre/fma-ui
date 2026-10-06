@@ -6,6 +6,7 @@ export * from "./color";
 export * from "./contrast";
 export * from "./css";
 export * from "./editor";
+export * from "./editor-controls";
 export * from "./fonts";
 export * from "./parse";
 export * from "./registry";

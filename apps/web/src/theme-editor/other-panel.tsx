@@ -1,7 +1,8 @@
-import type { Dispatch } from "react";
+import { type Dispatch, Fragment, type ReactNode } from "react";
 import { Button } from "@/core/button/button";
 import { Switch } from "@/core/switch/switch";
 import {
+  type EditableSetting,
   type HslAdjustment,
   NO_HSL_ADJUSTMENT,
   type Theme,
@@ -10,6 +11,10 @@ import {
   type ThemeShadow,
 } from "@/lib/theme/index";
 import { ColorField, Section, SliderField } from "./fields";
+
+/** The theme settings this panel edits; see SETTINGS_COVERED in editor.tsx. */
+export const OTHER_SETTINGS = ["radius", "spacing", "shadow"] as const satisfies EditableSetting[];
+type OtherSetting = (typeof OTHER_SETTINGS)[number];
 
 const DEFAULT_SHADOW: ThemeShadow = {
   color: "oklch(0 0 0)",
@@ -68,8 +73,8 @@ export function OtherPanel({
       };
     });
 
-  return (
-    <div className="flex flex-col gap-6">
+  const sections: Record<OtherSetting, ReactNode> = {
+    radius: (
       <Section title="Radius">
         <SliderField
           label="--radius"
@@ -83,7 +88,8 @@ export function OtherPanel({
           }
         />
       </Section>
-
+    ),
+    spacing: (
       <Section title="Spacing">
         <Toggle
           label="Custom base spacing"
@@ -106,7 +112,8 @@ export function OtherPanel({
           />
         )}
       </Section>
-
+    ),
+    shadow: (
       <Section title="Shadow">
         <Toggle
           label="Custom shadows (else Tailwind's)"
@@ -172,7 +179,14 @@ export function OtherPanel({
           </>
         )}
       </Section>
-
+    ),
+  };
+  return (
+    <div className="flex flex-col gap-6">
+      {OTHER_SETTINGS.map((setting) => (
+        <Fragment key={setting}>{sections[setting]}</Fragment>
+      ))}
+      {/* An editing tool, not a theme setting: it rewrites the colors. */}
       <Section title="HSL adjustment">
         <p className="text-xs text-muted-foreground">
           Shifts every color of both modes at once. Editing a color afterwards keeps the result.

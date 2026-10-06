@@ -6,6 +6,7 @@ on:
       - "packages/ui/src/**"
       - "packages/ui/scripts/**"
       - "packages/ui/package.json"
+      - "apps/web/src/**"
   push:
     branches:
       - main
@@ -28,6 +29,11 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
+
+      # Includes apps/web: its theme editor must keep a control for every
+      # ThemeSchema setting (SETTINGS_COVERED in apps/web/src/theme-editor/editor.tsx).
+      - name: Type-check all packages
+        run: pnpm type-check
 
       - name: Unit tests (meta.json + story presence, pure-function tests)
         run: pnpm --filter @fma-ui/ui test
