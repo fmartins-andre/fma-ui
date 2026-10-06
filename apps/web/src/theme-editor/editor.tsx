@@ -20,6 +20,7 @@ import { ImportDialog } from "./import-dialog";
 import { OtherPanel } from "./other-panel";
 import { Palette, TypographySample } from "./palette";
 import { Showcase } from "./showcase";
+import { SidebarPreview } from "./sidebar-preview";
 import { TypographyPanel } from "./typography-panel";
 import { useThemeEditor } from "./use-theme-editor";
 
@@ -162,11 +163,15 @@ export function ThemeEditor({ preset }: { preset?: string }) {
           <Tabs defaultSelectedKey="components">
             <TabsList>
               <TabsTrigger id="components">Components</TabsTrigger>
+              <TabsTrigger id="sidebar">Sidebar</TabsTrigger>
               <TabsTrigger id="palette">Palette & contrast</TabsTrigger>
               <TabsTrigger id="typography">Typography</TabsTrigger>
             </TabsList>
             <TabsContent id="components" className="pt-4">
               <Showcase />
+            </TabsContent>
+            <TabsContent id="sidebar" className="pt-4">
+              <SidebarPreview />
             </TabsContent>
             <TabsContent id="palette" className="pt-4">
               <Palette theme={theme} mode={mode} />

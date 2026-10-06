@@ -37,7 +37,7 @@ function UserSummary({ user }: { user: AppSidebarUser }) {
   return (
     <>
       <Avatar>
-        <AvatarImage src={user.avatar} alt="" />
+        {user.avatar && <AvatarImage src={user.avatar} alt="" />}
         <AvatarFallback>{initials(user.name)}</AvatarFallback>
       </Avatar>
       <div className="grid flex-1 text-left text-sm leading-tight">
