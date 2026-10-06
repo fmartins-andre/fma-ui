@@ -1486,7 +1486,7 @@ interface EventCalendarViewConfig<TData = unknown> {
   todayClassName?: string;
   /**
    * Show a "+" add button on month cells (next to the day number) and on
-   * time-grid day headers. It appears on hover or keyboard focus, is labelled
+   * time-grid day headers. It stays visible (highlighted on hover/focus), is labelled
    * with the date (`labels.addEventOn`) and fires the same onSlotClick as
    * clicking the day - the keyboard way to start creating an event, since
    * drag-to-create needs a pointer. Use renderMonthCell / renderDayHeader for

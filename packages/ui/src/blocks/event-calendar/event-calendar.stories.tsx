@@ -365,6 +365,8 @@ export const KeyboardCreate: Story = {
   play: async ({ canvas }) => {
     onSlotClick.mockClear();
     const add = canvas.getByRole("button", { name: /^Add event on .*March 11/ });
+    // Visible without hovering.
+    await expect(getComputedStyle(add).opacity).toBe("1");
     add.focus();
     await userEvent.keyboard("{Enter}");
     await expect(onSlotClick).toHaveBeenCalledTimes(1);
@@ -933,6 +935,14 @@ export const Settings: Story = {
     let dialog = await body().findByRole("dialog");
     await userEvent.click(within(dialog).getByRole("switch", { name: "Weekends" }));
     await waitFor(() => expect(dayHeaders()).toBe(5));
+
+    // The day add buttons show up as soon as they're enabled.
+    await userEvent.click(within(dialog).getByRole("switch", { name: "Day add button" }));
+    await waitFor(() =>
+      expect(canvas.getAllByRole("button", { name: /^Add event on / })).toHaveLength(5),
+    );
+    for (const add of canvas.getAllByRole("button", { name: /^Add event on / }))
+      await expect(add).toBeVisible();
 
     await userEvent.click(within(dialog).getByRole("tab", { name: "Region" }));
     await userEvent.click(within(dialog).getByRole("button", { name: /Language/ }));
