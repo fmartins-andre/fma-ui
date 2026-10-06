@@ -22,6 +22,7 @@ import { useEventCalendarGestures, wasRecentChipPress, wasRecentDrag } from "./e
 import {
   EVENT_CALENDAR_GHOST,
   EVENT_CALENDAR_SLOT_DRAFT,
+  EventCalendarDayAddButton,
   EventCalendarEvent,
 } from "./event-calendar-event";
 import {
@@ -327,14 +328,17 @@ function EventCalendarDayHeader({ day, view }: { day: Date; view: CalendarView }
       data-slot="event-calendar-day-header"
       data-today={isToday || undefined}
       className={cn(
-        "data-today:text-primary min-w-0 truncate border-e px-2 py-1.5 font-medium last:border-e-0",
+        "data-today:text-primary group/ec-cell flex min-w-0 items-center gap-1 border-e px-2 py-1.5 font-medium last:border-e-0",
         isToday && viewConfig.todayClassName,
       )}
     >
-      {viewConfig.renderDayHeader?.({ day, view, isToday }) ??
-        format(toZoned(day, settings.timeZone), settings.i18n.formats.timeGridDayHeader, {
-          locale: settings.locale,
-        })}
+      <span className="min-w-0 flex-1 truncate">
+        {viewConfig.renderDayHeader?.({ day, view, isToday }) ??
+          format(toZoned(day, settings.timeZone), settings.i18n.formats.timeGridDayHeader, {
+            locale: settings.locale,
+          })}
+      </span>
+      {viewConfig.showDayAddButton && <EventCalendarDayAddButton day={day} view={view} />}
     </div>
   );
 }

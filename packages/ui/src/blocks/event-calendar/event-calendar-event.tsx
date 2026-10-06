@@ -4,7 +4,7 @@
 "use client";
 
 import { cn } from "cn";
-import { RepeatIcon } from "lucide-react";
+import { PlusIcon, RepeatIcon } from "lucide-react";
 import type * as React from "react";
 import { type CSSProperties, createContext, type ReactNode, useContext, useMemo } from "react";
 import { Tooltip, TooltipTrigger } from "@/core/tooltip/tooltip";
@@ -12,13 +12,18 @@ import { addDays, format } from "@/lib/date-fns-compat/index";
 import {
   useEventCalendar,
   useEventCalendarSelector,
+  useEventCalendarSettings,
   useEventCalendarViewConfig,
   useEventCalendarViewContext,
 } from "./event-calendar";
 import { markChipPress, useEventCalendarGestures, wasRecentDrag } from "./event-calendar-dnd";
 import { spansMultipleDays, toZoned, zonedStartOfDay } from "./event-calendar-lib";
 import { mergeProps } from "./event-calendar-merge-props";
-import type { EventCalendarOccurrence, EventCalendarSegment } from "./event-calendar-types";
+import type {
+  CalendarView,
+  EventCalendarOccurrence,
+  EventCalendarSegment,
+} from "./event-calendar-types";
 
 /** Event color presets; each stays legible on light and dark surfaces. */
 const EVENT_CALENDAR_COLORS: Array<{ name: string; value: string }> = [
@@ -490,11 +495,58 @@ function EventCalendarEvent<TData = unknown>({
 }
 
 export type { EventCalendarChipContextValue, EventCalendarEventProps };
+
+/**
+ * A day's "+" button (`showDayAddButton`): the keyboard way to start creating
+ * an event, since drag-to-create needs a pointer. Fires `onSlotClick` with the
+ * day as an all-day slot, like clicking the day's empty space.
+ */
+function EventCalendarDayAddButton({
+  day,
+  view,
+  resourceId,
+  className,
+}: {
+  day: Date;
+  view: CalendarView;
+  resourceId?: string;
+  className?: string;
+}) {
+  const settings = useEventCalendarSettings();
+  const viewConfig = useEventCalendarViewConfig();
+  const date = format(toZoned(day, settings.timeZone), settings.i18n.formats.dayAria, {
+    locale: settings.locale,
+  });
+  return (
+    <button
+      type="button"
+      data-slot="event-calendar-day-add"
+      aria-label={settings.i18n.labels.addEventOn(date)}
+      // a different icon/markup is a renderMonthCell / renderDayHeader job
+      className={cn(
+        "bg-primary text-primary-foreground flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-0 transition-opacity group-hover/ec-cell:opacity-100 focus-visible:opacity-100",
+        viewConfig.classNames?.dayAddButton,
+        className,
+      )}
+      onClick={(e) => {
+        e.stopPropagation();
+        settings.onSlotClick?.(
+          { date: zonedStartOfDay(day, settings.timeZone), allDay: true, view, resourceId },
+          e,
+        );
+      }}
+    >
+      <PlusIcon className="size-3.5" aria-hidden="true" />
+    </button>
+  );
+}
+
 export {
   EVENT_CALENDAR_COLORS,
   EVENT_CALENDAR_FADE_TRUNCATE,
   EVENT_CALENDAR_GHOST,
   EVENT_CALENDAR_SLOT_DRAFT,
+  EventCalendarDayAddButton,
   EventCalendarEvent,
   useEventCalendarEventChip,
 };
