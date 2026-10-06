@@ -385,8 +385,10 @@ function DataGridTable({
                 layout.cellBorder && "border-e last:border-e-0",
                 // Opaque backgrounds on the cells: rows scroll under a sticky or virtualized
                 // header, and the virtualized header row group paints no background.
+                // Mixes the raw tokens: `--color-*` resolve at :root, so they'd stay
+                // light under a `.dark` subtree.
                 layout.headerBackground
-                  ? "bg-[color-mix(in_oklab,var(--color-muted)_40%,var(--color-background))]"
+                  ? "bg-[color-mix(in_oklab,var(--muted)_40%,var(--background))]"
                   : (overlapsRows || column.getIsPinned()) && "bg-background",
                 column.columnDef.meta?.headerClassName,
               )}
