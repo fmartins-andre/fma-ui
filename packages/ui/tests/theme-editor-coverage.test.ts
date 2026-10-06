@@ -40,7 +40,7 @@ const declared = (body: string) => [...body.matchAll(/(--[\w-]+)\s*:/g)].map((m)
 // A theme that sets every optional setting, so it emits every variable a theme can.
 const everything: Theme = {
   ...DEFAULT_THEME,
-  fonts: { sans: "Inter", serif: "Lora", mono: "Fira Code" },
+  fonts: { sans: "Inter", serif: "Lora", mono: "Fira Code", heading: "Fraunces" },
   spacing: "0.25rem",
   letterSpacing: "0.01em",
   shadow: {

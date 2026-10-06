@@ -79,6 +79,8 @@ export const ThemeFontsSchema = z.object({
   sans: z.string().optional(),
   serif: z.string().optional(),
   mono: z.string().optional(),
+  /** Headings (font-heading); unset → same as sans. */
+  heading: z.string().optional(),
 });
 
 export type ThemeFonts = z.infer<typeof ThemeFontsSchema>;

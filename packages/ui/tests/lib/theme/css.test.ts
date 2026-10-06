@@ -27,7 +27,11 @@ const shadow = {
 const custom: Theme = {
   ...DEFAULT_THEME,
   name: "custom",
-  fonts: { sans: "Inter, sans-serif", mono: "JetBrains Mono, monospace" },
+  fonts: {
+    sans: "Inter, sans-serif",
+    mono: "JetBrains Mono, monospace",
+    heading: "Fraunces, serif",
+  },
   radius: "0.5rem",
   spacing: "0.3rem",
   letterSpacing: "0.01em",
@@ -42,6 +46,7 @@ describe("sharedThemeVars", () => {
       "--radius": "0.5rem",
       "--font-sans": "Inter, sans-serif",
       "--font-mono": "JetBrains Mono, monospace",
+      "--font-heading": "Fraunces, serif",
       "--spacing": "0.3rem",
       "--tracking-normal": "0.01em",
     });

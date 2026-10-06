@@ -14,6 +14,7 @@ export const THEME_VARS = [
   "--font-sans",
   "--font-serif",
   "--font-mono",
+  "--font-heading",
   "--spacing",
   "--tracking-normal",
   ...SHADOW_SIZES.map((size) => `--shadow-${size}`),
@@ -41,6 +42,7 @@ export function sharedThemeVars(theme: Theme): Record<string, string> {
     ...(theme.fonts.sans && { "--font-sans": theme.fonts.sans }),
     ...(theme.fonts.serif && { "--font-serif": theme.fonts.serif }),
     ...(theme.fonts.mono && { "--font-mono": theme.fonts.mono }),
+    ...(theme.fonts.heading && { "--font-heading": theme.fonts.heading }),
     ...(theme.spacing && { "--spacing": theme.spacing }),
     ...(theme.letterSpacing && { "--tracking-normal": theme.letterSpacing }),
   };

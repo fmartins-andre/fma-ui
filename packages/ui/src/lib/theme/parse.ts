@@ -126,7 +126,13 @@ export function themeFromCssVars(
   shared: Record<string, string> = {},
 ): Theme {
   const all = { ...shared, ...light };
-  const font = (key: "sans" | "serif" | "mono") => all[`font-${key}`] ?? base.fonts[key];
+  // A stack that only points at another variable (styles.css's
+  // `--font-heading: var(--font-sans)`) is the default, not a font choice.
+  const font = (key: keyof Theme["fonts"]) => {
+    const value = all[`font-${key}`];
+    return value === undefined || value.startsWith("var(") ? base.fonts[key] : value;
+  };
+  const tracking = all["tracking-normal"] ?? all["letter-spacing"];
   const lightShadow = shadowFrom(light, shared);
   const darkShadow = shadowFrom(dark, { ...shared, ...light });
   return ThemeSchema.parse({
@@ -134,10 +140,21 @@ export function themeFromCssVars(
     description: identity.description ?? base.description,
     source: "original",
     tags: [],
-    fonts: { sans: font("sans"), serif: font("serif"), mono: font("mono") },
+    fonts: {
+      sans: font("sans"),
+      serif: font("serif"),
+      mono: font("mono"),
+      heading: font("heading"),
+    },
     radius: all.radius ?? base.radius,
     spacing: all.spacing ?? base.spacing,
-    letterSpacing: all["tracking-normal"] ?? all["letter-spacing"] ?? base.letterSpacing,
+    // 0 / "normal" is no tracking, i.e. leave it unset like the default theme.
+    letterSpacing:
+      tracking === undefined
+        ? base.letterSpacing
+        : tracking === "normal" || Number.parseFloat(tracking) === 0
+          ? undefined
+          : tracking,
     shadow:
       lightShadow || darkShadow
         ? {
