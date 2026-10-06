@@ -128,7 +128,7 @@ describe("parseThemeInput", () => {
       DEFAULT_THEME,
       identity,
     );
-    expect(theme.name).toBe("theme-violet-bloom");
+    expect(theme.name).toBe("violet-bloom");
     expect(theme.title).toBe("Violet Bloom");
     expect(theme.light).toEqual(violet.light);
     expect(theme.fonts).toEqual(violet.fonts);

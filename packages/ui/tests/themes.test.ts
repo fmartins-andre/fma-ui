@@ -1,12 +1,13 @@
 // Curation gate for src/themes/*.json: every theme is valid, listed in
-// src/themes/index.ts, readable, attributed when third-party, and "default"
+// src/themes/index.ts, meets the contrast bar (src/lib/theme/contrast.ts),
+// is attributed when third-party, and "default"
 // matches src/styles.css (the theme Storybook and apps/web use when no other
 // is applied).
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { contrastRatio } from "@/lib/theme/color";
+import { checkContrast } from "@/lib/theme/contrast";
 import { parseCssVars } from "@/lib/theme/parse";
 import { COLOR_TOKENS, ThemeSchema } from "@/lib/theme/schema";
 import { DEFAULT_THEME, THEMES } from "@/themes/index";
@@ -45,30 +46,6 @@ it("the default theme matches src/styles.css", () => {
   expect(DEFAULT_THEME.shadow).toBeUndefined();
 });
 
-// Body text must meet WCAG AA (4.5:1). Fills with their own text color (buttons,
-// badges, muted text, tinted status text) must reach 3:1 — the bar shadcn's own
-// default theme meets (muted-foreground on muted is 4.34:1).
-const BODY_PAIRS = [
-  ["background", "foreground"],
-  ["card", "card-foreground"],
-  ["popover", "popover-foreground"],
-  ["sidebar", "sidebar-foreground"],
-] as const;
-const FILL_PAIRS = [
-  ["primary", "primary-foreground"],
-  ["secondary", "secondary-foreground"],
-  ["accent", "accent-foreground"],
-  ["muted", "muted-foreground"],
-  ["background", "muted-foreground"],
-  ["background", "destructive-foreground"],
-  ["background", "info-foreground"],
-  ["background", "success-foreground"],
-  ["background", "warning-foreground"],
-  ["invert", "invert-foreground"],
-  ["sidebar-primary", "sidebar-primary-foreground"],
-  ["sidebar-accent", "sidebar-accent-foreground"],
-] as const;
-
 describe.each(files)("src/themes/%s", (file) => {
   const json = JSON.parse(readFileSync(join(THEMES_DIR, file), "utf8"));
   const theme = ThemeSchema.parse(json);
@@ -84,12 +61,11 @@ describe.each(files)("src/themes/%s", (file) => {
   });
 
   for (const mode of ["light", "dark"] as const) {
-    it.each(BODY_PAIRS)(`${mode}: %s / %s ≥ 4.5`, (bg, fg) => {
-      expect(contrastRatio(theme[mode][bg], theme[mode][fg])).toBeGreaterThanOrEqual(4.5);
-    });
-
-    it.each(FILL_PAIRS)(`${mode}: %s / %s ≥ 3`, (bg, fg) => {
-      expect(contrastRatio(theme[mode][bg], theme[mode][fg])).toBeGreaterThanOrEqual(3);
-    });
+    it.each(checkContrast(theme, mode))(
+      `${mode}: $foreground on $background ≥ $minimum`,
+      ({ ratio, minimum }) => {
+        expect(ratio).toBeGreaterThanOrEqual(minimum);
+      },
+    );
   }
 });

@@ -225,6 +225,21 @@ Temas curados ficam em `packages/ui/src/themes/<nome>.json` (schema `ThemeSchema
 No Storybook, o seletor de tema (ícone de pincel) aplica um tema a todas as stories, e
 `design/Themes` mostra todos lado a lado.
 
+### Editor de temas (`apps/web`, rota `/themes`)
+
+`pnpm dev` e abra `http://localhost:3000/themes` (ou `?preset=<nome>`). Inspirado no tweakcn:
+carrega um tema curado ou importa um (CSS do shadcn/tweakcn, item de registro por URL como
+`https://tweakcn.com/r/themes/<id>.json`, ou JSON exportado aqui), edita cores por modo,
+fontes (Google Fonts), tracking, radius, spacing, sombras e ajuste HSL global, com
+undo/redo (Ctrl+Z) e contraste ao vivo. O preview usa os nossos componentes reais. Exporta
+`index.css`, só as variáveis, o item `registry:theme` (instalável com
+`npx shadcn add ./theme-<nome>.json`) ou o JSON do tema — que, salvo em
+`packages/ui/src/themes/`, vira tema curado.
+
+O editor aplica o tema no `<html>` inteiro (inclusive no próprio painel), para que popovers e
+dialogs portados para o `<body>` também o recebam. A lógica (estado, histórico, HSL) fica em
+`packages/ui/src/lib/theme/editor.ts`, com testes unitários.
+
 ## Gerando e publicando o registro
 
 ```bash

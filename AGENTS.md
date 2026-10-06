@@ -33,6 +33,8 @@ packages/ui/        → @fma-ui/ui: os componentes
   tests/                              testes unit (vitest) + gates estruturais
   registry.json                       GERADO — não editar à mão
 apps/web/           → TanStack Start; serve public/r/<nome>.json (GERADO — não editar à mão)
+  src/theme-editor/                   editor de temas em /themes (estilo tweakcn); importa a UI
+                                      de packages/ui via alias @/* (tsconfig paths)
 .devcontainer/      → ambiente de desenvolvimento padrão (ver seção "Dev container")
 ```
 
