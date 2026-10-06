@@ -2801,7 +2801,25 @@
           "indigo",
           "slate",
           "sans"
-        ]
+        ],
+        "shadow": {
+          "light": {
+            "color": "oklch(0 0 0)",
+            "opacity": 0.1,
+            "blur": "8px",
+            "spread": "-1px",
+            "offsetX": "0px",
+            "offsetY": "4px"
+          },
+          "dark": {
+            "color": "oklch(0 0 0)",
+            "opacity": 0.1,
+            "blur": "8px",
+            "spread": "-1px",
+            "offsetX": "0px",
+            "offsetY": "4px"
+          }
+        }
       }
     },
     {
@@ -2928,7 +2946,25 @@
           "violet",
           "indigo",
           "sans"
-        ]
+        ],
+        "shadow": {
+          "light": {
+            "color": "oklch(0.316 0.067 281.836)",
+            "opacity": 0.12,
+            "blur": "10px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "4px"
+          },
+          "dark": {
+            "color": "oklch(0.316 0.067 281.836)",
+            "opacity": 0.12,
+            "blur": "10px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "4px"
+          }
+        }
       }
     },
     {
@@ -3162,7 +3198,25 @@
           "gold",
           "warm",
           "sans"
-        ]
+        ],
+        "shadow": {
+          "light": {
+            "color": "oklch(0.279 0.087 24.82)",
+            "opacity": 0.12,
+            "blur": "16px",
+            "spread": "-2px",
+            "offsetX": "1px",
+            "offsetY": "1px"
+          },
+          "dark": {
+            "color": "oklch(0.279 0.087 24.82)",
+            "opacity": 0.12,
+            "blur": "16px",
+            "spread": "-2px",
+            "offsetX": "1px",
+            "offsetY": "1px"
+          }
+        }
       }
     },
     {
@@ -3289,7 +3343,25 @@
           "gray",
           "monochrome",
           "sans"
-        ]
+        ],
+        "shadow": {
+          "light": {
+            "color": "oklch(0.321 0 0 / 10%)",
+            "opacity": 0.15,
+            "blur": "0px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "2px"
+          },
+          "dark": {
+            "color": "oklch(0.321 0 0 / 10%)",
+            "opacity": 0.15,
+            "blur": "0px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "2px"
+          }
+        }
       }
     },
     {
@@ -3529,7 +3601,25 @@
           "gray",
           "monospace",
           "sharp"
-        ]
+        ],
+        "shadow": {
+          "light": {
+            "color": "oklch(0 0 0)",
+            "opacity": 0,
+            "blur": "0px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "1px"
+          },
+          "dark": {
+            "color": "oklch(0 0 0)",
+            "opacity": 0,
+            "blur": "0px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "1px"
+          }
+        }
       }
     },
     {
@@ -3769,7 +3859,25 @@
           "brown",
           "warm",
           "serif"
-        ]
+        ],
+        "shadow": {
+          "light": {
+            "color": "oklch(0.325 0.015 63.479)",
+            "opacity": 0.12,
+            "blur": "5px",
+            "spread": "0px",
+            "offsetX": "2px",
+            "offsetY": "3px"
+          },
+          "dark": {
+            "color": "oklch(0.325 0.015 63.479)",
+            "opacity": 0.12,
+            "blur": "5px",
+            "spread": "0px",
+            "offsetX": "2px",
+            "offsetY": "3px"
+          }
+        }
       }
     },
     {
@@ -3897,7 +4005,25 @@
           "violet",
           "rounded",
           "sans"
-        ]
+        ],
+        "shadow": {
+          "light": {
+            "color": "oklch(0 0 0)",
+            "opacity": 0.16,
+            "blur": "3px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "2px"
+          },
+          "dark": {
+            "color": "oklch(0 0 0)",
+            "opacity": 0.16,
+            "blur": "3px",
+            "spread": "0px",
+            "offsetX": "0px",
+            "offsetY": "2px"
+          }
+        }
       }
     },
     {

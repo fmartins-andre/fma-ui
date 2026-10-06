@@ -118,7 +118,25 @@
       "gray",
       "monochrome",
       "sans"
-    ]
+    ],
+    "shadow": {
+      "light": {
+        "color": "oklch(0.321 0 0 / 10%)",
+        "opacity": 0.15,
+        "blur": "0px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "2px"
+      },
+      "dark": {
+        "color": "oklch(0.321 0 0 / 10%)",
+        "opacity": 0.15,
+        "blur": "0px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "2px"
+      }
+    }
   },
   "docs": "This theme uses Montserrat, Fira Code (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [

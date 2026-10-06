@@ -54,6 +54,9 @@ export function themeRegistryItem(theme: Theme): RegistryItem {
       source: theme.source,
       ...(theme.origin && { origin: theme.origin }),
       tags: theme.tags,
+      // The recipe the shadow-* scale was derived from, so importing this
+      // item back into the editor restores the shadow controls.
+      ...(theme.shadow && { shadow: theme.shadow }),
     },
   };
 }

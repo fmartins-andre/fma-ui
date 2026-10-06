@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { generateThemeCss } from "@/lib/theme/css";
 import { parseCssVars, parseThemeInput, themeFromCssVars } from "@/lib/theme/parse";
 import { themeRegistryItem } from "@/lib/theme/registry";
-import { DEFAULT_THEME, getTheme } from "@/themes/index";
+import { DEFAULT_THEME, getTheme, THEMES } from "@/themes/index";
 
 const identity = { name: "imported", title: "Imported" };
 
@@ -133,6 +133,21 @@ describe("parseThemeInput", () => {
     expect(theme.light).toEqual(violet.light);
     expect(theme.fonts).toEqual(violet.fonts);
     expect(theme.letterSpacing).toBe(violet.letterSpacing);
+  });
+
+  it.each(THEMES.map((theme) => [theme.name, theme] as const))(
+    "round-trips the published registry item of %s exactly",
+    (_name, theme) => {
+      const item = JSON.stringify(themeRegistryItem(theme));
+      expect(parseThemeInput(item, DEFAULT_THEME, identity)).toEqual(theme);
+    },
+  );
+
+  it("ignores a foreign registry item's unrelated meta", () => {
+    const item = { ...themeRegistryItem(violet), meta: { shadow: "nope", source: 42 } };
+    const theme = parseThemeInput(JSON.stringify(item), DEFAULT_THEME, identity);
+    expect(theme.source).toBe("original");
+    expect(theme.shadow).toBeUndefined();
   });
 
   it("rejects input with nothing to import", () => {

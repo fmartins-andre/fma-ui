@@ -2,6 +2,7 @@
 // styles.css (ours, tweakcn's, ui.shadcn.com/themes'), a shadcn registry theme
 // item (e.g. https://tweakcn.com/r/themes/<id>.json), or one of our theme JSONs.
 
+import { z } from "zod";
 import { shiftLightness, toOklch } from "./color";
 import {
   COLOR_TOKENS,
@@ -10,6 +11,7 @@ import {
   type ThemeMode,
   ThemeSchema,
   type ThemeShadow,
+  ThemeShadowSchema,
 } from "./schema";
 
 export interface CssVarBlocks {
@@ -156,7 +158,7 @@ export function parseThemeInput(input: string, base: Theme, identity: ThemeIdent
     const ours = ThemeSchema.safeParse(json);
     if (ours.success) return ours.data;
     if (isRegistryTheme(json)) {
-      return themeFromCssVars(
+      const theme = themeFromCssVars(
         { light: json.cssVars.light ?? {}, dark: json.cssVars.dark ?? {} },
         base,
         {
@@ -167,6 +169,14 @@ export function parseThemeInput(input: string, base: Theme, identity: ThemeIdent
         },
         json.cssVars.theme ?? {},
       );
+      // Our items carry what cssVars can't: provenance and the shadow recipe.
+      const meta = RegistryMetaSchema.safeParse(json.meta);
+      if (!meta.success) return theme;
+      return ThemeSchema.parse({
+        ...theme,
+        ...meta.data,
+        shadow: meta.data.shadow ?? theme.shadow,
+      });
     }
     throw new Error("JSON is neither a theme nor a shadcn registry item with cssVars.");
   }
@@ -177,7 +187,15 @@ export function parseThemeInput(input: string, base: Theme, identity: ThemeIdent
   return themeFromCssVars(vars, base, identity);
 }
 
+const RegistryMetaSchema = z.object({
+  source: ThemeSchema.shape.source.optional(),
+  origin: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  shadow: z.object({ light: ThemeShadowSchema, dark: ThemeShadowSchema }).optional(),
+});
+
 interface RegistryTheme {
+  meta?: unknown;
   name?: string;
   title?: string;
   description?: string;
