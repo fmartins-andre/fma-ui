@@ -497,7 +497,7 @@ function EventCalendarEvent<TData = unknown>({
 export type { EventCalendarChipContextValue, EventCalendarEventProps };
 
 /**
- * A day's "+" button (`showDayAddButton`): the keyboard way to start creating
+ * A day's "+" button (`showDayAddButton`), always visible: the keyboard way to start creating
  * an event, since drag-to-create needs a pointer. Fires `onSlotClick` with the
  * day as an all-day slot, like clicking the day's empty space.
  */
@@ -524,7 +524,9 @@ function EventCalendarDayAddButton({
       aria-label={settings.i18n.labels.addEventOn(date)}
       // a different icon/markup is a renderMonthCell / renderDayHeader job
       className={cn(
-        "bg-primary text-primary-foreground flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-0 transition-opacity group-hover/ec-cell:opacity-100 focus-visible:opacity-100",
+        // Always visible once enabled (a hover-only reveal hid it from anyone
+        // not pointing at the header); subtle until the day is hovered or it's focused.
+        "text-muted-foreground flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-sm outline-none transition-colors group-hover/ec-cell:bg-muted hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
         viewConfig.classNames?.dayAddButton,
         className,
       )}
