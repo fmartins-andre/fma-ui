@@ -630,7 +630,7 @@
       "name": "color-picker",
       "type": "registry:ui",
       "title": "Color Picker",
-      "description": "An OKLCH color picker: lightness, chroma and hue sliders painted with the color's own gradients. Given a background (contrastWith), it shows the WCAG ratio, hatches the lightness that fails AA, marks the AA/AAA thresholds and offers \"Fix to AA/AAA\" buttons that jump to the nearest passing lightness keeping the hue. ColorPicker is a swatch that opens it in a popover; ColorPickerPanel renders it inline.",
+      "description": "An OKLCH color picker: lightness, chroma and hue sliders painted with the color's own gradients. Given a background (contrastWith), it shows the WCAG ratio, hatches the lightness that fails AA, marks the AA/AAA thresholds and offers \"Fix to AA/AAA\" buttons that jump to the nearest passing lightness keeping the hue. A grid of preset swatches (Tailwind's palette by default, or your own via swatches) sets the color in one click, hatching the presets that fail AA. ColorPicker is a swatch that opens it in a popover; ColorPickerPanel renders it inline.",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"

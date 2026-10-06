@@ -6,6 +6,8 @@ import {
   Dialog,
   DialogTrigger,
   Label,
+  ListBox,
+  ListBoxItem,
   Button as RACButton,
   Slider,
   SliderOutput,
@@ -55,6 +57,187 @@ function trackGradient(channels: OklchChannels, channel: Channel): string {
   return `linear-gradient(to right, ${stops.join(", ")})`;
 }
 
+const HATCH =
+  "bg-[repeating-linear-gradient(135deg,rgb(0_0_0/0.35)_0_2px,rgb(255_255_255/0.35)_2px_4px)]";
+
+/** A preset color: a CSS color, or one with a name used as its accessible label. */
+type Swatch = string | { color: string; name: string };
+
+const TAILWIND_HUES = [
+  "neutral",
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "green",
+  "teal",
+  "cyan",
+  "blue",
+  "indigo",
+  "violet",
+  "pink",
+];
+const TAILWIND_SHADES: Array<[number, string[]]> = [
+  [
+    200,
+    [
+      "0.922 0 0",
+      "0.885 0.062 18.334",
+      "0.901 0.076 70.697",
+      "0.924 0.12 95.746",
+      "0.945 0.129 101.54",
+      "0.925 0.084 155.995",
+      "0.91 0.096 180.426",
+      "0.917 0.08 205.041",
+      "0.882 0.059 254.128",
+      "0.87 0.065 274.039",
+      "0.894 0.057 293.283",
+      "0.899 0.061 343.231",
+    ],
+  ],
+  [
+    400,
+    [
+      "0.708 0 0",
+      "0.704 0.191 22.216",
+      "0.75 0.183 55.934",
+      "0.828 0.189 84.429",
+      "0.852 0.199 91.936",
+      "0.792 0.209 151.711",
+      "0.777 0.152 181.912",
+      "0.789 0.154 211.53",
+      "0.707 0.165 254.624",
+      "0.673 0.182 276.935",
+      "0.702 0.183 293.541",
+      "0.718 0.202 349.761",
+    ],
+  ],
+  [
+    500,
+    [
+      "0.556 0 0",
+      "0.637 0.237 25.331",
+      "0.705 0.213 47.604",
+      "0.769 0.188 70.08",
+      "0.795 0.184 86.047",
+      "0.723 0.219 149.579",
+      "0.704 0.14 182.503",
+      "0.715 0.143 215.221",
+      "0.623 0.214 259.815",
+      "0.585 0.233 277.117",
+      "0.606 0.25 292.717",
+      "0.656 0.241 354.308",
+    ],
+  ],
+  [
+    600,
+    [
+      "0.439 0 0",
+      "0.577 0.245 27.325",
+      "0.646 0.222 41.116",
+      "0.666 0.179 58.318",
+      "0.681 0.162 75.834",
+      "0.627 0.194 149.214",
+      "0.6 0.118 184.704",
+      "0.609 0.126 221.723",
+      "0.546 0.245 262.881",
+      "0.511 0.262 276.966",
+      "0.541 0.281 293.009",
+      "0.592 0.249 0.584",
+    ],
+  ],
+  [
+    800,
+    [
+      "0.269 0 0",
+      "0.444 0.177 26.899",
+      "0.47 0.157 37.304",
+      "0.473 0.137 46.201",
+      "0.476 0.114 61.907",
+      "0.448 0.119 151.328",
+      "0.437 0.078 188.216",
+      "0.45 0.085 224.283",
+      "0.424 0.199 265.638",
+      "0.398 0.195 277.366",
+      "0.432 0.232 292.759",
+      "0.459 0.187 3.815",
+    ],
+  ],
+];
+
+/** Tailwind v4's palette (MIT): 12 hues × shades 200/400/500/600/800, a row per shade. */
+const DEFAULT_SWATCHES: Swatch[] = TAILWIND_SHADES.flatMap(([shade, values]) =>
+  values.map((value, i) => ({ color: `oklch(${value})`, name: `${TAILWIND_HUES[i]}-${shade}` })),
+);
+
+const swatchColor = (swatch: Swatch) => (typeof swatch === "string" ? swatch : swatch.color);
+const swatchName = (swatch: Swatch) => (typeof swatch === "string" ? swatch : swatch.name);
+
+function SwatchGrid({
+  swatches,
+  columns,
+  value,
+  contrastWith,
+  onSelect,
+}: {
+  swatches: Swatch[];
+  columns: number;
+  /** Current color, normalized with formatOklchChannels. */
+  value: string;
+  contrastWith?: string;
+  onSelect: (color: string) => void;
+}) {
+  // Swatches are compared as the picker emits them (oklch, clamped to sRGB).
+  const items = useMemo(() => {
+    const seen = new Set<string>();
+    return swatches.flatMap((swatch) => {
+      const channels = toOklchChannels(swatchColor(swatch));
+      if (!channels) return [];
+      const id = formatOklchChannels({ ...channels, alpha: 1 });
+      if (seen.has(id)) return [];
+      seen.add(id);
+      return [{ id, name: swatchName(swatch), paint: paint(channels) }];
+    });
+  }, [swatches]);
+  const selected = toOklchChannels(value);
+  const selectedId = selected && formatOklchChannels({ ...selected, alpha: 1 });
+
+  return (
+    <ListBox
+      data-slot="color-picker-swatches"
+      aria-label="Preset colors"
+      layout="grid"
+      selectionMode="single"
+      disallowEmptySelection
+      selectedKeys={selectedId ? [selectedId] : []}
+      onSelectionChange={(keys) => {
+        const [key] = keys === "all" ? [] : [...keys];
+        if (typeof key === "string") onSelect(key);
+      }}
+      className="grid gap-1 outline-none"
+      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+    >
+      {items.map((item) => {
+        const ratio = contrastWith ? contrastRatio(contrastWith, item.id) : undefined;
+        const fails = ratio !== undefined && ratio < CONTRAST_AA;
+        return (
+          <ListBoxItem
+            key={item.id}
+            id={item.id}
+            textValue={item.name}
+            aria-label={ratio === undefined ? item.name : `${item.name}, ${ratio.toFixed(2)}:1`}
+            data-failing={fails || undefined}
+            className="relative aspect-square cursor-pointer overflow-hidden rounded-sm ring-1 ring-foreground/10 outline-none ring-inset data-focus-visible:ring-2 data-focus-visible:ring-ring data-selected:ring-2 data-selected:ring-foreground"
+            style={{ background: item.paint }}
+          >
+            {fails && <span aria-hidden className={cn("absolute inset-0", HATCH)} />}
+          </ListBoxItem>
+        );
+      })}
+    </ListBox>
+  );
+}
+
 const parseOr = (value: string, fallback: OklchChannels) => toOklchChannels(value) ?? fallback;
 const BLACK: OklchChannels = { l: 0, c: 0, h: 0, alpha: 1 };
 
@@ -101,7 +284,7 @@ function ChannelSlider({
             key={`${from}-${to}`}
             aria-hidden
             data-slot="color-picker-failing"
-            className="pointer-events-none absolute inset-y-0 bg-[repeating-linear-gradient(135deg,rgb(0_0_0/0.35)_0_2px,rgb(255_255_255/0.35)_2px_4px)]"
+            className={cn("pointer-events-none absolute inset-y-0", HATCH)}
             style={{ left: percent(from), width: `calc(${percent(to)} - ${percent(from)})` }}
           />
         ))}
@@ -150,10 +333,24 @@ type ColorPickerPanelProps = {
    * lightness reaching AA / AAA while keeping hue and chroma.
    */
   contrastWith?: string;
+  /**
+   * Preset colors shown under the sliders (Tailwind's palette by default; `[]`
+   * hides them). With `contrastWith`, the ones failing AA are hatched.
+   */
+  swatches?: Swatch[];
+  /** Columns of the swatch grid. */
+  swatchColumns?: number;
   className?: string;
 };
 
-function ColorPickerPanel({ value, onChange, contrastWith, className }: ColorPickerPanelProps) {
+function ColorPickerPanel({
+  value,
+  onChange,
+  contrastWith,
+  swatches = DEFAULT_SWATCHES,
+  swatchColumns = TAILWIND_HUES.length,
+  className,
+}: ColorPickerPanelProps) {
   // Channels are kept locally so hue survives dragging chroma to 0 (grays have no hue).
   const [channels, setChannels] = useState(() => parseOr(value, BLACK));
   useEffect(() => {
@@ -224,6 +421,18 @@ function ColorPickerPanel({ value, onChange, contrastWith, className }: ColorPic
       />
       <ChannelSlider channel="c" channels={channels} onChange={(c) => update({ ...channels, c })} />
       <ChannelSlider channel="h" channels={channels} onChange={(h) => update({ ...channels, h })} />
+      {swatches.length > 0 && (
+        <SwatchGrid
+          swatches={swatches}
+          columns={swatchColumns}
+          value={current}
+          contrastWith={contrastWith}
+          onSelect={(color) => {
+            const next = toOklchChannels(color);
+            if (next) update({ ...next, alpha: channels.alpha });
+          }}
+        />
+      )}
       {contrast && (
         <div className="flex gap-2">
           {(
@@ -261,6 +470,8 @@ function ColorPicker({
   value,
   onChange,
   contrastWith,
+  swatches,
+  swatchColumns,
   label = "Pick color",
   isDisabled,
   className,
@@ -279,12 +490,18 @@ function ColorPicker({
       />
       <Popover placement="bottom start" className="w-72 overflow-y-auto">
         <Dialog aria-label={label} className="outline-none">
-          <ColorPickerPanel value={value} onChange={onChange} contrastWith={contrastWith} />
+          <ColorPickerPanel
+            value={value}
+            onChange={onChange}
+            contrastWith={contrastWith}
+            swatches={swatches}
+            swatchColumns={swatchColumns}
+          />
         </Dialog>
       </Popover>
     </DialogTrigger>
   );
 }
 
-export type { ColorPickerPanelProps, ColorPickerProps };
-export { ColorPicker, ColorPickerPanel };
+export type { ColorPickerPanelProps, ColorPickerProps, Swatch };
+export { ColorPicker, ColorPickerPanel, DEFAULT_SWATCHES };

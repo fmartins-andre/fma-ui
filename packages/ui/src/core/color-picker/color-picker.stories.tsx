@@ -96,5 +96,66 @@ export const Panel: Story = {
 
     await userEvent.click(canvas.getByRole("button", { name: "Fix to AAA" }));
     await waitFor(() => expect(ratio).toHaveAttribute("data-level", "AAA"));
+
+    // Presets failing AA on white are hatched; dark ones aren't.
+    expect(canvas.getByRole("option", { name: /^neutral-200,/ })).toHaveAttribute("data-failing");
+    expect(canvas.getByRole("option", { name: /^neutral-800,/ })).not.toHaveAttribute(
+      "data-failing",
+    );
+  },
+};
+
+export const Swatches: Story = {
+  args: { value: "oklch(0.6 0.2 260)" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "The preset grid (Tailwind's palette by default) sets the color in one click; the matching swatch shows as selected. Arrow keys move through the grid.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
+    return (
+      <div className="flex w-72 flex-col gap-3">
+        <ColorPickerPanel value={value} onChange={setValue} />
+        <code className="text-xs">{value}</code>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.getAllByRole("option")).toHaveLength(60);
+    const teal = canvas.getByRole("option", { name: "teal-500" });
+    await userEvent.click(teal);
+    await waitFor(() => expect(teal).toHaveAttribute("aria-selected", "true"));
+    // Out-of-sRGB chroma is clamped; lightness and hue are kept.
+    expect(canvas.getByText(/^oklch\(0\.704 \S+ 182\.503\)$/)).toBeInTheDocument();
+
+    await userEvent.keyboard("{ArrowRight}");
+    expect(canvas.getByRole("option", { name: "cyan-500" })).toHaveFocus();
+  },
+};
+
+export const CustomSwatches: Story = {
+  args: {
+    value: "#0f172a",
+    label: "Brand color",
+    swatches: [
+      { color: "#0f172a", name: "Ink" },
+      { color: "#f97316", name: "Ember" },
+      { color: "#14b8a6", name: "Lagoon" },
+      { color: "#e11d48", name: "Rose" },
+    ],
+    swatchColumns: 4,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "swatches takes CSS colors or { color, name } pairs (the name is the accessible label); swatchColumns sets the grid width. Pass [] to hide the grid.",
+      },
+    },
   },
 };
