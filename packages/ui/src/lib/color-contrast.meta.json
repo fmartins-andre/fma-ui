@@ -1,0 +1,8 @@
+{
+  "name": "color-contrast",
+  "category": "color",
+  "status": "stable",
+  "source": "original",
+  "description": "WCAG 2 contrast helpers over OKLCH: contrast ratio and level, the lightness ranges where a color passes against a background, and the nearest passing color that keeps its hue (nearestContrastColor). Results are oklch strings clamped to sRGB.",
+  "tags": ["color", "contrast", "accessibility", "oklch"]
+}

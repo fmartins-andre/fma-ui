@@ -597,6 +597,75 @@
       }
     },
     {
+      "name": "color-contrast",
+      "type": "registry:lib",
+      "title": "Color Contrast",
+      "description": "WCAG 2 contrast helpers over OKLCH: contrast ratio and level, the lightness ranges where a color passes against a background, and the nearest passing color that keeps its hue (nearestContrastColor). Results are oklch strings clamped to sRGB.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "color"
+      ],
+      "files": [
+        {
+          "path": "src/lib/color-contrast.ts",
+          "target": "lib/fma-ui/color-contrast.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [
+        "culori@^4.0.2"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "color",
+          "contrast",
+          "accessibility",
+          "oklch"
+        ]
+      }
+    },
+    {
+      "name": "color-picker",
+      "type": "registry:ui",
+      "title": "Color Picker",
+      "description": "An OKLCH color picker: lightness, chroma and hue sliders painted with the color's own gradients. Given a background (contrastWith), it shows the WCAG ratio, hatches the lightness that fails AA, marks the AA/AAA thresholds and offers \"Fix to AA/AAA\" buttons that jump to the nearest passing lightness keeping the hue. A grid of preset swatches (Tailwind's palette by default, or your own via swatches) sets the color in one click, hatching the presets that fail AA. ColorPicker is a swatch that opens it in a popover; ColorPickerPanel renders it inline.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/color-picker/color-picker.tsx",
+          "target": "components/fma-ui/color-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/popover",
+        "@fma-ui/color-contrast"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "culori@^4.0.2",
+        "lucide-react@^1.52.0",
+        "react-aria-components@^1.21.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "forms",
+          "color",
+          "contrast",
+          "oklch",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "combobox",
       "type": "registry:ui",
       "title": "Combobox",

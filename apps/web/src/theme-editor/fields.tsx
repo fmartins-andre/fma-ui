@@ -1,17 +1,11 @@
 import { type ReactNode, useEffect, useId, useState } from "react";
 import { Badge } from "@/core/badge/badge";
+import { ColorPicker } from "@/core/color-picker/color-picker";
 import { Input } from "@/core/input/input";
 import { Label } from "@/core/label/label";
 import { Slider } from "@/core/slider/slider";
-import { alphaOf, contrastRatio, isColor, toHex, toOklch, withAlpha } from "@/lib/theme/index";
-
-/** WCAG level for a contrast ratio: AAA ≥ 7, AA ≥ 4.5, AA large ≥ 3. */
-export function contrastLevel(ratio: number): "AAA" | "AA" | "AA18" | "Fail" {
-  if (ratio >= 7) return "AAA";
-  if (ratio >= 4.5) return "AA";
-  if (ratio >= 3) return "AA18";
-  return "Fail";
-}
+import { contrastLevel } from "@/lib/color-contrast";
+import { contrastRatio, isColor, toOklch } from "@/lib/theme/index";
 
 export function ContrastBadge({
   background,
@@ -69,22 +63,12 @@ export function ColorField({
         {contrastWith && <ContrastBadge background={contrastWith} foreground={value} />}
       </div>
       <div className="flex items-center gap-2">
-        <label
-          className="relative size-8 shrink-0 cursor-pointer overflow-hidden rounded-md ring-1 ring-foreground/15"
-          style={{ background: value }}
-        >
-          <span className="sr-only">Pick {label}</span>
-          <input
-            type="color"
-            className="absolute inset-0 cursor-pointer opacity-0"
-            value={toHex(value)}
-            onChange={(event) => {
-              const alpha = alphaOf(value);
-              const next = toOklch(event.target.value);
-              onChange(alpha < 1 ? withAlpha(next, alpha) : next);
-            }}
-          />
-        </label>
+        <ColorPicker
+          label={`Pick ${label}`}
+          value={value}
+          onChange={onChange}
+          contrastWith={contrastWith}
+        />
         <Input
           id={id}
           value={draft}

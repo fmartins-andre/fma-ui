@@ -27,10 +27,13 @@ test("offers every curated theme and switches between them", async ({ page }) =>
 test("has a color field for every color token", async ({ page }) => {
   await openEditor(page);
   // Expand every color group, as a user would to reach each token.
-  const collapsed = page.locator("aside").getByRole("button", { expanded: false });
+  const collapsed = page
+    .locator("aside")
+    .getByRole("button", { expanded: false })
+    .and(page.locator("[data-slot=accordion-trigger]"));
   while ((await collapsed.count()) > 0) await collapsed.first().click();
   for (const token of COLOR_TOKENS) {
-    // The value text field (the swatch's native picker is labelled "Pick …").
+    // The value text field (the swatch's picker button is labelled "Pick …").
     const field = page
       .getByRole("textbox", { name: new RegExp(`\\(--${token}\\)$`) })
       .and(page.locator("[data-slot=input]"));
@@ -55,6 +58,24 @@ test("edits a color, then undoes and redoes it", async ({ page }) => {
   await page.getByRole("button", { name: /^Reset to/ }).click();
   await expect.poll(() => rootVar(page, "--primary")).toBe(violet.light.primary);
   await expect(page.getByText("Modified")).toHaveCount(0);
+});
+
+test("fixes a failing foreground to AA with the color picker", async ({ page }) => {
+  await openEditor(page, "violet-bloom");
+  const foreground = page.getByRole("textbox", {
+    name: "Foreground (--primary-foreground)",
+    exact: true,
+  });
+  await foreground.fill(violet.light.primary);
+  await foreground.press("Enter");
+
+  await page.getByRole("button", { name: "Pick Foreground (--primary-foreground)" }).click();
+  const dialog = page.getByRole("dialog", { name: "Pick Foreground (--primary-foreground)" });
+  const ratio = dialog.locator("[data-slot=color-picker-ratio]");
+  await expect(ratio).toHaveAttribute("data-level", "Fail");
+  await dialog.getByRole("button", { name: "Fix to AA", exact: true }).click();
+  await expect(ratio).toHaveAttribute("data-level", /^AAA?$/);
+  await expect.poll(() => rootVar(page, "--primary-foreground")).not.toBe(violet.light.primary);
 });
 
 test("switches to dark mode and edits the dark palette", async ({ page }) => {
