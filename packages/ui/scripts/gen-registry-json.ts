@@ -1,7 +1,8 @@
 // Scans src/core/*/meta.json + the matching <name>.tsx (registry:ui), plus the
 // libs, hooks and blocks in src/lib, src/hooks and src/blocks that have
-// metadata (registry:lib / registry:hook / registry:block), and produces registry.json (the shadcn-schema file that
-// `shadcn build` then compiles into apps/web/public/r/*.json).
+// metadata (registry:lib / registry:hook / registry:block) and the curated
+// themes in src/themes/*.json (registry:theme), and produces registry.json (the
+// shadcn-schema file that `shadcn build` then compiles into apps/web/public/r/*.json).
 //
 // Run via `pnpm generate:registry` (packages/ui) or `pnpm build` at the repo root.
 
@@ -9,6 +10,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ComponentMeta, Registry, RegistryItem } from "@fma-ui/registry";
 import { ComponentMetaSchema } from "@fma-ui/registry";
+import { ThemeSchema, themeRegistryItem } from "../src/lib/theme/index";
 
 const CORE_DIR = "src/core";
 
@@ -51,6 +53,7 @@ const MODULE_DIRS = [
   { dir: "src/hooks", target: `hooks/${INSTALL_DIR}`, type: "registry:hook" },
   { dir: "src/blocks", target: `components/${INSTALL_DIR}`, type: "registry:block" },
 ] as const;
+const THEMES_DIR = "src/themes";
 const OUTPUT_FILE = "registry.json";
 
 function toTitle(id: string): string {
@@ -234,6 +237,22 @@ export function processModule(module: {
   };
 }
 
+/** Every src/themes/<name>.json as a registry:theme item; the file name must match its `name`. */
+export function processThemes(root = "."): RegistryItem[] {
+  return readdirSync(join(root, THEMES_DIR))
+    .filter((file) => file.endsWith(".json"))
+    .sort()
+    .map((file) => {
+      const theme = ThemeSchema.parse(
+        JSON.parse(readFileSync(join(root, THEMES_DIR, file), "utf8")),
+      );
+      if (`${theme.name}.json` !== file) {
+        throw new Error(`${THEMES_DIR}/${file} is named "${theme.name}"`);
+      }
+      return themeRegistryItem(theme);
+    });
+}
+
 export function main() {
   console.log("Discovering components...");
   const componentIds = readdirSync(CORE_DIR, { withFileTypes: true })
@@ -259,6 +278,10 @@ export function main() {
     items.push(item);
     console.log(`Processed ${item.name} (${item.type})`);
   }
+
+  const themes = processThemes();
+  console.log(`Found ${themes.length} themes`);
+  items.push(...themes);
 
   items.sort((a, b) => a.name.localeCompare(b.name));
 

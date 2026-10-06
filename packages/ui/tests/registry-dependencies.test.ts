@@ -24,7 +24,11 @@ const installedDeps = new Set(Object.keys(packageJson.dependencies ?? {}));
 
 const registryItemNames = new Set(registry.items.map((item) => item.name));
 
-describe.each(registry.items.map((item) => [item.name, item] as const))(
+// Themes (registry:theme) are pure cssVars: no files, no dependencies. They're
+// checked by tests/themes.test.ts instead.
+const codeItems = registry.items.filter((item) => item.type !== "registry:theme");
+
+describe.each(codeItems.map((item) => [item.name, item] as const))(
   "registry item: %s",
   (name, item) => {
     if (item.files.length === 0) throw new Error(`${name} declares no files`);
