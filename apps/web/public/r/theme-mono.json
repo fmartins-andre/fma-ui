@@ -118,7 +118,25 @@
       "gray",
       "monospace",
       "sharp"
-    ]
+    ],
+    "shadow": {
+      "light": {
+        "color": "oklch(0 0 0)",
+        "opacity": 0,
+        "blur": "0px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "1px"
+      },
+      "dark": {
+        "color": "oklch(0 0 0)",
+        "opacity": 0,
+        "blur": "0px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "1px"
+      }
+    }
   },
   "docs": "This theme uses Geist Mono (Google Fonts). Load it in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [

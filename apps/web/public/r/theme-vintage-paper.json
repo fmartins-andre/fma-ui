@@ -118,7 +118,25 @@
       "brown",
       "warm",
       "serif"
-    ]
+    ],
+    "shadow": {
+      "light": {
+        "color": "oklch(0.325 0.015 63.479)",
+        "opacity": 0.12,
+        "blur": "5px",
+        "spread": "0px",
+        "offsetX": "2px",
+        "offsetY": "3px"
+      },
+      "dark": {
+        "color": "oklch(0.325 0.015 63.479)",
+        "opacity": 0.12,
+        "blur": "5px",
+        "spread": "0px",
+        "offsetX": "2px",
+        "offsetY": "3px"
+      }
+    }
   },
   "docs": "This theme uses Libre Baskerville, Lora, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [

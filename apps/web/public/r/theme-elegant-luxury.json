@@ -119,7 +119,25 @@
       "gold",
       "warm",
       "sans"
-    ]
+    ],
+    "shadow": {
+      "light": {
+        "color": "oklch(0.279 0.087 24.82)",
+        "opacity": 0.12,
+        "blur": "16px",
+        "spread": "-2px",
+        "offsetX": "1px",
+        "offsetY": "1px"
+      },
+      "dark": {
+        "color": "oklch(0.279 0.087 24.82)",
+        "opacity": 0.12,
+        "blur": "16px",
+        "spread": "-2px",
+        "offsetX": "1px",
+        "offsetY": "1px"
+      }
+    }
   },
   "docs": "This theme uses Poppins, Libre Baskerville, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [

@@ -119,7 +119,25 @@
       "violet",
       "rounded",
       "sans"
-    ]
+    ],
+    "shadow": {
+      "light": {
+        "color": "oklch(0 0 0)",
+        "opacity": 0.16,
+        "blur": "3px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "2px"
+      },
+      "dark": {
+        "color": "oklch(0 0 0)",
+        "opacity": 0.16,
+        "blur": "3px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "2px"
+      }
+    }
   },
   "docs": "This theme uses Plus Jakarta Sans, Lora, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [
