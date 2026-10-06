@@ -6,7 +6,9 @@ on:
       - "packages/ui/src/**"
       - "packages/ui/scripts/**"
       - "packages/ui/package.json"
-      - "apps/web/src/**"
+      - "apps/web/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/registry-check.yml"
   push:
     branches:
       - main
