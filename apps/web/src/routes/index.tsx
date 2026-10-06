@@ -18,6 +18,10 @@ function Home() {
       <pre style={{ background: "#f4f4f5", padding: "0.75rem 1rem", borderRadius: 6 }}>
         npx shadcn add @fma-ui/&lt;name&gt;
       </pre>
+      <p>
+        Themes install the same way (<code>@fma-ui/theme-&lt;name&gt;</code>). Preview, customize
+        and export them in the <a href="/themes">theme editor</a>.
+      </p>
       <ul>
         {registry.items.map((item) => (
           <li key={item.name} style={{ marginBottom: "0.5rem" }}>

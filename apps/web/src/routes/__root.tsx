@@ -1,6 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import "@fma-ui/ui/styles.css";
+import "../styles.css";
 
 export const Route = createRootRoute({
   head: () => ({
