@@ -428,7 +428,8 @@ function beginGesture<TData>(config: BeginGestureConfig<TData>) {
     // ---- create: select a slot range
     if (kind === "create") {
       if (config.createAllDay || surface.columns.length === 0) {
-        const anchor = zonedStartOfDay(config.createDay!, timeZone);
+        if (!config.createDay) return null;
+        const anchor = zonedStartOfDay(config.createDay, timeZone);
         const cell = findCell(surface, e.clientX, e.clientY);
         const target = cell ? zonedStartOfDay(cell.day, timeZone) : anchor;
         const start = anchor <= target ? anchor : target;
@@ -581,9 +582,11 @@ function beginGesture<TData>(config: BeginGestureConfig<TData>) {
       internals.setSlotDraft(draft);
       return;
     }
+    // Every gesture but "create" starts from an occurrence.
+    if (!occurrence) return;
     const update: EventCalendarProposedUpdate<TData> = {
-      event: occurrence!.event,
-      occurrence: occurrence!,
+      event: occurrence.event,
+      occurrence,
       ...proposal,
       source: kind as "drag" | "resize-start" | "resize-end",
     };
@@ -593,7 +596,7 @@ function beginGesture<TData>(config: BeginGestureConfig<TData>) {
     setBodyDragging(true, !valid);
     internals.setDrag({
       kind: kind === "move" ? "move" : (kind as "resize-start" | "resize-end"),
-      occurrence: occurrence!,
+      occurrence,
       proposedStart: proposal.start,
       proposedEnd: proposal.end,
       proposedAllDay: proposal.allDay,
@@ -716,13 +719,15 @@ function beginGesture<TData>(config: BeginGestureConfig<TData>) {
         // value past reality and poisons every later minute mapping. When
         // parked (nothing applied), stop the loop; the next pointermove
         // restarts it.
-        const before = surface!.viewport!.scrollTop;
-        surface!.viewport!.scrollTop = before + delta;
-        const applied = surface!.viewport!.scrollTop - before;
+        const viewport = surface?.viewport;
+        if (!surface || !viewport) return;
+        const before = viewport.scrollTop;
+        viewport.scrollTop = before + delta;
+        const applied = viewport.scrollTop - before;
         if (applied === 0) return;
         // keep the tracked scrollTop in step so pointerMinutes stays a pure
         // number read (no DOM scrollTop, no forced reflow)
-        surface!.scrollTop += applied;
+        surface.scrollTop += applied;
         applyProposal(e);
         rafScroll = requestAnimationFrame(tick);
       };

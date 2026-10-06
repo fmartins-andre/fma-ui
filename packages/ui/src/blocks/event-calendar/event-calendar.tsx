@@ -194,6 +194,7 @@ interface EventCalendarCallbacks<TData = unknown> {
     day: Date,
     segments: EventCalendarOccurrence<TData>[],
     e: React.MouseEvent,
+    // biome-ignore lint/suspicious/noConfusingVoidType: return nothing to keep the default popover, false to skip it
   ) => void | false;
 }
 

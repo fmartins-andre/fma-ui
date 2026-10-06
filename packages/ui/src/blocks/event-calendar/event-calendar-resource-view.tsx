@@ -346,6 +346,7 @@ function EventCalendarResourceAllDayCell({
     return draft.start < dayEnd && draft.end > dayStart;
   });
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: pointer gesture surface (drag to create); keyboard users create through the day add buttons
     <div
       data-slot="event-calendar-all-day-cell"
       // data-ec-day makes this a DnD day target: without it collectSurface()

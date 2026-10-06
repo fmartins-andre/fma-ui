@@ -183,6 +183,7 @@ interface EventCalendarProposedUpdate<TData = unknown> {
 }
 
 /** false = reject/revert; void or true = accept; object = accept with adjustment. */
+// biome-ignore lint/suspicious/noConfusingVoidType: handlers may return nothing to accept; `undefined` would reject `() => {}`
 type EventCalendarUpdateResult = boolean | void | { start?: Date; end?: Date; allDay?: boolean };
 
 /** A click is a point, not a range; `end` is present for timed slots. */
