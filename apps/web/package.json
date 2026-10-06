@@ -7,7 +7,8 @@
     "dev": "vite dev",
     "build": "vite build",
     "start": "node .output/server/index.mjs",
-    "type-check": "tsr generate && tsc --noEmit"
+    "type-check": "tsr generate && tsc --noEmit",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fma-ui/ui": "workspace:*",
@@ -20,6 +21,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/router-cli": "^1.167.40",
     "@types/node": "catalog:",
