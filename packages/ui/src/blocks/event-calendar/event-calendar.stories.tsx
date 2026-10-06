@@ -1,10 +1,30 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Settings2Icon } from "lucide-react";
 import * as React from "react";
+import { DialogTrigger, I18nProvider } from "react-aria-components";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { Button } from "@/core/button/button";
+import { Popover } from "@/core/popover/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/select/select";
+import { Switch } from "@/core/switch/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/tabs/tabs";
 import { EventCalendar } from "./event-calendar";
 import { EventCalendarContent } from "./event-calendar-content";
-import { EventCalendarNav } from "./event-calendar-nav";
-import type { CalendarEvent, CalendarView, EventCalendarResource } from "./event-calendar-types";
+import type { EventCalendarI18nOverrides } from "./event-calendar-i18n";
+import { EventCalendarNav, EventCalendarToolbar } from "./event-calendar-nav";
+import type {
+  CalendarEvent,
+  CalendarView,
+  EventCalendarInteractions,
+  EventCalendarResource,
+  EventCalendarViewSettings,
+} from "./event-calendar-types";
 import meta from "./meta.json";
 
 // A fixed week (Sun 8 - Sat 14 March 2026, UTC) keeps the stories deterministic.
@@ -530,5 +550,407 @@ export const TimeZones: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getByRole("button", { name: /Team sync/ })).toHaveAccessibleName(/6:00/);
     await expect(canvas.getByRole("button", { name: /Standup/ })).toHaveAccessibleName(/5:30/);
+  },
+};
+
+/**
+ * Language presets: `id` is the BCP-47 `locale` (dates come from Intl), and
+ * `i18n` overrides the static strings Intl can't reach. Arabic also flips the
+ * calendar to right-to-left.
+ */
+const LOCALES: Array<{
+  id: string;
+  label: string;
+  dir: "ltr" | "rtl";
+  i18n?: EventCalendarI18nOverrides;
+}> = [
+  { id: "en-US", label: "English", dir: "ltr" },
+  {
+    id: "pt-BR",
+    label: "Português",
+    dir: "ltr",
+    i18n: {
+      labels: {
+        today: "Hoje",
+        allDay: "Dia inteiro",
+        noEvents: "Sem eventos",
+        more: (n) => `+${n} mais`,
+      },
+      viewNames: {
+        month: "Mês",
+        week: "Semana",
+        day: "Dia",
+        days: (n) => `${n} dias`,
+        agenda: "Agenda",
+        resource: "Equipe",
+      },
+    },
+  },
+  {
+    id: "de",
+    label: "Deutsch",
+    dir: "ltr",
+    i18n: {
+      labels: {
+        today: "Heute",
+        allDay: "Ganztägig",
+        noEvents: "Keine Termine",
+        more: (n) => `+${n} weitere`,
+      },
+      viewNames: {
+        month: "Monat",
+        week: "Woche",
+        day: "Tag",
+        days: (n) => `${n} Tage`,
+        agenda: "Agenda",
+        resource: "Team",
+      },
+    },
+  },
+  {
+    id: "ja",
+    label: "日本語",
+    dir: "ltr",
+    i18n: {
+      labels: { today: "今日", allDay: "終日", noEvents: "予定なし", more: (n) => `他${n}件` },
+      viewNames: {
+        month: "月",
+        week: "週",
+        day: "日",
+        days: (n) => `${n}日間`,
+        agenda: "予定",
+        resource: "チーム",
+      },
+    },
+  },
+  {
+    id: "ar",
+    label: "العربية",
+    dir: "rtl",
+    i18n: {
+      labels: {
+        today: "اليوم",
+        allDay: "طوال اليوم",
+        noEvents: "لا توجد أحداث",
+        more: (n) => `+${n} المزيد`,
+      },
+      viewNames: {
+        month: "شهر",
+        week: "أسبوع",
+        day: "يوم",
+        days: (n) => `${n} أيام`,
+        agenda: "جدول الأعمال",
+        resource: "الفريق",
+      },
+    },
+  },
+];
+
+const TIME_ZONES = [
+  { id: "UTC", label: "UTC" },
+  { id: "America/Sao_Paulo", label: "São Paulo" },
+  { id: "America/New_York", label: "New York" },
+  { id: "Europe/London", label: "London" },
+  { id: "Asia/Tokyo", label: "Tokyo" },
+];
+
+type Settings = {
+  viewSettings: EventCalendarViewSettings;
+  interactions: EventCalendarInteractions;
+  weekStartsOn: 0 | 1;
+  dayStartHour: number;
+  dayEndHour: number;
+  interval: number;
+  snapDuration: number;
+  eventTooltip: boolean;
+  showDayAddButton: boolean;
+  locale: string;
+  timeZone: string;
+};
+
+const DEFAULT_SETTINGS: Settings = {
+  viewSettings: { weekends: true, weekNumbers: false, nowIndicator: true, offDays: false },
+  interactions: { drag: true, resize: true, selectSlot: true },
+  weekStartsOn: 0,
+  dayStartHour: 7,
+  dayEndHour: 24,
+  interval: 60,
+  snapDuration: 15,
+  eventTooltip: false,
+  showDayAddButton: false,
+  locale: "en-US",
+  timeZone: "UTC",
+};
+
+function SettingSwitch({
+  label,
+  isSelected,
+  onChange,
+}: {
+  label: string;
+  isSelected: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  const id = React.useId();
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span id={id}>{label}</span>
+      <Switch aria-labelledby={id} isSelected={isSelected} onChange={onChange} />
+    </div>
+  );
+}
+
+function SettingSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string | number;
+  options: Array<{ id: string | number; label: string }>;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span>{label}</span>
+      <Select
+        aria-label={label}
+        value={String(value)}
+        onChange={(key) => key !== null && onChange(String(key))}
+      >
+        <SelectTrigger size="sm" className="w-32">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.id} id={String(option.id)}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function SettingsDemo() {
+  const [settings, setSettings] = React.useState<Settings>(DEFAULT_SETTINGS);
+  const [view, setView] = React.useState<CalendarView>("week");
+  const patch = (partial: Partial<Settings>) => setSettings((old) => ({ ...old, ...partial }));
+  const locale = LOCALES.find((entry) => entry.id === settings.locale) ?? LOCALES[0];
+  const isTimeGrid = view !== "month" && view !== "agenda";
+  const hours = (values: number[]) =>
+    values.map((hour) => ({ id: hour, label: `${String(hour).padStart(2, "0")}:00` }));
+
+  return (
+    <I18nProvider locale={settings.locale}>
+      <div dir={locale?.dir} className="flex h-[680px] w-[1000px] flex-col rounded-lg border">
+        <EventCalendar
+          defaultEvents={EVENTS}
+          view={view}
+          onViewChange={setView}
+          defaultDate={TODAY}
+          resources={TEAM}
+          locale={settings.locale}
+          i18n={locale?.i18n}
+          timeZone={settings.timeZone}
+          viewSettings={settings.viewSettings}
+          onViewSettingsChange={(viewSettings) => patch({ viewSettings })}
+          interactions={settings.interactions}
+          onInteractionsChange={(interactions) => patch({ interactions })}
+          weekStartsOn={settings.weekStartsOn}
+          dayStartHour={settings.dayStartHour}
+          dayEndHour={settings.dayEndHour}
+          interval={settings.interval}
+          snapDuration={settings.snapDuration}
+          eventTooltip={settings.eventTooltip}
+          showDayAddButton={settings.showDayAddButton}
+          offDays
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="flex flex-wrap items-center gap-2 pe-2">
+            <EventCalendarNav className="min-w-0 flex-1" />
+            <EventCalendarToolbar>
+              <DialogTrigger>
+                <Button variant="outline" size="sm">
+                  <Settings2Icon aria-hidden="true" />
+                  Settings
+                </Button>
+                <Popover placement="bottom end" className="w-80">
+                  <Tabs aria-label="Settings">
+                    <TabsList className="w-full">
+                      <TabsTrigger id="view" className="flex-1">
+                        View
+                      </TabsTrigger>
+                      {/* the hour track only exists in time-grid views */}
+                      {isTimeGrid && (
+                        <TabsTrigger id="time" className="flex-1">
+                          Time grid
+                        </TabsTrigger>
+                      )}
+                      <TabsTrigger id="behavior" className="flex-1">
+                        Behavior
+                      </TabsTrigger>
+                      <TabsTrigger id="region" className="flex-1">
+                        Region
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent id="view" className="flex flex-col gap-3">
+                      {(
+                        [
+                          ["weekends", "Weekends", true],
+                          ["weekNumbers", "Week numbers", false],
+                          ["nowIndicator", "Now indicator", true],
+                          ["offDays", "Mark off days", false],
+                        ] as const
+                      ).map(([key, label, fallback]) => (
+                        <SettingSwitch
+                          key={key}
+                          label={label}
+                          isSelected={settings.viewSettings[key] ?? fallback}
+                          onChange={(value) =>
+                            patch({ viewSettings: { ...settings.viewSettings, [key]: value } })
+                          }
+                        />
+                      ))}
+                      <SettingSwitch
+                        label="Day add button"
+                        isSelected={settings.showDayAddButton}
+                        onChange={(showDayAddButton) => patch({ showDayAddButton })}
+                      />
+                      <SettingSelect
+                        label="Week starts"
+                        value={settings.weekStartsOn}
+                        options={[
+                          { id: 0, label: "Sunday" },
+                          { id: 1, label: "Monday" },
+                        ]}
+                        onChange={(value) => patch({ weekStartsOn: Number(value) as 0 | 1 })}
+                      />
+                    </TabsContent>
+                    <TabsContent id="time" className="flex flex-col gap-3">
+                      <SettingSelect
+                        label="Day starts"
+                        value={settings.dayStartHour}
+                        options={hours([0, 6, 7, 8])}
+                        onChange={(value) => patch({ dayStartHour: Number(value) })}
+                      />
+                      <SettingSelect
+                        label="Day ends"
+                        value={settings.dayEndHour}
+                        options={hours([18, 20, 24])}
+                        onChange={(value) => patch({ dayEndHour: Number(value) })}
+                      />
+                      <SettingSelect
+                        label="Grid interval"
+                        value={settings.interval}
+                        options={[
+                          { id: 30, label: "30 min" },
+                          { id: 60, label: "60 min" },
+                        ]}
+                        onChange={(value) => patch({ interval: Number(value) })}
+                      />
+                      <SettingSelect
+                        label="Drag snap"
+                        value={settings.snapDuration}
+                        options={[
+                          { id: 5, label: "5 min" },
+                          { id: 15, label: "15 min" },
+                          { id: 30, label: "30 min" },
+                        ]}
+                        onChange={(value) => patch({ snapDuration: Number(value) })}
+                      />
+                    </TabsContent>
+                    <TabsContent id="behavior" className="flex flex-col gap-3">
+                      {(
+                        [
+                          ["drag", "Drag to move"],
+                          ["resize", "Drag to resize"],
+                          ["selectSlot", "Drag to create"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <SettingSwitch
+                          key={key}
+                          label={label}
+                          isSelected={settings.interactions[key]}
+                          onChange={(value) =>
+                            patch({ interactions: { ...settings.interactions, [key]: value } })
+                          }
+                        />
+                      ))}
+                      <SettingSwitch
+                        label="Event tooltips"
+                        isSelected={settings.eventTooltip}
+                        onChange={(eventTooltip) => patch({ eventTooltip })}
+                      />
+                    </TabsContent>
+                    <TabsContent id="region" className="flex flex-col gap-3">
+                      <SettingSelect
+                        label="Language"
+                        value={settings.locale}
+                        options={LOCALES.map(({ id, label }) => ({ id, label }))}
+                        onChange={(value) => patch({ locale: value })}
+                      />
+                      <SettingSelect
+                        label="Time zone"
+                        value={settings.timeZone}
+                        options={TIME_ZONES}
+                        onChange={(value) => patch({ timeZone: value })}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Language changes the locale and every label; Arabic also flips the calendar
+                        to right-to-left. Time zone shifts every event&apos;s clock time.
+                      </p>
+                    </TabsContent>
+                  </Tabs>
+                  <Button variant="outline" size="sm" onPress={() => setSettings(DEFAULT_SETTINGS)}>
+                    Reset to defaults
+                  </Button>
+                </Popover>
+              </DialogTrigger>
+            </EventCalendarToolbar>
+          </div>
+          <EventCalendarContent />
+        </EventCalendar>
+      </div>
+    </I18nProvider>
+  );
+}
+
+/**
+ * Every display option in one place: a settings popover drives view options,
+ * time-grid internals, interactions, language (with RTL) and time zone.
+ */
+export const Settings: Story = {
+  render: () => <SettingsDemo />,
+  play: async ({ canvasElement, canvas }) => {
+    const dayHeaders = () =>
+      canvasElement.querySelectorAll("[data-slot=event-calendar-day-header]").length;
+    await expect(dayHeaders()).toBe(7);
+
+    await userEvent.click(canvas.getByRole("button", { name: /Settings/ }));
+    let dialog = await body().findByRole("dialog");
+    await userEvent.click(within(dialog).getByRole("switch", { name: "Weekends" }));
+    await waitFor(() => expect(dayHeaders()).toBe(5));
+
+    await userEvent.click(within(dialog).getByRole("tab", { name: "Region" }));
+    await userEvent.click(within(dialog).getByRole("button", { name: /Language/ }));
+    await userEvent.click(await body().findByRole("option", { name: "العربية" }));
+    await waitFor(() =>
+      expect(canvasElement.querySelector("[dir=rtl] [data-slot=event-calendar]")).not.toBeNull(),
+    );
+    // Escape on the select's trigger is the select's; close from the tab.
+    within(dialog).getByRole("tab", { name: "Region" }).focus();
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(body().queryByRole("dialog")).toBeNull());
+    await expect(canvas.getByRole("button", { name: "اليوم" })).toBeInTheDocument();
+
+    // Reset brings English and weekends back.
+    await userEvent.click(canvas.getByRole("button", { name: /Settings/ }));
+    dialog = await body().findByRole("dialog");
+    await userEvent.click(within(dialog).getByRole("button", { name: "Reset to defaults" }));
+    await waitFor(() => expect(dayHeaders()).toBe(7));
+    await expect(canvas.getByRole("button", { name: "Today" })).toBeInTheDocument();
   },
 };
