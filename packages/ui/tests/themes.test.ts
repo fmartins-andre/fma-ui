@@ -8,6 +8,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { checkContrast } from "@/lib/theme/contrast";
+import { themeFontPackages } from "@/lib/theme/fonts";
 import { parseCssVars } from "@/lib/theme/parse";
 import { COLOR_TOKENS, ThemeSchema } from "@/lib/theme/schema";
 import { DEFAULT_THEME, THEMES } from "@/themes/index";
@@ -52,6 +53,10 @@ describe.each(files)("src/themes/%s", (file) => {
 
   it("is named after its file", () => {
     expect(`${theme.name}.json`).toBe(file);
+  });
+
+  it("only uses fonts the registry can install (@fontsource catalog)", () => {
+    expect(themeFontPackages(theme).unpackaged).toEqual([]);
   });
 
   it("is attributed when third-party", () => {

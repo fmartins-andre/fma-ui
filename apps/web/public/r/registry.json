@@ -2686,7 +2686,11 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Inter, Merriweather, JetBrains Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/inter@^5.3.0",
+        "@fontsource/merriweather@^5.3.0",
+        "@fontsource/jetbrains-mono@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -2794,6 +2798,20 @@
           "shadow-2xl": "0px 4px 8px -1px oklch(0 0 0 / 25%)"
         }
       },
+      "css": {
+        "@import \"@fontsource/inter/400.css\"": {},
+        "@import \"@fontsource/inter/500.css\"": {},
+        "@import \"@fontsource/inter/600.css\"": {},
+        "@import \"@fontsource/inter/700.css\"": {},
+        "@import \"@fontsource/merriweather/400.css\"": {},
+        "@import \"@fontsource/merriweather/500.css\"": {},
+        "@import \"@fontsource/merriweather/600.css\"": {},
+        "@import \"@fontsource/merriweather/700.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/400.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/500.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/600.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/700.css\"": {}
+      },
       "meta": {
         "source": "third-party",
         "origin": "https://tweakcn.com/r/themes/clean-slate.json",
@@ -2831,7 +2849,10 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Inter, JetBrains Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/inter@^5.3.0",
+        "@fontsource/jetbrains-mono@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -2938,6 +2959,16 @@
           "shadow-xl": "0px 4px 10px 0px oklch(0.316 0.067 281.836 / 12%), 0px 8px 10px -1px oklch(0.316 0.067 281.836 / 12%)",
           "shadow-2xl": "0px 4px 10px 0px oklch(0.316 0.067 281.836 / 30%)"
         }
+      },
+      "css": {
+        "@import \"@fontsource/inter/400.css\"": {},
+        "@import \"@fontsource/inter/500.css\"": {},
+        "@import \"@fontsource/inter/600.css\"": {},
+        "@import \"@fontsource/inter/700.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/400.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/500.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/600.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/700.css\"": {}
       },
       "meta": {
         "source": "third-party",
@@ -3082,7 +3113,11 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Poppins, Libre Baskerville, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/poppins@^5.3.0",
+        "@fontsource/libre-baskerville@^5.3.0",
+        "@fontsource/ibm-plex-mono@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -3190,6 +3225,18 @@
           "shadow-2xl": "1px 1px 16px -2px oklch(0.279 0.087 24.82 / 30%)"
         }
       },
+      "css": {
+        "@import \"@fontsource/poppins/400.css\"": {},
+        "@import \"@fontsource/poppins/500.css\"": {},
+        "@import \"@fontsource/poppins/600.css\"": {},
+        "@import \"@fontsource/poppins/700.css\"": {},
+        "@import \"@fontsource/libre-baskerville/400.css\"": {},
+        "@import \"@fontsource/libre-baskerville/700.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/400.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/500.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/600.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/700.css\"": {}
+      },
       "meta": {
         "source": "third-party",
         "origin": "https://tweakcn.com/r/themes/elegant-luxury.json",
@@ -3228,7 +3275,10 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Montserrat, Fira Code (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/montserrat@^5.3.0",
+        "@fontsource/fira-code@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -3336,6 +3386,16 @@
           "shadow-2xl": "0px 2px 0px 0px oklch(0.321 0 0 / 4%)"
         }
       },
+      "css": {
+        "@import \"@fontsource/montserrat/400.css\"": {},
+        "@import \"@fontsource/montserrat/500.css\"": {},
+        "@import \"@fontsource/montserrat/600.css\"": {},
+        "@import \"@fontsource/montserrat/700.css\"": {},
+        "@import \"@fontsource/fira-code/400.css\"": {},
+        "@import \"@fontsource/fira-code/500.css\"": {},
+        "@import \"@fontsource/fira-code/600.css\"": {},
+        "@import \"@fontsource/fira-code/700.css\"": {}
+      },
       "meta": {
         "source": "third-party",
         "origin": "https://tweakcn.com/r/themes/graphite.json",
@@ -3373,7 +3433,11 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Inter, Source Serif 4, JetBrains Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/inter@^5.3.0",
+        "@fontsource/source-serif-4@^5.3.0",
+        "@fontsource/jetbrains-mono@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -3467,6 +3531,20 @@
           "sidebar-ring": "oklch(0.623 0.188 259.815)"
         }
       },
+      "css": {
+        "@import \"@fontsource/inter/400.css\"": {},
+        "@import \"@fontsource/inter/500.css\"": {},
+        "@import \"@fontsource/inter/600.css\"": {},
+        "@import \"@fontsource/inter/700.css\"": {},
+        "@import \"@fontsource/source-serif-4/400.css\"": {},
+        "@import \"@fontsource/source-serif-4/500.css\"": {},
+        "@import \"@fontsource/source-serif-4/600.css\"": {},
+        "@import \"@fontsource/source-serif-4/700.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/400.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/500.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/600.css\"": {},
+        "@import \"@fontsource/jetbrains-mono/700.css\"": {}
+      },
       "meta": {
         "source": "third-party",
         "origin": "https://tweakcn.com/r/themes/modern-minimal.json",
@@ -3486,7 +3564,9 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Geist Mono (Google Fonts). Load it in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/geist-mono@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -3594,6 +3674,12 @@
           "shadow-2xl": "0px 1px 0px 0px oklch(0 0 0 / 0%)"
         }
       },
+      "css": {
+        "@import \"@fontsource/geist-mono/400.css\"": {},
+        "@import \"@fontsource/geist-mono/500.css\"": {},
+        "@import \"@fontsource/geist-mono/600.css\"": {},
+        "@import \"@fontsource/geist-mono/700.css\"": {}
+      },
       "meta": {
         "source": "third-party",
         "origin": "https://tweakcn.com/r/themes/mono.json",
@@ -3631,7 +3717,11 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Montserrat, Merriweather, Source Code Pro (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/montserrat@^5.3.0",
+        "@fontsource/merriweather@^5.3.0",
+        "@fontsource/source-code-pro@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -3725,6 +3815,20 @@
           "sidebar-ring": "oklch(0.673 0.162 144.208)"
         }
       },
+      "css": {
+        "@import \"@fontsource/montserrat/400.css\"": {},
+        "@import \"@fontsource/montserrat/500.css\"": {},
+        "@import \"@fontsource/montserrat/600.css\"": {},
+        "@import \"@fontsource/montserrat/700.css\"": {},
+        "@import \"@fontsource/merriweather/400.css\"": {},
+        "@import \"@fontsource/merriweather/500.css\"": {},
+        "@import \"@fontsource/merriweather/600.css\"": {},
+        "@import \"@fontsource/merriweather/700.css\"": {},
+        "@import \"@fontsource/source-code-pro/400.css\"": {},
+        "@import \"@fontsource/source-code-pro/500.css\"": {},
+        "@import \"@fontsource/source-code-pro/600.css\"": {},
+        "@import \"@fontsource/source-code-pro/700.css\"": {}
+      },
       "meta": {
         "source": "third-party",
         "origin": "https://tweakcn.com/r/themes/nature.json",
@@ -3744,7 +3848,11 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Libre Baskerville, Lora, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/libre-baskerville@^5.3.0",
+        "@fontsource/lora@^5.3.0",
+        "@fontsource/ibm-plex-mono@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -3852,6 +3960,18 @@
           "shadow-2xl": "2px 3px 5px 0px oklch(0.325 0.015 63.479 / 30%)"
         }
       },
+      "css": {
+        "@import \"@fontsource/libre-baskerville/400.css\"": {},
+        "@import \"@fontsource/libre-baskerville/700.css\"": {},
+        "@import \"@fontsource/lora/400.css\"": {},
+        "@import \"@fontsource/lora/500.css\"": {},
+        "@import \"@fontsource/lora/600.css\"": {},
+        "@import \"@fontsource/lora/700.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/400.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/500.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/600.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/700.css\"": {}
+      },
       "meta": {
         "source": "third-party",
         "origin": "https://tweakcn.com/r/themes/vintage-paper.json",
@@ -3889,7 +4009,11 @@
       "categories": [
         "theme"
       ],
-      "docs": "This theme uses Plus Jakarta Sans, Lora, IBM Plex Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
+      "dependencies": [
+        "@fontsource/plus-jakarta-sans@^5.3.0",
+        "@fontsource/lora@^5.3.0",
+        "@fontsource/ibm-plex-mono@^5.3.0"
+      ],
       "files": [],
       "cssVars": {
         "theme": {
@@ -3997,6 +4121,20 @@
           "shadow-xl": "0px 2px 3px 0px oklch(0 0 0 / 16%), 0px 8px 10px -1px oklch(0 0 0 / 16%)",
           "shadow-2xl": "0px 2px 3px 0px oklch(0 0 0 / 40%)"
         }
+      },
+      "css": {
+        "@import \"@fontsource/plus-jakarta-sans/400.css\"": {},
+        "@import \"@fontsource/plus-jakarta-sans/500.css\"": {},
+        "@import \"@fontsource/plus-jakarta-sans/600.css\"": {},
+        "@import \"@fontsource/plus-jakarta-sans/700.css\"": {},
+        "@import \"@fontsource/lora/400.css\"": {},
+        "@import \"@fontsource/lora/500.css\"": {},
+        "@import \"@fontsource/lora/600.css\"": {},
+        "@import \"@fontsource/lora/700.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/400.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/500.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/600.css\"": {},
+        "@import \"@fontsource/ibm-plex-mono/700.css\"": {}
       },
       "meta": {
         "source": "third-party",

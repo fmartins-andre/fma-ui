@@ -107,8 +107,8 @@ export function TypographyPanel({
     fonts: (
       <Section title="Font family">
         <p className="text-xs text-muted-foreground">
-          Google Fonts load here automatically. In your app, load them yourself (next/font,
-          @fontsource or a &lt;link&gt;); the registry item says which.
+          Fonts from the list load here from Google Fonts; in your app the registry item installs
+          them as @fontsource packages. A stack typed by hand isn't installed for you.
         </p>
         {(Object.keys(FONT_CONTROLS) as FontSlot[]).map((key) => (
           <FontField

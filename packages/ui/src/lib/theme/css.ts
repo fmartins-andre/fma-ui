@@ -3,6 +3,7 @@
 // Storybook). Variable names match src/styles.css, which maps them into
 // Tailwind through `@theme inline`.
 
+import { themeFontPackages } from "./fonts";
 import { COLOR_TOKENS, type Theme, type ThemeMode } from "./schema";
 import { SHADOW_SIZES, shadowScale } from "./shadows";
 
@@ -121,7 +122,10 @@ export function generateIndexCss(theme: Theme, baseCss: string): string {
     if (range) css = css.slice(0, range[0]) + replacement + css.slice(range[1]);
   }
   // Geist is only the default sans; a theme with its own drops the @fontsource import.
-  return theme.fonts.sans ? css.replace(/^@import "@fontsource-variable\/geist";\n/m, "") : css;
+  if (theme.fonts.sans) css = css.replace(/^@import "@fontsource-variable\/geist";\n/m, "");
+  // The theme's catalog fonts, from the @fontsource packages (see themeFontPackages).
+  const imports = themeFontPackages(theme).imports.map((path) => `@import "${path}";\n`);
+  return css.replace(/^(@import "tailwindcss";\n)/m, `$1${imports.join("")}`);
 }
 
 // Non-color defaults declared in the base stylesheet's block (fonts, shadows)

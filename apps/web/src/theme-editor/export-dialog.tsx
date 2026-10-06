@@ -16,6 +16,7 @@ import {
   generateThemeCss,
   sameTheme,
   type Theme,
+  themeFontPackages,
   themeRegistryItem,
 } from "@/lib/theme/index";
 import baseCss from "@/styles.css?raw";
@@ -68,6 +69,7 @@ export function ExportDialog({
   const published = curated !== undefined && sameTheme(curated, theme);
   const itemName = `theme-${theme.name}`;
   const origin = typeof window === "undefined" ? "" : window.location.origin;
+  const fontPackages = themeFontPackages(theme);
 
   const files = [
     {
@@ -201,6 +203,21 @@ export function ExportDialog({
                   </Button>
                 </div>
               </div>
+              {file.id === "index" && fontPackages.dependencies.length > 0 && (
+                <>
+                  <p className="text-xs text-muted-foreground">
+                    It imports the theme's fonts from @fontsource; install them first (the shadcn
+                    command above does it for you):
+                  </p>
+                  <Command>{`npm install ${fontPackages.dependencies.join(" ")}`}</Command>
+                </>
+              )}
+              {file.id === "index" && fontPackages.unpackaged.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Load {fontPackages.unpackaged.join(", ")} yourself — not in the @fontsource
+                  catalog.
+                </p>
+              )}
               <pre className="max-h-80 overflow-auto rounded-lg border bg-muted/50 p-3 font-mono text-xs">
                 {file.text}
               </pre>

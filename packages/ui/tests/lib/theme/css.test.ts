@@ -97,6 +97,14 @@ describe("generateIndexCss", () => {
     expect(light["shadow-sm"]).toBe(shadowScale(shadow).sm);
   });
 
+  it("imports the theme's catalog fonts from @fontsource, right after tailwindcss", () => {
+    expect(css).toContain(
+      '@import "tailwindcss";\n@import "@fontsource/inter/400.css";\n@import "@fontsource/inter/500.css";',
+    );
+    expect(css).toContain('@import "@fontsource/jetbrains-mono/700.css";');
+    expect(generateIndexCss(DEFAULT_THEME, STYLES)).not.toContain("@fontsource/");
+  });
+
   it("drops the Geist import only when the theme brings its own sans", () => {
     expect(css).not.toContain("@fontsource-variable/geist");
     expect(generateIndexCss(DEFAULT_THEME, STYLES)).toContain("@fontsource-variable/geist");

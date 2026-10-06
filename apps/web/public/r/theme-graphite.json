@@ -4,6 +4,10 @@
   "title": "Graphite",
   "author": "@fma-ui/ui",
   "description": "Monochrome graphite grays from light to charcoal, Montserrat and soft shadows.",
+  "dependencies": [
+    "@fontsource/montserrat@^5.3.0",
+    "@fontsource/fira-code@^5.3.0"
+  ],
   "files": [],
   "cssVars": {
     "theme": {
@@ -111,6 +115,16 @@
       "shadow-2xl": "0px 2px 0px 0px oklch(0.321 0 0 / 4%)"
     }
   },
+  "css": {
+    "@import \"@fontsource/montserrat/400.css\"": {},
+    "@import \"@fontsource/montserrat/500.css\"": {},
+    "@import \"@fontsource/montserrat/600.css\"": {},
+    "@import \"@fontsource/montserrat/700.css\"": {},
+    "@import \"@fontsource/fira-code/400.css\"": {},
+    "@import \"@fontsource/fira-code/500.css\"": {},
+    "@import \"@fontsource/fira-code/600.css\"": {},
+    "@import \"@fontsource/fira-code/700.css\"": {}
+  },
   "meta": {
     "source": "third-party",
     "origin": "https://tweakcn.com/r/themes/graphite.json",
@@ -138,7 +152,6 @@
       }
     }
   },
-  "docs": "This theme uses Montserrat, Fira Code (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [
     "theme"
   ],

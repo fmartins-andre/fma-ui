@@ -4,6 +4,10 @@
   "title": "Cosmic Night",
   "author": "@fma-ui/ui",
   "description": "Lavender and indigo, with a deep navy-black dark mode and Inter.",
+  "dependencies": [
+    "@fontsource/inter@^5.3.0",
+    "@fontsource/jetbrains-mono@^5.3.0"
+  ],
   "files": [],
   "cssVars": {
     "theme": {
@@ -111,6 +115,16 @@
       "shadow-2xl": "0px 4px 10px 0px oklch(0.316 0.067 281.836 / 30%)"
     }
   },
+  "css": {
+    "@import \"@fontsource/inter/400.css\"": {},
+    "@import \"@fontsource/inter/500.css\"": {},
+    "@import \"@fontsource/inter/600.css\"": {},
+    "@import \"@fontsource/inter/700.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/400.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/500.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/600.css\"": {},
+    "@import \"@fontsource/jetbrains-mono/700.css\"": {}
+  },
   "meta": {
     "source": "third-party",
     "origin": "https://tweakcn.com/r/themes/cosmic-night.json",
@@ -138,7 +152,6 @@
       }
     }
   },
-  "docs": "This theme uses Inter, JetBrains Mono (Google Fonts). Load them in your app, e.g. with next/font/google, @fontsource or a <link> to fonts.googleapis.com.",
   "categories": [
     "theme"
   ],
