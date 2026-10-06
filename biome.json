@@ -61,16 +61,6 @@
           }
         }
       }
-    },
-    {
-      "includes": ["packages/ui/src/blocks/event-calendar/**"],
-      "linter": {
-        "rules": {
-          "a11y": { "noStaticElementInteractions": "off" },
-          "style": { "noNonNullAssertion": "off" },
-          "suspicious": { "noConfusingVoidType": "off" }
-        }
-      }
     }
   ]
 }

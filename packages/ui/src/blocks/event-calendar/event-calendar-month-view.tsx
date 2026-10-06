@@ -1084,6 +1084,7 @@ function EventCalendarMoreIndicator({
         >
           {/* Portaled, but React events still bubble to the month cell:
               keep clicks inside from creating slot selections there. */}
+          {/* biome-ignore lint/a11y/noStaticElementInteractions: event barrier, not a control */}
           <div className="contents" onClick={(e) => e.stopPropagation()}>
             {viewConfig.renderMoreContent ? (
               viewConfig.renderMoreContent({

@@ -689,6 +689,7 @@ function EventCalendarAllDayCell({ day }: { day: Date }) {
   );
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: pointer gesture surface (drag to create); keyboard users create through the day add buttons
     <div
       data-slot="event-calendar-all-day-cell"
       data-ec-day={dayStart.getTime()}
