@@ -27,6 +27,8 @@ packages/ui/        → @fma-ui/ui: os componentes
   src/blocks/<nome>/                  blocos (registry:block): composições multi-arquivo de
                                       componentes, com meta.json e <nome>.stories.tsx
   src/design-tokens/                  stories dos tokens; tokens em src/styles.css (Tailwind v4)
+  src/themes/<nome>.json              temas curados (registry:theme "theme-<nome>"); lista em index.ts
+  src/lib/theme/                      lib de temas (schema, CSS, import, item de registro); não publicada
   scripts/                            gen-registry-json, add-shadcn, add-from-registry
   tests/                              testes unit (vitest) + gates estruturais
   registry.json                       GERADO — não editar à mão
@@ -125,6 +127,13 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
 8. **Novo componente vindo do shadcn**: use `pnpm add:shadcn <nome>` em vez de copiar código
    — o script instala deps, move pra `src/core/<nome>/` e cria o `meta.json` stub (edite
    descrição/categoria/tags depois).
+
+9. **Temas**: `src/themes/<nome>.json` segue `ThemeSchema` (`src/lib/theme/schema.ts`) com
+   todos os tokens de `tests/required-tokens.ts`; registre em `src/themes/index.ts`.
+   `default.json` precisa bater com `styles.css`. Terceiros: `source: "third-party"`, `origin`
+   e linha em `src/themes/THIRD_PARTY_NOTICES.md`. Nossos `*-foreground` de status são texto
+   sobre o fundo **tingido**, não sobre a cor sólida (diferente do shadcn/tweakcn). O
+   `tests/themes.test.ts` impõe isso e um gate de contraste.
 
 ## Estilo de código
 

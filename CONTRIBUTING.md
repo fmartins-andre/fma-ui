@@ -13,6 +13,7 @@ customizar componentes, testar e publicar o registro.
 - [Adicionando componentes](#adicionando-componentes)
 - [Anatomia de um componente](#anatomia-de-um-componente)
 - [Storybook e testes](#storybook-e-testes)
+- [Temas](#temas)
 - [Gerando e publicando o registro](#gerando-e-publicando-o-registro)
 - [Git hooks e CI](#git-hooks-e-ci)
 - [Commits e pull requests](#commits-e-pull-requests)
@@ -56,7 +57,9 @@ packages/
   ui/         → os componentes (@fma-ui/ui)
     src/core/<nome>/             → um componente por pasta
     src/design-tokens/           → stories dos tokens (cor, tipografia, espaçamento...)
-    src/styles.css               → tokens e variantes do Tailwind v4
+    src/styles.css               → tokens e variantes do Tailwind v4 (= tema "default")
+    src/themes/<nome>.json       → temas curados, publicados como @fma-ui/theme-<nome>
+    src/lib/theme/               → schema, CSS, import e item de registro dos temas (não publicado)
     scripts/gen-registry-json.ts → gera registry.json a partir de src/core/**/meta.json
     scripts/add-shadcn.ts        → baixa componentes oficiais do shadcn/ui
     scripts/add-from-registry.ts → baixa componentes de registros de terceiros
@@ -199,6 +202,29 @@ Os testes rodam no Vitest com dois projects (`packages/ui/vitest.config.ts`):
   teste: use `play` functions com `storybook/test`, sem arquivo `.test.tsx` separado. Não roda
   no CI de PR, para manter o job leve.
 
+## Temas
+
+Temas curados ficam em `packages/ui/src/themes/<nome>.json` (schema `ThemeSchema` em
+`src/lib/theme/schema.ts`): cores de light/dark para **todos** os tokens de
+`tests/required-tokens.ts`, `radius` e, opcionalmente, `fonts`, `spacing`, `letterSpacing` e
+`shadow`. O que não for definido fica com o valor do `styles.css` (ou do Tailwind).
+
+- O gerador publica cada um como item `registry:theme` chamado `theme-<nome>`; o consumidor
+  instala com `npx shadcn add @fma-ui/theme-<nome>` (o CLI reescreve `:root`/`.dark` e o
+  `@theme inline` do CSS dele).
+- `default.json` espelha o `styles.css`; o teste `themes.test.ts` falha se divergirem.
+- Todo tema novo entra na lista de `src/themes/index.ts` (o teste confere).
+- Gate de contraste (`themes.test.ts`): texto principal ≥ 4.5:1, preenchimentos com texto
+  (`primary`, `muted-foreground`, status…) ≥ 3:1, em light e dark.
+- Os nossos `destructive/info/success/warning-foreground` são **texto sobre o fundo tingido** da
+  cor (badge `*-light`), não texto sobre a cor sólida como no shadcn/tweakcn.
+- Tema de terceiros: `"source": "third-party"` + `origin`, e uma linha na tabela de
+  `src/themes/THIRD_PARTY_NOTICES.md` (com a licença). Os atuais vêm do
+  [tweakcn](https://github.com/jnsahaj/tweakcn) (Apache-2.0).
+
+No Storybook, o seletor de tema (ícone de pincel) aplica um tema a todas as stories, e
+`design/Themes` mostra todos lado a lado.
+
 ## Gerando e publicando o registro
 
 ```bash
@@ -210,7 +236,8 @@ pnpm --filter @fma-ui/ui build
 Isso roda, em sequência:
 
 1. `tsc --noEmit`: type-check.
-2. `generate:registry`: varre `src/core/**/meta.json` e escreve `packages/ui/registry.json`.
+2. `generate:registry`: varre `src/core/**/meta.json` (e libs, hooks, blocos e
+   `src/themes/*.json`) e escreve `packages/ui/registry.json`.
 3. `registry:build`: roda `shadcn build`, que compila o `registry.json` em
    `apps/web/public/r/<nome>.json`, o formato consumido pelo CLI do shadcn.
 
