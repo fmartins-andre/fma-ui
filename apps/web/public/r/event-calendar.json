@@ -107,7 +107,7 @@
     }
   ],
   "meta": {
-    "status": "experimental",
+    "status": "stable",
     "source": "third-party",
     "origin": "reui.io (https://reui.io/docs/components/base/event-calendar, MIT), via EMITTE; overlays rebuilt on the registry's react-aria components",
     "tags": [
