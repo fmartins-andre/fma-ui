@@ -3,7 +3,9 @@
 // consumers are the generated `registry:theme` items.
 
 export * from "./color";
+export * from "./contrast";
 export * from "./css";
+export * from "./editor";
 export * from "./fonts";
 export * from "./parse";
 export * from "./registry";

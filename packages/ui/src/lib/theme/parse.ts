@@ -160,7 +160,8 @@ export function parseThemeInput(input: string, base: Theme, identity: ThemeIdent
         { light: json.cssVars.light ?? {}, dark: json.cssVars.dark ?? {} },
         base,
         {
-          name: json.name ?? identity.name,
+          // Our own items are "theme-<name>"; the theme itself is "<name>".
+          name: json.name?.replace(/^theme-/, "") ?? identity.name,
           title: json.title ?? identity.title,
           description: json.description ?? identity.description,
         },
