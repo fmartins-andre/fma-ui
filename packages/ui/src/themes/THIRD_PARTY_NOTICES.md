@@ -12,14 +12,21 @@ theme leaves them alone.
 
 | Theme | Source |
 | --- | --- |
+| `amber-minimal` | https://tweakcn.com/r/themes/amber-minimal.json |
 | `caffeine` | https://tweakcn.com/r/themes/caffeine.json |
+| `catppuccin` | https://tweakcn.com/r/themes/catppuccin.json |
 | `clean-slate` | https://tweakcn.com/r/themes/clean-slate.json |
 | `cosmic-night` | https://tweakcn.com/r/themes/cosmic-night.json |
 | `elegant-luxury` | https://tweakcn.com/r/themes/elegant-luxury.json |
 | `graphite` | https://tweakcn.com/r/themes/graphite.json |
+| `kodama-grove` | https://tweakcn.com/r/themes/kodama-grove.json |
 | `modern-minimal` | https://tweakcn.com/r/themes/modern-minimal.json |
 | `mono` | https://tweakcn.com/r/themes/mono.json |
 | `nature` | https://tweakcn.com/r/themes/nature.json |
+| `northern-lights` | https://tweakcn.com/r/themes/northern-lights.json |
+| `ocean-breeze` | https://tweakcn.com/r/themes/ocean-breeze.json |
+| `soft-pop` | https://tweakcn.com/r/themes/soft-pop.json |
+| `starry-night` | https://tweakcn.com/r/themes/starry-night.json |
 | `vintage-paper` | https://tweakcn.com/r/themes/vintage-paper.json |
 | `violet-bloom` | https://tweakcn.com/r/themes/violet-bloom.json |
 
