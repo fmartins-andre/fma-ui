@@ -28,6 +28,7 @@ import {
   type DataGridLayout,
   DataGridPagination,
   DataGridRowDragHandle,
+  DataGridRowExpand,
   DataGridRowPin,
   DataGridRowSelect,
   DataGridTable,
@@ -160,6 +161,19 @@ type DemoProps = {
   selectable?: boolean;
   pageSize?: number;
   toolbar?: (table: Table<DataGridFeatures, User>) => React.ReactNode;
+  /** Adds an expand column and a details row under expanded rows. */
+  expandable?: boolean;
+};
+
+const EXPAND_COLUMN: UserColumn = {
+  id: "expand",
+  size: 48,
+  enableSorting: false,
+  enableResizing: false,
+  enableHiding: false,
+  header: () => <span className="sr-only">Details</span>,
+  cell: ({ row }) => <DataGridRowExpand row={row} />,
+  meta: { headerTitle: "Details" },
 };
 
 function Demo({
@@ -173,6 +187,7 @@ function Demo({
   selectable,
   pageSize = 5,
   toolbar,
+  expandable,
 }: DemoProps) {
   const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize });
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -189,7 +204,12 @@ function Demo({
   const table = useTable({
     features: dataGridFeatures,
     data,
-    columns: selectable ? [SELECT_COLUMN, ...columns] : columns,
+    columns: [
+      ...(expandable ? [EXPAND_COLUMN] : []),
+      ...(selectable ? [SELECT_COLUMN] : []),
+      ...columns,
+    ],
+    getRowCanExpand: () => !!expandable,
     getRowId: (row: User) => row.id,
     state: {
       pagination,
@@ -226,7 +246,18 @@ function Demo({
     >
       {toolbar?.(table)}
       <DataGridContainer>
-        <DataGridTable aria-label="Users" />
+        <DataGridTable<User>
+          aria-label="Users"
+          renderExpandedRow={
+            expandable
+              ? (row) => (
+                  <p className="text-muted-foreground">
+                    {row.original.name} has been a {row.original.role} since {row.original.joined}.
+                  </p>
+                )
+              : undefined
+          }
+        />
       </DataGridContainer>
       <DataGridPagination />
       <output data-testid="selection" className="sr-only">
@@ -635,5 +666,85 @@ export const ScopedDarkHeader: Story = {
       // Dark background (~10) tinted by muted (~37) at 40%: around 21.
       await expect(Math.max(r, g, b)).toBeLessThan(40);
     }
+  },
+};
+
+/**
+ * `renderExpandedRow` adds a full-width row under each expanded row;
+ * `DataGridRowExpand` toggles it (rows expand when `getRowCanExpand` allows).
+ */
+export const ExpandableRows: Story = {
+  args: { expandable: true, selectable: true },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvas }) => {
+    const [toggle] = canvas.getAllByRole("button", { name: "Expand row" });
+    if (!toggle) throw new Error("no expand button");
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(toggle);
+    const details = await canvas.findByText(/Alice Martin has been a Frontend Engineer/);
+    const detailsRow = details.closest("[role=row]") as HTMLElement;
+    await expect(detailsRow).toHaveAttribute("data-slot", "data-grid-expanded-row");
+    // One cell spanning every column, and no selection checkbox.
+    await expect(within(detailsRow).getAllByRole("gridcell")).toHaveLength(1);
+    await expect(within(detailsRow).queryByRole("checkbox")).toBeNull();
+    await expect(canvas.getByRole("button", { name: "Collapse row" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+
+    // "Select all" selects the page's rows, not the details row.
+    await userEvent.click(canvas.getAllByRole("checkbox")[0] as HTMLElement);
+    await expect(detailsRow).not.toHaveAttribute("aria-selected", "true");
+    await waitFor(() =>
+      expect(
+        canvas.getAllByRole("row").filter((row) => row.getAttribute("aria-selected") === "true"),
+      ).toHaveLength(5),
+    );
+
+    await userEvent.click(canvas.getByRole("button", { name: "Collapse row" }));
+    await waitFor(() =>
+      expect(canvas.queryByText(/Alice Martin has been a Frontend Engineer/)).toBeNull(),
+    );
+  },
+};
+
+/** With `columnsDraggable`, dropping a header on another moves the column to that side. */
+export const DraggableColumns: Story = {
+  args: { layout: { columnsDraggable: true } },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvas }) => {
+    const titles = () =>
+      canvas.getAllByRole("columnheader").map((header) => header.textContent?.trim());
+    await expect(titles()).toEqual(["ID", "Name", "Role", "Status", "Joined"]);
+    const area = (name: string) =>
+      canvas
+        .getByRole("columnheader", { name })
+        .querySelector("[data-slot=data-grid-column-drag-area]") as HTMLElement;
+
+    // Native drag and drop, as the browser fires it.
+    const drag = (source: HTMLElement, target: HTMLElement, side: "start" | "end") => {
+      const box = target.getBoundingClientRect();
+      const init = {
+        bubbles: true,
+        cancelable: true,
+        dataTransfer: new DataTransfer(),
+        clientX: side === "start" ? box.left + 4 : box.right - 4,
+        clientY: box.top + box.height / 2,
+      };
+      source.dispatchEvent(new DragEvent("dragstart", init));
+      for (const type of ["dragenter", "dragover", "drop"])
+        target.dispatchEvent(new DragEvent(type, init));
+      source.dispatchEvent(new DragEvent("dragend", init));
+    };
+
+    drag(area("Role"), area("ID"), "start");
+    await waitFor(() => expect(titles()).toEqual(["Role", "ID", "Name", "Status", "Joined"]));
+    drag(area("Role"), area("Joined"), "end");
+    await waitFor(() => expect(titles()).toEqual(["ID", "Name", "Status", "Joined", "Role"]));
+
+    // Pressing a header still sorts.
+    const name = canvas.getByRole("columnheader", { name: /Name/ });
+    await userEvent.click(name);
+    await expect(name).toHaveAttribute("aria-sort", "ascending");
   },
 };

@@ -18,6 +18,7 @@ import {
   flexRender,
   type RowData,
   type RowSelectionState,
+  rowExpandingFeature,
   rowPaginationFeature,
   rowPinningFeature,
   rowSelectionFeature,
@@ -37,6 +38,7 @@ import {
   ArrowRightToLineIcon,
   ArrowUpIcon,
   CheckIcon,
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
@@ -54,6 +56,7 @@ import {
   Dialog,
   DialogTrigger,
   type DragAndDropOptions,
+  isTextDropItem,
   type Key,
   ListBox,
   ListBoxItem,
@@ -65,7 +68,10 @@ import {
   TableBody,
   TableHeader,
   TableLayout,
+  useDrag,
   useDragAndDrop,
+  useDrop,
+  useLocale,
   Virtualizer,
 } from "react-aria-components";
 import { Badge } from "@/core/badge/badge";
@@ -117,6 +123,7 @@ const dataGridFeatures = tableFeatures({
   columnSizingFeature,
   columnResizingFeature,
   columnVisibilityFeature,
+  rowExpandingFeature,
   rowPaginationFeature,
   rowPinningFeature,
   rowSelectionFeature,
@@ -168,6 +175,11 @@ type DataGridLayout = {
   columnsPinnable?: boolean;
   /** Adds move left/right to `DataGridColumnHeader` menus. */
   columnsMovable?: boolean;
+  /**
+   * Lets users drag a header onto another to reorder columns (pointer only;
+   * keyboard users move columns with `columnsMovable`).
+   */
+  columnsDraggable?: boolean;
   /** Adds a column visibility submenu to `DataGridColumnHeader` menus that ask for it. */
   columnsVisibility?: boolean;
 };
@@ -254,7 +266,7 @@ function pinningStyle<TData extends RowData>(
   };
 }
 
-type DataGridTableProps = {
+type DataGridTableProps<TData extends RowData = RowData> = {
   "aria-label"?: string;
   className?: string;
   /**
@@ -264,22 +276,31 @@ type DataGridTableProps = {
   onRowsReorder?: DragAndDropOptions["onReorder"];
   /** Renders only the visible rows. Give the table a fixed height through `className`. */
   isVirtualized?: boolean;
-  /** Row height for virtualization, in pixels. */
+  /** Row height for virtualization, in pixels (an estimate when rows can expand). */
   rowHeight?: number;
+  /**
+   * Content of a full-width row shown under each expanded row. Expand rows
+   * with `DataGridRowExpand` and make them expandable with `getRowCanExpand`.
+   */
+  renderExpandedRow?: (row: TanstackRow<DataGridFeatures, TData>) => React.ReactNode;
 };
+
+// Key suffix of the full-width row rendered under an expanded row.
+const EXPANDED = ":expanded";
 
 /**
  * Renders the grid with react-aria's `Table`: keyboard navigation between
  * cells, `aria-sort`, selection and resizing come from react-aria while
  * TanStack holds the data model.
  */
-function DataGridTable({
+function DataGridTable<TData extends RowData = RowData>({
   "aria-label": ariaLabel = "Data grid",
   className,
   onRowsReorder,
   isVirtualized,
   rowHeight = 40,
-}: DataGridTableProps) {
+  renderExpandedRow,
+}: DataGridTableProps<TData>) {
   const {
     table,
     layout,
@@ -316,7 +337,10 @@ function DataGridTable({
   };
 
   const { dragAndDropHooks } = useDragAndDrop({
-    getItems: (keys) => [...keys].map((key) => ({ "text/plain": String(key) })),
+    getItems: (keys) =>
+      [...keys]
+        .filter((key) => !String(key).endsWith(EXPANDED))
+        .map((key) => ({ "text/plain": String(key) })),
     onReorder: onRowsReorder,
     isDisabled: !onRowsReorder,
   });
@@ -327,7 +351,8 @@ function DataGridTable({
 
   const onSelectionChange = (keys: Selection) => {
     const pageIds = new Set(rows.map((row) => row.id));
-    const selected = keys === "all" ? [...pageIds] : [...keys].map(String);
+    const selected =
+      keys === "all" ? [...pageIds] : [...keys].map(String).filter((id) => pageIds.has(id));
     // Keep selections made on other pages.
     const next: RowSelectionState = {};
     for (const id of Object.keys(state.rowSelection)) {
@@ -350,7 +375,12 @@ function DataGridTable({
       selectionMode={isSelectable && !showSkeleton ? "multiple" : "none"}
       selectedKeys={Object.keys(state.rowSelection)}
       onSelectionChange={onSelectionChange}
-      disabledKeys={rows.filter((row) => isSelectable && !row.getCanSelect()).map((row) => row.id)}
+      disabledKeys={[
+        ...rows.filter((row) => isSelectable && !row.getCanSelect()).map((row) => row.id),
+        ...rows.filter((row) => row.getIsExpanded()).map((row) => row.id + EXPANDED),
+      ]}
+      // Disabled rows (unselectable ones, expanded panels) stay focusable.
+      disabledBehavior="selection"
       onRowAction={
         onRowClick && !showSkeleton
           ? (key) => {
@@ -394,11 +424,19 @@ function DataGridTable({
               )}
             >
               <div className="flex items-center gap-1">
-                <div className="min-w-0 flex-1">
-                  {header && !header.isPlaceholder
-                    ? flexRender(column.columnDef.header, header.getContext())
-                    : null}
-                </div>
+                {layout.columnsDraggable && !showSkeleton ? (
+                  <ColumnDragArea column={column} dense={layout.dense}>
+                    {header && !header.isPlaceholder
+                      ? flexRender(column.columnDef.header, header.getContext())
+                      : null}
+                  </ColumnDragArea>
+                ) : (
+                  <div className="min-w-0 flex-1">
+                    {header && !header.isPlaceholder
+                      ? flexRender(column.columnDef.header, header.getContext())
+                      : null}
+                  </div>
+                )}
                 {layout.columnsResizable && fixed && column.getCanResize() && (
                   <ColumnResizer
                     aria-label={`Resize ${getColumnHeaderLabel(column)}`}
@@ -430,7 +468,7 @@ function DataGridTable({
                 ))}
               </Row>
             ))
-          : rows.map((row) => (
+          : rows.flatMap((row) => [
               <Row
                 key={row.id}
                 id={row.id}
@@ -461,15 +499,45 @@ function DataGridTable({
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Cell>
                 ))}
-              </Row>
-            ))}
+              </Row>,
+              ...(renderExpandedRow && row.getIsExpanded()
+                ? [
+                    <Row
+                      key={row.id + EXPANDED}
+                      id={row.id + EXPANDED}
+                      textValue={`${String((rowHeaderId && row.getValue(rowHeaderId)) ?? row.id)} details`}
+                      data-slot="data-grid-expanded-row"
+                      className={rowClassName({ ...layout, stripped: false }, isVirtualized)}
+                    >
+                      <Cell
+                        colSpan={columns.length}
+                        className={cn(
+                          cellPadding,
+                          cellClassName(layout, isVirtualized),
+                          "bg-muted/20",
+                        )}
+                      >
+                        {renderExpandedRow(row as TanstackRow<DataGridFeatures, TData>)}
+                      </Cell>
+                    </Row>,
+                  ]
+                : []),
+            ])}
       </TableBody>
     </Table>
   );
 
   if (isVirtualized) {
     content = (
-      <Virtualizer layout={TableLayout} layoutOptions={{ rowHeight, headingHeight: rowHeight }}>
+      <Virtualizer
+        layout={TableLayout}
+        layoutOptions={
+          // Expanded panels are taller than rows: measure rows instead of fixing their height.
+          renderExpandedRow
+            ? { estimatedRowHeight: rowHeight, headingHeight: rowHeight }
+            : { rowHeight, headingHeight: rowHeight }
+        }
+      >
         {content}
       </Virtualizer>
     );
@@ -524,6 +592,111 @@ function cellClassName(layout: DataGridLayout, isVirtualized?: boolean) {
     isVirtualized && "flex items-center",
     !isVirtualized && layout.rowBorder && "border-b [tr:last-child>&]:border-b-0",
     layout.cellBorder && "border-e last:border-e-0",
+  );
+}
+
+const COLUMN_DRAG_TYPE = "application/x-fma-data-grid-column";
+
+/**
+ * A header's drag source and drop target for `columnsDraggable`: dropping a
+ * header on another moves it before or after that column, by pointer side.
+ */
+function ColumnDragArea({
+  column,
+  dense,
+  children,
+}: {
+  column: DataGridColumn<RowData>;
+  dense?: boolean;
+  children: React.ReactNode;
+}) {
+  const { table } = useDataGrid();
+  const { direction } = useLocale();
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [side, setSide] = React.useState<"before" | "after" | null>(null);
+  const sideAt = (x: number) => {
+    const width = ref.current?.offsetWidth ?? 0;
+    const startHalf = x < width / 2;
+    return startHalf === (direction === "ltr") ? "before" : "after";
+  };
+
+  const { dragProps, isDragging } = useDrag({
+    getItems: () => [{ [COLUMN_DRAG_TYPE]: column.id, "text/plain": getColumnHeaderLabel(column) }],
+  });
+  const { dropProps } = useDrop({
+    ref,
+    getDropOperation: (types) => (types.has(COLUMN_DRAG_TYPE) && !isDragging ? "move" : "cancel"),
+    onDropEnter: (event) => setSide(sideAt(event.x)),
+    onDropMove: (event) => setSide(sideAt(event.x)),
+    onDropExit: () => setSide(null),
+    onDrop: async (event) => {
+      const at = sideAt(event.x);
+      setSide(null);
+      const item = event.items.find(
+        (item) => isTextDropItem(item) && item.types.has(COLUMN_DRAG_TYPE),
+      );
+      if (!item || !isTextDropItem(item)) return;
+      const id = await item.getText(COLUMN_DRAG_TYPE);
+      if (id === column.id) return;
+      const current = table.store.state.columnOrder.length
+        ? table.store.state.columnOrder
+        : table.getAllLeafColumns().map((leaf) => leaf.id);
+      const next = current.filter((key) => key !== id);
+      const index = next.indexOf(column.id);
+      if (index === -1) return;
+      next.splice(at === "after" ? index + 1 : index, 0, id);
+      table.setColumnOrder(next);
+    },
+  });
+
+  return (
+    <div
+      ref={ref}
+      {...dragProps}
+      {...dropProps}
+      data-slot="data-grid-column-drag-area"
+      data-dragging={isDragging || undefined}
+      data-drop-side={side ?? undefined}
+      className={cn(
+        // Spans the cell's padding, so the drop line sits on the column edge.
+        "relative min-w-0 flex-1 cursor-grab py-2.5 data-dragging:opacity-50",
+        dense ? "-mx-2.5 px-2.5" : "-mx-4 px-4",
+        "before:pointer-events-none before:absolute before:inset-y-0 before:w-0.5 before:bg-primary before:opacity-0 data-drop-side:before:opacity-100 data-[drop-side=after]:before:end-0 data-[drop-side=before]:before:start-0",
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Toggles a row's full-width details (`renderExpandedRow` on `DataGridTable`);
+ * put it in a cell. Rows expand only when `getRowCanExpand` allows it.
+ */
+function DataGridRowExpand<TData extends RowData>({
+  row,
+  className,
+}: {
+  row: TanstackRow<DataGridFeatures, TData>;
+  className?: string;
+}) {
+  if (!row.getCanExpand()) return null;
+  const isExpanded = row.getIsExpanded();
+  return (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label={isExpanded ? "Collapse row" : "Expand row"}
+      aria-expanded={isExpanded}
+      onPress={() => row.toggleExpanded()}
+      className={className}
+    >
+      {isExpanded ? (
+        <ChevronDownIcon aria-hidden="true" />
+      ) : (
+        <ChevronRightIcon aria-hidden="true" className="rtl:rotate-180" />
+      )}
+    </Button>
   );
 }
 
@@ -1055,6 +1228,7 @@ export {
   DataGridContainer,
   DataGridPagination,
   DataGridRowDragHandle,
+  DataGridRowExpand,
   DataGridRowPin,
   DataGridRowSelect,
   DataGridTable,
