@@ -1,15 +1,9 @@
 name: Registry Drift Check
 
 on:
+  # No path filter: these jobs are required status checks on main, and a filtered-out
+  # workflow never reports, leaving the PR stuck on "Expected — waiting".
   pull_request:
-    paths:
-      - "packages/ui/src/**"
-      - "packages/ui/scripts/**"
-      - "packages/ui/package.json"
-      - "apps/web/**"
-      - "pnpm-lock.yaml"
-      - "packages/registry/**"
-      - ".github/workflows/registry-check.yml"
   push:
     branches:
       - main
