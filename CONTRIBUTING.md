@@ -47,7 +47,24 @@ pnpm --filter @fma-ui/ui exec playwright install --with-deps chromium  # só par
 
 O `pnpm-workspace.yaml` tem `engineStrict: true`: instalar com Node ou pnpm fora do range
 **falha** (`ERR_PNPM_UNSUPPORTED_ENGINE`), não apenas avisa. O `preinstall` roda
-`only-allow pnpm`, então `npm install` e `yarn install` são bloqueados.
+`scripts/only-allow-pnpm.mjs` (o mesmo que o `only-allow pnpm`, mas local, sem `npx` baixando
+pacote a cada install), então `npm install` e `yarn install` são bloqueados.
+
+### Segurança de dependências
+
+O `pnpm-workspace.yaml` aplica as políticas de supply chain do pnpm, e o `install` falha se o
+lockfile violar alguma:
+
+- `minimumReleaseAge: 10080`: só instala versões publicadas há **7 dias** ou mais. Versão
+  nova demais? Espere, ou fixe uma anterior. Não use `minimumReleaseAgeExclude`.
+- `trustPolicy: no-downgrade`: recusa versão publicada com menos garantias (provenance /
+  trusted publisher) que versões anteriores — sinal típico de token roubado.
+- `blockExoticSubdeps: true`: dependências transitivas só vêm do registry (nada de git/tarball).
+- `allowBuilds`: install scripts de dependências ficam bloqueados; libere só o necessário,
+  padrão `false`.
+
+O Dependabot (`.github/dependabot.yml`) abre PRs semanais com o mesmo cooldown de 7 dias, e as
+GitHub Actions ficam fixadas por SHA de commit.
 
 ## Estrutura do repositório
 

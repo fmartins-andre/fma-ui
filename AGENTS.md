@@ -156,6 +156,11 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
 - Versões compartilhadas (react, typescript, vite, tailwind, @types/*) ficam no `catalog:`
   do `pnpm-workspace.yaml` — use `"catalog:"` nos `package.json` em vez de versões soltas.
 - `nitro` está fixado em versão exata de propósito; não troque por `^`/`latest`.
+- Políticas de supply chain no `pnpm-workspace.yaml` (`minimumReleaseAge` de 7 dias,
+  `trustPolicy`, `blockExoticSubdeps`, `allowBuilds`): nunca as relaxe nem adicione exclusões
+  pra fazer um install passar; espere a versão envelhecer ou fixe uma anterior. Install script
+  novo entra em `allowBuilds` como `false`, salvo decisão explícita. Actions do CI fixadas por
+  SHA (com `# vX.Y.Z`).
 
 ## Git
 
