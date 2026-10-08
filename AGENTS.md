@@ -12,7 +12,8 @@ pra cá. Edite só este arquivo. Detalhes adicionais e motivações estão no `C
 publicados no npm. Tudo instala em pastas `fma-ui` (`components/fma-ui/`, `hooks/fma-ui/`,
 `lib/fma-ui/`) e as dependências entre itens são `@fma-ui/<nome>`, para nunca colidir com o
 shadcn oficial. Base de interação: **react-aria-components** (style `aria-nova` do
-shadcn CLI, em `packages/ui/components.json`).
+shadcn CLI, em `packages/ui/components.json`). Site publicado (docs, `/themes`, `/storybook/`,
+registro em `/r/`): https://ui.fmartinsandre.dev.br.
 
 ## Estrutura
 
@@ -193,6 +194,8 @@ variable `FMA_UI_SITE_URL`; no Cloudflare, das variáveis de build. Variável no
 
 - Conventional Commits em inglês, commits atômicos, com escopo quando fizer sentido:
   `feat(ui): ...`, `fix(web): ...`, `chore: ...`, `test(ui): ...`, `ci: ...`, `docs: ...`.
+- `main` é protegida por ruleset: sem push direto/force-push; tudo via PR, com os checks de
+  drift do registro e e2e do editor passando antes do merge.
 - Hooks do lefthook: **pre-commit** roda lint → type-check → registry-check;
   **pre-push** roda type-check → test → build → build-storybook. Não use `--no-verify`;
   corrija a causa.

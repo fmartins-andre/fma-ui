@@ -3,6 +3,9 @@
 Este guia explica como o repositório funciona por dentro: preparar o ambiente, adicionar ou
 customizar componentes, testar e publicar o registro.
 
+O site publicado (docs, editor de temas, Storybook e o registro em `/r/`) fica em
+[ui.fmartinsandre.dev.br](https://ui.fmartinsandre.dev.br).
+
 > Usando um agente de IA? As regras resumidas para agentes estão em [`AGENTS.md`](AGENTS.md).
 
 ## Sumário
@@ -28,7 +31,8 @@ O repositório traz um dev container em `.devcontainer/`. Abra a pasta no VS Cod
 
 - Node 24, pnpm (via corepack) e o GitHub CLI (`gh`);
 - `pnpm install` e o Chromium do Playwright instalados a cada start;
-- portas `3000` (app web) e `6006` (Storybook) encaminhadas;
+- portas `3000` (app web), `6006` (Storybook) e `8787` (`pnpm --filter web preview`)
+  encaminhadas;
 - Biome configurado como formatter, com organize imports ao salvar.
 
 ### Setup manual
@@ -48,6 +52,14 @@ pnpm --filter @fma-ui/ui exec playwright install --with-deps chromium  # só par
 O `pnpm-workspace.yaml` tem `engineStrict: true`: instalar com Node ou pnpm fora do range
 **falha** (`ERR_PNPM_UNSUPPORTED_ENGINE`), não apenas avisa. O `preinstall` roda
 `only-allow pnpm`, então `npm install` e `yarn install` são bloqueados.
+
+### Variáveis de ambiente
+
+O gerador do registro e o dev/build do `apps/web` exigem `FMA_UI_SITE_URL`, a URL pública do
+site (vira o `homepage` do registro e o custom domain do Worker). Copie o `.env.example` para
+`.env` (ignorado pelo git) e preencha; em produção o valor é
+`https://ui.fmartinsandre.dev.br`. No CI ela vem da repository variable `FMA_UI_SITE_URL`; no
+Cloudflare, das variáveis de build.
 
 ## Estrutura do repositório
 
@@ -326,7 +338,16 @@ O CI (`.github/workflows/registry-check.yml`) é o gate real:
 
 - **em PRs:** roda os testes unitários, rebuilda o registro e falha se `registry.json` ou
   `apps/web/public/r/` estiverem desatualizados;
+- **em PRs:** roda os testes end-to-end do site e do editor de temas (`apps/web`, Playwright);
 - **em push no `main`:** roda o build completo.
+
+O `main` é protegido por um ruleset: nada de push direto, force-push ou deleção; toda mudança
+entra por pull request, e os jobs de drift do registro e de e2e precisam passar antes do merge.
+
+O site (`apps/web`) roda no Cloudflare Workers, em [ui.fmartinsandre.dev.br](https://ui.fmartinsandre.dev.br), com build feito
+pelo Workers Builds do Cloudflare a partir do repositório. `pnpm --filter web preview` serve o
+build localmente no workerd (porta 8787) e `pnpm --filter web deploy:worker` faz o deploy manual
+do último build.
 
 Não use `--no-verify`; corrija a causa.
 
