@@ -15,6 +15,7 @@ theme leaves them alone.
 | `amber-minimal` | https://tweakcn.com/r/themes/amber-minimal.json |
 | `caffeine` | https://tweakcn.com/r/themes/caffeine.json |
 | `catppuccin` | https://tweakcn.com/r/themes/catppuccin.json |
+| `claude` | https://tweakcn.com/r/themes/claude.json |
 | `clean-slate` | https://tweakcn.com/r/themes/clean-slate.json |
 | `cosmic-night` | https://tweakcn.com/r/themes/cosmic-night.json |
 | `elegant-luxury` | https://tweakcn.com/r/themes/elegant-luxury.json |
@@ -27,6 +28,7 @@ theme leaves them alone.
 | `ocean-breeze` | https://tweakcn.com/r/themes/ocean-breeze.json |
 | `soft-pop` | https://tweakcn.com/r/themes/soft-pop.json |
 | `starry-night` | https://tweakcn.com/r/themes/starry-night.json |
+| `supabase` | https://tweakcn.com/r/themes/supabase.json |
 | `vintage-paper` | https://tweakcn.com/r/themes/vintage-paper.json |
 | `violet-bloom` | https://tweakcn.com/r/themes/violet-bloom.json |
 
