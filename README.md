@@ -7,6 +7,10 @@
 Um registro de componentes compatível com o [shadcn/ui](https://ui.shadcn.com), construído sobre
 [react-aria-components](https://react-spectrum.adobe.com/react-aria/) e estilizado com Tailwind CSS v4.
 
+**[ui.fmartinsandre.dev.br](https://ui.fmartinsandre.dev.br)**
+
+[Documentação](https://ui.fmartinsandre.dev.br/docs) · [Editor de temas](https://ui.fmartinsandre.dev.br/themes) · [Storybook](https://ui.fmartinsandre.dev.br/storybook/)
+
 [Instalação](#instalação) · [Componentes](#componentes) · [Por que fma-ui?](#por-que-fma-ui) · [Contribuindo](CONTRIBUTING.md)
 
 ![React 19](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)
@@ -64,14 +68,10 @@ Uma vez, no `components.json` do projeto:
 ```json
 {
   "registries": {
-    "@fma-ui": "<site-url>/r/{name}.json"
+    "@fma-ui": "https://ui.fmartinsandre.dev.br/r/{name}.json"
   }
 }
 ```
-
-`<site-url>` é a URL onde o site (`apps/web`) está publicado — a variável
-`FMA_UI_SITE_URL` do build (veja `.env.example`); a página de cada componente no site mostra o
-snippet já preenchido.
 
 É obrigatório: os itens dependem uns dos outros por `@fma-ui/<nome>`, e é o namespace que faz
 o CLI buscá-los aqui, e não no registro oficial do shadcn.
@@ -103,13 +103,13 @@ export function Example() {
 
 ## Componentes
 
-70 componentes, 2 blocos e as libs e hooks que eles usam, organizados por categoria:
+71 componentes, 2 blocos, 21 temas e as libs e hooks que eles usam, organizados por categoria:
 
 | Categoria       | Componentes |
 | --------------- | ----------- |
-| **Formulários** | button · calendar · checkbox · combobox · date-field · date-picker · field · input · input-group · input-otp · label · masked-input · native-select · radio-group · select · simple-time-picker · slider · switch · textarea |
+| **Formulários** | button · calendar · checkbox · color-picker · combobox · date-field · date-picker · field · input · input-group · input-otp · label · masked-input · native-select · radio-group · select · simple-time-picker · slider · switch · textarea |
 | **Botões**      | button-group · toggle · toggle-group |
-| **Overlays**    | alert-dialog · command · context-menu · dialog · drawer¹ · dropdown-menu · hover-card · popover · sheet · tooltip |
+| **Overlays**    | alert-dialog · command · context-menu · dialog · drawer · dropdown-menu · hover-card · popover · sheet · tooltip |
 | **Navegação**   | breadcrumb · menubar · navigation-menu · pagination · sidebar · stepper · tabs |
 | **Dados**       | avatar · badge · carousel · chart · data-grid · icon-tile · kbd · table · timeline |
 | **Feedback**    | alert · empty · icon-stack · progress · skeleton · sonner · spinner |
@@ -117,19 +117,35 @@ export function Example() {
 | **Disclosure**  | accordion · collapsible |
 | **Chat**        | attachment · bubble · marker · message · message-scroller¹ · questionnaire¹ |
 | **Mídia**       | aspect-ratio |
-| **Blocos**      | app-sidebar · event-calendar¹ |
-| **Libs**        | date-availability · date-fns-compat · date-granularity · input-masks · interval-helpers · type-helper · types |
+| **Blocos**      | app-sidebar · event-calendar |
+| **Libs**        | color-contrast · date-availability · date-fns-compat · date-granularity · input-masks · interval-helpers · type-helper · types |
 | **Hooks**       | use-available-date-correction · use-mask · use-mobile |
 
 ¹ experimental: a API ainda pode mudar.
 
+Cada componente tem página própria no site, com exemplos interativos e o comando de
+instalação: [ui.fmartinsandre.dev.br/docs](https://ui.fmartinsandre.dev.br/docs).
+
 O índice completo, legível por máquina, fica em
-`<site-url>/r/registry.json`.
+[`ui.fmartinsandre.dev.br/r/registry.json`](https://ui.fmartinsandre.dev.br/r/registry.json).
+
+## Temas
+
+21 temas prontos (a maioria adaptada do [tweakcn](https://tweakcn.com)), cada um instalável como
+item do registro:
+
+```bash
+npx shadcn@latest add @fma-ui/theme-claude
+```
+
+No [editor de temas](https://ui.fmartinsandre.dev.br/themes) dá pra pré-visualizar os temas sobre os componentes, ajustar
+cores, fontes, raio e sombras, importar um tema do tweakcn e exportar o CSS ou o item de registro.
 
 ## Explore no Storybook
 
-Para ver todos os componentes, variantes e tokens de design (cores, tipografia, espaçamento,
-raio e sombra) rodando localmente:
+O Storybook com todos os componentes, variantes e tokens de design (cores, tipografia,
+espaçamento, raio e sombra) está publicado em [ui.fmartinsandre.dev.br/storybook](https://ui.fmartinsandre.dev.br/storybook/). Para
+rodar localmente:
 
 ```bash
 git clone https://github.com/fmartins-andre/fma-ui.git
