@@ -146,6 +146,12 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
    `apps/web/src/theme-editor/` (listado em `TYPOGRAPHY_SETTINGS` ou `OTHER_SETTINGS`).
    `tests/theme-editor-coverage.test.ts` e o type-check do `apps/web` (`SETTINGS_COVERED`)
    falham se faltar algum elo.
+11. **Tokens de estado** (doc de theming do shadcn): hover/focus/selecionado/hoje/intervalo usam
+   `bg-accent` + `text-accent-foreground`; `muted` é só superfície estática (zebra, footer,
+   skeleton) e texto secundário. Nunca `bg-muted` nem `bg-foreground/N` como destaque de
+   interação — os estilos `*-nova` do shadcn fazem isso; corrija ao vendorizar. Imposto em
+   componentes `customized`/`original` e blocos por `tests/interaction-tokens.test.ts`
+   (exceções no `ALLOWED`, com motivo). Detalhes no `CONTRIBUTING.md`.
 
 ## Estilo de código
 
