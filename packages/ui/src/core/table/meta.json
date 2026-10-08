@@ -2,7 +2,7 @@
   "name": "table",
   "category": "data-display",
   "status": "stable",
-  "source": "shadcn",
+  "source": "customized",
   "description": "Semantic table primitives (header, body, rows, cells, footer, caption) built on react-aria-components' Table for accessible, sorting/selection-ready markup.",
   "tags": ["data-display", "table", "react-aria"]
 }

@@ -526,7 +526,7 @@ function EventCalendarDayAddButton({
       className={cn(
         // Always visible once enabled (a hover-only reveal hid it from anyone
         // not pointing at the header); subtle until the day is hovered or it's focused.
-        "text-muted-foreground flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-sm outline-none transition-colors group-hover/ec-cell:bg-muted hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
+        "text-muted-foreground flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-sm outline-none transition-colors group-hover/ec-cell:bg-accent group-hover/ec-cell:text-accent-foreground hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
         viewConfig.classNames?.dayAddButton,
         className,
       )}

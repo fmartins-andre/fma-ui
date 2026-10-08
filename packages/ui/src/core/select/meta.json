@@ -2,7 +2,7 @@
   "name": "select",
   "category": "forms",
   "status": "stable",
-  "source": "shadcn",
+  "source": "customized",
   "description": "A listbox-style picker (react-aria-components' Select) with a trigger, popover, groups, and an optional search input — richer than the native <select> (see native-select for that).",
   "tags": ["form", "select", "react-aria"]
 }

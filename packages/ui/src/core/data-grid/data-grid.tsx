@@ -577,7 +577,7 @@ function DataGridTable<TData extends RowData = RowData>({
 // and cells center their content with flex.
 function rowClassName(layout: DataGridLayout, isVirtualized?: boolean) {
   return cn(
-    "outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset data-hovered:bg-muted/40 data-selected:bg-muted data-dragging:opacity-50 data-drop-target:bg-accent",
+    "outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset data-hovered:bg-accent/50 data-selected:bg-accent data-selected:text-accent-foreground data-dragging:opacity-50 data-drop-target:bg-accent",
     layout.stripped && "odd:bg-muted/30",
     // Virtualized rows are zero-height boxes (cells are positioned), so this
     // border draws at each row's top: skip the first body row (rowindex 2,
