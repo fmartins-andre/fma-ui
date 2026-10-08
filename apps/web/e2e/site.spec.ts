@@ -16,6 +16,10 @@ test("home links to the docs, components, blocks and themes", async ({ page }) =
   const nav = page.getByRole("navigation", { name: "Main" });
   await expect(nav.getByRole("link", { name: "Docs" })).toHaveAttribute("href", "/docs");
   await expect(nav.getByRole("link", { name: "Themes" })).toHaveAttribute("href", "/themes");
+  await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
+    "href",
+    "https://github.com/fmartins-andre/fma-ui",
+  );
   await expect(nav.getByRole("link", { name: /Storybook/ })).toBeVisible();
   await page.getByRole("link", { name: "Get started" }).click();
   await expect(page).toHaveURL(/\/docs$/);
