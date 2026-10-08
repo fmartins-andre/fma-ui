@@ -2,7 +2,7 @@
   "name": "tabs",
   "category": "navigation",
   "status": "stable",
-  "source": "shadcn",
+  "source": "customized",
   "description": "A tab list and its panels for switching between related views, with default and line visual variants, horizontal or vertical orientation.",
   "tags": ["navigation", "disclosure", "react-aria"]
 }
