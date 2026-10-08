@@ -1,0 +1,163 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-supabase",
+  "title": "Supabase",
+  "author": "@fma-ui/ui",
+  "description": "Supabase's emerald green on near-white and near-black, Outfit with loose tracking and 0.5rem corners.",
+  "dependencies": [
+    "@fontsource/outfit@^5.3.0"
+  ],
+  "files": [],
+  "cssVars": {
+    "theme": {
+      "font-sans": "Outfit, sans-serif",
+      "tracking-tighter": "calc(var(--tracking-normal) - 0.05em)",
+      "tracking-tight": "calc(var(--tracking-normal) - 0.025em)",
+      "tracking-wide": "calc(var(--tracking-normal) + 0.025em)",
+      "tracking-wider": "calc(var(--tracking-normal) + 0.05em)",
+      "tracking-widest": "calc(var(--tracking-normal) + 0.1em)"
+    },
+    "light": {
+      "background": "oklch(0.991 0 0)",
+      "foreground": "oklch(0.205 0 0)",
+      "card": "oklch(0.991 0 0)",
+      "card-foreground": "oklch(0.205 0 0)",
+      "popover": "oklch(0.991 0 0)",
+      "popover-foreground": "oklch(0.439 0 0)",
+      "primary": "oklch(0.835 0.13 160.908)",
+      "primary-foreground": "oklch(0.263 0.015 166.459)",
+      "secondary": "oklch(0.994 0 0)",
+      "secondary-foreground": "oklch(0.205 0 0)",
+      "muted": "oklch(0.946 0 0)",
+      "muted-foreground": "oklch(0.243 0 0)",
+      "accent": "oklch(0.946 0 0)",
+      "accent-foreground": "oklch(0.243 0 0)",
+      "destructive": "oklch(0.552 0.193 32.727)",
+      "destructive-foreground": "oklch(0.432 0.193 32.727)",
+      "info": "oklch(0.546 0.245 262.881)",
+      "info-foreground": "oklch(0.424 0.199 265.638)",
+      "success": "oklch(0.527 0.154 150.069)",
+      "success-foreground": "oklch(0.448 0.119 151.328)",
+      "warning": "oklch(0.555 0.163 48.998)",
+      "warning-foreground": "oklch(0.473 0.137 46.201)",
+      "invert": "oklch(0.205 0 0)",
+      "invert-foreground": "oklch(0.991 0 0)",
+      "border": "oklch(0.904 0 0)",
+      "input": "oklch(0.973 0 0)",
+      "ring": "oklch(0.835 0.13 160.908)",
+      "chart-1": "oklch(0.835 0.13 160.908)",
+      "chart-2": "oklch(0.623 0.188 259.815)",
+      "chart-3": "oklch(0.606 0.219 292.717)",
+      "chart-4": "oklch(0.769 0.165 70.08)",
+      "chart-5": "oklch(0.696 0.149 162.48)",
+      "sidebar": "oklch(0.991 0 0)",
+      "sidebar-foreground": "oklch(0.545 0 0)",
+      "sidebar-primary": "oklch(0.835 0.13 160.908)",
+      "sidebar-primary-foreground": "oklch(0.263 0.015 166.459)",
+      "sidebar-accent": "oklch(0.946 0 0)",
+      "sidebar-accent-foreground": "oklch(0.243 0 0)",
+      "sidebar-border": "oklch(0.904 0 0)",
+      "sidebar-ring": "oklch(0.835 0.13 160.908)",
+      "shadow-2xs": "0px 1px 3px 0px oklch(0 0 0 / 9%)",
+      "shadow-xs": "0px 1px 3px 0px oklch(0 0 0 / 9%)",
+      "shadow-sm": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 1px 2px -1px oklch(0 0 0 / 17%)",
+      "shadow-md": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 2px 4px -1px oklch(0 0 0 / 17%)",
+      "shadow-lg": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 4px 6px -1px oklch(0 0 0 / 17%)",
+      "shadow-xl": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 8px 10px -1px oklch(0 0 0 / 17%)",
+      "shadow-2xl": "0px 1px 3px 0px oklch(0 0 0 / 43%)",
+      "radius": "0.5rem",
+      "tracking-normal": "0.025em"
+    },
+    "dark": {
+      "background": "oklch(0.182 0 0)",
+      "foreground": "oklch(0.929 0.013 255.508)",
+      "card": "oklch(0.205 0 0)",
+      "card-foreground": "oklch(0.929 0.013 255.508)",
+      "popover": "oklch(0.26 0 0)",
+      "popover-foreground": "oklch(0.735 0 0)",
+      "primary": "oklch(0.436 0.104 156.756)",
+      "primary-foreground": "oklch(0.921 0.013 167.156)",
+      "secondary": "oklch(0.26 0 0)",
+      "secondary-foreground": "oklch(0.985 0 0)",
+      "muted": "oklch(0.239 0 0)",
+      "muted-foreground": "oklch(0.712 0 0)",
+      "accent": "oklch(0.313 0 0)",
+      "accent-foreground": "oklch(0.985 0 0)",
+      "destructive": "oklch(0.312 0.085 29.788)",
+      "destructive-foreground": "oklch(0.512 0.085 29.788)",
+      "info": "oklch(0.707 0.165 254.624)",
+      "info-foreground": "oklch(0.809 0.105 251.813)",
+      "success": "oklch(0.792 0.209 151.711)",
+      "success-foreground": "oklch(0.871 0.15 154.449)",
+      "warning": "oklch(0.828 0.189 84.429)",
+      "warning-foreground": "oklch(0.879 0.169 91.605)",
+      "invert": "oklch(0.929 0.013 255.508)",
+      "invert-foreground": "oklch(0.182 0 0)",
+      "border": "oklch(0.281 0 0)",
+      "input": "oklch(0.26 0 0)",
+      "ring": "oklch(0.8 0.182 151.711)",
+      "chart-1": "oklch(0.8 0.182 151.711)",
+      "chart-2": "oklch(0.714 0.143 254.624)",
+      "chart-3": "oklch(0.709 0.159 293.541)",
+      "chart-4": "oklch(0.837 0.164 84.429)",
+      "chart-5": "oklch(0.784 0.133 181.912)",
+      "sidebar": "oklch(0.182 0 0)",
+      "sidebar-foreground": "oklch(0.63 0 0)",
+      "sidebar-primary": "oklch(0.436 0.104 156.756)",
+      "sidebar-primary-foreground": "oklch(0.921 0.013 167.156)",
+      "sidebar-accent": "oklch(0.313 0 0)",
+      "sidebar-accent-foreground": "oklch(0.985 0 0)",
+      "sidebar-border": "oklch(0.281 0 0)",
+      "sidebar-ring": "oklch(0.8 0.182 151.711)",
+      "shadow-2xs": "0px 1px 3px 0px oklch(0 0 0 / 9%)",
+      "shadow-xs": "0px 1px 3px 0px oklch(0 0 0 / 9%)",
+      "shadow-sm": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 1px 2px -1px oklch(0 0 0 / 17%)",
+      "shadow-md": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 2px 4px -1px oklch(0 0 0 / 17%)",
+      "shadow-lg": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 4px 6px -1px oklch(0 0 0 / 17%)",
+      "shadow-xl": "0px 1px 3px 0px oklch(0 0 0 / 17%), 0px 8px 10px -1px oklch(0 0 0 / 17%)",
+      "shadow-2xl": "0px 1px 3px 0px oklch(0 0 0 / 43%)"
+    }
+  },
+  "css": {
+    "@import \"@fontsource/outfit/400.css\"": {},
+    "@import \"@fontsource/outfit/500.css\"": {},
+    "@import \"@fontsource/outfit/600.css\"": {},
+    "@import \"@fontsource/outfit/700.css\"": {},
+    "@layer base": {
+      "body": {
+        "letter-spacing": "var(--tracking-normal)"
+      }
+    }
+  },
+  "meta": {
+    "source": "third-party",
+    "origin": "https://tweakcn.com/r/themes/supabase.json",
+    "tags": [
+      "green",
+      "neutral",
+      "sans"
+    ],
+    "shadow": {
+      "light": {
+        "color": "oklch(0 0 0)",
+        "opacity": 0.17,
+        "blur": "3px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "1px"
+      },
+      "dark": {
+        "color": "oklch(0 0 0)",
+        "opacity": 0.17,
+        "blur": "3px",
+        "spread": "0px",
+        "offsetX": "0px",
+        "offsetY": "1px"
+      }
+    }
+  },
+  "categories": [
+    "theme"
+  ],
+  "type": "registry:theme"
+}

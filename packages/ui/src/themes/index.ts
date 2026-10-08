@@ -6,10 +6,12 @@ import { type Theme, ThemeSchema } from "@/lib/theme/schema";
 import amberMinimal from "./amber-minimal.json";
 import caffeine from "./caffeine.json";
 import catppuccin from "./catppuccin.json";
+import claude from "./claude.json";
 import cleanSlate from "./clean-slate.json";
 import cosmicNight from "./cosmic-night.json";
 import defaultTheme from "./default.json";
 import elegantLuxury from "./elegant-luxury.json";
+import emitte from "./emitte.json";
 import graphite from "./graphite.json";
 import kodamaGrove from "./kodama-grove.json";
 import modernMinimal from "./modern-minimal.json";
@@ -19,6 +21,7 @@ import northernLights from "./northern-lights.json";
 import oceanBreeze from "./ocean-breeze.json";
 import softPop from "./soft-pop.json";
 import starryNight from "./starry-night.json";
+import supabase from "./supabase.json";
 import vintagePaper from "./vintage-paper.json";
 import violetBloom from "./violet-bloom.json";
 
@@ -42,6 +45,9 @@ export const THEMES: Theme[] = [
   starryNight,
   northernLights,
   softPop,
+  claude,
+  supabase,
+  emitte,
 ].map((theme) => ThemeSchema.parse(theme));
 
 // biome-ignore lint/style/noNonNullAssertion: THEMES is a non-empty literal
