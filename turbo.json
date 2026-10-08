@@ -1,10 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalEnv": ["FMA_UI_SITE_URL"],
+  "globalDependencies": [".env"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".output/**", "dist/**", "registry.json", "../../apps/web/public/r/**"]
+    },
+    "build-storybook": {
+      "outputs": ["storybook-static/**"]
+    },
+    "web#build": {
+      "dependsOn": ["^build", "@fma-ui/ui#build-storybook"],
+      "outputs": [".output/**"]
     },
     "dev": {
       "cache": false,

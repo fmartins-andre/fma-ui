@@ -110,13 +110,13 @@ export const AsLink: Story = {
     },
   },
   render: () => (
-    <LinkButton href="https://ui.fmartinsandre.dev" variant="outline">
+    <LinkButton href="https://example.com" variant="outline">
       Visit site
     </LinkButton>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const link = canvas.getByRole("link", { name: "Visit site" });
-    expect(link).toHaveAttribute("href", "https://ui.fmartinsandre.dev");
+    expect(link).toHaveAttribute("href", "https://example.com");
   },
 };

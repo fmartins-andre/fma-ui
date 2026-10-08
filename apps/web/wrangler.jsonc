@@ -1,0 +1,9 @@
+// Cloudflare Workers config. The custom domain comes from FMA_UI_SITE_URL (see
+// vite.config.ts), not from here. `pnpm build` merges it into .output/server/wrangler.json
+// (adding main, assets and the nodejs_compat flag) and points wrangler there, so
+// `pnpm preview` / `pnpm deploy:worker` (run from apps/web, after a build) use the result.
+{
+  "name": "fma-ui",
+  "compatibility_date": "2026-10-05",
+  "observability": { "enabled": true }
+}

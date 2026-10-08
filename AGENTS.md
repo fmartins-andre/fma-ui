@@ -35,6 +35,15 @@ packages/ui/        → @fma-ui/ui: os componentes
 apps/web/           → TanStack Start; serve public/r/<nome>.json (GERADO — não editar à mão)
   src/theme-editor/                   editor de temas em /themes (estilo tweakcn); importa a UI
                                       de packages/ui via alias @/* (tsconfig paths)
+  src/site/, src/routes/_site/        site de docs (estilo shadcn): home, /docs, /components/<nome>,
+                                      /blocks/<nome>; lê registry.json e renderiza as stories como
+                                      exemplos (portable stories); stories fullscreen/blocos em
+                                      iframe (/preview/...)
+  storybook-static.ts                 plugin Vite: serve o build estático do Storybook
+                                      (packages/ui/storybook-static) em /storybook/. No build,
+                                      reaproveita se estiver em dia com src/ e .storybook/, senão
+                                      roda build-storybook, e copia pra public/storybook (ignorado
+                                      pelo git); no dev, usa o build se existir (senão link pra :6006)
 .devcontainer/      → ambiente de desenvolvimento padrão (ver seção "Dev container")
 ```
 
@@ -51,7 +60,8 @@ você está rodando dentro dele (`/workspaces/design-system`, usuário `node`).
 - **`post-start.sh`** (a cada start): `pnpm install --frozen-lockfile` e instala o Chromium
   do Playwright + libs do SO (necessários pro `test:storybook`). O browser é baixado como
   usuário `node` (cache em `~/.cache/ms-playwright`); só o `install-deps` usa `sudo`.
-- **Portas encaminhadas**: `3000` (`apps/web`, `pnpm dev`) e `6006` (Storybook).
+- **Portas encaminhadas**: `3000` (`apps/web`, `pnpm dev`), `6006` (Storybook) e `8787`
+  (`pnpm --filter web preview`, wrangler).
 - **VS Code**: Biome é o formatter padrão, com quick-fix e organize imports ao salvar;
   extensões de Tailwind, GitLens, npm-intellisense e corretor ortográfico (en + pt-BR).
 
@@ -84,11 +94,22 @@ pnpm test                              # vitest --project unit
 pnpm build                             # type-check + gera registry.json + public/r
 pnpm --filter @fma-ui/ui build         # build só do pacote ui (regenera o registro)
 pnpm --filter @fma-ui/ui test:storybook  # testes de interação (Playwright/Chromium)
-pnpm --filter web test:e2e             # e2e do editor de temas (build de produção + Playwright)
+pnpm --filter web test:e2e             # e2e do site e do editor de temas (build + wrangler dev)
+pnpm --filter web preview              # serve o build no workerd local (porta 8787)
+pnpm --filter web deploy:worker        # wrangler deploy do último build (Cloudflare Workers)
 pnpm storybook                         # dev server na porta 6006
 pnpm add:shadcn <nomes...> | all       # vendoriza componentes oficiais do shadcn
 pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceiros
 ```
+
+## Variáveis de ambiente
+
+`FMA_UI_SITE_URL` (URL pública do `apps/web`: `homepage` do registro e custom domain do
+Worker) é obrigatória pro gerador do registro e pro dev/build do `apps/web`. Defina no ambiente
+ou num `.env` na raiz (copie `.env.example`; git-ignorado). Schema zod e mensagens em
+`packages/registry/src/env.ts` (`@fma-ui/registry/env`, só Node). No CI vem da repository
+variable `FMA_UI_SITE_URL`; no Cloudflare, das variáveis de build. Variável nova: adicione ao
+`RegistryEnvSchema`, ao `.env.example` e ao `env:` do workflow. Nunca escreva o domínio no código.
 
 ## Regras essenciais
 
@@ -162,6 +183,11 @@ pnpm add:registry <url | @ns/nome>     # baixa componente de registro de terceir
 - Versões compartilhadas (react, typescript, vite, tailwind, @types/*) ficam no `catalog:`
   do `pnpm-workspace.yaml` — use `"catalog:"` nos `package.json` em vez de versões soltas.
 - `nitro` está fixado em versão exata de propósito; não troque por `^`/`latest`.
+- `apps/web` faz deploy no **Cloudflare Workers** (preset `cloudflare_module` no `vite.config.ts`;
+  `wrangler.jsonc` é mesclado no `.output/server/wrangler.json` gerado). O Worker tem limite de
+  tamanho: código pesado que só roda no cliente (stories/Storybook, shiki) entra por `import()`
+  atrás de `import.meta.env.SSR` pra ficar fora do bundle do servidor. Nada de APIs só de Node
+  em runtime (`fs` etc.).
 
 ## Git
 

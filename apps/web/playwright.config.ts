@@ -1,8 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// End-to-end tests for the theme editor (/themes), against the production
-// build: the dev server's on-demand dependency optimization can reload the
-// page mid-test.
+// End-to-end tests for the docs site and the theme editor (/themes), against the
+// production build running in workerd (wrangler dev), the Cloudflare Workers
+// runtime it deploys to: the dev server's on-demand dependency optimization can
+// reload the page mid-test.
 const PORT = 4319;
 
 export default defineConfig({
@@ -22,7 +23,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm build && PORT=${PORT} node .output/server/index.mjs`,
+    command: `pnpm build && wrangler dev --port ${PORT}`,
     url: `http://localhost:${PORT}/themes`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

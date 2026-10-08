@@ -2,3 +2,13 @@
 
 /* Tailwind only scans this app by default; the components live in packages/ui. */
 @source "../../../packages/ui/src";
+
+/* shiki's dual themes (code-block.tsx): colors come as --shiki-light/--shiki-dark. */
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+}
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+}
