@@ -2601,7 +2601,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "navigation",
           "disclosure",
