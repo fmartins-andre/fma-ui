@@ -18,6 +18,7 @@ import { DocsNav } from "./docs-nav";
 import type { Mode } from "./mode";
 import { BLOCKS, componentsByCategory, REPO_URL, STORYBOOK_URL } from "./registry";
 import { SiteSearch } from "./search";
+import { ThemeSelect } from "./theme-select";
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -120,7 +121,11 @@ function MainNav() {
           <BlocksMenu />
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink href="/themes" className={navigationMenuTriggerStyle()}>
+          <NavigationMenuLink
+            href="/themes"
+            aria-current={current("/themes")}
+            className={navigationMenuTriggerStyle()}
+          >
             Themes
           </NavigationMenuLink>
         </NavigationMenuItem>
@@ -153,6 +158,7 @@ function MobileNav() {
             <Logo />
           </SheetTitle>
         </SheetHeader>
+        <ThemeSelect className="mx-4 w-auto" />
         <DocsNav className="px-2 pb-6" onNavigate={() => setOpen(false)} />
       </Sheet>
     </SheetTrigger>
@@ -176,6 +182,7 @@ export function SiteHeader({
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <SiteSearch />
           </div>
+          <ThemeSelect className="hidden md:flex" />
           <LinkButton
             href={REPO_URL}
             target="_blank"

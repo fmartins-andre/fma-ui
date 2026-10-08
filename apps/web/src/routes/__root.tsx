@@ -2,6 +2,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts, useRouter } from "@tanst
 import type { ReactNode } from "react";
 import { RouterProvider } from "react-aria-components";
 import { MODE_SCRIPT } from "../site/mode";
+import { THEME_SCRIPT } from "../site/theme-script";
 import "../styles.css";
 
 export const Route = createRootRoute({
@@ -65,6 +66,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: MODE_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
         {children}

@@ -18,10 +18,10 @@ export const test = base.extend<{ consoleErrors: string[] }>({
 
 export { expect };
 
-/** A custom property set inline on <html> by the editor. */
+/** A custom property's current value on <html>, where the site theme lands. */
 export function rootVar(page: Page, name: string) {
   return page.evaluate(
-    (property) => document.documentElement.style.getPropertyValue(property),
+    (property) => getComputedStyle(document.documentElement).getPropertyValue(property).trim(),
     name,
   );
 }

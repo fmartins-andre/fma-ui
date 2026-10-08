@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 
 export type Mode = "light" | "dark";
 
@@ -24,31 +24,43 @@ function applyMode(mode: Mode) {
   document.documentElement.classList.toggle("dark", mode === "dark");
 }
 
-/**
- * The site's light/dark mode, on <html> like everywhere in the registry. Kept
- * apart from the theme editor's own mode; the editor removes the class when it
- * unmounts, and this puts it back. Other tabs and preview iframes follow along.
- */
-export function useMode() {
-  const [mode, setModeState] = useState<Mode>("light");
+// One mode for the whole page: the site header's toggle and the theme editor
+// read and write the same value.
+let current: Mode | undefined;
+const listeners = new Set<() => void>();
 
-  useEffect(() => {
-    const current = readMode();
-    setModeState(current);
-    applyMode(current);
-    function onStorage(event: StorageEvent) {
-      if (event.key !== STORAGE_KEY) return;
-      const next = readMode();
-      setModeState(next);
-      applyMode(next);
-    }
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
+function getSnapshot(): Mode {
+  current ??= readMode();
+  return current;
+}
+
+function setCurrent(next: Mode) {
+  current = next;
+  applyMode(next);
+  for (const listener of listeners) listener();
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  // Other tabs and preview iframes follow along.
+  function onStorage(event: StorageEvent) {
+    if (event.key === STORAGE_KEY) setCurrent(readMode());
+  }
+  window.addEventListener("storage", onStorage);
+  return () => {
+    listeners.delete(listener);
+    window.removeEventListener("storage", onStorage);
+  };
+}
+
+/** The site's light/dark mode, on <html> like everywhere in the registry. */
+export function useMode() {
+  const mode = useSyncExternalStore(subscribe, getSnapshot, () => "light" as const);
+
+  useEffect(() => applyMode(mode), [mode]);
 
   const setMode = useCallback((next: Mode) => {
-    setModeState(next);
-    applyMode(next);
+    setCurrent(next);
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ThemeEditor } from "../theme-editor/editor";
+import { ThemeEditor } from "../../theme-editor/editor";
 
-export const Route = createFileRoute("/themes")({
+export const Route = createFileRoute("/_site/themes")({
   // A purely client-side tool: it reads localStorage and styles <html>.
   ssr: false,
   validateSearch: (search: Record<string, unknown>): { preset?: string } =>
