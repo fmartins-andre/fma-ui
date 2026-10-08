@@ -122,7 +122,7 @@ export const Radius: Story = {
 
 export const AsLink: Story = {
   render: (args) => (
-    <Badge {...args} render={(props) => <a href="https://ui.fmartinsandre.dev" {...props} />}>
+    <Badge {...args} render={(props) => <a href="https://example.com" {...props} />}>
       Clickable
     </Badge>
   ),

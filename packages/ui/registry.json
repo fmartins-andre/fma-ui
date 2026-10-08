@@ -1,7 +1,7 @@
 {
   "name": "@fma-ui",
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "homepage": "https://ui.fmartinsandre.dev",
+  "homepage": "https://ui.fmartinsandre.dev.br",
   "items": [
     {
       "name": "accordion",

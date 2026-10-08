@@ -60,7 +60,7 @@ export const WithText: Story = {
       <InputGroupAddon>
         <InputGroupText>https://</InputGroupText>
       </InputGroupAddon>
-      <InputGroupInput placeholder="ui.fmartinsandre.dev" />
+      <InputGroupInput placeholder="example.com" />
     </InputGroup>
   ),
 };

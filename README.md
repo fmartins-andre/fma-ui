@@ -64,10 +64,14 @@ Uma vez, no `components.json` do projeto:
 ```json
 {
   "registries": {
-    "@fma-ui": "https://ui.fmartinsandre.dev/r/{name}.json"
+    "@fma-ui": "<site-url>/r/{name}.json"
   }
 }
 ```
+
+`<site-url>` é a URL onde o site (`apps/web`) está publicado — a variável
+`FMA_UI_SITE_URL` do build (veja `.env.example`); a página de cada componente no site mostra o
+snippet já preenchido.
 
 É obrigatório: os itens dependem uns dos outros por `@fma-ui/<nome>`, e é o namespace que faz
 o CLI buscá-los aqui, e não no registro oficial do shadcn.
@@ -120,7 +124,7 @@ export function Example() {
 ¹ experimental: a API ainda pode mudar.
 
 O índice completo, legível por máquina, fica em
-[`/r/registry.json`](https://ui.fmartinsandre.dev/r/registry.json).
+`<site-url>/r/registry.json`.
 
 ## Explore no Storybook
 

@@ -8,10 +8,16 @@ on:
       - "packages/ui/package.json"
       - "apps/web/**"
       - "pnpm-lock.yaml"
+      - "packages/registry/**"
       - ".github/workflows/registry-check.yml"
   push:
     branches:
       - main
+
+# Required by the registry generator and apps/web's build (packages/registry/src/env.ts):
+# a repository variable (Settings → Secrets and variables → Actions → Variables).
+env:
+  FMA_UI_SITE_URL: ${{ vars.FMA_UI_SITE_URL }}
 
 jobs:
   drift-check:

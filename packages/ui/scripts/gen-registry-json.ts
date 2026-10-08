@@ -10,6 +10,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ComponentMeta, Registry, RegistryItem } from "@fma-ui/registry";
 import { ComponentMetaSchema } from "@fma-ui/registry";
+import { readRegistryEnv } from "@fma-ui/registry/env";
 import { ThemeSchema, themeRegistryItem } from "../src/lib/theme/index";
 
 const CORE_DIR = "src/core";
@@ -253,7 +254,18 @@ export function processThemes(root = "."): RegistryItem[] {
     });
 }
 
+// Fail before scanning anything if the environment is incomplete.
+function siteUrlOrExit() {
+  try {
+    return readRegistryEnv().siteUrl;
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(1);
+  }
+}
+
 export function main() {
+  const siteUrl = siteUrlOrExit();
   console.log("Discovering components...");
   const componentIds = readdirSync(CORE_DIR, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && entry.name !== "_incoming")
@@ -288,9 +300,9 @@ export function main() {
   const registry: Registry = {
     name: "@fma-ui",
     $schema: "https://ui.shadcn.com/schema/registry.json",
-    // shadcn's `build` command requires this to be a valid URL, even locally.
-    // Update once the registry has a real domain (see apps/web).
-    homepage: "https://ui.fmartinsandre.dev",
+    // Where apps/web is deployed (FMA_UI_SITE_URL). shadcn's `build` command
+    // requires a valid URL here, even locally.
+    homepage: siteUrl,
     items,
   };
 

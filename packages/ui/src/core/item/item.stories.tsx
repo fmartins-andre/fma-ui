@@ -59,10 +59,10 @@ export const AsLink: Story = {
     docs: { description: { story: "Passing href renders the item as a real link, not a div." } },
   },
   render: (args) => (
-    <Item {...args} href="https://ui.fmartinsandre.dev" className="w-96">
+    <Item {...args} href="https://example.com" className="w-96">
       <ItemContent>
         <ItemTitle>Visit the registry</ItemTitle>
-        <ItemDescription>ui.fmartinsandre.dev</ItemDescription>
+        <ItemDescription>example.com</ItemDescription>
       </ItemContent>
     </Item>
   ),
