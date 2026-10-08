@@ -108,7 +108,7 @@ export function ExportDialog({
 
   return (
     <DialogTrigger>
-      <Button size="sm">
+      <Button>
         <Download data-icon="inline-start" />
         Export
       </Button>

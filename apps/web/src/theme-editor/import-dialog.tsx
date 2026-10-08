@@ -38,7 +38,7 @@ export function ImportDialog({ onImport }: { onImport: (theme: Theme) => void })
 
   return (
     <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      <Button variant="outline" size="sm">
+      <Button variant="outline">
         <Upload data-icon="inline-start" />
         Import
       </Button>
