@@ -22,7 +22,13 @@ import { ThemeSelect } from "./theme-select";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <Link to="/" className={cn("flex items-center gap-2 font-heading font-semibold", className)}>
+    <Link
+      to="/"
+      className={cn(
+        "flex shrink-0 items-center gap-2 font-heading font-semibold whitespace-nowrap",
+        className,
+      )}
+    >
       <span
         aria-hidden="true"
         className="grid size-6 place-items-center rounded-md bg-primary text-xs text-primary-foreground"
@@ -178,8 +184,8 @@ export function SiteHeader({
         <MobileNav />
         <Logo className="mr-4" />
         <MainNav />
-        <div className="ml-auto flex flex-1 items-center justify-end gap-1 md:flex-none">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
+        <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-1 md:flex-none">
+          <div className="w-full min-w-0 flex-1 md:w-auto md:flex-none">
             <SiteSearch />
           </div>
           <ThemeSelect className="hidden md:flex" />
