@@ -6,6 +6,13 @@
       "dependsOn": ["^build"],
       "outputs": [".output/**", "dist/**", "registry.json", "../../apps/web/public/r/**"]
     },
+    "build-storybook": {
+      "outputs": ["storybook-static/**"]
+    },
+    "web#build": {
+      "dependsOn": ["^build", "@fma-ui/ui#build-storybook"],
+      "outputs": [".output/**"]
+    },
     "dev": {
       "cache": false,
       "persistent": true

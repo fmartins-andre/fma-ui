@@ -10,7 +10,7 @@
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
 
-  "forwardPorts": [3000, 6006],
+  "forwardPorts": [3000, 6006, 8787],
 
   "postCreateCommand": "bash .devcontainer/post-create.sh",
 

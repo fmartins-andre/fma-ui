@@ -351,6 +351,6 @@ Não use `--no-verify`; corrija a causa.
   `packages/ui/tsconfig.json` declara `"types": ["node"]` explicitamente.
 - **nitro** está fixado em `3.0.260903-beta` (sem `^`) de propósito: a tag `latest` aponta para
   essa beta e não existe stable mais nova que a `3.0.0`, antiga demais para o
-  `@tanstack/react-start` atual. Fixei na versão validada (`vite build` +
-  `node .output/server/index.mjs` respondendo `/` e `/r/button.json`) para não flutuar para uma
-  beta futura sem aviso.
+  `@tanstack/react-start` atual. Fixei na versão validada (`vite build` com o preset
+  `cloudflare_module` + `wrangler dev` respondendo `/` e `/r/button.json`) para não flutuar para
+  uma beta futura sem aviso.

@@ -8,11 +8,12 @@ engineStrict: true
 # pnpm blocks install scripts by default and fails install on any undecided
 # one; this is the declarative decision instead of the interactive
 # `pnpm approve-builds`. lefthook's postinstall fetches its platform binary;
-# esbuild's (via storybook) only re-verifies the binary its optional deps
-# already ship, so it stays off.
+# esbuild's (via storybook) and workerd's (via wrangler) only re-verify the
+# binary their optional deps already ship, so they stay off.
 allowBuilds:
   lefthook: true
   esbuild: false
+  workerd: false
 
 catalog:
   react: ^19.3.0
