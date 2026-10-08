@@ -2,6 +2,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts, useRouter } from "@tanst
 import type { ReactNode } from "react";
 import { RouterProvider } from "react-aria-components";
 import { MODE_SCRIPT } from "../site/mode";
+import { THEME_SCRIPT } from "../site/theme-script";
 import "../styles.css";
 
 export const Route = createRootRoute({
@@ -32,9 +33,11 @@ function NotFound() {
   );
 }
 
-// Static files served next to the app (Storybook build, registry JSON): plain
-// links, not router locations — the router would rewrite and handle them.
-const isStaticPath = (href: string) => /^\/(storybook|r)(\/|\?|$)/.test(href);
+// Static files served next to the app (Storybook build, registry JSON) and
+// other sites: plain links, not router locations — the router would rewrite
+// them (an absolute URL loses its origin) and handle them.
+const isPlainLink = (href: string) =>
+  /^\/(storybook|r)(\/|\?|$)/.test(href) || /^([a-z][a-z\d+.-]*:|\/\/)/i.test(href);
 
 function RootComponent() {
   const router = useRouter();
@@ -43,11 +46,11 @@ function RootComponent() {
       {/* react-aria links (LinkButton, menus, Link) navigate through TanStack Router. */}
       <RouterProvider
         navigate={(href) => {
-          if (isStaticPath(href)) window.location.assign(href);
+          if (isPlainLink(href)) window.location.assign(href);
           else void router.navigate({ href });
         }}
         useHref={(href) =>
-          isStaticPath(href) ? href : router.buildLocation({ href } as never).href
+          isPlainLink(href) ? href : router.buildLocation({ href } as never).href
         }
       >
         <Outlet />
@@ -63,6 +66,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: MODE_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
         {children}

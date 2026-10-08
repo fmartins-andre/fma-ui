@@ -80,7 +80,7 @@ test("fixes a failing foreground to AA with the color picker", async ({ page }) 
 
 test("switches to dark mode and edits the dark palette", async ({ page }) => {
   await openEditor(page, "violet-bloom");
-  await page.getByRole("button", { name: "Dark mode" }).click();
+  await page.getByRole("button", { name: "Switch to dark mode" }).click();
   await expect(page.locator("html")).toHaveClass(/\bdark\b/);
   expect(await rootVar(page, "--background")).toBe(violet.dark.background);
   await expect(page.getByText("Editing the dark palette", { exact: false })).toBeVisible();
@@ -92,7 +92,7 @@ test("picks a heading font for headings only", async ({ page }) => {
   await page.getByRole("button", { name: /Headings.*font$/ }).click();
   await page.getByRole("option", { name: "Fraunces" }).click();
   await expect.poll(() => rootVar(page, "--font-heading")).toMatch(/^Fraunces, ui-serif/);
-  expect(await rootVar(page, "--font-sans")).toBe("");
+  await expect(page.locator("#fma-ui-theme")).not.toContainText("--font-sans");
 });
 
 test("shifts every color with an HSL preset, as one undo step", async ({ page }) => {
@@ -148,16 +148,54 @@ test("exports an installable registry item and an index.css with the fonts", asy
   expect(css).toContain(`--primary: ${violet.light.primary};`);
 });
 
-test("remembers the theme across reloads and clears it when leaving", async ({ page }) => {
+test("remembers the theme across reloads and keeps it on the rest of the site", async ({
+  page,
+}) => {
   await openEditor(page, "nature");
-  await page.getByRole("button", { name: "Dark mode" }).click();
+  await page.getByRole("button", { name: "Switch to dark mode" }).click();
   await page.goto("/themes");
   await expect.poll(() => rootVar(page, "--background")).toBe(nature.dark.background);
   await expect(page.locator("html")).toHaveClass(/\bdark\b/);
 
   await page.getByRole("link", { name: "fma-ui" }).click();
   await expect(page).toHaveURL(/\/$/);
-  expect(await rootVar(page, "--primary")).toBe("");
+  expect(await rootVar(page, "--primary")).toBe(nature.dark.primary);
+});
+
+test("the header picks the theme for every page, before the first paint", async ({ page }) => {
+  // Server-rendered: wait until hydrated, or the click goes nowhere.
+  await page.goto("/docs", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: /Theme preset/ }).click();
+  await page.getByRole("option", { name: "Violet Bloom", exact: true }).click();
+  await expect.poll(() => rootVar(page, "--primary")).toBe(violet.light.primary);
+
+  // The inline head script applies it on its own: serve the page without the app's modules.
+  await page.route("**/components", async (route) => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace(
+      /<script[^>]*type="module"[^>]*>.*?<\/script>/gs,
+      "",
+    );
+    await route.fulfill({ response, body });
+  });
+  await page.goto("/components");
+  await expect(page.locator("script[type=module]")).toHaveCount(0);
+  expect(await rootVar(page, "--primary")).toBe(violet.light.primary);
+  await page.unrouteAll();
+
+  // Vite's dev server injects the stylesheet after the theme: it must win anyway.
+  await page.evaluate(() => {
+    const style = document.getElementById("fma-ui-theme");
+    if (style) document.head.prepend(style);
+  });
+  expect(await rootVar(page, "--primary")).toBe(violet.light.primary);
+
+  await page.goto("/themes");
+  await expect(page.getByRole("button", { name: /Theme preset/ })).toContainText("Violet Bloom");
+  await page.getByRole("button", { name: /Theme preset/ }).click();
+  await page.getByRole("option", { name: "Default", exact: true }).click();
+  await expect.poll(() => rootVar(page, "--primary")).not.toBe(violet.light.primary);
+  expect(await page.locator("#fma-ui-theme").count()).toBe(0);
 });
 
 test("previews the app-sidebar block inside its frame", async ({ page }) => {

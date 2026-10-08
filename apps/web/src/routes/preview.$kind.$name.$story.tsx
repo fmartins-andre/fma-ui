@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useMode } from "../site/mode";
 import { getItem, type ItemKind } from "../site/registry";
 import { type DocStory, loadStories } from "../site/stories";
+import { useThemeState } from "../site/theme";
 
 // A bare page with one story, for the docs' iframes (blocks, fullscreen stories).
 export const Route = createFileRoute("/preview/$kind/$name/$story")({
@@ -24,6 +25,7 @@ function PreviewPage() {
   const { kind } = Route.useLoaderData();
   const [story, setStory] = useState<DocStory | null | undefined>(undefined);
   useMode();
+  useThemeState();
 
   useEffect(() => {
     void loadStories(kind, name).then((stories) =>
