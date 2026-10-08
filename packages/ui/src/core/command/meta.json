@@ -2,7 +2,7 @@
   "name": "command",
   "category": "overlay",
   "status": "stable",
-  "source": "shadcn",
+  "source": "customized",
   "description": "A searchable list of commands or actions, filtered live as you type. Export CommandDialog wraps it in a Dialog for a full command-palette (⌘K) pattern. Pass `CommandEmpty` through `CommandList`'s `renderEmptyState`, not as a child: the list only accepts items, groups and separators.",
   "tags": ["react-aria", "search", "command-palette", "overlay"]
 }

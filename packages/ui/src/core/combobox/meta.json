@@ -2,7 +2,7 @@
   "name": "combobox",
   "category": "forms",
   "status": "stable",
-  "source": "shadcn",
+  "source": "customized",
   "description": "A searchable, filterable select combining a text input with a listbox popover. Supports single selection (ComboboxValue) or a multi-select tag/chip input (ComboboxChips + ComboboxChip).",
   "tags": ["form", "react-aria", "selection", "autocomplete"]
 }

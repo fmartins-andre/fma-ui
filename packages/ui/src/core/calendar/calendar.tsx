@@ -121,13 +121,13 @@ const cellVariants = cva(
         true: "[&:is(:nth-child(2)>[data-selected=true])>div]:rounded-l-(--cell-radius)",
       },
       isToday: {
-        true: "rounded-(--cell-radius) bg-muted text-foreground data-[selected=true]:rounded-none",
+        true: "rounded-(--cell-radius) bg-accent text-accent-foreground data-[selected=true]:rounded-none",
       },
       isSelectionStart: {
-        true: "relative isolate z-0 rounded-l-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:right-0 after:w-4 after:bg-muted",
+        true: "relative isolate z-0 rounded-l-(--cell-radius) bg-accent after:absolute after:inset-y-0 after:right-0 after:w-4 after:bg-accent",
       },
       isSelectionEnd: {
-        true: "relative isolate z-0 rounded-r-(--cell-radius) bg-muted after:absolute after:inset-y-0 after:left-0 after:w-4 after:bg-muted",
+        true: "relative isolate z-0 rounded-r-(--cell-radius) bg-accent after:absolute after:inset-y-0 after:left-0 after:w-4 after:bg-accent",
       },
       isUnavailable: {
         true: "text-muted-foreground opacity-50 [&>div]:line-through",
@@ -142,18 +142,19 @@ const cellVariants = cva(
   },
 );
 
-// Month/year cells mirror the day cells' look: solid endpoints, muted middle
-// span (square, so a range reads as one band per row), muted "today".
+// Month/year cells mirror the day cells' look: solid endpoints, accent middle
+// span (square, so a range reads as one band per row), accent "today" and hover.
 const PERIOD_CELL_CLASSES = cn(
   buttonVariants({ variant: "ghost" }),
   // bg-clip-border: buttonVariants clips the fill inside its transparent
   // border, which would leave 1px seams along a range band.
   "h-full min-h-(--cell-size) w-full rounded-(--cell-radius) bg-clip-border px-1 font-normal",
-  "data-[today=true]:bg-muted data-[outside=true]:text-muted-foreground",
+  "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground",
+  "data-[today=true]:bg-accent data-[today=true]:text-accent-foreground data-[outside=true]:text-muted-foreground",
   "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
   "data-[unavailable=true]:pointer-events-none data-[unavailable=true]:line-through data-[unavailable=true]:opacity-50",
   "data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground",
-  "data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground",
+  "data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground",
   "data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-start=true]:not-data-[range-end=true]:rounded-e-none",
   "data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-end=true]:not-data-[range-start=true]:rounded-s-none",
   // A band wrapping to the next row keeps the outer corners rounded.
@@ -641,7 +642,7 @@ function DayView({
                         }
                         className={cn(
                           buttonVariants({ variant: "ghost", size: "icon" }),
-                          "relative isolate z-10 flex aspect-square h-full w-full min-w-(--cell-size) flex-col gap-1 border-0 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:text-foreground [&>span]:text-xs [&>span]:opacity-70",
+                          "relative isolate z-10 flex aspect-square h-full w-full min-w-(--cell-size) flex-col gap-1 border-0 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70",
                         )}
                       >
                         {renderCell ? renderCell(renderProps) : renderProps.defaultChildren}

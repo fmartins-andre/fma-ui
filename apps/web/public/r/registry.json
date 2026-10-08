@@ -692,7 +692,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "form",
           "react-aria",
@@ -728,7 +728,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "react-aria",
           "search",
@@ -761,7 +761,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "origin": "shadcn/ui, style: aria-nova (base: react-aria-components). The trigger region must call usePress() — wrap a plain element in react-aria-components' Pressable if it doesn't already.",
         "tags": [
           "react-aria",
@@ -1145,7 +1145,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "react-aria",
           "menu",
@@ -2219,7 +2219,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "form",
           "select",
@@ -2570,7 +2570,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "data-display",
           "table",
