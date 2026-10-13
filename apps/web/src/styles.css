@@ -3,6 +3,20 @@
 /* Tailwind only scans this app by default; the components live in packages/ui. */
 @source "../../../packages/ui/src";
 
+/*
+ * Native scrollbars follow the mode (dark ones on .dark) and are thin everywhere
+ * (scrollbar-width: Firefox and Chromium 121+).
+ */
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+* {
+  scrollbar-width: thin;
+}
+
 /* shiki's dual themes (code-block.tsx): colors come as --shiki-light/--shiki-dark. */
 .shiki,
 .shiki span {
