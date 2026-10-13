@@ -99,11 +99,11 @@ test("the monospace sample installs the theme being edited", async ({ page }) =>
   await openEditor(page, "nature");
   await page.getByRole("tab", { name: "Typography" }).last().click();
   const sample = page.getByRole("tabpanel").locator("pre");
-  await expect(sample).toContainText("npx shadcn@latest add @fma-ui/theme-nature");
+  await expect(sample).toContainText("pnpm dlx shadcn@latest add @fma-ui/theme-nature");
   // Once edited it is no longer the hosted item: install the downloaded file.
   await page.getByRole("tab", { name: "Other" }).click();
   await page.getByRole("button", { name: "Grayscale" }).click();
-  await expect(sample).toContainText("npx shadcn@latest add ./theme-nature.json");
+  await expect(sample).toContainText("pnpm dlx shadcn@latest add ./theme-nature.json");
 });
 
 test("shifts every color with an HSL preset, as one undo step", async ({ page }) => {
@@ -149,7 +149,9 @@ test("exports an installable registry item and an index.css with the fonts", asy
   await openEditor(page, "violet-bloom");
   await page.getByRole("button", { name: "Export" }).click();
   const dialog = page.getByRole("dialog");
-  await expect(dialog.getByText("npx shadcn@latest add @fma-ui/theme-violet-bloom")).toBeVisible();
+  await expect(
+    dialog.getByText("pnpm dlx shadcn@latest add @fma-ui/theme-violet-bloom"),
+  ).toBeVisible();
   await expect(dialog.getByText(/@fontsource\/plus-jakarta-sans/).first()).toBeVisible();
 
   const download = page.waitForEvent("download");

@@ -30,7 +30,7 @@ componente é entregue como código-fonte direto no seu projeto, via o CLI do sh
 seu: leia, ajuste, apague o que não usa.
 
 ```bash
-npx shadcn@latest add @fma-ui/button
+pnpm dlx shadcn@latest add @fma-ui/button
 ```
 
 Pronto: `components/fma-ui/button.tsx` cai no seu projeto, com as dependências npm já
@@ -58,7 +58,7 @@ instaladas.
 Se o seu projeto ainda não usa shadcn/ui, inicialize com a base react-aria:
 
 ```bash
-npx shadcn@latest init --base aria
+pnpm dlx shadcn@latest init --base aria
 ```
 
 ### 2. Registre o namespace
@@ -79,7 +79,7 @@ o CLI buscá-los aqui, e não no registro oficial do shadcn.
 ### 3. Adicione componentes
 
 ```bash
-npx shadcn@latest add @fma-ui/button @fma-ui/dialog @fma-ui/select
+pnpm dlx shadcn@latest add @fma-ui/button @fma-ui/dialog @fma-ui/select
 ```
 
 Tudo é instalado em pastas próprias: `components/fma-ui/`, `hooks/fma-ui/` e `lib/fma-ui/`
@@ -135,7 +135,7 @@ O índice completo, legível por máquina, fica em
 item do registro:
 
 ```bash
-npx shadcn@latest add @fma-ui/theme-claude
+pnpm dlx shadcn@latest add @fma-ui/theme-claude
 ```
 
 No [editor de temas](https://ui.fmartinsandre.dev.br/themes) dá pra pré-visualizar os temas sobre os componentes, ajustar
