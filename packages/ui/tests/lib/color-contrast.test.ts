@@ -207,6 +207,16 @@ describe("passingRegion", () => {
     expect(region.at(-1)?.x).toBeCloseTo(0.4, 10);
   });
 
+  it("spans xDomain when given", () => {
+    const region = passingRegion("oklch(0.5 0.1 250)", WHITE, CONTRAST_AA, {
+      x: "c",
+      y: "l",
+      xDomain: [0, 0.2],
+      columns: 4,
+    });
+    for (const [i, { x }] of region.entries()) expect(x).toBeCloseTo(i * 0.05, 10);
+  });
+
   it("matches the lightness ranges of each column's color", () => {
     const region = passingRegion("oklch(0.5 0.1 250)", WHITE, CONTRAST_AA, {
       x: "c",

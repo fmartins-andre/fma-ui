@@ -215,6 +215,8 @@ export interface PassingRegionOptions<S extends ColorSpace> {
   x: ColorChannel<S>;
   /** Vertical channel of the area. */
   y: ColorChannel<S>;
+  /** The range of `x` covered. Defaults to its channelDomain (e.g. chroma up to a hue's maximum). */
+  xDomain?: [number, number];
   /** Columns across `x` (the region has `columns + 1` of them, ends included). */
   columns?: number;
   /** Sampling steps along `y` in each column (edges are then refined). */
@@ -239,13 +241,13 @@ export function passingRegion<S extends ColorSpace = "oklch">(
   value: string,
   background: string,
   minRatio: number,
-  { space = "oklch" as S, x, y, columns = 32, samples = 50 }: PassingRegionOptions<S>,
+  { space = "oklch" as S, x, y, xDomain, columns = 32, samples = 50 }: PassingRegionOptions<S>,
 ): PassingColumn[] {
   const color = parseOpaque(value);
   const bg = parseOpaque(background);
   if (!color || !bg) return [];
   const channels = readChannels(space, color);
-  const [min, max] = channelDomain(x);
+  const [min, max] = xDomain ?? channelDomain(x);
   return Array.from({ length: columns + 1 }, (_, i) => {
     const at = min + ((max - min) * i) / columns;
     const ranges = scanRanges(

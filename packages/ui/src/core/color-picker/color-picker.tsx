@@ -1,14 +1,27 @@
 import { cn } from "cn";
-import { type Color, converter, formatCss, formatHex, parse } from "culori";
+import {
+  type Color,
+  converter,
+  displayable,
+  formatCss,
+  formatHex,
+  formatHex8,
+  formatHsl,
+  formatRgb,
+  parse,
+} from "culori";
 import { ContrastIcon } from "lucide-react";
 import {
   type ComponentProps,
   createContext,
+  type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
+  type PointerEvent as ReactPointerEvent,
   type RefObject,
   useCallback,
   useContext,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -18,6 +31,7 @@ import {
   Label,
   ListBox,
   ListBoxItem,
+  NumberField,
   Button as RACButton,
   type ButtonProps as RACButtonProps,
   Slider,
@@ -26,7 +40,15 @@ import {
   SliderTrack,
 } from "react-aria-components";
 import { Button, buttonVariants } from "@/core/button/button";
+import { Input } from "@/core/input/input";
 import { Popover } from "@/core/popover/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/core/select/select";
 import {
   CONTRAST_AA,
   CONTRAST_AAA,
@@ -38,7 +60,9 @@ import {
   formatOklchChannels,
   inGamut,
   nearestContrastColor,
+  type PassingColumn,
   passingRanges,
+  passingRegion,
 } from "@/lib/color-contrast";
 
 /* -------------------------------------------------------------------------- */
@@ -113,10 +137,28 @@ function parseState(value: string, previous?: ColorState): ColorState | undefine
   return { space, channels, alpha: color.alpha ?? 1 };
 }
 
-/** The emitted value: `oklch(…)`, chroma clamped to sRGB, alpha kept. */
-function formatState(state: ColorState): string {
+/** The formats a picker emits and its fields edit. */
+type ColorPickerFormat = "oklch" | "hex" | "rgb" | "hsl";
+
+/** The state as CSS in `format`, clamped to sRGB (OKLCH by chroma), alpha kept. */
+function formatState(state: ColorState, format: ColorPickerFormat = "oklch"): string {
   const { l = 0, c = 0, h = 0 } = channelsIn(state, "oklch");
-  return formatOklchChannels({ l, c, h, alpha: state.alpha });
+  const channels = { l, c, h, alpha: state.alpha };
+  if (format === "oklch") return formatOklchChannels(channels);
+  const color: Color = { mode: "oklch", ...inGamut(channels) };
+  if (format === "hex") return state.alpha < 1 ? formatHex8(color) : formatHex(color);
+  return format === "rgb" ? formatRgb(color) : formatHsl(color);
+}
+
+/** The state with one channel set in `space` (or alpha, without `key`). */
+function withChannel(
+  state: ColorState,
+  space: ColorSpace,
+  key: ColorChannel | undefined,
+  value: number,
+): ColorState {
+  if (!key) return { ...state, alpha: value };
+  return { space, channels: { ...channelsIn(state, space), [key]: value }, alpha: state.alpha };
 }
 
 /** Opaque sRGB hex of the state (OKLCH chroma clamped), for painting tracks and swatches. */
@@ -258,6 +300,8 @@ interface ColorPickerContextValue {
   /** The current value as emitted. */
   value: string;
   update: (next: ColorState) => void;
+  format: ColorPickerFormat;
+  alpha: boolean;
   contrastWith?: string;
   swatches?: Swatch[];
   swatchColumns?: number;
@@ -281,8 +325,12 @@ type ColorPickerProviderProps = {
   value?: string;
   /** Initial color when uncontrolled. */
   defaultValue?: string;
-  /** Called with an `oklch(…)` string, chroma clamped to sRGB; alpha is kept. */
+  /** Called with the color in `format`, clamped to sRGB (OKLCH by chroma); alpha is kept. */
   onChange?: (value: string) => void;
+  /** The format of emitted values. Defaults to `oklch(…)`. */
+  format?: ColorPickerFormat;
+  /** Adds the alpha slider and field to the default panel (alpha is always kept). */
+  alpha?: boolean;
   /**
    * The background this color sits on. Every part shows contrast against it:
    * tracks hatch what fails AA and mark the AA/AAA thresholds, presets failing
@@ -311,6 +359,8 @@ function ColorPickerProvider({
   value,
   defaultValue,
   onChange,
+  format = "oklch",
+  alpha = false,
   contrastWith,
   swatches,
   swatchColumns,
@@ -336,11 +386,11 @@ function ColorPickerProvider({
   const update = useCallback(
     (next: ColorState) => {
       setState(next);
-      const css = formatState(next);
+      const css = formatState(next, format);
       emitted.current = css;
       onChange?.(css);
     },
-    [onChange],
+    [onChange, format],
   );
 
   const [openState, setOpenState] = useState(defaultOpen);
@@ -356,8 +406,10 @@ function ColorPickerProvider({
   const context = useMemo<ColorPickerContextValue>(
     () => ({
       state,
-      value: formatState(state),
+      value: formatState(state, format),
       update,
+      format,
+      alpha,
       contrastWith,
       swatches,
       swatchColumns,
@@ -369,7 +421,9 @@ function ColorPickerProvider({
     }),
     [
       state,
+      format,
       update,
+      alpha,
       contrastWith,
       swatches,
       swatchColumns,
@@ -500,7 +554,10 @@ function ColorPickerContent({
 
 type ColorPickerPanelProps = ColorPickerProviderProps & {
   className?: string;
-  /** The controls, laid out in a column. Default: preview, L/C/H sliders, presets, contrast fixes. */
+  /**
+   * The controls, laid out in a column. Default: preview, OKLCH area, hue (and
+   * alpha) sliders, format fields, presets and contrast fixes.
+   */
   children?: ReactNode;
 };
 
@@ -524,9 +581,10 @@ function DefaultControls() {
   return (
     <>
       <ColorPickerPreview />
-      <ColorPickerSlider channel="lightness" showLabel />
-      <ColorPickerSlider channel="chroma" showLabel />
-      <ColorPickerSlider channel="hue" showLabel />
+      <ColorPickerArea />
+      <ColorPickerSlider channel="hue" />
+      {picker.alpha && <ColorPickerSlider channel="alpha" />}
+      <ColorPickerFields />
       <ColorPickerSwatches />
       {picker.contrastWith && <ColorPickerFixContrast />}
     </>
@@ -689,12 +747,7 @@ function ColorPickerSlider({
   const vertical = orientation === "vertical";
   const percent = (v: number) => `${((v * scale - min) / (max - min)) * 100}%`;
 
-  const set = (next: number) =>
-    picker.update(
-      key
-        ? { space, channels: { ...channels, [key]: next / scale }, alpha: picker.state.alpha }
-        : { ...picker.state, alpha: next },
-    );
+  const set = (next: number) => picker.update(withChannel(picker.state, space, key, next / scale));
 
   return (
     <Slider
@@ -765,6 +818,493 @@ function ColorPickerSlider({
         />
       </SliderTrack>
     </Slider>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                    Area                                    */
+/* -------------------------------------------------------------------------- */
+
+type AreaSpace = "oklch" | "hsb";
+
+const AREA = {
+  oklch: { x: "c", y: "l", label: "Chroma and lightness", xLabel: "chroma", yLabel: "Lightness" },
+  hsb: {
+    x: "s",
+    y: "v",
+    label: "Saturation and brightness",
+    xLabel: "saturation",
+    yLabel: "Brightness",
+  },
+} as const;
+
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+const percent = (n: number) => `${n * 100}%`;
+const toRgb = converter("rgb");
+
+/** The most chroma sRGB reaches at hue `h`, and the lightness where it does. */
+function cusp(h: number): { c: number; l: number } {
+  let best = { c: 0, l: 0.5 };
+  for (let i = 1; i < 100; i++) {
+    const l = i / 100;
+    const { c } = inGamut({ l, c: 0.4, h, alpha: 1 });
+    if (c > best.c) best = { c, l };
+  }
+  return best;
+}
+
+/** The lightness interval where chroma `c` at hue `h` fits sRGB (it contains the cusp's). */
+function gamutSpan(c: number, h: number, cuspL: number): [number, number] | undefined {
+  const fits = (l: number) => displayable({ mode: "oklch", l, c, h });
+  if (!fits(cuspL)) return undefined;
+  const edge = (inside: number, outside: number) => {
+    for (let i = 0; i < 14; i++) {
+      const mid = (inside + outside) / 2;
+      if (fits(mid)) inside = mid;
+      else outside = mid;
+    }
+    return inside;
+  };
+  return [fits(0) ? 0 : edge(cuspL, 0), fits(1) ? 1 : edge(cuspL, 1)];
+}
+
+/** Size of the canvas the OKLCH area is painted on (scaled up smoothly). */
+const AREA_WIDTH = 128;
+const AREA_HEIGHT = 96;
+
+/**
+ * Paints chroma × lightness at hue `h`. In a row, sRGB covers chroma from 0 up
+ * to a limit; past it the edge color repeats, and the area's clip-path cuts it.
+ */
+function paintOklchArea(canvas: HTMLCanvasElement, h: number, maxChroma: number) {
+  const context = canvas.getContext("2d");
+  if (!context) return;
+  const image = context.createImageData(AREA_WIDTH, AREA_HEIGHT);
+  for (let row = 0; row < AREA_HEIGHT; row++) {
+    const l = 1 - (row + 0.5) / AREA_HEIGHT;
+    let edge = [0, 0, 0];
+    for (let column = 0; column < AREA_WIDTH; column++) {
+      const c = ((column + 0.5) / AREA_WIDTH) * maxChroma;
+      const { r, g, b } = toRgb({ mode: "oklch", l, c, h });
+      if (![r, g, b].some((v) => v < -1e-4 || v > 1 + 1e-4)) {
+        edge = [r, g, b].map((v) => Math.round(clamp01(v) * 255));
+      }
+      image.data.set([...edge, 255], (row * AREA_WIDTH + column) * 4);
+    }
+  }
+  context.putImageData(image, 0, 0);
+}
+
+/** Columns across the area its sRGB outline is traced at. */
+const GAMUT_COLUMNS = 48;
+
+/** A CSS clip-path tracing where chroma × lightness at hue `h` fits sRGB. */
+function gamutClipPath(h: number, maxChroma: number, cuspL: number): string {
+  const spans = Array.from({ length: GAMUT_COLUMNS + 1 }, (_, i) => {
+    const x = i / GAMUT_COLUMNS;
+    return { x, span: gamutSpan(x * maxChroma * 0.999, h, cuspL) };
+  }).flatMap(({ x, span }) => (span ? [{ x, span }] : []));
+  const top = spans.map(({ x, span }) => `${percent(x)} ${percent(1 - span[1])}`);
+  const bottom = spans.reverse().map(({ x, span }) => `${percent(x)} ${percent(1 - span[0])}`);
+  return `polygon(${[...top, ...bottom].join(", ")})`;
+}
+
+/** A path (0–1 box, y down) of where the region fails: trapezoids between columns. */
+function failingPath(region: PassingColumn[]): string {
+  const failing = region.map(({ ranges }) => complement(ranges, [0, 1]));
+  const width = 1 / (region.length - 1);
+  const box = (x0: number, x1: number, [from, to]: [number, number]) =>
+    `M${x0} ${1 - to}H${x1}V${1 - from}H${x0}Z`;
+  let d = "";
+  for (let i = 0; i + 1 < failing.length; i++) {
+    const [x0, x1] = [i * width, (i + 1) * width];
+    const [left = [], right = []] = [failing[i], failing[i + 1]];
+    if (left.length === right.length) {
+      left.forEach(([f0, t0], k) => {
+        const [f1, t1] = right[k] ?? [f0, t0];
+        d += `M${x0} ${1 - t0}L${x1} ${1 - t1}L${x1} ${1 - f1}L${x0} ${1 - f0}Z`;
+      });
+    } else {
+      // The bands split or merge here: each column keeps its own half.
+      for (const range of left) d += box(x0, x0 + width / 2, range);
+      for (const range of right) d += box(x1 - width / 2, x1, range);
+    }
+  }
+  return d;
+}
+
+/** Hatches where the area fails AA and draws the AA (solid) and AAA (dashed) thresholds. */
+function AreaContrast({ aa, aaa }: { aa: PassingColumn[]; aaa: PassingColumn[] }) {
+  const id = `color-picker-${useId().replace(/[^\w-]/g, "")}`;
+  const columns = aa.length - 1;
+  const width = 1 / columns;
+  const edges = (region: PassingColumn[], i: number) => boundaries(region[i]?.ranges ?? [], [0, 1]);
+  const failing = failingPath(aa);
+  // A threshold joins each column's edges to the next one's, where they pair up.
+  const contour = (region: PassingColumn[]) =>
+    Array.from({ length: columns }, (_, i) => {
+      const [from, to] = [edges(region, i), edges(region, i + 1)];
+      if (from.length !== to.length) return "";
+      const [x1, x2] = [i * width, (i + 1) * width];
+      return from.map((y1, k) => `M${x1} ${1 - y1}L${x2} ${1 - (to[k] ?? y1)}`).join("");
+    }).join("");
+
+  return (
+    <svg
+      aria-hidden
+      data-slot="color-picker-area-contrast"
+      className="pointer-events-none absolute inset-0 size-full overflow-visible"
+    >
+      <defs>
+        <pattern
+          id={`${id}-hatch`}
+          width="6"
+          height="6"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(45)"
+        >
+          <rect width="3" height="6" fill="rgb(0 0 0 / 0.3)" />
+          <rect x="3" width="3" height="6" fill="rgb(255 255 255 / 0.3)" />
+        </pattern>
+        <clipPath id={`${id}-failing`} clipPathUnits="objectBoundingBox">
+          <path d={failing} />
+        </clipPath>
+      </defs>
+      {failing && (
+        <rect
+          data-slot="color-picker-failing"
+          width="100%"
+          height="100%"
+          fill={`url(#${id}-hatch)`}
+          clipPath={`url(#${id}-failing)`}
+        />
+      )}
+      <svg
+        aria-hidden
+        viewBox="0 0 1 1"
+        preserveAspectRatio="none"
+        className="absolute inset-0 size-full overflow-visible"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {(
+          [
+            ["aa", aa, undefined],
+            ["aaa", aaa, "3 3"],
+          ] as const
+        ).map(([name, region, dash]) => {
+          const d = contour(region);
+          return (
+            <g key={name} data-slot={`color-picker-${name}-threshold`} strokeDasharray={dash}>
+              <path
+                d={d}
+                stroke="rgb(0 0 0 / 0.5)"
+                strokeWidth={3}
+                vectorEffect="non-scaling-stroke"
+              />
+              <path d={d} stroke="white" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+            </g>
+          );
+        })}
+      </svg>
+    </svg>
+  );
+}
+
+type ColorPickerAreaProps = {
+  /**
+   * OKLCH (default): chroma across, lightness up, at the current hue; the part
+   * sRGB can't show is left blank. HSB: saturation across, brightness up.
+   */
+  colorSpace?: AreaSpace;
+  "aria-label"?: string;
+  className?: string;
+};
+
+/**
+ * A 2D area at the current hue: drag or use the arrow keys (Shift for bigger
+ * steps). With `contrastWith`, the part failing AA is hatched and the AA (solid)
+ * and AAA (dashed) thresholds are drawn across it.
+ */
+function ColorPickerArea({
+  colorSpace = "oklch",
+  "aria-label": ariaLabel,
+  className,
+}: ColorPickerAreaProps) {
+  const picker = usePicker("ColorPickerArea");
+  const space = colorSpace;
+  const { x: xKey, y: yKey, label, xLabel, yLabel } = AREA[space];
+  const channels = channelsIn(picker.state, space);
+  const h = channels.h ?? 0;
+  const peak = useMemo(() => (space === "oklch" ? cusp(h) : { c: 1, l: 1 }), [space, h]);
+  const xMax = peak.c;
+  const x = xMax > 0 ? clamp01((channels[xKey] ?? 0) / xMax) : 0;
+  const y = clamp01(channels[yKey] ?? 0);
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (space === "oklch" && canvasRef.current) paintOklchArea(canvasRef.current, h, xMax);
+  }, [space, h, xMax]);
+
+  const background = picker.contrastWith;
+  const contrast = useMemo(() => {
+    if (!background) return undefined;
+    // Only the hue matters: the area scans the other two channels.
+    const css = formatCss(toCulori({ space, channels: { [xKey]: 0, [yKey]: 0, h }, alpha: 1 }));
+    const options = { space, x: xKey, y: yKey, xDomain: [0, xMax] as [number, number] };
+    const aa = passingRegion(css, background, CONTRAST_AA, options);
+    const aaa = passingRegion(css, background, CONTRAST_AAA, options);
+    return { aa, aaa };
+  }, [background, space, xKey, yKey, h, xMax]);
+  const clipPath = useMemo(
+    () => (space === "oklch" ? gamutClipPath(h, xMax, peak.l) : undefined),
+    [space, h, xMax, peak.l],
+  );
+
+  const set = (nextX: number, nextY: number) => {
+    const xValue = clamp01(nextX) * xMax;
+    const l = clamp01(nextY);
+    const { alpha } = picker.state;
+    if (space === "hsb") {
+      picker.update({ space, channels: { h, s: xValue, v: l }, alpha });
+      return;
+    }
+    // Chroma stops at the edge of sRGB at that lightness.
+    const { c } = inGamut({ l, c: xValue, h, alpha: 1 });
+    picker.update({ space, channels: { l, c, h }, alpha });
+  };
+  const fromPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    set((event.clientX - rect.left) / rect.width, 1 - (event.clientY - rect.top) / rect.height);
+  };
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const step = event.shiftKey ? 0.1 : 0.01;
+    const moves: Record<string, [number, number]> = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, step],
+      ArrowDown: [0, -step],
+      PageUp: [0, 0.1],
+      PageDown: [0, -0.1],
+      Home: [-1, 0],
+      End: [1, 0],
+    };
+    const move = moves[event.key];
+    if (!move || picker.isDisabled) return;
+    event.preventDefault();
+    set(x + move[0], y + move[1]);
+  };
+
+  const format = (value: number) =>
+    space === "oklch" ? value.toFixed(3) : `${Math.round(value * 100)}%`;
+  const valueText = `${yLabel} ${format(y)}, ${xLabel} ${format(x * xMax)}`;
+
+  return (
+    <div
+      role="slider"
+      tabIndex={picker.isDisabled ? undefined : 0}
+      aria-label={ariaLabel ?? label}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(y * 100)}
+      aria-valuetext={valueText}
+      aria-disabled={picker.isDisabled || undefined}
+      data-slot="color-picker-area"
+      data-color-space={space}
+      dir="ltr"
+      className={cn(
+        "relative h-40 w-full shrink-0 cursor-crosshair touch-none rounded-md bg-muted ring-1 ring-foreground/10 outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50",
+        className,
+      )}
+      style={
+        space === "hsb"
+          ? {
+              background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, ${formatHex({ mode: "hsv", h, s: 1, v: 1 })})`,
+            }
+          : undefined
+      }
+      onPointerDown={(event) => {
+        if (picker.isDisabled || event.button !== 0) return;
+        event.currentTarget.setPointerCapture(event.pointerId);
+        event.currentTarget.focus({ preventScroll: true });
+        fromPointer(event);
+      }}
+      onPointerMove={(event) => {
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) fromPointer(event);
+      }}
+      onKeyDown={onKeyDown}
+    >
+      <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
+        <div className="absolute inset-0" style={{ clipPath }}>
+          {space === "oklch" && (
+            <canvas
+              ref={canvasRef}
+              aria-hidden
+              width={AREA_WIDTH}
+              height={AREA_HEIGHT}
+              className="absolute inset-0 size-full"
+            />
+          )}
+          {contrast && <AreaContrast {...contrast} />}
+        </div>
+      </div>
+      <div
+        data-slot="color-picker-area-thumb"
+        className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgb(0_0_0/0.4),0_1px_2px_rgb(0_0_0/0.3)]"
+        style={{ left: percent(x), top: percent(1 - y), background: paint(picker.state) }}
+      />
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Fields                                   */
+/* -------------------------------------------------------------------------- */
+
+type ColorPickerChannelInputProps = {
+  channel: ColorPickerChannel;
+  /** The space the channel belongs to (defaults as in ColorPickerSlider). */
+  colorSpace?: ColorSpace;
+  "aria-label"?: string;
+  className?: string;
+};
+
+/** A number field for one channel; arrow keys step it, and it commits on Enter or blur. */
+function ColorPickerChannelInput({
+  channel,
+  colorSpace = "oklch",
+  "aria-label": ariaLabel,
+  className,
+}: ColorPickerChannelInputProps) {
+  const picker = usePicker("ColorPickerChannelInput");
+  const { label, key, spaces } = CHANNELS[channel];
+  const space = spaces.includes(colorSpace) ? colorSpace : (spaces[0] ?? "oklch");
+  const { min, max, step, scale, format } = channelScale(key, space);
+  const value = key ? (channelsIn(picker.state, space)[key] ?? 0) * scale : picker.state.alpha;
+  return (
+    <NumberField
+      data-slot="color-picker-channel-input"
+      data-channel={channel}
+      aria-label={ariaLabel ?? label}
+      minValue={min}
+      maxValue={max}
+      step={step}
+      formatOptions={format}
+      value={value}
+      isDisabled={picker.isDisabled}
+      onChange={(next) => {
+        if (!Number.isNaN(next)) picker.update(withChannel(picker.state, space, key, next / scale));
+      }}
+      className={cn("min-w-0", className)}
+    >
+      <Input className="h-7 px-1 text-center font-mono text-xs tabular-nums md:text-xs" />
+    </NumberField>
+  );
+}
+
+/** The color as hex, typed with or without `#`; commits on Enter or blur. */
+function HexInput() {
+  const picker = usePicker("ColorPickerFields");
+  const hex = formatState({ ...picker.state, alpha: 1 }, "hex");
+  const [draft, setDraft] = useState(hex);
+  useEffect(() => setDraft(hex), [hex]);
+  const commit = () => {
+    const next = parseState(draft.startsWith("#") ? draft : `#${draft}`, picker.state);
+    if (next && formatState({ ...next, alpha: 1 }, "hex") !== hex) {
+      picker.update({ ...next, alpha: picker.state.alpha });
+    } else setDraft(hex);
+  };
+  return (
+    <Input
+      data-slot="color-picker-hex-input"
+      aria-label="Hex"
+      value={draft}
+      spellCheck={false}
+      disabled={picker.isDisabled}
+      onChange={(event) => setDraft(event.target.value)}
+      onBlur={commit}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") commit();
+      }}
+      className="h-7 min-w-0 px-1.5 font-mono text-xs md:text-xs"
+    />
+  );
+}
+
+const FORMAT_LABELS: Record<ColorPickerFormat, string> = {
+  oklch: "OKLCH",
+  hex: "HEX",
+  rgb: "RGB",
+  hsl: "HSL",
+};
+
+const FORMAT_CHANNELS: Record<
+  Exclude<ColorPickerFormat, "hex">,
+  [ColorSpace, ColorPickerChannel[]]
+> = {
+  oklch: ["oklch", ["lightness", "chroma", "hue"]],
+  rgb: ["rgb", ["red", "green", "blue"]],
+  hsl: ["hsl", ["hue", "saturation", "lightness"]],
+};
+
+type ColorPickerFieldsProps = {
+  /** The formats offered in the menu (the first shown, unless it has the picker's). */
+  formats?: ColorPickerFormat[];
+  className?: string;
+};
+
+/**
+ * A format menu and the fields of that format: a hex input, or one number
+ * field per channel (plus alpha when the picker has `alpha`).
+ */
+function ColorPickerFields({
+  formats = ["oklch", "hex", "rgb", "hsl"],
+  className,
+}: ColorPickerFieldsProps) {
+  const picker = usePicker("ColorPickerFields");
+  const [format, setFormat] = useState<ColorPickerFormat>(() =>
+    formats.includes(picker.format) ? picker.format : (formats[0] ?? "hex"),
+  );
+  return (
+    <div data-slot="color-picker-fields" className={cn("flex items-center gap-1.5", className)}>
+      {formats.length > 1 && (
+        <Select
+          aria-label="Color format"
+          value={format}
+          onChange={(key) => {
+            const next = formats.find((f) => f === key);
+            if (next) setFormat(next);
+          }}
+          isDisabled={picker.isDisabled}
+        >
+          <SelectTrigger size="sm" className="w-21 shrink-0 text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {formats.map((f) => (
+              <SelectItem key={f} id={f}>
+                {FORMAT_LABELS[f]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+      <div className="grid min-w-0 flex-1 auto-cols-fr grid-flow-col gap-1">
+        {format === "hex" ? (
+          <HexInput />
+        ) : (
+          FORMAT_CHANNELS[format][1].map((channel) => (
+            <ColorPickerChannelInput
+              key={channel}
+              channel={channel}
+              colorSpace={FORMAT_CHANNELS[format][0]}
+            />
+          ))
+        )}
+        {picker.alpha && <ColorPickerChannelInput channel="alpha" />}
+      </div>
+    </div>
   );
 }
 
@@ -963,8 +1503,12 @@ function ColorPickerFixContrast({ className }: { className?: string }) {
 }
 
 export type {
+  ColorPickerAreaProps,
   ColorPickerChannel,
+  ColorPickerChannelInputProps,
   ColorPickerContentProps,
+  ColorPickerFieldsProps,
+  ColorPickerFormat,
   ColorPickerPanelProps,
   ColorPickerProps,
   ColorPickerSliderProps,
@@ -975,7 +1519,10 @@ export type {
 };
 export {
   ColorPicker,
+  ColorPickerArea,
+  ColorPickerChannelInput,
   ColorPickerContent,
+  ColorPickerFields,
   ColorPickerFixContrast,
   ColorPickerPanel,
   ColorPickerPreview,
