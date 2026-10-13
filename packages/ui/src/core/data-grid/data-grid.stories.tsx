@@ -33,6 +33,7 @@ import {
   DataGridRowPin,
   DataGridRowSelect,
   DataGridTable,
+  type DataGridTableClassNames,
   DataGridTableFootRow,
   DataGridTableFootRowCell,
   dataGridFeatures,
@@ -168,6 +169,7 @@ type DemoProps = {
   expandable?: boolean;
   initialPinning?: ColumnPinningState;
   i18n?: DataGridI18nOverrides;
+  tableClassNames?: DataGridTableClassNames;
   /** Footer rows for `footerContent`. */
   footer?: (table: Table<DataGridFeatures, User>) => React.ReactNode;
 };
@@ -198,6 +200,7 @@ function Demo({
   initialPinning = { start: [], end: [] },
   i18n,
   footer,
+  tableClassNames,
 }: DemoProps) {
   const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize });
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -250,6 +253,7 @@ function Demo({
       onRowClick={onRowClick}
       tableLayout={layout}
       i18n={i18n}
+      tableClassNames={tableClassNames}
       className="w-[760px]"
     >
       {toolbar?.(table)}
@@ -271,6 +275,9 @@ function Demo({
       <DataGridPagination />
       <output data-testid="selection" className="sr-only">
         {Object.keys(rowSelection).sort().join(",")}
+      </output>
+      <output data-testid="sizing" className="sr-only">
+        {table.store.state.columnSizing.id ?? ""}
       </output>
     </DataGrid>
   );
@@ -1053,7 +1060,7 @@ function InfiniteDemo({ virtualized }: { virtualized?: boolean }) {
 
 const scrollToEnd = async (canvasElement: HTMLElement, loaded: number) => {
   const scroller = canvasElement.querySelector(
-    "[data-slot=data-grid-table-container] > div",
+    "[data-slot=data-grid-table-viewport]",
   ) as HTMLElement;
   scroller.scrollTop = scroller.scrollHeight;
   scroller.dispatchEvent(new Event("scroll"));
@@ -1085,5 +1092,83 @@ export const InfiniteScrollVirtualized: Story = {
     await scrollToEnd(canvasElement, 60);
     await scrollToEnd(canvasElement, 60);
     await expect(await canvas.findByText("All records loaded")).toBeInTheDocument();
+  },
+};
+
+/** `tableClassNames` styles parts of the table; `rowRounded` and `headerBorder` adjust the chrome. */
+export const ClassNames: Story = {
+  args: {
+    layout: { rowRounded: true, rowBorder: false, headerBorder: false, stripped: true },
+    tableClassNames: {
+      base: "demo-base",
+      header: "demo-header",
+      body: "demo-body",
+      bodyRow: "demo-row",
+      edgeCell: "demo-edge",
+    },
+  },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvas }) => {
+    const grid = canvas.getByRole("grid", { name: "Users" });
+    await expect(grid).toHaveClass("demo-base");
+    await expect(grid.querySelector("thead")).toHaveClass("demo-header");
+    await expect(grid.querySelector("tbody")).toHaveClass("demo-body");
+    const [row] = bodyRows(canvas);
+    if (!row) throw new Error("no rows");
+    await expect(row).toHaveClass("demo-row");
+    const cells = [...row.children] as HTMLElement[];
+    await expect(cells[0]).toHaveClass("demo-edge");
+    await expect(cells.at(-1)).toHaveClass("demo-edge");
+    await expect(cells[1]).not.toHaveClass("demo-edge");
+    // Rounded rows round their edge cells; no border under the header.
+    await expect(getComputedStyle(cells[0] as HTMLElement).borderStartStartRadius).not.toBe("0px");
+    for (const header of canvas.getAllByRole("columnheader"))
+      await expect(getComputedStyle(header).borderBottomWidth).toBe("0px");
+  },
+};
+
+/** `columnsResizeMode: "onEnd"` commits the width to the table once, on release. */
+export const ResizeOnEnd: Story = {
+  args: { layout: { columnsResizable: true, columnsResizeMode: "onEnd", cellBorder: true } },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvasElement, canvas }) => {
+    const header = canvas.getByRole("columnheader", { name: /^ID/ });
+    const before = header.getBoundingClientRect().width;
+    const resizer = canvasElement.querySelector<HTMLElement>("[data-resizable-direction]");
+    if (!resizer) throw new Error("No column resizer");
+    const box = resizer.getBoundingClientRect();
+    const x = box.left + box.width / 2;
+    const y = box.top + box.height / 2;
+    const pointer = (type: string, clientX: number) =>
+      resizer.dispatchEvent(
+        new PointerEvent(type, {
+          bubbles: true,
+          clientX,
+          clientY: y,
+          pointerId: 1,
+          pointerType: "mouse",
+          button: 0,
+          buttons: type === "pointerup" ? 0 : 1,
+          isPrimary: true,
+        }),
+      );
+    const sizing = canvas.getByTestId("sizing");
+    pointer("pointerdown", x);
+    pointer("pointermove", x + 30);
+    pointer("pointermove", x + 60);
+    // Mid-drag the column keeps its width; a line marks where its edge lands.
+    const indicator = canvasElement.querySelector<HTMLElement>(
+      "[data-slot=data-grid-table-resize-indicator]",
+    );
+    await waitFor(() => expect(indicator).toBeVisible());
+    const edge = (indicator as HTMLElement).getBoundingClientRect().left;
+    await expect(edge).toBeGreaterThan(header.getBoundingClientRect().right + 40);
+    await expect(header.getBoundingClientRect().width).toBe(before);
+    await expect(sizing).toHaveTextContent(/^$/);
+
+    pointer("pointerup", x + 60);
+    await waitFor(() => expect(Number(sizing.textContent)).toBeGreaterThan(before + 40));
+    await expect(header.getBoundingClientRect().width).toBeGreaterThan(before + 40);
+    await expect(indicator).not.toBeVisible();
   },
 };
