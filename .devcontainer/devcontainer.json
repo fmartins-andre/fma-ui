@@ -31,7 +31,10 @@
         "editor.codeActionsOnSave": {
           "quickfix.biome": "explicit",
           "source.organizeImports.biome": "explicit"
-        }
+        },
+        // git in the terminal authenticates through gh (post-start.sh), never
+        // through VS Code's askpass prompt.
+        "git.terminalAuthentication": false
       }
     }
   },
