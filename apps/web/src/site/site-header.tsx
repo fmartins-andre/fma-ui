@@ -231,9 +231,14 @@ export function SiteFooter() {
           </a>{" "}
           format.
         </p>
-        <a href={REPO_URL} className="underline underline-offset-4">
-          Source on GitHub
-        </a>
+        <div className="flex gap-4">
+          <a href="/llms.txt" className="underline underline-offset-4">
+            llms.txt
+          </a>
+          <a href={REPO_URL} className="underline underline-offset-4">
+            Source on GitHub
+          </a>
+        </div>
       </div>
     </footer>
   );
