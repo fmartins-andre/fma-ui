@@ -58,12 +58,15 @@ você está rodando dentro dele (`/workspaces/design-system`, usuário `node`).
   corepack via `packageManager`.
 - **`post-create.sh`** (uma vez, na criação): configura busca de histórico no `~/.inputrc` e
   instala o Claude Code (`~/.local/bin`).
-- **`post-start.sh`** (a cada start): `pnpm install --frozen-lockfile` e instala o Chromium
-  do Playwright + libs do SO (necessários pro `test:storybook`). O browser é baixado como
+- **`post-start.sh`** (a cada start): credenciais do git pro `github.com` via `gh` (`gh auth
+  git-credential`, o mesmo do `gh auth setup-git`), em vez do helper do VS Code, que pergunta
+  ao git do host e cai num askpass gráfico; `pnpm install --frozen-lockfile`; e o Chromium do
+  Playwright + libs do SO (necessários pro `test:storybook`). O browser é baixado como
   usuário `node` (cache em `~/.cache/ms-playwright`); só o `install-deps` usa `sudo`.
 - **Portas encaminhadas**: `3000` (`apps/web`, `pnpm dev`), `6006` (Storybook) e `8787`
   (`pnpm --filter web preview`, wrangler).
 - **VS Code**: Biome é o formatter padrão, com quick-fix e organize imports ao salvar;
+  `git.terminalAuthentication: false` (o git do terminal autentica pelo `gh`, sem askpass);
   extensões de Tailwind, GitLens, npm-intellisense e corretor ortográfico (en + pt-BR).
 
 Ao mexer no dev container:
