@@ -669,7 +669,7 @@
       "name": "color-contrast",
       "type": "registry:lib",
       "title": "Color Contrast",
-      "description": "WCAG 2 contrast helpers over OKLCH: contrast ratio and level, the lightness ranges where a color passes against a background, and the nearest passing color that keeps its hue (nearestContrastColor). Results are oklch strings clamped to sRGB.",
+      "description": "WCAG 2 contrast helpers over OKLCH: contrast ratio and level, the ranges of any OKLCH, HSL, HSB or RGB channel where a color passes against a background (passingRanges), the passing part of a 2D color area such as chroma × lightness (passingRegion), and the nearest passing color that keeps its hue (nearestContrastColor). Results are oklch strings clamped to sRGB.",
       "author": "@fma-ui/ui",
       "categories": [
         "color"
