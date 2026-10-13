@@ -121,7 +121,7 @@ export function ThemeEditor({ preset }: { preset?: string }) {
                 <Palette theme={theme} mode={mode} />
               </TabsContent>
               <TabsContent id="typography" className={PANEL}>
-                <TypographySample />
+                <TypographySample theme={theme} />
               </TabsContent>
             </Tabs>
             <div className="ml-auto flex flex-wrap items-center gap-2">

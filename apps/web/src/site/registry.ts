@@ -1,4 +1,5 @@
 import registry from "../../../../packages/ui/registry.json";
+import { SHADCN_ADD } from "./shadcn";
 
 export type RegistryItem = (typeof registry.items)[number];
 export type ItemKind = "components" | "blocks";
@@ -70,7 +71,7 @@ export function neighbors(kind: ItemKind, name: string) {
 }
 
 export function installCommand(name: string) {
-  return `pnpm dlx shadcn@latest add @fma-ui/${name}`;
+  return `${SHADCN_ADD} @fma-ui/${name}`;
 }
 
 export const REGISTRIES_SNIPPET = `{

@@ -14,13 +14,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/tabs/tabs";
 import {
   generateIndexCss,
   generateThemeCss,
-  sameTheme,
   type Theme,
   themeFontPackages,
   themeRegistryItem,
 } from "@/lib/theme/index";
 import baseCss from "@/styles.css?raw";
-import { getTheme } from "@/themes/index";
+import { SHADCN_ADD } from "../site/shadcn";
+import { themeInstall } from "./install";
 
 function download(filename: string, text: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type }));
@@ -65,9 +65,7 @@ export function ExportDialog({
 }) {
   const nameId = useId();
   const titleId = useId();
-  const curated = getTheme(theme.name);
-  const published = curated !== undefined && sameTheme(curated, theme);
-  const itemName = `theme-${theme.name}`;
+  const { published, itemName, command } = themeInstall(theme);
   const origin = typeof window === "undefined" ? "" : window.location.origin;
   const fontPackages = themeFontPackages(theme);
 
@@ -147,12 +145,12 @@ export function ExportDialog({
           <h3 className="text-sm font-medium">Install</h3>
           {published ? (
             <>
-              <Command>{`npx shadcn@latest add @fma-ui/${itemName}`}</Command>
+              <Command>{command}</Command>
               <p className="text-xs text-muted-foreground">
                 Needs <code>{`"@fma-ui": "${origin}/r/{name}.json"`}</code> in your components.json
                 registries. Or use the URL directly:
               </p>
-              <Command>{`npx shadcn@latest add ${origin}/r/${itemName}.json`}</Command>
+              <Command>{`${SHADCN_ADD} ${origin}/r/${itemName}.json`}</Command>
             </>
           ) : (
             <>
@@ -175,7 +173,7 @@ export function ExportDialog({
                   {itemName}.json
                 </Button>
               </div>
-              <Command>{`npx shadcn@latest add ./${itemName}.json`}</Command>
+              <Command>{command}</Command>
             </>
           )}
         </div>

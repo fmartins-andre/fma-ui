@@ -63,7 +63,7 @@ test("a component page shows a live preview, its code and the install command", 
   await expect(preview.getByRole("button").first()).toBeVisible();
   await page.getByRole("tab", { name: "Code" }).first().click();
   await expect(page.getByRole("tabpanel").first()).toContainText("export const");
-  await expect(page.getByText("pnpm dlx shadcn@latest add @fma-ui/button")).toBeVisible();
+  await expect(page.getByText("npx shadcn@latest add @fma-ui/button")).toBeVisible();
   await page.getByRole("tab", { name: "Manual" }).click();
   await expect(page.getByText("components/fma-ui/button.tsx")).toBeVisible();
 });

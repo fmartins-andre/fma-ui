@@ -95,6 +95,17 @@ test("picks a heading font for headings only", async ({ page }) => {
   await expect(page.locator("#fma-ui-theme")).not.toContainText("--font-sans");
 });
 
+test("the monospace sample installs the theme being edited", async ({ page }) => {
+  await openEditor(page, "nature");
+  await page.getByRole("tab", { name: "Typography" }).last().click();
+  const sample = page.getByRole("tabpanel").locator("pre");
+  await expect(sample).toContainText("npx shadcn@latest add @fma-ui/theme-nature");
+  // Once edited it is no longer the hosted item: install the downloaded file.
+  await page.getByRole("tab", { name: "Other" }).click();
+  await page.getByRole("button", { name: "Grayscale" }).click();
+  await expect(sample).toContainText("npx shadcn@latest add ./theme-nature.json");
+});
+
 test("shifts every color with an HSL preset, as one undo step", async ({ page }) => {
   await openEditor(page, "nature");
   await page.getByRole("tab", { name: "Other" }).click();
