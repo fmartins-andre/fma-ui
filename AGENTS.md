@@ -192,6 +192,11 @@ variable `FMA_UI_SITE_URL`; no Cloudflare, das variáveis de build. Variável no
   tamanho: código pesado que só roda no cliente (stories/Storybook, shiki) entra por `import()`
   atrás de `import.meta.env.SSR` pra ficar fora do bundle do servidor. Nada de APIs só de Node
   em runtime (`fs` etc.).
+- Políticas de supply chain no `pnpm-workspace.yaml` (`minimumReleaseAge` de 7 dias,
+  `trustPolicy`, `blockExoticSubdeps`, `allowBuilds`): nunca as relaxe nem adicione exclusões
+  pra fazer um install passar; espere a versão envelhecer ou fixe uma anterior. Install script
+  novo entra em `allowBuilds` como `false`, salvo decisão explícita. Actions do CI fixadas por
+  SHA (com `# vX.Y.Z`).
 
 ## Git
 

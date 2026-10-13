@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Personal shadcn-compatible component registry: official shadcn/ui components, customized variants, and original components — all redistributable through your own registry.",
   "scripts": {
-    "preinstall": "npx -y only-allow pnpm",
+    "preinstall": "node scripts/only-allow-pnpm.mjs",
     "prepare": "lefthook install",
     "build": "turbo build",
     "dev": "turbo dev",
