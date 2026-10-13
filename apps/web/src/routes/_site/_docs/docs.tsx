@@ -5,6 +5,8 @@ import {
   BLOCKS,
   COMPONENTS,
   installCommand,
+  LLMS_FULL_TXT_URL,
+  LLMS_TXT_URL,
   REGISTRIES_SNIPPET,
   REGISTRY_INDEX_URL,
   STORYBOOK_URL,
@@ -77,6 +79,22 @@ function DocsIntroduction() {
         </a>
         . It is handy for browsing what is available, for tooling, and for <C>shadcn</C> commands
         that read a registry index, such as <C>shadcn search @fma-ui</C>.
+      </P>
+      <P>
+        For AI agents and LLMs, the registry is also described in{" "}
+        <a href={LLMS_TXT_URL} className="font-medium underline underline-offset-4">
+          <C>llms.txt</C>
+        </a>{" "}
+        (summary, setup and a link to every item) and{" "}
+        <a href={LLMS_FULL_TXT_URL} className="font-medium underline underline-offset-4">
+          <C>llms-full.txt</C>
+        </a>{" "}
+        (the same, plus each item's install command, dependencies and a usage example), following
+        the convention at{" "}
+        <a href="https://llmstxt.org" className="underline underline-offset-4">
+          llmstxt.org
+        </a>
+        .
       </P>
 
       <H2 id="react-aria">Built on React Aria</H2>

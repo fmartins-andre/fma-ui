@@ -55,6 +55,22 @@ test("the docs link to the full registry index", async ({ page, request }) => {
   expect(index.items).toHaveLength(registry.items.length);
 });
 
+test("the docs and the footer link to llms.txt", async ({ page }) => {
+  await open(page, "/docs");
+  const main = page.getByRole("main");
+  await expect(main.getByRole("link", { name: "llms.txt", exact: true })).toHaveAttribute(
+    "href",
+    /\/llms\.txt$/,
+  );
+  await expect(main.getByRole("link", { name: "llms-full.txt" })).toHaveAttribute(
+    "href",
+    /\/llms-full\.txt$/,
+  );
+  await expect(
+    page.getByRole("contentinfo").getByRole("link", { name: "llms.txt" }),
+  ).toHaveAttribute("href", "/llms.txt");
+});
+
 test("serves llms.txt and llms-full.txt listing every registry item", async ({ request }) => {
   for (const path of ["/llms.txt", "/llms-full.txt"]) {
     const response = await request.get(path);
