@@ -173,7 +173,7 @@ function Pager({ kind, name }: { kind: ItemKind; name: string }) {
   return (
     <nav aria-label="Pager" className="mt-16 flex items-center justify-between gap-4">
       {previous ? (
-        <LinkButton href={`/${kind}/${previous.name}`} variant="secondary">
+        <LinkButton href={`/${kind}/${previous.name}`}>
           <ArrowLeftIcon data-icon="inline-start" />
           {previous.title}
         </LinkButton>
@@ -181,7 +181,7 @@ function Pager({ kind, name }: { kind: ItemKind; name: string }) {
         <span />
       )}
       {next && (
-        <LinkButton href={`/${kind}/${next.name}`} variant="secondary">
+        <LinkButton href={`/${kind}/${next.name}`}>
           {next.title}
           <ArrowRightIcon data-icon="inline-end" />
         </LinkButton>
