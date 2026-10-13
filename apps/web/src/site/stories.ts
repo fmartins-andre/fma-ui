@@ -1,6 +1,7 @@
 import type { composeStories } from "@storybook/react-vite";
 import type { ComponentType } from "react";
 import type { ItemKind } from "./registry";
+import { storyCode } from "./story-code";
 
 // The registry's stories double as the docs examples (portable stories), and
 // the files' raw text as their code. Lazy globs: each page loads only its own.
@@ -81,15 +82,6 @@ type RawStory = {
   tags?: string[];
   parameters?: { layout?: DocStory["layout"]; docs?: { description?: { story?: string } } };
 };
-
-/** From `export const Name` to the next top-level `export` (or the end of the file). */
-function storyCode(file: string, exportName: string) {
-  const start = file.search(new RegExp(`^export const ${exportName}\\b`, "m"));
-  if (start < 0) return "";
-  const rest = file.slice(start + 1);
-  const end = rest.search(/^(export |\/\*\*|\/\/ |function |const |let |type )/m);
-  return file.slice(start, end < 0 ? undefined : start + 1 + end).trim();
-}
 
 export async function loadStories(kind: ItemKind, name: string): Promise<DocStories | null> {
   const path = storiesPath(kind, name);

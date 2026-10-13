@@ -45,6 +45,9 @@ apps/web/           → TanStack Start; serve public/r/<nome>.json (GERADO — n
                                       reaproveita se estiver em dia com src/ e .storybook/, senão
                                       roda build-storybook, e copia pra public/storybook (ignorado
                                       pelo git); no dev, usa o build se existir (senão link pra :6006)
+  llms-txt.ts                         plugin Vite: gera /llms.txt e /llms-full.txt a partir do
+                                      registry.json (no build, em public/, ignorado pelo git; no
+                                      dev, a cada request)
 .devcontainer/      → ambiente de desenvolvimento padrão (ver seção "Dev container")
 ```
 

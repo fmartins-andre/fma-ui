@@ -4,6 +4,7 @@ import viteReact from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 import { readRegistryEnv } from "../../packages/registry/src/env.ts";
+import { llmsTxtPlugin } from "./llms-txt.ts";
 import { storybookStatic } from "./storybook-static.ts";
 
 export default defineConfig(({ command }) => {
@@ -22,6 +23,8 @@ export default defineConfig(({ command }) => {
     plugins: [
       // Before start's plugin, so its dev middleware answers /storybook/ first.
       storybookStatic(),
+      // /llms.txt and /llms-full.txt, from packages/ui/registry.json.
+      llmsTxtPlugin(siteUrl),
       tanstackStart(),
       // Cloudflare Workers: .output/server is the Worker, .output/public its static
       // assets; wrangler.jsonc is merged into the generated .output/server/wrangler.json.
