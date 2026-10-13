@@ -167,9 +167,13 @@ type DataGridLayout = {
   cellBorder?: boolean;
   /** Borders between rows. Defaults to true. */
   rowBorder?: boolean;
+  /** Rounded row corners. */
+  rowRounded?: boolean;
   /** Alternating row background. */
   stripped?: boolean;
   headerBackground?: boolean;
+  /** Border under the header. Defaults to true. */
+  headerBorder?: boolean;
   /** Tints the footer rows (`footerContent`). */
   footerBackground?: boolean;
   /** Keeps the header visible while the body scrolls (give the grid a height). */
@@ -178,6 +182,12 @@ type DataGridLayout = {
   width?: "auto" | "fixed";
   /** Lets users drag column edges to resize (fixed width only). */
   columnsResizable?: boolean;
+  /**
+   * When a resize reaches the table's `columnSizing`: while dragging
+   * ("onChange") or once on release ("onEnd"). The column follows the
+   * pointer either way. Defaults to the table's `columnResizeMode`, else "onChange".
+   */
+  columnsResizeMode?: "onChange" | "onEnd";
   /** Adds pin to start/end to `DataGridColumnHeader` menus. */
   columnsPinnable?: boolean;
   /** Adds move left/right to `DataGridColumnHeader` menus. */
@@ -282,6 +292,24 @@ function mergeDataGridI18n(overrides?: DataGridI18nOverrides): DataGridI18nConfi
   return { labels: { ...defaultDataGridI18n.labels, ...overrides?.labels } };
 }
 
+/** Extra classes for parts of the table. */
+type DataGridTableClassNames = {
+  /** The `<table>`. */
+  base?: string;
+  /** The `<thead>` (its row through `[&>tr]:…`). */
+  header?: string;
+  /** Added to the `<thead>` with `headerSticky`. */
+  headerSticky?: string;
+  /** The `<tbody>`. */
+  body?: string;
+  /** Each data row. */
+  bodyRow?: string;
+  /** The `<tfoot>`. */
+  footer?: string;
+  /** The first and last cell of each header and data row. */
+  edgeCell?: string;
+};
+
 type DataGridProps<TData extends RowData> = {
   /** A table created with `useTable({ features: dataGridFeatures, ... })`. */
   table: TanstackTable<DataGridFeatures, TData>;
@@ -307,6 +335,7 @@ type DataGridProps<TData extends RowData> = {
   /** Makes rows actionable: pressing one (or Enter on it) calls this. */
   onRowClick?: (row: TData) => void;
   tableLayout?: DataGridLayout;
+  tableClassNames?: DataGridTableClassNames;
   className?: string;
   children?: React.ReactNode;
 };
@@ -347,7 +376,7 @@ function DataGrid<TData extends RowData>({
     // The context is untyped; useDataGrid<TData>() restores the row type.
     ...(props as Omit<DataGridProps<RowData>, "table" | "children" | "i18n">),
     table: table as TanstackTable<DataGridFeatures, RowData>,
-    layout: { rowBorder: true, width: "fixed", ...tableLayout },
+    layout: { rowBorder: true, headerBorder: true, width: "fixed", ...tableLayout },
     i18n: mergeDataGridI18n(i18n),
   };
   return (
@@ -481,6 +510,7 @@ function DataGridTable<TData extends RowData = RowData>({
     allRowsLoadedMessage,
     emptyMessage,
     onRowClick,
+    tableClassNames: classNames = {},
     i18n: { labels },
   } = useDataGrid();
   const ariaLabel = ariaLabelProp ?? labels.table;
@@ -542,6 +572,37 @@ function DataGridTable<TData extends RowData = RowData>({
     table.setRowSelection(next);
   };
 
+  const resizeMode = layout.columnsResizeMode ?? table.options.columnResizeMode ?? "onChange";
+  const commitSizing = (widths: Map<Key, number | string>) => {
+    const sizing: Record<string, number> = {};
+    for (const [id, width] of widths) if (typeof width === "number") sizing[String(id)] = width;
+    table.setColumnSizing((old) => ({ ...old, ...sizing }));
+  };
+  // In "onEnd" mode the column keeps its width until release, so a line at
+  // the pointer shows where the edge will land. Positioned imperatively: the
+  // drag fires at pointer rate, and a render per move would redraw every row.
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const indicatorRef = React.useRef<HTMLDivElement>(null);
+  // The column whose resizer the user grabbed (pointer or keyboard).
+  const resizingColumnRef = React.useRef<string | null>(null);
+  const showResizeIndicator = (widths: Map<Key, number | string>) => {
+    const container = containerRef.current;
+    const indicator = indicatorRef.current;
+    const index = columns.findIndex((column) => column.id === resizingColumnRef.current);
+    const header = container?.querySelectorAll<HTMLElement>("[role=columnheader]")[index];
+    const width = widths.get(resizingColumnRef.current ?? "");
+    if (!container || !indicator || !header || typeof width !== "number") return;
+    const box = container.getBoundingClientRect();
+    const cell = header.getBoundingClientRect();
+    const isRtl = getComputedStyle(container).direction === "rtl";
+    indicator.style.left = `${isRtl ? cell.right - width - box.left : cell.left + width - box.left}px`;
+    indicator.hidden = false;
+  };
+  const endResize = (widths: Map<Key, number | string>) => {
+    if (indicatorRef.current) indicatorRef.current.hidden = true;
+    commitSizing(widths);
+  };
+
   let content = (
     <Table
       aria-label={ariaLabel}
@@ -574,10 +635,18 @@ function DataGridTable<TData extends RowData = RowData>({
       className={cn(
         "w-full caption-bottom border-separate border-spacing-0 text-sm outline-none",
         fixed && "table-fixed",
+        classNames.base,
       )}
     >
-      <TableHeader className={cn(layout.headerSticky && "sticky top-0", overlapsRows && "z-10")}>
-        {columns.map((column) => {
+      <TableHeader
+        className={cn(
+          layout.headerSticky && "sticky top-0",
+          overlapsRows && "z-10",
+          classNames.header,
+          layout.headerSticky && classNames.headerSticky,
+        )}
+      >
+        {columns.map((column, index) => {
           const header = headers.get(column.id);
           const width = column.columnDef.meta?.autoSize ? "1fr" : column.getSize();
           return (
@@ -591,11 +660,13 @@ function DataGridTable<TData extends RowData = RowData>({
               style={pinningStyle(column)}
               {...pinningAttributes(column)}
               className={cn(
-                "group/column relative h-10 border-b text-left align-middle font-medium whitespace-nowrap text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
+                "group/column relative h-10 text-left align-middle font-medium whitespace-nowrap text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
                 isVirtualized && "flex items-center",
                 layout.dense ? "px-2.5" : "px-4",
+                layout.headerBorder && "border-b",
                 layout.cellBorder && "border-e last:border-e-0",
                 pinnedDivider,
+                (index === 0 || index === columns.length - 1) && classNames.edgeCell,
                 // Opaque backgrounds on the cells: rows scroll under a sticky or virtualized
                 // header, and the virtualized header row group paints no background.
                 // Mixes the raw tokens: `--color-*` resolve at :root, so they'd stay
@@ -606,7 +677,17 @@ function DataGridTable<TData extends RowData = RowData>({
                 column.columnDef.meta?.headerClassName,
               )}
             >
-              <div className="flex items-center gap-1">
+              <div
+                className="flex items-center gap-1"
+                onPointerDownCapture={(event) => {
+                  if ((event.target as Element).closest("[data-resizable-direction]"))
+                    resizingColumnRef.current = column.id;
+                }}
+                onKeyDownCapture={(event) => {
+                  if ((event.target as Element).closest("[data-resizable-direction]"))
+                    resizingColumnRef.current = column.id;
+                }}
+              >
                 {/* Pinned columns keep their place: no drag source, no drop target. */}
                 {layout.columnsDraggable && !showSkeleton && !column.getIsPinned() ? (
                   <ColumnDragArea column={column} dense={layout.dense}>
@@ -633,6 +714,7 @@ function DataGridTable<TData extends RowData = RowData>({
         })}
       </TableHeader>
       <TableBody
+        className={classNames.body}
         renderEmptyState={() => (
           <div className="py-10 text-center text-sm text-muted-foreground">
             {emptyMessage ?? labels.empty}
@@ -672,13 +754,14 @@ function DataGridTable<TData extends RowData = RowData>({
                   rowClassName(layout, isVirtualized),
                   onRowClick && "cursor-pointer",
                   "data-row-pinned:bg-muted/40",
+                  classNames.bodyRow,
                 )}
               >
                 {[
                   ...row.getStartVisibleCells(),
                   ...row.getCenterVisibleCells(),
                   ...row.getEndVisibleCells(),
-                ].map((cell) => (
+                ].map((cell, index, cells) => (
                   <Cell
                     key={cell.id}
                     style={pinningStyle(cell.column)}
@@ -688,6 +771,7 @@ function DataGridTable<TData extends RowData = RowData>({
                       cellClassName(layout, isVirtualized),
                       pinnedDivider,
                       cell.column.getIsPinned() && surfaceBackground,
+                      (index === 0 || index === cells.length - 1) && classNames.edgeCell,
                       cell.column.columnDef.meta?.cellClassName,
                     )}
                   >
@@ -779,18 +863,23 @@ function DataGridTable<TData extends RowData = RowData>({
 
   return (
     <div
+      ref={containerRef}
       data-slot="data-grid-table-container"
       aria-busy={isLoading || undefined}
       // Pinned cells and sticky headers follow a Card's surface.
       className="relative [[data-slot=card]_&]:[--data-grid-card-surface:var(--card)]"
     >
+      <div
+        ref={indicatorRef}
+        hidden
+        aria-hidden="true"
+        data-slot="data-grid-table-resize-indicator"
+        className="pointer-events-none absolute inset-y-0 z-30 w-0.5 -translate-x-1/2 bg-primary"
+      />
       <ResizableTableContainer
-        onResize={(widths) => {
-          const sizing: Record<string, number> = {};
-          for (const [id, width] of widths)
-            if (typeof width === "number") sizing[String(id)] = width;
-          table.setColumnSizing((old) => ({ ...old, ...sizing }));
-        }}
+        data-slot="data-grid-table-viewport"
+        onResize={resizeMode === "onChange" ? commitSizing : showResizeIndicator}
+        onResizeEnd={resizeMode === "onEnd" ? endResize : undefined}
         className={cn("relative w-full overflow-auto", className)}
       >
         {content}
@@ -816,6 +905,7 @@ function rowClassName(layout: DataGridLayout, isVirtualized?: boolean) {
   return cn(
     "outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset data-hovered:bg-accent/50 data-selected:bg-accent data-selected:text-accent-foreground data-dragging:opacity-50 data-drop-target:bg-accent",
     layout.stripped && "odd:bg-muted/30",
+    isVirtualized && layout.rowRounded && "rounded-lg",
     // Virtualized rows are zero-height boxes (cells are positioned), so this
     // border draws at each row's top: skip the first body row (rowindex 2,
     // after the header), which sits right under the header's own border.
@@ -829,15 +919,17 @@ function cellClassName(layout: DataGridLayout, isVirtualized?: boolean) {
     isVirtualized && "flex items-center",
     !isVirtualized && layout.rowBorder && "border-b [tr:last-child>&]:border-b-0",
     layout.cellBorder && "border-e last:border-e-0",
+    !isVirtualized && layout.rowRounded && "first:rounded-s-lg last:rounded-e-lg",
   );
 }
 
 /** The table's footer (`<tfoot>`); `footerContent` on `DataGridTable` renders one for you. */
 function DataGridTableFoot({ className, ...props }: React.ComponentProps<typeof TableFooter>) {
+  const { tableClassNames } = useDataGrid();
   return (
     <TableFooter
       data-slot="data-grid-table-foot"
-      className={cn("font-medium", className)}
+      className={cn("font-medium", tableClassNames?.footer, className)}
       {...props}
     />
   );
@@ -1587,6 +1679,7 @@ export type {
   DataGridLayout,
   DataGridPaginationProps,
   DataGridProps,
+  DataGridTableClassNames,
   DataGridTableProps,
 };
 export {
