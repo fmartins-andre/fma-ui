@@ -36,7 +36,7 @@ test("has a color field for every color token", async ({ page }) => {
     // The value text field (the swatch's picker button is labelled "Pick …").
     const field = page
       .getByRole("textbox", { name: new RegExp(`\\(--${token}\\)$`) })
-      .and(page.locator("[data-slot=input]"));
+      .and(page.locator("[data-slot=color-picker-input] input"));
     await expect(field).toHaveCount(1);
     await expect(field).toBeVisible();
   }

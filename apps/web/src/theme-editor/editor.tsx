@@ -59,7 +59,7 @@ function IconButton({
 const PANEL = "order-last basis-full pt-2";
 
 export function ThemeEditor({ preset }: { preset?: string }) {
-  const { state, dispatch, edit, mode } = useThemeEditor(preset);
+  const { state, dispatch, edit, checkpoint, mode } = useThemeEditor(preset);
   const { theme, loaded } = state;
   const modified = !sameTheme(theme, loaded);
 
@@ -80,7 +80,7 @@ export function ThemeEditor({ preset }: { preset?: string }) {
                 Editing the <strong>{mode}</strong> palette. Toggle the mode in the header to edit
                 the other one.
               </p>
-              <ColorsPanel theme={theme} mode={mode} edit={edit} />
+              <ColorsPanel theme={theme} mode={mode} edit={edit} checkpoint={checkpoint} />
             </TabsContent>
             <TabsContent id="typography" className="pt-4">
               <TypographyPanel theme={theme} edit={edit} />

@@ -37,7 +37,10 @@ export function useThemeEditor(preset: string | undefined) {
     [],
   );
 
-  return { state, dispatch: dispatchTheme, edit, mode, setMode };
+  // A finished drag or pick: the next edit is a new undo step.
+  const checkpoint = useCallback(() => dispatchTheme({ type: "checkpoint" }), []);
+
+  return { state, dispatch: dispatchTheme, edit, checkpoint, mode, setMode };
 }
 
 export type ThemeEditor = ReturnType<typeof useThemeEditor>;

@@ -35,6 +35,17 @@ describe("themeEditorReducer", () => {
     expect(state.past.map((theme) => theme.radius)).toEqual(["0.625rem", "1.1rem"]);
   });
 
+  it("a checkpoint ends the undo step, so the next edit doesn't merge into it", () => {
+    const state = run(
+      initial,
+      { type: "edit", update: withRadius("1rem"), at: 1000 },
+      { type: "checkpoint" },
+      { type: "edit", update: withRadius("1.1rem"), at: 1001 },
+    );
+    expect(state.past.map((theme) => theme.radius)).toEqual(["0.625rem", "1rem"]);
+    expect(run(state, { type: "checkpoint" }, { type: "checkpoint" }).lastEditAt).toBe(0);
+  });
+
   it("undoes and redoes, and a new edit clears the redo stack", () => {
     let state = run(
       initial,
