@@ -14,5 +14,12 @@
       "@/*": ["../../packages/ui/src/*"]
     }
   },
-  "include": ["src", "e2e", "playwright.config.ts", "vite.config.ts", "storybook-static.ts"]
+  "include": [
+    "src",
+    "e2e",
+    "playwright.config.ts",
+    "vite.config.ts",
+    "storybook-static.ts",
+    "llms-txt.ts"
+  ]
 }

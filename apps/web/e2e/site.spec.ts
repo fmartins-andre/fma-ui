@@ -55,6 +55,16 @@ test("the docs link to the full registry index", async ({ page, request }) => {
   expect(index.items).toHaveLength(registry.items.length);
 });
 
+test("serves llms.txt and llms-full.txt listing every registry item", async ({ request }) => {
+  for (const path of ["/llms.txt", "/llms-full.txt"]) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("text/plain");
+    const text = await response.text();
+    for (const item of registry.items) expect(text, path).toContain(`/r/${item.name}.json`);
+  }
+});
+
 test("the components index groups every component", async ({ page }) => {
   await open(page, "/components");
   const main = page.getByRole("main");
