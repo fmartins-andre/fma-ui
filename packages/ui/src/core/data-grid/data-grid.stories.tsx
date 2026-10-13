@@ -25,6 +25,7 @@ import {
   DataGridColumnVisibility,
   DataGridContainer,
   type DataGridFeatures,
+  type DataGridI18nOverrides,
   type DataGridLayout,
   DataGridPagination,
   DataGridRowDragHandle,
@@ -32,6 +33,8 @@ import {
   DataGridRowPin,
   DataGridRowSelect,
   DataGridTable,
+  DataGridTableFootRow,
+  DataGridTableFootRowCell,
   dataGridFeatures,
 } from "./data-grid";
 import meta from "./meta.json";
@@ -164,6 +167,9 @@ type DemoProps = {
   /** Adds an expand column and a details row under expanded rows. */
   expandable?: boolean;
   initialPinning?: ColumnPinningState;
+  i18n?: DataGridI18nOverrides;
+  /** Footer rows for `footerContent`. */
+  footer?: (table: Table<DataGridFeatures, User>) => React.ReactNode;
 };
 
 const EXPAND_COLUMN: UserColumn = {
@@ -190,6 +196,8 @@ function Demo({
   toolbar,
   expandable,
   initialPinning = { start: [], end: [] },
+  i18n,
+  footer,
 }: DemoProps) {
   const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize });
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -241,12 +249,14 @@ function Demo({
       emptyMessage={emptyMessage}
       onRowClick={onRowClick}
       tableLayout={layout}
+      i18n={i18n}
       className="w-[760px]"
     >
       {toolbar?.(table)}
       <DataGridContainer>
         <DataGridTable<User>
           aria-label="Users"
+          footerContent={footer?.(table)}
           renderExpandedRow={
             expandable
               ? (row) => (
@@ -922,5 +932,75 @@ export const TreeRows: Story = {
 
     await userEvent.click(within(bodyRows(canvas)[0] as HTMLElement).getByRole("button"));
     await expect(names()).toEqual(["src", "package.json"]);
+  },
+};
+
+/** `footerContent` renders footer rows (`<tfoot>`), here a count spanning the columns. */
+export const Footer: Story = {
+  args: {
+    layout: { footerBackground: true },
+    footer: (table) => (
+      <DataGridTableFootRow>
+        <DataGridTableFootRowCell colSpan={3}>Active users</DataGridTableFootRowCell>
+        <DataGridTableFootRowCell colSpan={2}>
+          {
+            table.getFilteredRowModel().rows.filter((row) => row.original.status === "Active")
+              .length
+          }
+        </DataGridTableFootRowCell>
+      </DataGridTableFootRow>
+    ),
+  },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvasElement, canvas }) => {
+    const foot = canvasElement.querySelector("tfoot[data-slot=data-grid-table-foot]");
+    if (!foot) throw new Error("no tfoot");
+    // The first cell spans the row header column, so it is the row's header.
+    const cells = [...foot.querySelectorAll("[role=rowheader], [role=gridcell]")];
+    await expect(cells.map((cell) => cell.textContent)).toEqual(["Active users", "5"]);
+    await expect(cells[0]).toHaveAttribute("colspan", "3");
+    // Footer rows are not data rows: the body still holds the page.
+    await expect(canvasElement.querySelectorAll("tbody [role=row]")).toHaveLength(5);
+    await expect(canvas.getByText("1 - 5 of 8")).toBeInTheDocument();
+  },
+};
+
+const PT_BR: DataGridI18nOverrides = {
+  labels: {
+    sortAscending: "Crescente",
+    sortDescending: "Decrescente",
+    pinColumnStart: "Fixar no início",
+    pinColumnEnd: "Fixar no fim",
+    moveColumnLeft: "Mover para a esquerda",
+    moveColumnRight: "Mover para a direita",
+    rowsPerPage: "Linhas por página",
+    paginationInfo: ({ from, to, count }) => `${from}–${to} de ${count}`,
+    previousPage: "Página anterior",
+    nextPage: "Próxima página",
+    goToPage: (page) => `Página ${page}`,
+    empty: "Nenhum registro",
+  },
+};
+
+/** One `i18n` prop replaces the built-in strings: menus, aria labels and pagination. */
+export const Localized: Story = {
+  args: { i18n: PT_BR, layout: { columnsPinnable: true, columnsMovable: true } },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("1–5 de 8")).toBeInTheDocument();
+    await expect(canvas.getByText("Linhas por página")).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole("button", { name: "Próxima página" }));
+    await expect(canvas.getByRole("button", { name: "Página 2" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+
+    await userEvent.click(canvas.getByRole("button", { name: /^Role/ }));
+    const menu = await body().findByRole("menu");
+    for (const name of ["Crescente", "Decrescente", "Fixar no início", "Mover para a direita"])
+      await expect(
+        within(menu).getByRole("menuitem", { name: new RegExp(name) }),
+      ).toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
   },
 };
