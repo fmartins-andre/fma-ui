@@ -47,6 +47,14 @@ test("the blocks menu lists every block", async ({ page }) => {
   }
 });
 
+test("the docs link to the full registry index", async ({ page, request }) => {
+  await open(page, "/docs");
+  const link = page.getByRole("link", { name: /\/r\/registry\.json$/ });
+  await expect(link).toHaveAttribute("href", /\/r\/registry\.json$/);
+  const index = await (await request.get("/r/registry.json")).json();
+  expect(index.items).toHaveLength(registry.items.length);
+});
+
 test("the components index groups every component", async ({ page }) => {
   await open(page, "/components");
   const main = page.getByRole("main");

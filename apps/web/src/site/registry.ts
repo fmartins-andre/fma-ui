@@ -73,6 +73,9 @@ export function installCommand(name: string) {
   return `pnpm dlx shadcn@latest add @fma-ui/${name}`;
 }
 
+/** Every published item (components, blocks, libs, hooks, themes) in one file. */
+export const REGISTRY_INDEX_URL = `${HOMEPAGE}/r/registry.json`;
+
 export const REGISTRIES_SNIPPET = `{
   "registries": {
     "@fma-ui": "${HOMEPAGE}/r/{name}.json"

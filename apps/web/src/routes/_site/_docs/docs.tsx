@@ -6,6 +6,7 @@ import {
   COMPONENTS,
   installCommand,
   REGISTRIES_SNIPPET,
+  REGISTRY_INDEX_URL,
   STORYBOOK_URL,
   THEME_COUNT,
 } from "../../../site/registry";
@@ -63,6 +64,19 @@ function DocsIntroduction() {
       <P>
         Dependencies between items resolve through the same namespace, so adding a block pulls the
         components it is built from.
+      </P>
+      <P>
+        The full index of the registry, with every component, block, lib, hook and theme, is at{" "}
+        <a
+          href={REGISTRY_INDEX_URL}
+          className="font-medium underline underline-offset-4"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <C>{REGISTRY_INDEX_URL}</C>
+        </a>
+        . It is handy for browsing what is available, for tooling, and for <C>shadcn</C> commands
+        that read a registry index, such as <C>shadcn search @fma-ui</C>.
       </P>
 
       <H2 id="react-aria">Built on React Aria</H2>
