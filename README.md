@@ -103,7 +103,7 @@ export function Example() {
 
 ## Componentes
 
-74 componentes, 2 blocos, 21 temas e as libs e hooks que eles usam, organizados por categoria:
+75 componentes, 2 blocos, 21 temas e as libs e hooks que eles usam, organizados por categoria:
 
 | Categoria       | Componentes |
 | --------------- | ----------- |
@@ -111,7 +111,7 @@ export function Example() {
 | **Botões**      | button-group · toggle · toggle-group |
 | **Overlays**    | alert-dialog · command · context-menu · dialog · drawer · dropdown-menu · hover-card · popover · sheet · tooltip |
 | **Navegação**   | breadcrumb · menubar · navigation-menu · pagination · sidebar · stepper · tabs |
-| **Dados**       | avatar · badge · carousel · chart · code-block · data-grid · file-type · icon-tile · kbd · table · timeline |
+| **Dados**       | avatar · badge · carousel · chart · code-block · data-grid · file-type · icon-tile · kbd · sortable · table · timeline |
 | **Feedback**    | alert · empty · icon-stack · progress · skeleton · sonner · spinner |
 | **Layout**      | card · direction · item · resizable · scroll-area · separator |
 | **Disclosure**  | accordion · collapsible |
