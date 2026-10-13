@@ -105,7 +105,12 @@ export function ThemeEditor({ preset }: { preset?: string }) {
           */}
           <div className="flex flex-wrap items-center gap-2">
             <Tabs defaultSelectedKey="components" className="contents">
-              <TabsList className="max-w-full justify-start overflow-x-auto">
+              {/*
+                Scrolls sideways on narrow screens. overflow-y-hidden: with overflow-x
+                set, the triggers' (hidden) underline, 5px below them, would scroll
+                vertically in Chromium.
+              */}
+              <TabsList className="max-w-full justify-start overflow-x-auto overflow-y-hidden">
                 <TabsTrigger id="components">Components</TabsTrigger>
                 <TabsTrigger id="sidebar">Sidebar</TabsTrigger>
                 <TabsTrigger id="palette">Palette & contrast</TabsTrigger>

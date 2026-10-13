@@ -78,6 +78,31 @@ test("fixes a failing foreground to AA with the color picker", async ({ page }) 
   await expect.poll(() => rootVar(page, "--primary-foreground")).not.toBe(violet.light.primary);
 });
 
+test("the editor's tab list never scrolls vertically", async ({ page }) => {
+  await openEditor(page);
+  const tabList = page.getByRole("tablist").filter({ hasText: "Palette & contrast" });
+  const scrollsVertically = await tabList.evaluate((element) => {
+    const { overflowY } = getComputedStyle(element);
+    return /auto|scroll/.test(overflowY) && element.scrollHeight > element.clientHeight;
+  });
+  expect(scrollsVertically).toBe(false);
+});
+
+test("scrollbars are thin and follow the mode", async ({ page }) => {
+  await openEditor(page);
+  const style = () =>
+    page
+      .locator("aside")
+      .first()
+      .evaluate((element) => {
+        const computed = getComputedStyle(element);
+        return { width: computed.scrollbarWidth, scheme: computed.colorScheme };
+      });
+  expect(await style()).toEqual({ width: "thin", scheme: "light" });
+  await page.getByRole("button", { name: "Switch to dark mode" }).click();
+  expect(await style()).toEqual({ width: "thin", scheme: "dark" });
+});
+
 test("switches to dark mode and edits the dark palette", async ({ page }) => {
   await openEditor(page, "violet-bloom");
   await page.getByRole("button", { name: "Switch to dark mode" }).click();
