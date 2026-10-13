@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/core/table/table";
 import { COLOR_GROUPS, checkContrast, type Theme, type ThemeMode } from "@/lib/theme/index";
 import { ContrastBadge } from "./fields";
+import { themeInstall } from "./install";
 
 export function Palette({ theme, mode }: { theme: Theme; mode: ThemeMode }) {
   const colors = theme[mode];
@@ -76,7 +77,7 @@ export function Palette({ theme, mode }: { theme: Theme; mode: ThemeMode }) {
   );
 }
 
-export function TypographySample() {
+export function TypographySample({ theme }: { theme: Theme }) {
   return (
     <article className="flex max-w-2xl flex-col gap-4">
       <h1 className="font-heading text-4xl font-semibold tracking-tight">
@@ -99,9 +100,7 @@ export function TypographySample() {
       </blockquote>
       <h2 className="font-heading text-2xl font-semibold">Monospace</h2>
       <pre className="overflow-x-auto rounded-lg border bg-muted p-4 font-mono text-sm">
-        {
-          "npx shadcn@latest add @fma-ui/theme-violet-bloom\n\nconst ratio = contrastRatio(bg, fg); // 4.5:1"
-        }
+        {`${themeInstall(theme).command}\n\nconst ratio = contrastRatio(bg, fg); // 4.5:1`}
       </pre>
       <div className="flex flex-wrap gap-4 text-sm">
         <span className="font-light">Light 300</span>

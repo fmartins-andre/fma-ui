@@ -245,7 +245,7 @@ Temas curados ficam em `packages/ui/src/themes/<nome>.json` (schema `ThemeSchema
 `shadow`. O que não for definido fica com o valor do `styles.css` (ou do Tailwind).
 
 - O gerador publica cada um como item `registry:theme` chamado `theme-<nome>`; o consumidor
-  instala com `npx shadcn add @fma-ui/theme-<nome>` (o CLI reescreve `:root`/`.dark` e o
+  instala com `pnpm dlx shadcn add @fma-ui/theme-<nome>` (o CLI reescreve `:root`/`.dark` e o
   `@theme inline` do CSS dele).
 - **Fontes**: as do catálogo (`GOOGLE_FONTS` em `src/lib/theme/fonts.ts`) entram no item como
   dependências `@fontsource/<slug>` + um `@import` por peso, então `shadcn add` já instala e
@@ -273,7 +273,7 @@ carrega um tema curado ou importa um (CSS do shadcn/tweakcn, item de registro po
 fontes (Google Fonts), tracking, radius, spacing, sombras e ajuste HSL global, com
 undo/redo (Ctrl+Z) e contraste ao vivo. O preview usa os nossos componentes reais. Exporta
 `index.css`, só as variáveis, o item `registry:theme` (instalável com
-`npx shadcn add ./theme-<nome>.json`) ou o JSON do tema — que, salvo em
+`pnpm dlx shadcn add ./theme-<nome>.json`) ou o JSON do tema — que, salvo em
 `packages/ui/src/themes/`, vira tema curado.
 
 **Todo token de tema tem que ser editável aqui.** A cadeia é verificada automaticamente:
@@ -316,7 +316,7 @@ Para testar o consumo localmente:
 pnpm dev   # apps/web na porta 3000
 # em outro projeto, com "registries": { "@fma-ui": "http://localhost:3000/r/{name}.json" }
 # no components.json:
-npx shadcn add @fma-ui/button
+pnpm dlx shadcn add @fma-ui/button
 ```
 
 Os itens instalam em `components/fma-ui/`, `hooks/fma-ui/` e `lib/fma-ui/` e dependem uns dos
