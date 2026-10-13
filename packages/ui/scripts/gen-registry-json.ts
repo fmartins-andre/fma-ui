@@ -91,15 +91,17 @@ export function detectNpmDependencies(source: string): string[] {
   while ((match = importRegex.exec(code)) !== null) {
     // biome-ignore lint/style/noNonNullAssertion: capture group 1 always matches when the regex matches
     const spec = match[1]!;
-    // Skip relative imports, our own "@/..." alias, node builtins, and react
-    // itself (a peer dep the consumer already has) — anything else is a real
+    // Skip relative imports, our own "@/..." alias, node builtins, and react /
+    // react-dom (peer deps the consumer already has) — anything else is a real
     // npm dependency the vendored component needs (react-aria-components, "cn",
     // class-variance-authority, @radix-ui/*, lucide-react, whatever comes next).
     if (
       spec.startsWith(".") ||
       spec.startsWith("@/") ||
       spec.startsWith("node:") ||
-      spec === "react"
+      spec === "react" ||
+      spec === "react-dom" ||
+      spec.startsWith("react-dom/")
     ) {
       continue;
     }
