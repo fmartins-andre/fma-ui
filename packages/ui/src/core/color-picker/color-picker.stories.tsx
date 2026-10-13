@@ -1,16 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, spyOn, userEvent, waitFor, within } from "storybook/test";
 import {
   ColorPicker,
   ColorPickerArea,
   ColorPickerContent,
+  ColorPickerCopy,
+  ColorPickerEyeDropper,
+  ColorPickerInput,
   ColorPickerPanel,
   ColorPickerPreview,
   ColorPickerSlider,
   ColorPickerSwatch,
   ColorPickerSwatches,
   ColorPickerTrigger,
+  ColorPickerValue,
   DEFAULT_SWATCHES,
 } from "./color-picker";
 import meta from "./meta.json";
@@ -363,5 +367,119 @@ export const AlphaAndFormat: Story = {
     await userEvent.click(await within(document.body).findByRole("option", { name: "RGB" }));
     const red = await canvas.findByRole("textbox", { name: "Red" });
     expect(red).toHaveValue("225");
+  },
+};
+
+export const ColorInput: Story = {
+  args: { value: "#0ea5e9", format: "hex", label: "Canvas background" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "ColorPickerInput takes any CSS color (hex, rgb(), hsl(), oklch(), names) on Enter or blur, and Escape reverts what was typed. Its swatch opens ColorPickerContent, placed against the field.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
+    return (
+      <div className="flex w-64 flex-col gap-3">
+        <ColorPicker value={value} onChange={setValue} format={args.format} label={args.label}>
+          <ColorPickerInput aria-label="Canvas background" />
+          <ColorPickerContent />
+        </ColorPicker>
+        <code className="text-xs">{value}</code>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", { name: "Canvas background" });
+    await userEvent.clear(input);
+    await userEvent.type(input, "tomato{Enter}");
+    await waitFor(() => expect(canvas.getByText("#ff6347")).toBeInTheDocument());
+
+    await userEvent.clear(input);
+    await userEvent.type(input, "not a color");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    await userEvent.keyboard("{Escape}");
+    expect(input).toHaveValue("#ff6347");
+
+    await userEvent.click(canvas.getByRole("button", { name: "Canvas background" }));
+    const dialog = await within(document.body).findByRole("dialog", { name: "Canvas background" });
+    await waitFor(() => expect(dialog).toBeVisible());
+    await userEvent.keyboard("{Escape}");
+  },
+};
+
+export const RecentColors: Story = {
+  args: { value: "oklch(0.6 0.15 160)" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "onChange fires while dragging; onChangeEnd once the interaction ends (a drag released, a key, a preset, a committed field). Here each finished pick is kept under Recent. ColorPickerValue, ColorPickerCopy and ColorPickerEyeDropper (where the browser has one) sit beside the controls.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
+    const [recent, setRecent] = useState<string[]>([]);
+    return (
+      <div className="flex w-72 flex-col gap-3">
+        <ColorPicker
+          value={value}
+          onChange={setValue}
+          onChangeEnd={(next) =>
+            setRecent((list) => [next, ...list.filter((item) => item !== next)].slice(0, 12))
+          }
+        >
+          <ColorPickerArea />
+          <div className="flex items-center gap-2">
+            <ColorPickerEyeDropper />
+            <ColorPickerSlider channel="hue" className="flex-1" />
+          </div>
+          <div className="flex items-center gap-2">
+            <ColorPickerValue className="flex-1 truncate font-mono text-xs" />
+            <ColorPickerCopy />
+          </div>
+          <span id="recent-label" className="text-xs text-muted-foreground">
+            Recent
+          </span>
+          <ColorPickerSwatches colors={recent} columns={12} aria-labelledby="recent-label" />
+        </ColorPicker>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const area = canvas.getByRole("slider", { name: "Chroma and lightness" });
+    const { left, top, width, height } = area.getBoundingClientRect();
+    const at = (x: number, y: number) => ({
+      clientX: left + width * x,
+      clientY: top + height * y,
+    });
+    // One drag across the area: many changes, one recent color.
+    await userEvent.pointer([
+      { keys: "[MouseLeft>]", target: area, coords: at(0.1, 0.2) },
+      { target: area, coords: at(0.15, 0.3) },
+      { target: area, coords: at(0.2, 0.4) },
+      { keys: "[/MouseLeft]", target: area, coords: at(0.2, 0.4) },
+    ]);
+    const recent = canvas.getByRole("listbox", { name: "Recent" });
+    await waitFor(() => expect(within(recent).getAllByRole("option")).toHaveLength(1));
+
+    // Each key press is a finished change.
+    canvas.getByRole("slider", { name: "Hue" }).focus();
+    await userEvent.keyboard("{ArrowRight}{ArrowRight}");
+    await waitFor(() => expect(within(recent).getAllByRole("option")).toHaveLength(3));
+
+    const writeText = spyOn(navigator.clipboard, "writeText").mockResolvedValue();
+    await userEvent.click(canvas.getByRole("button", { name: "Copy color" }));
+    expect(writeText).toHaveBeenCalledWith(
+      canvasElement.querySelector("[data-slot=color-picker-value]")?.textContent,
+    );
+    await waitFor(() => expect(canvas.getByRole("button", { name: "Copied" })).toBeInTheDocument());
+    writeText.mockRestore();
   },
 };

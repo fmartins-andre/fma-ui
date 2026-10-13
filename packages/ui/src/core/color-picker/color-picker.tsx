@@ -10,7 +10,7 @@ import {
   formatRgb,
   parse,
 } from "culori";
-import { ContrastIcon } from "lucide-react";
+import { CheckIcon, ContrastIcon, CopyIcon, PipetteIcon } from "lucide-react";
 import {
   type ComponentProps,
   createContext,
@@ -21,10 +21,12 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useEffectEvent,
   useId,
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import {
   Dialog,
@@ -41,6 +43,7 @@ import {
 } from "react-aria-components";
 import { Button, buttonVariants } from "@/core/button/button";
 import { Input } from "@/core/input/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/core/input-group/input-group";
 import { Popover } from "@/core/popover/popover";
 import {
   Select,
@@ -299,7 +302,10 @@ interface ColorPickerContextValue {
   state: ColorState;
   /** The current value as emitted. */
   value: string;
-  update: (next: ColorState) => void;
+  /** Sets the color; `end` also fires onChangeEnd (a discrete change: a click, a key, a commit). */
+  update: (next: ColorState, end?: boolean) => void;
+  /** Fires onChangeEnd with the latest value (a drag was released). */
+  end: () => void;
   format: ColorPickerFormat;
   alpha: boolean;
   contrastWith?: string;
@@ -310,6 +316,9 @@ interface ColorPickerContextValue {
   isOpen: boolean;
   setOpen: (open: boolean) => void;
   triggerRef: RefObject<HTMLButtonElement | null>;
+  /** What the popover is placed against: the anchor (a ColorPickerInput) or else the trigger. */
+  anchorRef: RefObject<HTMLDivElement | null>;
+  popoverRef: RefObject<Element | null>;
 }
 
 const ColorPickerContext = createContext<ColorPickerContextValue | null>(null);
@@ -327,6 +336,11 @@ type ColorPickerProviderProps = {
   defaultValue?: string;
   /** Called with the color in `format`, clamped to sRGB (OKLCH by chroma); alpha is kept. */
   onChange?: (value: string) => void;
+  /**
+   * Called once an interaction ends: a drag released, a key pressed, a preset
+   * picked, a field committed. Use it for history or saving, not live preview.
+   */
+  onChangeEnd?: (value: string) => void;
   /** The format of emitted values. Defaults to `oklch(…)`. */
   format?: ColorPickerFormat;
   /** Adds the alpha slider and field to the default panel (alpha is always kept). */
@@ -359,6 +373,7 @@ function ColorPickerProvider({
   value,
   defaultValue,
   onChange,
+  onChangeEnd,
   format = "oklch",
   alpha = false,
   contrastWith,
@@ -384,14 +399,18 @@ function ColorPickerProvider({
   }, [value]);
 
   const update = useCallback(
-    (next: ColorState) => {
+    (next: ColorState, end = false) => {
       setState(next);
       const css = formatState(next, format);
       emitted.current = css;
       onChange?.(css);
+      if (end) onChangeEnd?.(css);
     },
-    [onChange, format],
+    [onChange, onChangeEnd, format],
   );
+  const end = useCallback(() => {
+    if (emitted.current !== undefined) onChangeEnd?.(emitted.current);
+  }, [onChangeEnd]);
 
   const [openState, setOpenState] = useState(defaultOpen);
   const setOpen = useCallback(
@@ -402,12 +421,23 @@ function ColorPickerProvider({
     [onOpenChange],
   );
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  // A ref the popover reads when it opens: the anchor if there is one.
+  const popoverRef = useMemo<RefObject<Element | null>>(
+    () => ({
+      get current() {
+        return anchorRef.current ?? triggerRef.current;
+      },
+    }),
+    [],
+  );
 
   const context = useMemo<ColorPickerContextValue>(
     () => ({
       state,
       value: formatState(state, format),
       update,
+      end,
       format,
       alpha,
       contrastWith,
@@ -418,12 +448,16 @@ function ColorPickerProvider({
       isOpen: isOpen ?? openState,
       setOpen,
       triggerRef,
+      anchorRef,
+      popoverRef,
     }),
     [
       state,
       format,
       update,
+      end,
       alpha,
+      popoverRef,
       contrastWith,
       swatches,
       swatchColumns,
@@ -446,7 +480,7 @@ function useColorPicker() {
     /** Sets the color from any CSS color, keeping alpha unless it has its own. Returns false if unparseable. */
     setValue: (css: string) => {
       const next = parseState(css, picker.state);
-      if (next) picker.update(next);
+      if (next) picker.update(next, true);
       return next !== undefined;
     },
     contrastWith: picker.contrastWith,
@@ -538,7 +572,7 @@ function ColorPickerContent({
   return (
     <Popover
       data-slot="color-picker-content"
-      triggerRef={picker.triggerRef}
+      triggerRef={picker.popoverRef}
       isOpen={picker.isOpen}
       onOpenChange={picker.setOpen}
       placement={placement}
@@ -555,8 +589,8 @@ function ColorPickerContent({
 type ColorPickerPanelProps = ColorPickerProviderProps & {
   className?: string;
   /**
-   * The controls, laid out in a column. Default: preview, OKLCH area, hue (and
-   * alpha) sliders, format fields, presets and contrast fixes.
+   * The controls, laid out in a column. Default: preview, OKLCH area, eye
+   * dropper, hue (and alpha) sliders, format fields, presets and contrast fixes.
    */
   children?: ReactNode;
 };
@@ -582,7 +616,10 @@ function DefaultControls() {
     <>
       <ColorPickerPreview />
       <ColorPickerArea />
-      <ColorPickerSlider channel="hue" />
+      <div className="flex items-center gap-2">
+        <ColorPickerEyeDropper />
+        <ColorPickerSlider channel="hue" className="flex-1" />
+      </div>
       {picker.alpha && <ColorPickerSlider channel="alpha" />}
       <ColorPickerFields />
       <ColorPickerSwatches />
@@ -766,6 +803,7 @@ function ColorPickerSlider({
       formatOptions={format}
       value={value}
       onChange={set}
+      onChangeEnd={picker.end}
       aria-label={showLabel ? undefined : (ariaLabel ?? label)}
     >
       {showLabel && !vertical && (
@@ -1062,22 +1100,43 @@ function ColorPickerArea({
     [space, h, xMax, peak.l],
   );
 
-  const set = (nextX: number, nextY: number) => {
+  const set = (nextX: number, nextY: number, end = false) => {
     const xValue = clamp01(nextX) * xMax;
     const l = clamp01(nextY);
     const { alpha } = picker.state;
     if (space === "hsb") {
-      picker.update({ space, channels: { h, s: xValue, v: l }, alpha });
+      picker.update({ space, channels: { h, s: xValue, v: l }, alpha }, end);
       return;
     }
     // Chroma stops at the edge of sRGB at that lightness.
     const { c } = inGamut({ l, c: xValue, h, alpha: 1 });
-    picker.update({ space, channels: { l, c, h }, alpha });
+    picker.update({ space, channels: { l, c, h }, alpha }, end);
   };
-  const fromPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    set((event.clientX - rect.left) / rect.width, 1 - (event.clientY - rect.top) / rect.height);
-  };
+
+  // A drag follows the pointer over the whole window until it's released.
+  const areaRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const moveTo = useEffectEvent((clientX: number, clientY: number) => {
+    const rect = areaRef.current?.getBoundingClientRect();
+    if (rect) set((clientX - rect.left) / rect.width, 1 - (clientY - rect.top) / rect.height);
+  });
+  const release = useEffectEvent(() => {
+    setDragging(false);
+    picker.end();
+  });
+  useEffect(() => {
+    if (!dragging) return;
+    const move = (event: PointerEvent) => moveTo(event.clientX, event.clientY);
+    const up = () => release();
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+    };
+  }, [dragging]);
   const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     const step = event.shiftKey ? 0.1 : 0.01;
     const moves: Record<string, [number, number]> = {
@@ -1093,7 +1152,7 @@ function ColorPickerArea({
     const move = moves[event.key];
     if (!move || picker.isDisabled) return;
     event.preventDefault();
-    set(x + move[0], y + move[1]);
+    set(x + move[0], y + move[1], true);
   };
 
   const format = (value: number) =>
@@ -1124,14 +1183,14 @@ function ColorPickerArea({
             }
           : undefined
       }
-      onPointerDown={(event) => {
+      ref={areaRef}
+      data-dragging={dragging || undefined}
+      onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => {
         if (picker.isDisabled || event.button !== 0) return;
-        event.currentTarget.setPointerCapture(event.pointerId);
+        event.preventDefault();
         event.currentTarget.focus({ preventScroll: true });
-        fromPointer(event);
-      }}
-      onPointerMove={(event) => {
-        if (event.currentTarget.hasPointerCapture(event.pointerId)) fromPointer(event);
+        setDragging(true);
+        moveTo(event.clientX, event.clientY);
       }}
       onKeyDown={onKeyDown}
     >
@@ -1194,7 +1253,8 @@ function ColorPickerChannelInput({
       value={value}
       isDisabled={picker.isDisabled}
       onChange={(next) => {
-        if (!Number.isNaN(next)) picker.update(withChannel(picker.state, space, key, next / scale));
+        if (Number.isNaN(next)) return;
+        picker.update(withChannel(picker.state, space, key, next / scale), true);
       }}
       className={cn("min-w-0", className)}
     >
@@ -1212,7 +1272,7 @@ function HexInput() {
   const commit = () => {
     const next = parseState(draft.startsWith("#") ? draft : `#${draft}`, picker.state);
     if (next && formatState({ ...next, alpha: 1 }, "hex") !== hex) {
-      picker.update({ ...next, alpha: picker.state.alpha });
+      picker.update({ ...next, alpha: picker.state.alpha }, true);
     } else setDraft(hex);
   };
   return (
@@ -1226,6 +1286,11 @@ function HexInput() {
       onBlur={commit}
       onKeyDown={(event) => {
         if (event.key === "Enter") commit();
+        if (event.key === "Escape" && draft !== hex) {
+          // Reverts the draft instead of closing the popover.
+          event.stopPropagation();
+          setDraft(hex);
+        }
       }}
       className="h-7 min-w-0 px-1.5 font-mono text-xs md:text-xs"
     />
@@ -1318,6 +1383,7 @@ type ColorPickerSwatchesProps = {
   /** Columns of the grid. Defaults to the picker's `swatchColumns`. */
   columns?: number;
   "aria-label"?: string;
+  "aria-labelledby"?: string;
   className?: string;
 };
 
@@ -1328,7 +1394,8 @@ type ColorPickerSwatchesProps = {
 function ColorPickerSwatches({
   colors,
   columns,
-  "aria-label": ariaLabel = "Preset colors",
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
   className,
 }: ColorPickerSwatchesProps) {
   const picker = usePicker("ColorPickerSwatches");
@@ -1352,7 +1419,8 @@ function ColorPickerSwatches({
   return (
     <ListBox
       data-slot="color-picker-swatches"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? (ariaLabelledby ? undefined : "Preset colors")}
+      aria-labelledby={ariaLabelledby}
       layout="grid"
       selectionMode="single"
       disallowEmptySelection
@@ -1360,7 +1428,7 @@ function ColorPickerSwatches({
       onSelectionChange={(keys) => {
         const [key] = keys === "all" ? [] : [...keys];
         const next = typeof key === "string" ? parseState(key) : undefined;
-        if (next) picker.update({ ...next, alpha: picker.state.alpha });
+        if (next) picker.update({ ...next, alpha: picker.state.alpha }, true);
       }}
       className={cn("grid gap-1 outline-none", className)}
       style={{
@@ -1408,6 +1476,184 @@ function ColorPickerSwatch({ color, className, style, ...props }: ColorPickerSwa
       style={{ background: swatchBackground(value), ...style }}
       {...props}
     />
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Input and actions                             */
+/* -------------------------------------------------------------------------- */
+
+type ColorPickerInputProps = Omit<
+  ComponentProps<typeof InputGroupInput>,
+  "value" | "defaultValue" | "onChange"
+> & {
+  /**
+   * Reads what was typed as a CSS color, for syntaxes culori doesn't parse
+   * (e.g. bare "222 47% 11%" triplets). Return undefined to reject it.
+   */
+  parseValue?: (text: string) => string | undefined;
+};
+
+/**
+ * A text field taking any CSS color (hex, rgb(), hsl(), oklch(), names…),
+ * committed on Enter or blur; Escape reverts what was typed. A swatch at its
+ * start opens ColorPickerContent, placed against the field.
+ */
+function ColorPickerInput({
+  className,
+  parseValue,
+  onBlur,
+  onKeyDown,
+  ...props
+}: ColorPickerInputProps) {
+  const picker = usePicker("ColorPickerInput");
+  const [draft, setDraft] = useState(picker.value);
+  useEffect(() => setDraft(picker.value), [picker.value]);
+  const read = (text: string) => {
+    const css = parseValue ? parseValue(text) : text;
+    return css === undefined ? undefined : parseState(css, picker.state);
+  };
+  const valid = read(draft) !== undefined;
+  const commit = () => {
+    const next = read(draft);
+    if (next && formatState(next, picker.format) !== picker.value) picker.update(next, true);
+    else setDraft(picker.value);
+  };
+
+  return (
+    <div ref={picker.anchorRef} data-slot="color-picker-input" className={cn("w-full", className)}>
+      <InputGroup isDisabled={picker.isDisabled}>
+        <InputGroupAddon align="inline-start">
+          <ColorPickerTrigger className="size-5 rounded-sm" />
+        </InputGroupAddon>
+        <InputGroupInput
+          value={draft}
+          spellCheck={false}
+          autoComplete="off"
+          disabled={picker.isDisabled}
+          aria-invalid={!valid || undefined}
+          onChange={(event) => setDraft(event.target.value)}
+          onBlur={(event) => {
+            onBlur?.(event);
+            commit();
+          }}
+          onKeyDown={(event) => {
+            onKeyDown?.(event);
+            if (event.key === "Enter") commit();
+            if (event.key === "Escape") setDraft(picker.value);
+          }}
+          className="font-mono"
+          {...props}
+        />
+      </InputGroup>
+    </div>
+  );
+}
+
+/** The current value as text (in `format`, or the picker's). */
+function ColorPickerValue({
+  format,
+  className,
+  ...props
+}: Omit<ComponentProps<"span">, "children"> & { format?: ColorPickerFormat }) {
+  const picker = usePicker("ColorPickerValue");
+  return (
+    <span data-slot="color-picker-value" className={cn("tabular-nums", className)} {...props}>
+      {format ? formatState(picker.state, format) : picker.value}
+    </span>
+  );
+}
+
+type ColorPickerActionProps = Omit<ComponentProps<typeof Button>, "children"> & {
+  children?: ReactNode;
+};
+
+type ColorPickerCopyProps = ColorPickerActionProps & {
+  /** The format copied. Defaults to the picker's. */
+  format?: ColorPickerFormat;
+};
+
+/** Copies the value to the clipboard; its icon turns into a check for a moment. */
+function ColorPickerCopy({
+  format,
+  variant = "ghost",
+  size = "icon-sm",
+  children,
+  ...props
+}: ColorPickerCopyProps) {
+  const picker = usePicker("ColorPickerCopy");
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (!copied) return;
+    const timeout = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(timeout);
+  }, [copied]);
+  const text = format ? formatState(picker.state, format) : picker.value;
+  return (
+    <Button
+      data-slot="color-picker-copy"
+      data-copied={copied || undefined}
+      variant={variant}
+      size={size}
+      aria-label={copied ? "Copied" : "Copy color"}
+      onPress={() => {
+        navigator.clipboard.writeText(text).then(
+          () => setCopied(true),
+          () => setCopied(false),
+        );
+      }}
+      {...props}
+    >
+      {children ?? (copied ? <CheckIcon /> : <CopyIcon />)}
+    </Button>
+  );
+}
+
+type EyeDropperConstructor = new () => { open: () => Promise<{ sRGBHex: string }> };
+
+const getEyeDropper = () => (window as Window & { EyeDropper?: EyeDropperConstructor }).EyeDropper;
+const noSubscribe = () => () => {};
+
+/**
+ * Samples a color from anywhere on screen, keeping the current alpha. Renders
+ * nothing where the browser has no EyeDropper (Firefox, Safari).
+ */
+function ColorPickerEyeDropper({
+  variant = "ghost",
+  size = "icon-sm",
+  children,
+  ...props
+}: ColorPickerActionProps) {
+  const picker = usePicker("ColorPickerEyeDropper");
+  // False on the server and on hydration, so the markup matches.
+  const supported = useSyncExternalStore(
+    noSubscribe,
+    () => getEyeDropper() !== undefined,
+    () => false,
+  );
+  if (!supported) return null;
+  return (
+    <Button
+      data-slot="color-picker-eye-dropper"
+      variant={variant}
+      size={size}
+      aria-label="Pick a color from the screen"
+      isDisabled={picker.isDisabled}
+      onPress={async () => {
+        const EyeDropper = getEyeDropper();
+        if (!EyeDropper) return;
+        try {
+          const { sRGBHex } = await new EyeDropper().open();
+          const next = parseState(sRGBHex);
+          if (next) picker.update({ ...next, alpha: picker.state.alpha }, true);
+        } catch {
+          // Escape cancels the sampler with an AbortError.
+        }
+      }}
+      {...props}
+    >
+      {children ?? <PipetteIcon />}
+    </Button>
   );
 }
 
@@ -1491,7 +1737,7 @@ function ColorPickerFixContrast({ className }: { className?: string }) {
             const next = target ? parseState(target) : undefined;
             if (!next) return;
             const channels = { ...next.channels, h };
-            picker.update({ space: "oklch", channels, alpha: picker.state.alpha });
+            picker.update({ space: "oklch", channels, alpha: picker.state.alpha }, true);
           }}
         >
           <ContrastIcon />
@@ -1503,12 +1749,15 @@ function ColorPickerFixContrast({ className }: { className?: string }) {
 }
 
 export type {
+  ColorPickerActionProps,
   ColorPickerAreaProps,
   ColorPickerChannel,
   ColorPickerChannelInputProps,
   ColorPickerContentProps,
+  ColorPickerCopyProps,
   ColorPickerFieldsProps,
   ColorPickerFormat,
+  ColorPickerInputProps,
   ColorPickerPanelProps,
   ColorPickerProps,
   ColorPickerSliderProps,
@@ -1522,14 +1771,18 @@ export {
   ColorPickerArea,
   ColorPickerChannelInput,
   ColorPickerContent,
+  ColorPickerCopy,
+  ColorPickerEyeDropper,
   ColorPickerFields,
   ColorPickerFixContrast,
+  ColorPickerInput,
   ColorPickerPanel,
   ColorPickerPreview,
   ColorPickerSlider,
   ColorPickerSwatch,
   ColorPickerSwatches,
   ColorPickerTrigger,
+  ColorPickerValue,
   DEFAULT_SWATCHES,
   useColorPicker,
 };
