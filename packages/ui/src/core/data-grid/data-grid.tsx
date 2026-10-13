@@ -9,6 +9,7 @@ import {
   columnResizingFeature,
   columnSizingFeature,
   columnVisibilityFeature,
+  createExpandedRowModel,
   createFacetedRowModel,
   createFacetedUniqueValues,
   createFilteredRowModel,
@@ -128,6 +129,8 @@ const dataGridFeatures = tableFeatures({
   rowPinningFeature,
   rowSelectionFeature,
   rowSortingFeature,
+  // Flattens expanded `getSubRows` children into the rows (tree rows).
+  expandedRowModel: createExpandedRowModel(),
   filteredRowModel: createFilteredRowModel(),
   facetedRowModel: createFacetedRowModel(),
   facetedUniqueValues: createFacetedUniqueValues(),
@@ -192,6 +195,9 @@ type DataGridProps<TData extends RowData> = {
   isLoading?: boolean;
   /** "skeleton" (default) shows placeholder rows; "spinner" overlays the current rows. */
   loadingMode?: "skeleton" | "spinner";
+  /** Shown beside the spinner in the "spinner" loading mode. Defaults to "Loading...". */
+  loadingMessage?: React.ReactNode;
+  /** Defaults to "No data available". */
   emptyMessage?: React.ReactNode;
   /** Makes rows actionable: pressing one (or Enter on it) calls this. */
   onRowClick?: (row: TData) => void;
@@ -266,6 +272,30 @@ function pinningStyle<TData extends RowData>(
   };
 }
 
+/**
+ * Pinning hooks on header and body cells: `data-pinned` names the side and
+ * `data-last-col` marks the group's inner edge (the last start-pinned or
+ * first end-pinned column), which carries the divider.
+ */
+function pinningAttributes<TData extends RowData>(column: DataGridColumn<TData>) {
+  const pinned = column.getIsPinned();
+  if (!pinned) return {};
+  const isInner =
+    pinned === "start" ? column.getIsLastColumn("start") : column.getIsFirstColumn("end");
+  return { "data-pinned": pinned, "data-last-col": isInner ? pinned : undefined };
+}
+
+/**
+ * The opaque surface behind pinned cells and sticky headers:
+ * `--data-grid-surface` when set on an ancestor, else `--card` inside a Card,
+ * else `--background`. Raw tokens: `--color-*` resolve at :root, so they'd
+ * stay light under a scoped `.dark` subtree.
+ */
+const pinnedDivider = "data-[last-col=end]:border-s data-[last-col=start]:border-e";
+
+const surfaceBackground =
+  "bg-[color:var(--data-grid-surface,var(--data-grid-card-surface,var(--background)))]";
+
 type DataGridTableProps<TData extends RowData = RowData> = {
   "aria-label"?: string;
   className?: string;
@@ -306,7 +336,8 @@ function DataGridTable<TData extends RowData = RowData>({
     layout,
     isLoading,
     loadingMode = "skeleton",
-    emptyMessage,
+    loadingMessage = "Loading...",
+    emptyMessage = "No data available",
     onRowClick,
   } = useDataGrid();
   const state = table.store.state;
@@ -320,7 +351,12 @@ function DataGridTable<TData extends RowData = RowData>({
   const headers = new Map(
     table.getFlatHeaders().map((header) => [header.column.id, header] as const),
   );
-  const rows = [...table.getTopRows(), ...table.getCenterRows()];
+  const topRows = table.getTopRows();
+  const bottomRows = table.getBottomRows();
+  const rows = [...topRows, ...table.getCenterRows(), ...bottomRows];
+  // The seam between pinned and unpinned rows.
+  const topBoundaryId = topRows.at(-1)?.id;
+  const bottomBoundaryId = bottomRows[0]?.id;
   const rowsById = new Map(rows.map((row) => [row.id, row]));
   const showSkeleton = isLoading && loadingMode === "skeleton";
   const skeletonIds = Array.from(
@@ -408,23 +444,26 @@ function DataGridTable<TData extends RowData = RowData>({
               width={fixed ? width : undefined}
               minWidth={fixed ? column.columnDef.minSize : undefined}
               style={pinningStyle(column)}
+              {...pinningAttributes(column)}
               className={cn(
                 "group/column relative h-10 border-b text-left align-middle font-medium whitespace-nowrap text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
                 isVirtualized && "flex items-center",
                 layout.dense ? "px-2.5" : "px-4",
                 layout.cellBorder && "border-e last:border-e-0",
+                pinnedDivider,
                 // Opaque backgrounds on the cells: rows scroll under a sticky or virtualized
                 // header, and the virtualized header row group paints no background.
                 // Mixes the raw tokens: `--color-*` resolve at :root, so they'd stay
                 // light under a `.dark` subtree.
                 layout.headerBackground
-                  ? "bg-[color-mix(in_oklab,var(--muted)_40%,var(--background))]"
-                  : (overlapsRows || column.getIsPinned()) && "bg-background",
+                  ? "bg-[color-mix(in_oklab,var(--muted)_40%,var(--data-grid-surface,var(--data-grid-card-surface,var(--background))))]"
+                  : (overlapsRows || column.getIsPinned()) && surfaceBackground,
                 column.columnDef.meta?.headerClassName,
               )}
             >
               <div className="flex items-center gap-1">
-                {layout.columnsDraggable && !showSkeleton ? (
+                {/* Pinned columns keep their place: no drag source, no drop target. */}
+                {layout.columnsDraggable && !showSkeleton && !column.getIsPinned() ? (
                   <ColumnDragArea column={column} dense={layout.dense}>
                     {header && !header.isPlaceholder
                       ? flexRender(column.columnDef.header, header.getContext())
@@ -450,9 +489,7 @@ function DataGridTable<TData extends RowData = RowData>({
       </TableHeader>
       <TableBody
         renderEmptyState={() => (
-          <div className="py-10 text-center text-sm text-muted-foreground">
-            {emptyMessage ?? "No data available."}
-          </div>
+          <div className="py-10 text-center text-sm text-muted-foreground">{emptyMessage}</div>
         )}
       >
         {showSkeleton
@@ -474,11 +511,20 @@ function DataGridTable<TData extends RowData = RowData>({
                 id={row.id}
                 // Names the row in drag-and-drop and selection announcements.
                 textValue={String((rowHeaderId && row.getValue(rowHeaderId)) ?? row.id)}
-                data-pinned={row.getIsPinned() || undefined}
+                data-row-id={row.id}
+                data-depth={row.depth || undefined}
+                data-row-pinned={row.getIsPinned() || undefined}
+                data-row-pinned-boundary={
+                  row.id === topBoundaryId
+                    ? "top"
+                    : row.id === bottomBoundaryId
+                      ? "bottom"
+                      : undefined
+                }
                 className={cn(
                   rowClassName(layout, isVirtualized),
                   onRowClick && "cursor-pointer",
-                  "data-pinned:bg-muted/40",
+                  "data-row-pinned:bg-muted/40",
                 )}
               >
                 {[
@@ -489,10 +535,12 @@ function DataGridTable<TData extends RowData = RowData>({
                   <Cell
                     key={cell.id}
                     style={pinningStyle(cell.column)}
+                    {...pinningAttributes(cell.column)}
                     className={cn(
                       cellPadding,
                       cellClassName(layout, isVirtualized),
-                      cell.column.getIsPinned() && "bg-background",
+                      pinnedDivider,
+                      cell.column.getIsPinned() && surfaceBackground,
                       cell.column.columnDef.meta?.cellClassName,
                     )}
                   >
@@ -547,7 +595,8 @@ function DataGridTable<TData extends RowData = RowData>({
     <div
       data-slot="data-grid-table-container"
       aria-busy={isLoading || undefined}
-      className="relative"
+      // Pinned cells and sticky headers follow a Card's surface.
+      className="relative [[data-slot=card]_&]:[--data-grid-card-surface:var(--card)]"
     >
       <ResizableTableContainer
         onResize={(widths) => {
@@ -563,9 +612,11 @@ function DataGridTable<TData extends RowData = RowData>({
       {isLoading && loadingMode === "spinner" && (
         <div
           data-slot="data-grid-loading"
-          className="absolute inset-0 z-20 flex items-center justify-center bg-background/60"
+          role="status"
+          className="absolute inset-0 z-20 flex items-center justify-center gap-2 bg-background/60 text-sm text-muted-foreground"
         >
-          <Spinner className="size-6" aria-label="Loading" />
+          <Spinner className="size-5" role="presentation" aria-hidden="true" />
+          {loadingMessage}
         </div>
       )}
     </div>
@@ -670,33 +721,63 @@ function ColumnDragArea({
 }
 
 /**
- * Toggles a row's full-width details (`renderExpandedRow` on `DataGridTable`);
- * put it in a cell. Rows expand only when `getRowCanExpand` allows it.
+ * Indents a tree row's content by its depth: sets `--data-grid-tree-padding`
+ * and uses it as the inline-start padding. For custom tree cells.
+ */
+function getDataGridTreeIndentStyle<TData extends RowData>(
+  row: TanstackRow<DataGridFeatures, TData>,
+  indent = 20,
+): React.CSSProperties {
+  return {
+    "--data-grid-tree-padding": `${row.depth * indent}px`,
+    paddingInlineStart: "var(--data-grid-tree-padding)",
+  } as React.CSSProperties;
+}
+
+/**
+ * Expands a row: shows its `getSubRows` children (tree rows) or the
+ * full-width details of `renderExpandedRow` on `DataGridTable`. Put it in a
+ * cell, before the label in tree rows: it indents by the row's depth and
+ * leaves a spacer on leaves so labels line up. `children` replaces the chevron.
  */
 function DataGridRowExpand<TData extends RowData>({
   row,
+  indent = 20,
   className,
+  children,
 }: {
   row: TanstackRow<DataGridFeatures, TData>;
+  /** Inline offset per tree depth, in pixels. */
+  indent?: number;
   className?: string;
+  children?: React.ReactNode;
 }) {
-  if (!row.getCanExpand()) return null;
   const isExpanded = row.getIsExpanded();
   return (
-    <Button
-      variant="ghost"
-      size="icon-sm"
-      aria-label={isExpanded ? "Collapse row" : "Expand row"}
-      aria-expanded={isExpanded}
-      onPress={() => row.toggleExpanded()}
-      className={className}
+    <span
+      data-slot="data-grid-table-row-expand"
+      style={getDataGridTreeIndentStyle(row, indent)}
+      className={cn("inline-flex shrink-0 items-center", className)}
     >
-      {isExpanded ? (
-        <ChevronDownIcon aria-hidden="true" />
+      {row.getCanExpand() ? (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={isExpanded ? "Collapse row" : "Expand row"}
+          aria-expanded={isExpanded}
+          onPress={() => row.toggleExpanded()}
+        >
+          {children ??
+            (isExpanded ? (
+              <ChevronDownIcon aria-hidden="true" />
+            ) : (
+              <ChevronRightIcon aria-hidden="true" className="rtl:rotate-180" />
+            ))}
+        </Button>
       ) : (
-        <ChevronRightIcon aria-hidden="true" className="rtl:rotate-180" />
+        <span aria-hidden="true" className="size-4" />
       )}
-    </Button>
+    </span>
   );
 }
 
@@ -721,11 +802,13 @@ function DataGridRowDragHandle({ className, ...props }: React.ComponentProps<typ
   );
 }
 
-/** Pins a row to the top (TanStack row pinning); put it in a cell. */
+/** Pins a row to the top, or to the bottom (TanStack row pinning); put it in a cell. */
 function DataGridRowPin<TData extends RowData>({
   row,
+  position = "top",
 }: {
   row: TanstackRow<DataGridFeatures, TData>;
+  position?: "top" | "bottom";
 }) {
   const isPinned = row.getIsPinned();
   return (
@@ -734,7 +817,7 @@ function DataGridRowPin<TData extends RowData>({
       size="icon-sm"
       aria-label={isPinned ? "Unpin row" : "Pin row"}
       aria-pressed={!!isPinned}
-      onPress={() => row.pin(isPinned ? false : "top")}
+      onPress={() => row.pin(isPinned ? false : position)}
     >
       {isPinned ? <PinOffIcon aria-hidden="true" /> : <PinIcon aria-hidden="true" />}
     </Button>
@@ -1076,23 +1159,54 @@ function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
 
 type DataGridPaginationProps = {
   sizes?: number[];
+  /** Shown instead of the page size selector while loading. */
+  sizesSkeleton?: React.ReactNode;
   /** "{from}", "{to}" and "{count}" are replaced. */
   info?: string;
+  /** Shown instead of the record info while loading. */
+  infoSkeleton?: React.ReactNode;
   rowsPerPageLabel?: string;
   previousPageLabel?: string;
   nextPageLabel?: string;
-  /** How many page buttons show at once before an ellipsis. */
+  /**
+   * Page buttons when the row is truncated, counting the first and last page
+   * (rounded down to an odd number, at least 3). An ellipsis stands in for
+   * each hidden stretch.
+   */
   moreLimit?: number;
+  ellipsisText?: string;
   className?: string;
 };
 
+/**
+ * The page row: every page when they fit, else the first page, a run around
+ * the current one and the last page, with `null` for each hidden stretch. It
+ * always takes `limit + 2` slots, so the row keeps its width while paging.
+ */
+function getPageWindow(pageIndex: number, pageCount: number, moreLimit: number) {
+  const limit = Math.max(3, moreLimit % 2 === 0 ? moreLimit - 1 : moreLimit);
+  const slots = limit + 2;
+  const range = (start: number, end: number) =>
+    Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  if (pageCount <= slots) return range(0, pageCount - 1);
+  const last = pageCount - 1;
+  const side = (limit - 3) / 2;
+  // Near an edge the run grows into the ellipsis slot that edge doesn't need.
+  if (pageIndex <= side + 2) return [...range(0, slots - 3), null, last];
+  if (pageIndex >= last - side - 2) return [0, null, ...range(last - (slots - 3), last)];
+  return [0, null, ...range(pageIndex - side, pageIndex + side), null, last];
+}
+
 function DataGridPagination({
   sizes = [5, 10, 25, 50, 100],
+  sizesSkeleton = <Skeleton className="h-8 w-44" />,
   info = "{from} - {to} of {count}",
+  infoSkeleton = <Skeleton className="h-8 w-60" />,
   rowsPerPageLabel = "Rows per page",
-  previousPageLabel = "Previous page",
-  nextPageLabel = "Next page",
+  previousPageLabel = "Go to previous page",
+  nextPageLabel = "Go to next page",
   moreLimit = 5,
+  ellipsisText = "...",
   className,
 }: DataGridPaginationProps) {
   const { table, recordCount, isLoading } = useDataGrid();
@@ -1100,15 +1214,13 @@ function DataGridPagination({
   const pageCount = table.getPageCount();
   const from = recordCount === 0 ? 0 : pageIndex * pageSize + 1;
   const to = Math.min((pageIndex + 1) * pageSize, recordCount);
-  const groupStart = Math.floor(pageIndex / moreLimit) * moreLimit;
-  const groupEnd = Math.min(groupStart + moreLimit, pageCount);
-  const pages = Array.from({ length: groupEnd - groupStart }, (_, i) => groupStart + i);
+  const pages = getPageWindow(pageIndex, pageCount, moreLimit);
 
   if (isLoading) {
     return (
       <div data-slot="data-grid-pagination" className={cn("flex justify-between", className)}>
-        <Skeleton className="h-8 w-44" />
-        <Skeleton className="h-8 w-60" />
+        {sizesSkeleton}
+        {infoSkeleton}
       </div>
     );
   }
@@ -1160,39 +1272,39 @@ function DataGridPagination({
             >
               <ChevronLeftIcon aria-hidden="true" className="rtl:rotate-180" />
             </Button>
-            {groupStart > 0 && (
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Page ${groupStart}`}
-                onPress={() => table.setPageIndex(groupStart - 1)}
-              >
-                …
-              </Button>
-            )}
-            {pages.map((page) => (
-              <Button
-                key={page}
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Page ${page + 1}`}
-                aria-current={page === pageIndex ? "page" : undefined}
-                className="text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-accent-foreground"
-                onPress={() => table.setPageIndex(page)}
-              >
-                {page + 1}
-              </Button>
-            ))}
-            {groupEnd < pageCount && (
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Page ${groupEnd + 1}`}
-                onPress={() => table.setPageIndex(groupEnd)}
-              >
-                …
-              </Button>
-            )}
+            {pages.map((page, index) => {
+              if (page === null) {
+                // Jumps to the middle of the hidden stretch.
+                const before = pages[index - 1] ?? 0;
+                const after = pages[index + 1] ?? pageCount - 1;
+                const target = Math.floor((before + after) / 2);
+                return (
+                  <Button
+                    key={index === 1 ? "ellipsis-start" : "ellipsis-end"}
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={`Page ${target + 1}`}
+                    className="text-muted-foreground"
+                    onPress={() => table.setPageIndex(target)}
+                  >
+                    {ellipsisText}
+                  </Button>
+                );
+              }
+              return (
+                <Button
+                  key={page}
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={`Page ${page + 1}`}
+                  aria-current={page === pageIndex ? "page" : undefined}
+                  className="text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-accent-foreground"
+                  onPress={() => table.setPageIndex(page)}
+                >
+                  {page + 1}
+                </Button>
+              );
+            })}
             <Button
               variant="ghost"
               size="icon-sm"
@@ -1234,5 +1346,6 @@ export {
   DataGridTable,
   dataGridFeatures,
   getColumnHeaderLabel,
+  getDataGridTreeIndentStyle,
   useDataGrid,
 };
