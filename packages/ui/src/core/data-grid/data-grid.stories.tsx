@@ -163,6 +163,7 @@ type DemoProps = {
   toolbar?: (table: Table<DataGridFeatures, User>) => React.ReactNode;
   /** Adds an expand column and a details row under expanded rows. */
   expandable?: boolean;
+  initialPinning?: ColumnPinningState;
 };
 
 const EXPAND_COLUMN: UserColumn = {
@@ -188,6 +189,7 @@ function Demo({
   pageSize = 5,
   toolbar,
   expandable,
+  initialPinning = { start: [], end: [] },
 }: DemoProps) {
   const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize });
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -195,10 +197,7 @@ function Demo({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<ColumnVisibilityState>({});
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
-  const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>({
-    start: [],
-    end: [],
-  });
+  const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>(initialPinning);
   const [rowPinning, setRowPinning] = React.useState<RowPinningState>({ top: [], bottom: [] });
 
   const table = useTable({
@@ -294,7 +293,7 @@ export const Default: Story = {
     await expect(bodyRows(canvas)).toHaveLength(5);
     await expect(canvas.getByText("1 - 5 of 8")).toBeInTheDocument();
 
-    await userEvent.click(canvas.getByRole("button", { name: "Next page" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Go to next page" }));
     await expect(bodyRows(canvas)).toHaveLength(3);
     await expect(canvas.getByText("6 - 8 of 8")).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Page 2" })).toHaveAttribute(
@@ -305,7 +304,7 @@ export const Default: Story = {
     await userEvent.click(canvas.getByRole("button", { name: /Rows per page/ }));
     await userEvent.click(await body().findByRole("option", { name: "10" }));
     await expect(bodyRows(canvas)).toHaveLength(8);
-    await expect(canvas.queryByRole("button", { name: "Next page" })).toBeNull();
+    await expect(canvas.queryByRole("button", { name: "Go to next page" })).toBeNull();
   },
 };
 
@@ -338,7 +337,7 @@ export const Selection: Story = {
     // Select the whole page, then go on: selections on other pages are kept.
     await userEvent.click(canvas.getByRole("checkbox", { name: /select all/i }));
     await expect(selection).toHaveTextContent("USR-001,USR-002,USR-003,USR-004,USR-005");
-    await userEvent.click(canvas.getByRole("button", { name: "Next page" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Go to next page" }));
     await userEvent.click(within(bodyRows(canvas)[0] as HTMLElement).getByRole("checkbox"));
     await expect(selection).toHaveTextContent("USR-001,USR-002,USR-003,USR-004,USR-005,USR-006");
   },
@@ -371,9 +370,11 @@ export const LoadingSkeleton: Story = {
 export const LoadingSpinner: Story = {
   args: { isLoading: true, loadingMode: "spinner" },
   render: (args) => <Demo {...args} />,
-  play: async ({ canvas }) => {
+  play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByText("Alice Martin")).toBeInTheDocument();
-    await expect(canvas.getByLabelText("Loading")).toBeInTheDocument();
+    const overlay = canvasElement.querySelector("[data-slot=data-grid-loading]");
+    await expect(overlay).toHaveAttribute("role", "status");
+    await expect(overlay).toHaveTextContent("Loading...");
   },
 };
 
@@ -587,8 +588,35 @@ export const RowPinning: Story = {
     const pin = within(bodyRows(canvas)[3] as HTMLElement).getByRole("button", { name: "Pin row" });
     await userEvent.click(pin);
     await expect(firstCells(canvas)[0]).toBe("USR-004");
-    await userEvent.click(canvas.getByRole("button", { name: "Next page" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Go to next page" }));
     await expect(firstCells(canvas)[0]).toBe("USR-004");
+  },
+};
+
+/** `DataGridRowPin position="bottom"` pins rows under the page's rows. */
+export const RowPinningBottom: Story = {
+  args: {
+    columns: [
+      ...COLUMNS,
+      {
+        id: "pin",
+        size: 60,
+        header: "Pin",
+        enableSorting: false,
+        cell: ({ row }) => <DataGridRowPin row={row} position="bottom" />,
+      },
+    ],
+  },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvas }) => {
+    const pin = within(bodyRows(canvas)[0] as HTMLElement).getByRole("button", { name: "Pin row" });
+    await userEvent.click(pin);
+    await expect(firstCells(canvas).at(-1)).toBe("USR-001");
+    const pinned = bodyRows(canvas).at(-1) as HTMLElement;
+    await expect(pinned).toHaveAttribute("data-row-pinned", "bottom");
+    await expect(pinned).toHaveAttribute("data-row-pinned-boundary", "bottom");
+    await userEvent.click(canvas.getByRole("button", { name: "Go to next page" }));
+    await expect(firstCells(canvas).at(-1)).toBe("USR-001");
   },
 };
 
@@ -636,6 +664,37 @@ export const Virtualized: Story = {
       await expect(backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
       await expect(backgroundColor).not.toMatch(/\/ 0?\.\d+\)$/);
     }
+  },
+};
+
+/**
+ * Many pages: the first page, a run around the current one and the last page,
+ * with an ellipsis for each hidden stretch. The row keeps its width as you page.
+ */
+export const ManyPages: Story = {
+  args: { data: MANY },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvas }) => {
+    const nav = within(canvas.getByRole("navigation", { name: "Pagination" }));
+    const labels = () =>
+      nav
+        .getAllByRole("button", { name: /^Page \d+$/ })
+        .map((button) => button.textContent?.trim());
+    await expect(labels()).toEqual(["1", "2", "3", "4", "5", "...", "200"]);
+
+    await userEvent.click(nav.getByRole("button", { name: "Page 5" }));
+    await expect(labels()).toEqual(["1", "...", "4", "5", "6", "...", "200"]);
+
+    await userEvent.click(nav.getByRole("button", { name: "Page 200" }));
+    await expect(labels()).toEqual(["1", "...", "196", "197", "198", "199", "200"]);
+
+    // The ellipsis jumps to the middle of the stretch it hides (pages 2-195).
+    await userEvent.click(nav.getByRole("button", { name: "Page 98" }));
+    await expect(nav.getByRole("button", { name: "Page 98" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await expect(labels()).toEqual(["1", "...", "97", "98", "99", "...", "200"]);
   },
 };
 
@@ -746,5 +805,122 @@ export const DraggableColumns: Story = {
     const name = canvas.getByRole("columnheader", { name: /Name/ });
     await userEvent.click(name);
     await expect(name).toHaveAttribute("aria-sort", "ascending");
+  },
+};
+
+/**
+ * Pinned columns stick to their side with a divider on the group's inner
+ * edge; with `columnsDraggable` they keep their place (no drag area).
+ */
+export const PinnedColumns: Story = {
+  args: {
+    layout: { columnsDraggable: true, columnsPinnable: true },
+    initialPinning: { start: ["id"], end: ["joined"] },
+  },
+  render: (args) => <Demo {...args} />,
+  play: async ({ canvas }) => {
+    const id = canvas.getByRole("columnheader", { name: /^ID/ });
+    const joined = canvas.getByRole("columnheader", { name: /^Joined/ });
+    await expect(id).toHaveAttribute("data-pinned", "start");
+    await expect(id).toHaveAttribute("data-last-col", "start");
+    await expect(joined).toHaveAttribute("data-pinned", "end");
+    await expect(joined).toHaveAttribute("data-last-col", "end");
+    await expect(getComputedStyle(id).borderInlineEndWidth).toBe("1px");
+    await expect(getComputedStyle(joined).borderInlineStartWidth).toBe("1px");
+
+    const cell = within(bodyRows(canvas)[0] as HTMLElement).getByText("USR-001");
+    await expect(cell.closest("[data-pinned]")).toHaveAttribute("data-pinned", "start");
+    // Body cells scroll under pinned ones, so those paint an opaque background.
+    await expect(
+      getComputedStyle(cell.closest("[data-pinned]") as HTMLElement).backgroundColor,
+    ).not.toBe("rgba(0, 0, 0, 0)");
+
+    await expect(id.querySelector("[data-slot=data-grid-column-drag-area]")).toBeNull();
+    await expect(joined.querySelector("[data-slot=data-grid-column-drag-area]")).toBeNull();
+    await expect(
+      canvas
+        .getByRole("columnheader", { name: /^Name/ })
+        .querySelector("[data-slot=data-grid-column-drag-area]"),
+    ).not.toBeNull();
+  },
+};
+
+type FileNode = { id: string; name: string; size: string; children?: FileNode[] };
+
+const FILES: FileNode[] = [
+  {
+    id: "src",
+    name: "src",
+    size: "48 KB",
+    children: [
+      {
+        id: "src/core",
+        name: "core",
+        size: "40 KB",
+        children: [{ id: "src/core/button.tsx", name: "button.tsx", size: "4 KB" }],
+      },
+      { id: "src/index.ts", name: "index.ts", size: "1 KB" },
+    ],
+  },
+  { id: "package.json", name: "package.json", size: "2 KB" },
+];
+
+const FILE_COLUMNS: ColumnDef<DataGridFeatures, FileNode>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+    size: 260,
+    cell: ({ row }) => (
+      <div className="flex items-center gap-1">
+        <DataGridRowExpand row={row} />
+        {row.original.name}
+      </div>
+    ),
+  },
+  { accessorKey: "size", header: "Size", size: 120 },
+];
+
+function TreeDemo() {
+  const table = useTable({
+    features: dataGridFeatures,
+    manualPagination: true,
+    data: FILES,
+    columns: FILE_COLUMNS,
+    getRowId: (row: FileNode) => row.id,
+    getSubRows: (row: FileNode) => row.children,
+  });
+  return (
+    <DataGrid table={table} recordCount={FILES.length} className="w-[420px]">
+      <DataGridContainer>
+        <DataGridTable aria-label="Files" />
+      </DataGridContainer>
+    </DataGrid>
+  );
+}
+
+/**
+ * Tree rows: `getSubRows` with `DataGridRowExpand` in the label cell, which
+ * indents by depth and leaves a spacer on leaves.
+ */
+export const TreeRows: Story = {
+  render: () => <TreeDemo />,
+  play: async ({ canvas }) => {
+    const names = () => bodyRows(canvas).map((row) => row.textContent?.replace(/\d+ KB$/, ""));
+    await expect(names()).toEqual(["src", "package.json"]);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Expand row" }));
+    await expect(names()).toEqual(["src", "core", "index.ts", "package.json"]);
+    const core = bodyRows(canvas)[1] as HTMLElement;
+    await expect(core).toHaveAttribute("data-depth", "1");
+    await expect(core.querySelector("[data-slot=data-grid-table-row-expand]")).toHaveStyle({
+      paddingInlineStart: "20px",
+    });
+
+    await userEvent.click(within(core).getByRole("button", { name: "Expand row" }));
+    await expect(names()).toEqual(["src", "core", "button.tsx", "index.ts", "package.json"]);
+    await expect(bodyRows(canvas)[2]).toHaveAttribute("data-depth", "2");
+
+    await userEvent.click(within(bodyRows(canvas)[0] as HTMLElement).getByRole("button"));
+    await expect(names()).toEqual(["src", "package.json"]);
   },
 };
