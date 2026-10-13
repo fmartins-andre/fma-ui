@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LinkButton } from "@/core/button/button";
-import { CodeBlock } from "../../../site/code-block";
+import {
+  CodeBlock,
+  CodeBlockCopyButton,
+  CodeBlockHeader,
+  CodeBlockTitle,
+} from "@/core/code-block/code-block";
 import {
   BLOCKS,
   COMPONENTS,
@@ -60,9 +65,16 @@ function DocsIntroduction() {
         Start from a project set up for shadcn/ui (Tailwind v4, a <C>components.json</C>). Then
         register the <C>@fma-ui</C> namespace:
       </P>
-      <CodeBlock className="mt-4" code={REGISTRIES_SNIPPET} lang="json" title="components.json" />
+      <CodeBlock className="mt-4" code={REGISTRIES_SNIPPET} language="json">
+        <CodeBlockHeader>
+          <CodeBlockTitle>components.json</CodeBlockTitle>
+          <CodeBlockCopyButton className="ml-auto" />
+        </CodeBlockHeader>
+      </CodeBlock>
       <P>And add any component or block by name:</P>
-      <CodeBlock className="mt-4" code={installCommand("button")} lang="bash" />
+      <CodeBlock className="mt-4" code={installCommand("button")} language="bash">
+        <CodeBlockCopyButton alwaysVisible />
+      </CodeBlock>
       <P>
         Dependencies between items resolve through the same namespace, so adding a block pulls the
         components it is built from.

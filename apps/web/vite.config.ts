@@ -5,6 +5,7 @@ import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 import { readRegistryEnv } from "../../packages/registry/src/env.ts";
 import { llmsTxtPlugin } from "./llms-txt.ts";
+import { shikiClientOnly } from "./shiki-client-only.ts";
 import { storybookStatic } from "./storybook-static.ts";
 
 export default defineConfig(({ command }) => {
@@ -25,6 +26,8 @@ export default defineConfig(({ command }) => {
       storybookStatic(),
       // /llms.txt and /llms-full.txt, from packages/ui/registry.json.
       llmsTxtPlugin(siteUrl),
+      // Keeps shiki (the code block's highlighter) out of the server bundle.
+      shikiClientOnly(),
       tanstackStart(),
       // Cloudflare Workers: .output/server is the Worker, .output/public its static
       // assets; wrangler.jsonc is merged into the generated .output/server/wrangler.json.

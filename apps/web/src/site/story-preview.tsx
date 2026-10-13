@@ -1,8 +1,8 @@
 import { ArrowUpRightIcon } from "lucide-react";
 import { Component, type ReactNode } from "react";
+import { CodeBlock, CodeBlockContent, CodeBlockCopyButton } from "@/core/code-block/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/tabs/tabs";
 import { cn } from "@/lib/utils";
-import { CodeBlock } from "./code-block";
 import type { ItemKind } from "./registry";
 import { STORYBOOK_URL } from "./registry";
 import type { DocStory } from "./stories";
@@ -92,7 +92,12 @@ export function StoryPreview({
         )}
       </TabsContent>
       <TabsContent id="code">
-        <CodeBlock code={story.code} className="max-h-[640px] overflow-y-auto" />
+        <CodeBlock code={story.code} language="tsx">
+          <div className="max-h-[640px] overflow-auto rounded-[inherit]">
+            <CodeBlockContent />
+          </div>
+          <CodeBlockCopyButton />
+        </CodeBlock>
       </TabsContent>
     </Tabs>
   );

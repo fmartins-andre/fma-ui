@@ -3,9 +3,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-aria-components";
 import { Badge } from "@/core/badge/badge";
 import { LinkButton } from "@/core/button/button";
+import {
+  CodeBlock,
+  CodeBlockContent,
+  CodeBlockCopyButton,
+  CodeBlockHeader,
+  CodeBlockTitle,
+} from "@/core/code-block/code-block";
 import { Skeleton } from "@/core/skeleton/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/tabs/tabs";
-import { CodeBlock } from "./code-block";
 import { InlineMarkdown } from "./markdown";
 import {
   categoryTitle,
@@ -101,10 +107,17 @@ function Installation({ item }: { item: RegistryItem }) {
       <TabsContent id="cli">
         <ol className="ml-3.5">
           <Step index={1} title="Register the @fma-ui namespace in components.json (once)">
-            <CodeBlock code={REGISTRIES_SNIPPET} lang="json" title="components.json" />
+            <CodeBlock code={REGISTRIES_SNIPPET} language="json">
+              <CodeBlockHeader>
+                <CodeBlockTitle>components.json</CodeBlockTitle>
+                <CodeBlockCopyButton className="ml-auto" />
+              </CodeBlockHeader>
+            </CodeBlock>
           </Step>
           <Step index={2} title="Add the item">
-            <CodeBlock code={installCommand(item.name)} lang="bash" />
+            <CodeBlock code={installCommand(item.name)} language="bash">
+              <CodeBlockCopyButton alwaysVisible />
+            </CodeBlock>
             <p className="text-sm text-muted-foreground">
               Files land in <code className="font-mono">{item.files[0]?.target}</code>
               {item.files.length > 1 && ` and ${item.files.length - 1} more`}; npm and registry
@@ -117,7 +130,9 @@ function Installation({ item }: { item: RegistryItem }) {
         <ol className="ml-3.5">
           {npm.length > 0 && (
             <Step index={++step} title="Install the npm dependencies">
-              <CodeBlock code={`pnpm add ${npm.join(" ")}`} lang="bash" />
+              <CodeBlock code={`pnpm add ${npm.join(" ")}`} language="bash">
+                <CodeBlockCopyButton alwaysVisible />
+              </CodeBlock>
             </Step>
           )}
           {registryDeps.length > 0 && (
@@ -145,11 +160,18 @@ function Installation({ item }: { item: RegistryItem }) {
               sources ? (
                 <CodeBlock
                   key={file.path}
-                  title={file.target}
                   code={sources[index] ?? ""}
-                  lang={file.path.endsWith(".tsx") ? "tsx" : "ts"}
-                  className="max-h-[480px] overflow-y-auto"
-                />
+                  language={file.path.endsWith(".tsx") ? "tsx" : "ts"}
+                  showLineNumbers
+                >
+                  <CodeBlockHeader>
+                    <CodeBlockTitle>{file.target}</CodeBlockTitle>
+                    <CodeBlockCopyButton className="ml-auto" />
+                  </CodeBlockHeader>
+                  <div className="max-h-[480px] overflow-auto rounded-b-[inherit]">
+                    <CodeBlockContent />
+                  </div>
+                </CodeBlock>
               ) : (
                 <Skeleton key={file.path} className="h-48 w-full rounded-xl" />
               ),

@@ -10,7 +10,7 @@ import {
 import { Link } from "react-aria-components";
 import { Badge } from "@/core/badge/badge";
 import { LinkButton } from "@/core/button/button";
-import { CodeBlock } from "../../site/code-block";
+import { CodeBlock, CodeBlockCopyButton } from "@/core/code-block/code-block";
 import {
   BLOCKS,
   COMPONENTS,
@@ -76,11 +76,9 @@ function Home() {
             Theme editor
           </LinkButton>
         </div>
-        <CodeBlock
-          className="mt-4 w-full max-w-md text-left"
-          code={installCommand("button")}
-          lang="bash"
-        />
+        <CodeBlock className="mt-4 w-full max-w-md" code={installCommand("button")} language="bash">
+          <CodeBlockCopyButton alwaysVisible />
+        </CodeBlock>
       </section>
 
       <section aria-label="Showcase" className="rounded-2xl border bg-muted/40 p-4 md:p-6">

@@ -568,6 +568,75 @@
       }
     },
     {
+      "name": "code-block",
+      "type": "registry:ui",
+      "title": "Code Block",
+      "description": "A code block with shiki syntax highlighting for docs and AI chat UIs. `<CodeBlock code={code} language=\"tsx\" />` is complete; compose `CodeBlockHeader` (`CodeBlockTitle`, `CodeBlockLanguage`, `CodeBlockWrapToggle`, `CodeBlockCopyButton`, `CodeBlockDownloadButton`) as chrome, `CodeBlockExpandButton` with `maxLines`, and `CodeBlockContent` inside your own scroll container. shiki loads lazily on the first highlight (JavaScript regex engine, no WebAssembly) through the `code-block-highlight` lib; pass `lines` from `highlightCode()` in a server loader, or `highlight={false}`, to never load it. Light and dark token colors switch with the theme. `showLineNumbers`/`startLine`, `highlightedLines`/`highlightedWords`/`focusedLines` (line specs like `\"2-4,7\"`), `diff` and `lineLevels` mark lines, as do shiki `transformers`. `streaming` grows the code with a caret and stick-to-bottom, re-rendering only changed lines. `foldable` folds by indentation, `selectable` turns lines into a multi-select listbox, and `CodeBlockLineActions` renders one action group on the hovered or focused line. A pinned copy button stays put while the code scrolls.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/code-block/code-block.tsx",
+          "target": "components/fma-ui/code-block.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/code-block-highlight"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.52.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/code-block, MIT); buttons rebuilt on react-aria Button",
+        "tags": [
+          "data-display",
+          "code",
+          "syntax-highlighting",
+          "shiki",
+          "ai"
+        ]
+      }
+    },
+    {
+      "name": "code-block-highlight",
+      "type": "registry:lib",
+      "title": "Code Block Highlight",
+      "description": "The code block's shiki engine and pure helpers, with no \"use client\" so a server loader can call it. `highlightCode(code, options)` returns plain-JSON `CodeBlockLine[]` (dual light/dark token colors, line state from props or shiki transformers, unchanged lines reused so streaming re-renders one row). shiki loads lazily on the JavaScript regex engine (no WebAssembly), one chunk per language from the static `codeBlockLanguages` map and per theme from `codeBlockThemes` (`github-light`/`github-dark`, or `css-variables` for design-token colors). Also `parseLineSpec` (`\"2-4,7\"`), `markdownFences` / `markdownCodeProps` for AI transcripts, `ansiToLines` for terminal output, `parseUnifiedDiff` for git patches and `stripNotationComments`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "code"
+      ],
+      "files": [
+        {
+          "path": "src/lib/code-block-highlight.ts",
+          "target": "lib/fma-ui/code-block-highlight.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [
+        "shiki@^4.5.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/code-block, MIT)",
+        "tags": [
+          "code",
+          "syntax-highlighting",
+          "shiki",
+          "markdown",
+          "diff"
+        ]
+      }
+    },
+    {
       "name": "collapsible",
       "type": "registry:ui",
       "title": "Collapsible",

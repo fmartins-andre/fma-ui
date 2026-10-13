@@ -266,9 +266,6 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.3.0(react@19.3.0)
-      shiki:
-        specifier: ^4.5.0
-        version: 4.5.0
     devDependencies:
       '@playwright/test':
         specifier: ^1.63.0
@@ -385,6 +382,9 @@ importers:
       shadcn:
         specifier: ^4.21.1
         version: 4.21.1(typescript@7.0.2)
+      shiki:
+        specifier: ^4.5.0
+        version: 4.5.0
       sonner:
         specifier: ^2.0.8
         version: 2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -6482,6 +6482,7 @@ snapshots:
       - vite
       - vite-plugin-solid
       - webpack
+    optional: true
 
   '@tanstack/react-start-server@1.167.44(crossws@0.4.12(srvx@1.0.5))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -6550,6 +6551,7 @@ snapshots:
       - unloader
       - vite-plugin-solid
       - webpack
+    optional: true
 
   '@tanstack/react-store@0.11.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -6607,6 +6609,7 @@ snapshots:
       zod: 4.6.5
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@tanstack/router-generator@1.167.38(supports-color@10.2.2)':
     dependencies:
@@ -6681,6 +6684,7 @@ snapshots:
       - rollup
       - supports-color
       - unloader
+    optional: true
 
   '@tanstack/router-utils@1.162.3':
     dependencies:
@@ -6694,6 +6698,7 @@ snapshots:
       tinyglobby: 0.2.17
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@tanstack/router-utils@1.162.3(supports-color@10.2.2)':
     dependencies:
@@ -6794,6 +6799,7 @@ snapshots:
       - unloader
       - vite-plugin-solid
       - webpack
+    optional: true
 
   '@tanstack/start-server-core@1.169.37(crossws@0.4.12(srvx@1.0.5))':
     dependencies:
@@ -7198,6 +7204,7 @@ snapshots:
       '@babel/types': 7.29.8
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   babel-dead-code-elimination@1.0.12(supports-color@10.2.2):
     dependencies:

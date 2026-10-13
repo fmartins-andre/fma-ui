@@ -1,0 +1,9 @@
+{
+  "name": "code-block-highlight",
+  "category": "code",
+  "status": "stable",
+  "source": "third-party",
+  "origin": "reui.io (https://reui.io/docs/components/base/code-block, MIT)",
+  "description": "The code block's shiki engine and pure helpers, with no \"use client\" so a server loader can call it. `highlightCode(code, options)` returns plain-JSON `CodeBlockLine[]` (dual light/dark token colors, line state from props or shiki transformers, unchanged lines reused so streaming re-renders one row). shiki loads lazily on the JavaScript regex engine (no WebAssembly), one chunk per language from the static `codeBlockLanguages` map and per theme from `codeBlockThemes` (`github-light`/`github-dark`, or `css-variables` for design-token colors). Also `parseLineSpec` (`\"2-4,7\"`), `markdownFences` / `markdownCodeProps` for AI transcripts, `ansiToLines` for terminal output, `parseUnifiedDiff` for git patches and `stripNotationComments`.",
+  "tags": ["code", "syntax-highlighting", "shiki", "markdown", "diff"]
+}
