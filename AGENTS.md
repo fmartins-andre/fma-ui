@@ -60,7 +60,8 @@ você está rodando dentro dele (`/workspaces/design-system`, usuário `node`).
   instala o Claude Code (`~/.local/bin`).
 - **`post-start.sh`** (a cada start): credenciais do git pro `github.com` via `gh` (`gh auth
   git-credential`, o mesmo do `gh auth setup-git`), em vez do helper do VS Code, que pergunta
-  ao git do host e cai num askpass gráfico; `pnpm install --frozen-lockfile`; e o Chromium do
+  ao git do host e cai num askpass gráfico; a extensão `gh stack` (se o `gh` estiver logado);
+  `pnpm install --frozen-lockfile`; e o Chromium do
   Playwright + libs do SO (necessários pro `test:storybook`). O browser é baixado como
   usuário `node` (cache em `~/.cache/ms-playwright`); só o `install-deps` usa `sudo`.
 - **Portas encaminhadas**: `3000` (`apps/web`, `pnpm dev`), `6006` (Storybook) e `8787`
@@ -202,6 +203,16 @@ variable `FMA_UI_SITE_URL`; no Cloudflare, das variáveis de build. Variável no
 - Hooks do lefthook: **pre-commit** roda lint → type-check → registry-check;
   **pre-push** roda type-check → test → build → build-storybook. Não use `--no-verify`;
   corrija a causa.
+- **PRs dependentes = stack nativo** (`gh stack`, extensão `github/gh-stack`), nunca PR com
+  base num branch montado à mão. Use quando uma mudança depende de outra ainda não mergeada
+  ou quando um PR grande fica melhor revisado em camadas; mudanças independentes vão em PRs
+  separados contra `main`. Fluxo: `gh stack init <branch>` (adota existentes) →
+  `gh stack add <branch>` → `gh stack submit --auto`; atualizar com `gh stack sync` /
+  `gh stack rebase` + `gh stack push`; mergear com `gh stack merge <pr> --merge` e limpar
+  com `gh stack sync --prune`. Nunca `gh pr merge --delete-branch` na base de um stack: o
+  GitHub **fecha** o PR de cima em vez de redirecioná-lo. Conflito em `registry.json` /
+  `public/r` num rebase: regenere com `pnpm --filter @fma-ui/ui build`, não resolva à mão.
+  Detalhes no `CONTRIBUTING.md` ("PRs empilhados").
 
 ## Antes de concluir uma tarefa
 

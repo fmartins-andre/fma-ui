@@ -20,6 +20,7 @@ O site publicado (docs, editor de temas, Storybook e o registro em `/r/`) fica e
 - [Gerando e publicando o registro](#gerando-e-publicando-o-registro)
 - [Git hooks e CI](#git-hooks-e-ci)
 - [Commits e pull requests](#commits-e-pull-requests)
+  - [PRs empilhados (stacked PRs)](#prs-empilhados-stacked-prs)
 - [Notas de versão](#notas-de-versão)
 
 ## Ambiente
@@ -29,7 +30,8 @@ O site publicado (docs, editor de temas, Storybook e o registro em `/r/`) fica e
 O repositório traz um dev container em `.devcontainer/`. Abra a pasta no VS Code e escolha
 **Reopen in Container**. Ele já vem com:
 
-- Node 24, pnpm (via corepack) e o GitHub CLI (`gh`);
+- Node 24, pnpm (via corepack) e o GitHub CLI (`gh`), com as credenciais do git apontando
+  para ele e a extensão `gh stack` instalada a cada start, depois do `gh auth login`;
 - `pnpm install` e o Chromium do Playwright instalados a cada start;
 - portas `3000` (app web), `6006` (Storybook) e `8787` (`pnpm --filter web preview`)
   encaminhadas;
@@ -364,6 +366,67 @@ Não use `--no-verify`; corrija a causa.
   pnpm lint && pnpm type-check && pnpm test && pnpm --filter @fma-ui/ui build
   git status   # inclua registry.json / public/r se mudaram
   ```
+
+### PRs empilhados (stacked PRs)
+
+Quando um PR depende de outro que ainda não foi mergeado, use os
+[stacked PRs nativos do GitHub](https://docs.github.com/en/pull-requests/get-started/stacked-prs-quickstart)
+com a extensão oficial [`gh stack`](https://github.com/github/gh-stack)
+(`gh extension install github/gh-stack`; o dev container instala sozinho). Exige `gh` ≥ 2.90
+e git ≥ 2.20. Cada PR do stack tem como base o branch do PR de baixo e a cadeia termina na
+`main`; o revisor vê só o diff da camada dele, e o ruleset da `main` (checks de drift e e2e)
+vale para cada PR, sem bypass.
+
+**Quando usar**
+
+- Uma mudança depende de outra ainda em revisão (ex.: um PR que reaproveita uma constante ou
+  um helper criado no anterior).
+- Um trabalho grande que fica mais fácil de revisar em camadas (ex.: lib → componente →
+  bloco → docs).
+
+Mudanças independentes vão em PRs separados contra `main`, não num stack: um stack força a
+ordem de merge e faz o CI rodar de novo em cada camada a cada rebase.
+
+**Fluxo**
+
+```bash
+gh stack init feat/base            # cria o stack (ou adota branches existentes, de baixo pra cima)
+# ... commits ...
+gh stack add feat/em-cima          # nova camada em cima da atual (ou: gh stack add -Am "msg" <branch>)
+# ... commits ...
+gh stack submit --auto             # push + abre/atualiza os PRs com as bases certas e liga o stack
+gh stack view                      # branches, PRs, status
+
+# Mudou uma camada de baixo ou a main andou:
+gh stack rebase                    # rebase em cascata (pausa em conflito: --continue / --abort)
+gh stack push                      # --force-with-lease por branch
+gh stack sync                      # fetch + rebase sobre a main + push + estado dos PRs
+
+# Merge (merge commit, como o resto do histórico):
+gh stack merge <pr> --merge        # mergeia até esse PR, tudo ou nada; o resto é rebaseado e redirecionado
+gh stack sync --prune              # apaga os branches locais já mergeados
+```
+
+`gh stack link <pr> <pr> ...` liga PRs que já existem num stack (de baixo pra cima), sem estado
+local; `gh stack add <branch>` adota um branch que está em outro worktree; `gh stack modify`
+reordena, junta ou remove camadas (o site do GitHub não reordena). O `init` liga o
+`git rerere`, que reaproveita resoluções de conflito entre rebases.
+
+**Cuidados neste repo**
+
+- **Nunca** `gh pr merge --delete-branch` (nem apague à mão) o branch base de um PR empilhado:
+  o GitHub **fecha** o PR de cima em vez de redirecioná-lo pra `main`, e um PR fechado não
+  pode ter a base trocada. Mergeie pelo `gh stack merge`. Sem a extensão, redirecione antes
+  (`gh pr edit <pr-de-cima> --base main`) e só então mergeie e apague o de baixo.
+- **Arquivos gerados**: conflito em `packages/ui/registry.json` ou `apps/web/public/r/` num
+  rebase não se resolve à mão; aceite qualquer lado, rode `pnpm --filter @fma-ui/ui build`
+  na camada e commite o resultado (senão o check de drift falha naquele PR).
+- **Hooks**: `gh stack push` / `submit` empurram cada branch separado, então o pre-push
+  (type-check → test → build → build-storybook) roda uma vez por camada. É lento de
+  propósito; não use `--no-verify`.
+- **Worktrees**: arquivos ignorados num branch (ex.: saídas de build listadas no `.gitignore`
+  só de outra camada) podem vazar num `git add -A` ao trocar de camada no mesmo worktree.
+  Confira o `git status` antes de commitar.
 
 ## Notas de versão
 
