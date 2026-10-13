@@ -103,15 +103,15 @@ export function Example() {
 
 ## Componentes
 
-71 componentes, 2 blocos, 21 temas e as libs e hooks que eles usam, organizados por categoria:
+73 componentes, 2 blocos, 21 temas e as libs e hooks que eles usam, organizados por categoria:
 
 | Categoria       | Componentes |
 | --------------- | ----------- |
-| **Formulários** | button · calendar · checkbox · color-picker · combobox · date-field · date-picker · field · input · input-group · input-otp · label · masked-input · native-select · radio-group · select · simple-time-picker · slider · switch · textarea |
+| **Formulários** | button · calendar · checkbox · color-picker · combobox · date-field · date-picker · emoji-picker · field · input · input-group · input-otp · label · masked-input · native-select · radio-group · select · slider · switch · textarea · time-picker |
 | **Botões**      | button-group · toggle · toggle-group |
 | **Overlays**    | alert-dialog · command · context-menu · dialog · drawer · dropdown-menu · hover-card · popover · sheet · tooltip |
 | **Navegação**   | breadcrumb · menubar · navigation-menu · pagination · sidebar · stepper · tabs |
-| **Dados**       | avatar · badge · carousel · chart · data-grid · icon-tile · kbd · table · timeline |
+| **Dados**       | avatar · badge · carousel · chart · data-grid · file-type · icon-tile · kbd · table · timeline |
 | **Feedback**    | alert · empty · icon-stack · progress · skeleton · sonner · spinner |
 | **Layout**      | card · direction · item · resizable · scroll-area · separator |
 | **Disclosure**  | accordion · collapsible |
