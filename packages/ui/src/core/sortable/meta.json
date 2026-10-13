@@ -1,0 +1,8 @@
+{
+  "name": "sortable",
+  "category": "data-display",
+  "status": "stable",
+  "source": "original",
+  "description": "A reorderable list, row or grid (`layout`: `vertical`, `horizontal`, `grid`). Give it the items as `value` (or `defaultValue`) with `onChange`, and one `SortableItem` per item whose `id` matches `getKey(item)` (defaults to `item.id`) — as static children or a render function. Items drag with the pointer from anywhere; every item needs a `SortableItemHandle`, the visible grip and its keyboard / screen-reader drag button (Enter starts, arrows pick the drop position, Enter drops; arrows reach it in a vertical list, Tab in a row or grid). `isDisabled` pins an item in place, `selectionMode` lets several selected items move together, and `renderDragPreview` replaces the browser's drag snapshot. A line marks the drop position. `onChange` also gets the moved keys and the drop target; `onDragStart`/`onDragEnd` follow react-aria.",
+  "tags": ["data-display", "drag-and-drop", "reorder", "list", "react-aria"]
+}

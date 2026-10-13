@@ -1,0 +1,9 @@
+{
+  "name": "emoji-picker",
+  "category": "forms",
+  "status": "stable",
+  "source": "third-party",
+  "origin": "reui.io (https://reui.io/docs/components/base/emoji-picker, MIT); rebuilt on react-aria Popover, Dialog, Button, Tabs and Menu",
+  "description": "An emoji picker with search (names, keywords and shortcodes), skin tones, a frequently or recently used section, custom emoji, a category bar that follows the scroll and a virtualized grid. `<EmojiPicker />` alone renders a trigger and a popover; compose `EmojiPickerTrigger` + `EmojiPickerContent`, or `EmojiPickerPanel` in place, from `EmojiPickerSearch`, `EmojiPickerCategories`, `EmojiPickerList`, `EmojiPickerPreview` and `EmojiPickerSkinTone`. Data is emojibase, fetched once per page from jsDelivr (`dataUrl` to self-host, `locale` for 28 languages) or passed as `data`. `value`/`defaultValue`/`onChange` hold the native emoji (or `:shortcode:` for a custom one); `selectionMode=\"multiple\"` toggles a list (with `max`), and `onEmojiSelect` fires on every pick, for inserting into text. Focus stays in the search while the arrows move through the grid (combobox over an `aria-activedescendant` listbox); Enter picks. `emojiVersion=\"auto\"` hides emoji the device can't draw. Recent picks and the tone persist in localStorage (`recentStorageKey`, `skinToneStorageKey`; `null` keeps them in memory). `name` submits with a native form; every string comes from `i18n`.",
+  "tags": ["forms", "emoji", "picker", "popover", "react-aria"]
+}

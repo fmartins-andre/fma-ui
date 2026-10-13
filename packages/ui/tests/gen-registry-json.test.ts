@@ -24,12 +24,14 @@ describe("detectNpmDependencies", () => {
     );
   });
 
-  it("ignores relative imports, the @/ alias, node builtins, and react", () => {
+  it("ignores relative imports, the @/ alias, node builtins, react and react-dom", () => {
     const source = `
       import { readFileSync } from "node:fs";
       import { helper } from "./helper";
       import { cn } from "@/lib/utils";
       import type * as React from "react";
+      import { flushSync } from "react-dom";
+      import { createRoot } from "react-dom/client";
     `;
     expect(detectNpmDependencies(source)).toEqual([]);
   });

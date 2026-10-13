@@ -568,6 +568,75 @@
       }
     },
     {
+      "name": "code-block",
+      "type": "registry:ui",
+      "title": "Code Block",
+      "description": "A code block with shiki syntax highlighting for docs and AI chat UIs. `<CodeBlock code={code} language=\"tsx\" />` is complete; compose `CodeBlockHeader` (`CodeBlockTitle`, `CodeBlockLanguage`, `CodeBlockWrapToggle`, `CodeBlockCopyButton`, `CodeBlockDownloadButton`) as chrome, `CodeBlockExpandButton` with `maxLines`, and `CodeBlockContent` inside your own scroll container. shiki loads lazily on the first highlight (JavaScript regex engine, no WebAssembly) through the `code-block-highlight` lib; pass `lines` from `highlightCode()` in a server loader, or `highlight={false}`, to never load it. Light and dark token colors switch with the theme. `showLineNumbers`/`startLine`, `highlightedLines`/`highlightedWords`/`focusedLines` (line specs like `\"2-4,7\"`), `diff` and `lineLevels` mark lines, as do shiki `transformers`. `streaming` grows the code with a caret and stick-to-bottom, re-rendering only changed lines. `foldable` folds by indentation, `selectable` turns lines into a multi-select listbox, and `CodeBlockLineActions` renders one action group on the hovered or focused line. A pinned copy button stays put while the code scrolls.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/code-block/code-block.tsx",
+          "target": "components/fma-ui/code-block.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/code-block-highlight"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.52.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/code-block, MIT); buttons rebuilt on react-aria Button",
+        "tags": [
+          "data-display",
+          "code",
+          "syntax-highlighting",
+          "shiki",
+          "ai"
+        ]
+      }
+    },
+    {
+      "name": "code-block-highlight",
+      "type": "registry:lib",
+      "title": "Code Block Highlight",
+      "description": "The code block's shiki engine and pure helpers, with no \"use client\" so a server loader can call it. `highlightCode(code, options)` returns plain-JSON `CodeBlockLine[]` (dual light/dark token colors, line state from props or shiki transformers, unchanged lines reused so streaming re-renders one row). shiki loads lazily on the JavaScript regex engine (no WebAssembly), one chunk per language from the static `codeBlockLanguages` map and per theme from `codeBlockThemes` (`github-light`/`github-dark`, or `css-variables` for design-token colors). Also `parseLineSpec` (`\"2-4,7\"`), `markdownFences` / `markdownCodeProps` for AI transcripts, `ansiToLines` for terminal output, `parseUnifiedDiff` for git patches and `stripNotationComments`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "code"
+      ],
+      "files": [
+        {
+          "path": "src/lib/code-block-highlight.ts",
+          "target": "lib/fma-ui/code-block-highlight.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [
+        "shiki@^4.5.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/code-block, MIT)",
+        "tags": [
+          "code",
+          "syntax-highlighting",
+          "shiki",
+          "markdown",
+          "diff"
+        ]
+      }
+    },
+    {
       "name": "collapsible",
       "type": "registry:ui",
       "title": "Collapsible",
@@ -1154,6 +1223,49 @@
       }
     },
     {
+      "name": "emoji-picker",
+      "type": "registry:ui",
+      "title": "Emoji Picker",
+      "description": "An emoji picker with search (names, keywords and shortcodes), skin tones, a frequently or recently used section, custom emoji, a category bar that follows the scroll and a virtualized grid. `<EmojiPicker />` alone renders a trigger and a popover; compose `EmojiPickerTrigger` + `EmojiPickerContent`, or `EmojiPickerPanel` in place, from `EmojiPickerSearch`, `EmojiPickerCategories`, `EmojiPickerList`, `EmojiPickerPreview` and `EmojiPickerSkinTone`. Data is emojibase, fetched once per page from jsDelivr (`dataUrl` to self-host, `locale` for 28 languages) or passed as `data`. `value`/`defaultValue`/`onChange` hold the native emoji (or `:shortcode:` for a custom one); `selectionMode=\"multiple\"` toggles a list (with `max`), and `onEmojiSelect` fires on every pick, for inserting into text. Focus stays in the search while the arrows move through the grid (combobox over an `aria-activedescendant` listbox); Enter picks. `emojiVersion=\"auto\"` hides emoji the device can't draw. Recent picks and the tone persist in localStorage (`recentStorageKey`, `skinToneStorageKey`; `null` keeps them in memory). `name` submits with a native form; every string comes from `i18n`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/emoji-picker/emoji-picker.tsx",
+          "target": "components/fma-ui/emoji-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/dropdown-menu",
+        "@fma-ui/empty",
+        "@fma-ui/input-group",
+        "@fma-ui/popover",
+        "@fma-ui/skeleton",
+        "@fma-ui/tabs"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.52.0",
+        "react-aria-components@^1.21.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/emoji-picker, MIT); rebuilt on react-aria Popover, Dialog, Button, Tabs and Menu",
+        "tags": [
+          "forms",
+          "emoji",
+          "picker",
+          "popover",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "empty",
       "type": "registry:ui",
       "title": "Empty",
@@ -1325,6 +1437,38 @@
           "forms",
           "layout",
           "react-aria"
+        ]
+      }
+    },
+    {
+      "name": "file-type",
+      "type": "registry:ui",
+      "title": "File Type",
+      "description": "A file type icon: a page with a folded corner and the extension label, in the format's brand or family color (Word blue, Excel green, the GitHub language colors). `type` takes one of 99 extensions, one of 13 families (`image`, `folder`… drawn as a glyph) or any other string (a neutral labelled page); `getFileType()` resolves a file name, path, URL or MIME type, and `getFileTypeCategory()` returns the family. `variant` is `outline`, `solid`, `light` or `mono` (theme gray); `size` goes from `mini` (18px, for table rows) to `xl`, and a Tailwind `size-*` class scales label and stroke with the box (container units). `label` replaces the text, `glyph` shows the family glyph and `icon` draws a custom icon. A `text-*` class recolors it. Renders a `span` with `role=\"img\"` named after the type; no state, so it works in Server Components.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/file-type/file-type.tsx",
+          "target": "components/fma-ui/file-type.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/file-type, MIT)",
+        "tags": [
+          "data-display",
+          "file",
+          "icon",
+          "upload"
         ]
       }
     },
@@ -2334,40 +2478,6 @@
       }
     },
     {
-      "name": "simple-time-picker",
-      "type": "registry:ui",
-      "title": "Simple Time Picker",
-      "description": "A button showing a time that opens a popover with columns for hours, minutes, seconds and AM/PM. Values are `@internationalized/date` `Time` objects (`value`/`defaultValue`/`onChange`), like the registry's DateField. `granularity` (\"hour\", \"minute\", \"second\"; default \"minute\") picks the columns and `hourCycle={12}` adds AM/PM. `minValue`/`maxValue` disable out-of-range options and clamp picks to the nearest allowed time. Each column is a react-aria `ListBox`: arrow keys and typing move within it, Tab moves between columns, Escape closes. For typed entry use `DateField` with `granularity=\"minute\"` or react-aria's `TimeField`.",
-      "author": "@fma-ui/ui",
-      "categories": [
-        "forms"
-      ],
-      "files": [
-        {
-          "path": "src/core/simple-time-picker/simple-time-picker.tsx",
-          "target": "components/fma-ui/simple-time-picker.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "dependencies": [
-        "@internationalized/date@^3.12.4",
-        "cn@^0.4.0",
-        "lucide-react@^1.52.0",
-        "react-aria-components@^1.21.1"
-      ],
-      "meta": {
-        "status": "stable",
-        "source": "third-party",
-        "origin": "huybuidac/shadcn-datetime-picker (https://github.com/huybuidac/shadcn-datetime-picker, MIT), via EMITTE; rebuilt on react-aria ListBox",
-        "tags": [
-          "forms",
-          "time",
-          "picker",
-          "react-aria"
-        ]
-      }
-    },
-    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
@@ -2452,6 +2562,39 @@
         "tags": [
           "feedback",
           "toast"
+        ]
+      }
+    },
+    {
+      "name": "sortable",
+      "type": "registry:ui",
+      "title": "Sortable",
+      "description": "A reorderable list, row or grid (`layout`: `vertical`, `horizontal`, `grid`). Give it the items as `value` (or `defaultValue`) with `onChange`, and one `SortableItem` per item whose `id` matches `getKey(item)` (defaults to `item.id`) — as static children or a render function. Items drag with the pointer from anywhere; every item needs a `SortableItemHandle`, the visible grip and its keyboard / screen-reader drag button (Enter starts, arrows pick the drop position, Enter drops; arrows reach it in a vertical list, Tab in a row or grid). `isDisabled` pins an item in place, `selectionMode` lets several selected items move together, and `renderDragPreview` replaces the browser's drag snapshot. A line marks the drop position. `onChange` also gets the moved keys and the drop target; `onDragStart`/`onDragEnd` follow react-aria.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/sortable/sortable.tsx",
+          "target": "components/fma-ui/sortable.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.52.0",
+        "react-aria-components@^1.21.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "data-display",
+          "drag-and-drop",
+          "reorder",
+          "list",
+          "react-aria"
         ]
       }
     },
@@ -5703,6 +5846,46 @@
             "offsetY": "2px"
           }
         }
+      }
+    },
+    {
+      "name": "time-picker",
+      "type": "registry:ui",
+      "title": "Time Picker",
+      "description": "A composable time picker: hour, minute, second and AM/PM columns in a popover (`TimePickerTrigger` + `TimePickerContent`), behind a typable field (`TimePickerInput`, which reads `930`, `14h30`, `2:30 pm`…) or in place (`TimePickerPanel`). `<TimePicker />` alone renders a trigger and a popover. Values are `@internationalized/date` `Time` objects (`value`/`defaultValue`/`onChange`, `null` when empty). `hourCycle`, `granularity` and `periodPosition` shape the columns; `hourStep`/`minuteStep`/`secondStep`, `minValue`/`maxValue` (an overnight window when min > max) and `isTimeUnavailable` narrow the choices, and a pick moves to the nearest selectable time. `requireConfirm` keeps picks as a draft until OK. Each column is an `aria-activedescendant` listbox: arrows, Home/End, PageUp/PageDown and typed digits pick, Left/Right move between columns, Enter commits and closes. `name` submits `HH:mm` (or `HH:mm:ss`) with a native form; `isRequired`, `isInvalid`, `isReadOnly` and `isDisabled` work as in react-aria. Every string comes from `i18n`. `useTimePicker()` exposes the state inside a picker.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/time-picker/time-picker.tsx",
+          "target": "components/fma-ui/time-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/input-group",
+        "@fma-ui/popover"
+      ],
+      "dependencies": [
+        "@internationalized/date@^3.12.4",
+        "cn@^0.4.0",
+        "lucide-react@^1.52.0",
+        "react-aria-components@^1.21.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/docs/components/base/time-picker, MIT); rebuilt on react-aria Popover, Dialog and Button",
+        "tags": [
+          "forms",
+          "time",
+          "picker",
+          "popover",
+          "react-aria"
+        ]
       }
     },
     {
