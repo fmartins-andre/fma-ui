@@ -1,7 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { ColorPicker, ColorPickerPanel } from "./color-picker";
+import {
+  ColorPicker,
+  ColorPickerContent,
+  ColorPickerPanel,
+  ColorPickerPreview,
+  ColorPickerSlider,
+  ColorPickerSwatch,
+  ColorPickerSwatches,
+  ColorPickerTrigger,
+} from "./color-picker";
 import meta from "./meta.json";
 
 const componentMeta = {
@@ -68,7 +77,7 @@ export const Panel: Story = {
     docs: {
       description: {
         story:
-          "ColorPickerPanel renders the sliders inline. Fix to AA moves to the nearest lightness reaching 4.5:1, keeping the hue.",
+          "ColorPickerPanel renders the sliders inline; each track hatches what fails AA against contrastWith. Fix to AA moves to the nearest lightness reaching 4.5:1, keeping the hue.",
       },
     },
   },
@@ -85,7 +94,11 @@ export const Panel: Story = {
     const canvas = within(canvasElement);
     const ratio = canvasElement.querySelector("[data-slot=color-picker-ratio]");
     expect(ratio).toHaveAttribute("data-level", "Fail");
-    expect(canvasElement.querySelectorAll("[data-slot=color-picker-failing]").length).toBe(1);
+    const failing = (channel: string) =>
+      canvasElement.querySelectorAll(`[data-channel=${channel}] [data-slot=color-picker-failing]`);
+    // Light blue on white: only the dark end of lightness passes; every track shows it.
+    expect(failing("lightness").length).toBe(1);
+    expect(failing("hue").length).toBeGreaterThan(0);
 
     await userEvent.click(canvas.getByRole("button", { name: "Fix to AA" }));
     await waitFor(() => expect(ratio).toHaveAttribute("data-level", "AA"));
@@ -157,5 +170,95 @@ export const CustomSwatches: Story = {
           "swatches takes CSS colors or { color, name } pairs (the name is the accessible label); swatchColumns sets the grid width. Pass [] to hide the grid.",
       },
     },
+  },
+};
+
+export const Composition: Story = {
+  args: { value: "oklch(0.62 0.19 30)", label: "Fill" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "ColorPicker holds the color and renders no element; its parts go in any layout. Here a trigger with its own content opens vertical lightness, chroma and hue tracks beside the presets.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
+    return (
+      <div className="flex flex-col items-start gap-3">
+        <ColorPicker value={value} onChange={setValue} label={args.label}>
+          <ColorPickerTrigger aria-label="Fill">
+            <ColorPickerSwatch />
+            Fill
+          </ColorPickerTrigger>
+          <ColorPickerContent className="w-auto">
+            <ColorPickerPanel>
+              <div className="flex gap-3">
+                <ColorPickerSlider channel="lightness" orientation="vertical" />
+                <ColorPickerSlider channel="chroma" orientation="vertical" />
+                <ColorPickerSlider channel="hue" orientation="vertical" />
+                <ColorPickerSwatches columns={4} className="w-36 self-start" />
+              </div>
+            </ColorPickerPanel>
+          </ColorPickerContent>
+        </ColorPicker>
+        <code className="text-xs">{value}</code>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Fill" }));
+    const dialog = await within(document.body).findByRole("dialog", { name: "Fill" });
+    const sliders = within(dialog).getAllByRole("slider");
+    expect(sliders).toHaveLength(3);
+    for (const slider of sliders) expect(slider).toHaveAttribute("aria-orientation", "vertical");
+
+    within(dialog).getByRole("slider", { name: "Hue" }).focus();
+    await userEvent.keyboard("{ArrowUp}");
+    await waitFor(() => expect(canvas.getByText(/^oklch\(0\.62 \S+ 31\)$/)).toBeInTheDocument());
+    await userEvent.keyboard("{Escape}");
+  },
+};
+
+export const ChannelMixer: Story = {
+  args: { value: "#3b82f6", contrastWith: "#ffffff" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Parts work inline too, with no popover. Each slider takes a channel and a colorSpace (here RGB and HSB); with contrastWith every track hatches the part that fails AA against it.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
+    return (
+      <div className="flex w-72 flex-col gap-3">
+        <ColorPicker value={value} onChange={setValue} contrastWith={args.contrastWith}>
+          <ColorPickerPreview />
+          {(["red", "green", "blue"] as const).map((channel) => (
+            <ColorPickerSlider key={channel} channel={channel} colorSpace="rgb" showLabel />
+          ))}
+          <ColorPickerSlider channel="saturation" colorSpace="hsb" showLabel />
+          <ColorPickerSlider channel="brightness" colorSpace="hsb" showLabel />
+        </ColorPicker>
+        <code className="text-xs">{value}</code>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.getAllByRole("slider")).toHaveLength(5);
+    // Every channel of a mid blue fails somewhere against white.
+    expect(canvasElement.querySelectorAll("[data-slot=color-picker-failing]").length).toBe(5);
+
+    const red = canvas.getByRole("slider", { name: "Red" });
+    expect(red).toHaveValue("59");
+    red.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => expect(red).toHaveValue("60"));
+    expect(canvas.getByText(/^oklch\(/)).toBeInTheDocument();
   },
 };
