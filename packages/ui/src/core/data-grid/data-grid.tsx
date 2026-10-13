@@ -70,6 +70,7 @@ import {
   TableFooter,
   TableHeader,
   TableLayout,
+  TableLoadMoreItem,
   useDrag,
   useDragAndDrop,
   useDrop,
@@ -194,6 +195,8 @@ type DataGridLayout = {
 type DataGridI18nLabels = {
   table: string;
   loading: string;
+  fetchingMore: string;
+  allRowsLoaded: string;
   empty: string;
   sort: string;
   sortAscending: string;
@@ -237,6 +240,8 @@ const defaultDataGridI18n: DataGridI18nConfig = {
   labels: {
     table: "Data grid",
     loading: "Loading...",
+    fetchingMore: "Loading more...",
+    allRowsLoaded: "All records loaded",
     empty: "No data available",
     sort: "Sort",
     sortAscending: "Ascending",
@@ -287,6 +292,10 @@ type DataGridProps<TData extends RowData> = {
   loadingMode?: "skeleton" | "spinner";
   /** Shown beside the spinner in the "spinner" loading mode. Defaults to "Loading...". */
   loadingMessage?: React.ReactNode;
+  /** Shown while `DataGridTable` fetches more rows (`onFetchMore`). Defaults to `loadingMessage`. */
+  fetchingMoreMessage?: React.ReactNode;
+  /** Shown under the rows once `hasMore` is false. Defaults to "All records loaded". */
+  allRowsLoadedMessage?: React.ReactNode;
   /** Defaults to "No data available". */
   emptyMessage?: React.ReactNode;
   /**
@@ -422,10 +431,27 @@ type DataGridTableProps<TData extends RowData = RowData> = {
    * (`<tfoot>`), e.g. totals.
    */
   footerContent?: React.ReactNode;
+  /**
+   * Infinite scroll: called when the user scrolls near the end of the loaded
+   * rows (within one viewport height, see `fetchMoreScrollOffset`). Append
+   * the next rows to `data`; give the table a height through `className`.
+   */
+  onFetchMore?: () => void;
+  /** Whether `onFetchMore` is loading; shows a loading row under the rows. */
+  isFetchingMore?: boolean;
+  /** False once every row is loaded: stops `onFetchMore` and shows `allRowsLoadedMessage`. */
+  hasMore?: boolean;
+  /**
+   * How close to the end `onFetchMore` fires, as a fraction of the viewport
+   * height (1 = within one viewport). Defaults to 1.
+   */
+  fetchMoreScrollOffset?: number;
 };
 
 // Key suffix of the full-width row rendered under an expanded row.
 const EXPANDED = ":expanded";
+// Key of the end-of-list row under infinite scroll.
+const ALL_LOADED = "data-grid:all-loaded";
 
 /**
  * Renders the grid with react-aria's `Table`: keyboard navigation between
@@ -440,6 +466,10 @@ function DataGridTable<TData extends RowData = RowData>({
   rowHeight = 40,
   renderExpandedRow,
   footerContent,
+  onFetchMore,
+  isFetchingMore,
+  hasMore,
+  fetchMoreScrollOffset,
 }: DataGridTableProps<TData>) {
   const {
     table,
@@ -447,6 +477,8 @@ function DataGridTable<TData extends RowData = RowData>({
     isLoading,
     loadingMode = "skeleton",
     loadingMessage,
+    fetchingMoreMessage,
+    allRowsLoadedMessage,
     emptyMessage,
     onRowClick,
     i18n: { labels },
@@ -526,6 +558,7 @@ function DataGridTable<TData extends RowData = RowData>({
       disabledKeys={[
         ...rows.filter((row) => isSelectable && !row.getCanSelect()).map((row) => row.id),
         ...rows.filter((row) => row.getIsExpanded()).map((row) => row.id + EXPANDED),
+        ALL_LOADED,
       ]}
       // Disabled rows (unselectable ones, expanded panels) stay focusable.
       disabledBehavior="selection"
@@ -687,6 +720,42 @@ function DataGridTable<TData extends RowData = RowData>({
                   ]
                 : []),
             ])}
+        {onFetchMore && !showSkeleton && (
+          <TableLoadMoreItem
+            data-slot="data-grid-fetching-more"
+            onLoadMore={hasMore === false ? undefined : onFetchMore}
+            isLoading={!!isFetchingMore && hasMore !== false}
+            scrollOffset={fetchMoreScrollOffset}
+            className={cn(isVirtualized && "flex items-center justify-center")}
+          >
+            <div
+              role="status"
+              className="flex items-center justify-center gap-2 py-3 text-sm text-muted-foreground"
+            >
+              <Spinner className="size-4" role="presentation" aria-hidden="true" />
+              {fetchingMoreMessage ?? loadingMessage ?? labels.fetchingMore}
+            </div>
+          </TableLoadMoreItem>
+        )}
+        {onFetchMore && hasMore === false && !showSkeleton && rows.length > 0 && (
+          <Row
+            id={ALL_LOADED}
+            textValue={labels.allRowsLoaded}
+            data-slot="data-grid-all-loaded"
+            className={rowClassName({ ...layout, stripped: false }, isVirtualized)}
+          >
+            <Cell
+              colSpan={columns.length}
+              className={cn(
+                cellPadding,
+                cellClassName(layout, isVirtualized),
+                "justify-center text-center text-sm text-muted-foreground",
+              )}
+            >
+              {allRowsLoadedMessage ?? labels.allRowsLoaded}
+            </Cell>
+          </Row>
+        )}
       </TableBody>
       {footerContent ? <DataGridTableFoot>{footerContent}</DataGridTableFoot> : null}
     </Table>

@@ -1004,3 +1004,86 @@ export const Localized: Story = {
     await userEvent.keyboard("{Escape}");
   },
 };
+
+const PAGE = 20;
+
+function InfiniteDemo({ virtualized }: { virtualized?: boolean }) {
+  const [data, setData] = React.useState(() => MANY.slice(0, PAGE));
+  const [isFetchingMore, setIsFetchingMore] = React.useState(false);
+  const hasMore = data.length < 3 * PAGE;
+  const table = useTable({
+    features: dataGridFeatures,
+    manualPagination: true,
+    data,
+    columns: COLUMNS,
+    getRowId: (row: User) => row.id,
+  });
+  const fetchMore = () => {
+    if (isFetchingMore) return;
+    setIsFetchingMore(true);
+    // Stands in for a request to the server.
+    setTimeout(() => {
+      setData((current) => MANY.slice(0, current.length + PAGE));
+      setIsFetchingMore(false);
+    }, 300);
+  };
+  return (
+    <DataGrid
+      table={table}
+      recordCount={data.length}
+      tableLayout={{ headerSticky: true }}
+      className="w-[760px]"
+    >
+      <DataGridContainer>
+        <DataGridTable
+          aria-label="Users"
+          isVirtualized={virtualized}
+          className="h-80"
+          onFetchMore={fetchMore}
+          isFetchingMore={isFetchingMore}
+          hasMore={hasMore}
+        />
+      </DataGridContainer>
+      <output data-testid="loaded" className="sr-only">
+        {data.length}
+      </output>
+    </DataGrid>
+  );
+}
+
+const scrollToEnd = async (canvasElement: HTMLElement, loaded: number) => {
+  const scroller = canvasElement.querySelector(
+    "[data-slot=data-grid-table-container] > div",
+  ) as HTMLElement;
+  scroller.scrollTop = scroller.scrollHeight;
+  scroller.dispatchEvent(new Event("scroll"));
+  await waitFor(
+    () => expect(within(canvasElement).getByTestId("loaded")).toHaveTextContent(String(loaded)),
+    { timeout: 3000 },
+  );
+};
+
+/**
+ * Infinite scroll: `onFetchMore` fires near the end of the loaded rows,
+ * `isFetchingMore` shows a loading row and `hasMore={false}` ends the list.
+ */
+export const InfiniteScroll: Story = {
+  render: () => <InfiniteDemo />,
+  play: async ({ canvasElement, canvas }) => {
+    await expect(canvas.getByTestId("loaded")).toHaveTextContent("20");
+    await scrollToEnd(canvasElement, 40);
+    await scrollToEnd(canvasElement, 60);
+    await expect(await canvas.findByText("All records loaded")).toBeInTheDocument();
+  },
+};
+
+/** Infinite scroll over a virtualized body. */
+export const InfiniteScrollVirtualized: Story = {
+  render: () => <InfiniteDemo virtualized />,
+  play: async ({ canvasElement, canvas }) => {
+    await scrollToEnd(canvasElement, 40);
+    await scrollToEnd(canvasElement, 60);
+    await scrollToEnd(canvasElement, 60);
+    await expect(await canvas.findByText("All records loaded")).toBeInTheDocument();
+  },
+};
