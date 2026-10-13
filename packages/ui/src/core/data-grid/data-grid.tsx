@@ -67,6 +67,7 @@ import {
   type SortDescriptor,
   Table,
   TableBody,
+  TableFooter,
   TableHeader,
   TableLayout,
   useDrag,
@@ -168,6 +169,8 @@ type DataGridLayout = {
   /** Alternating row background. */
   stripped?: boolean;
   headerBackground?: boolean;
+  /** Tints the footer rows (`footerContent`). */
+  footerBackground?: boolean;
   /** Keeps the header visible while the body scrolls (give the grid a height). */
   headerSticky?: boolean;
   /** "fixed" (default) sizes columns from `size`; "auto" lets the content decide. */
@@ -187,6 +190,93 @@ type DataGridLayout = {
   columnsVisibility?: boolean;
 };
 
+/** Every built-in string of the grid. Labels that interpolate are functions. */
+type DataGridI18nLabels = {
+  table: string;
+  loading: string;
+  empty: string;
+  sort: string;
+  sortAscending: string;
+  sortDescending: string;
+  pin: string;
+  pinColumnStart: string;
+  pinColumnEnd: string;
+  unpinColumn: (column: string) => string;
+  move: string;
+  moveColumnLeft: string;
+  moveColumnRight: string;
+  columns: string;
+  toggleColumns: string;
+  columnMenu: (column: string) => string;
+  resizeColumn: (column: string) => string;
+  expandRow: string;
+  collapseRow: string;
+  rowDetails: (row: string) => string;
+  pinRow: string;
+  unpinRow: string;
+  filter: string;
+  filterSearch: (title: string) => string;
+  filterNoResults: string;
+  filterClear: string;
+  filterSelected: (count: number) => string;
+  pagination: string;
+  rowsPerPage: string;
+  paginationInfo: (info: { from: number; to: number; count: number }) => string;
+  previousPage: string;
+  nextPage: string;
+  goToPage: (page: number) => string;
+  ellipsis: string;
+};
+
+type DataGridI18nConfig = { labels: DataGridI18nLabels };
+
+/** Partial overrides, merged over the defaults per section. */
+type DataGridI18nOverrides = { labels?: Partial<DataGridI18nLabels> };
+
+const defaultDataGridI18n: DataGridI18nConfig = {
+  labels: {
+    table: "Data grid",
+    loading: "Loading...",
+    empty: "No data available",
+    sort: "Sort",
+    sortAscending: "Ascending",
+    sortDescending: "Descending",
+    pin: "Pin",
+    pinColumnStart: "Pin to start",
+    pinColumnEnd: "Pin to end",
+    unpinColumn: (column) => `Unpin ${column} column`,
+    move: "Move",
+    moveColumnLeft: "Move left",
+    moveColumnRight: "Move right",
+    columns: "Columns",
+    toggleColumns: "Toggle columns",
+    columnMenu: (column) => `${column} column`,
+    resizeColumn: (column) => `Resize ${column}`,
+    expandRow: "Expand row",
+    collapseRow: "Collapse row",
+    rowDetails: (row) => `${row} details`,
+    pinRow: "Pin row",
+    unpinRow: "Unpin row",
+    filter: "Filter",
+    filterSearch: (title) => `Search ${title}`,
+    filterNoResults: "No results found.",
+    filterClear: "Clear filters",
+    filterSelected: (count) => `${count} selected`,
+    pagination: "Pagination",
+    rowsPerPage: "Rows per page",
+    paginationInfo: ({ from, to, count }) => `${from} - ${to} of ${count}`,
+    previousPage: "Go to previous page",
+    nextPage: "Go to next page",
+    goToPage: (page) => `Page ${page}`,
+    ellipsis: "...",
+  },
+};
+
+/** Merges overrides over the defaults; untouched keys keep their default. */
+function mergeDataGridI18n(overrides?: DataGridI18nOverrides): DataGridI18nConfig {
+  return { labels: { ...defaultDataGridI18n.labels, ...overrides?.labels } };
+}
+
 type DataGridProps<TData extends RowData> = {
   /** A table created with `useTable({ features: dataGridFeatures, ... })`. */
   table: TanstackTable<DataGridFeatures, TData>;
@@ -199,6 +289,12 @@ type DataGridProps<TData extends RowData> = {
   loadingMessage?: React.ReactNode;
   /** Defaults to "No data available". */
   emptyMessage?: React.ReactNode;
+  /**
+   * Overrides for the built-in strings (menus, aria labels, pagination,
+   * filter). Specific props such as `loadingMessage`, `emptyMessage` or the
+   * pagination label props win over their `i18n` counterpart.
+   */
+  i18n?: DataGridI18nOverrides;
   /** Makes rows actionable: pressing one (or Enter on it) calls this. */
   onRowClick?: (row: TData) => void;
   tableLayout?: DataGridLayout;
@@ -206,9 +302,10 @@ type DataGridProps<TData extends RowData> = {
   children?: React.ReactNode;
 };
 
-type DataGridContextValue = Omit<DataGridProps<RowData>, "table" | "children"> & {
+type DataGridContextValue = Omit<DataGridProps<RowData>, "table" | "children" | "i18n"> & {
   table: TanstackTable<DataGridFeatures, RowData>;
   layout: DataGridLayout;
+  i18n: DataGridI18nConfig;
 };
 
 const DataGridContext = React.createContext<DataGridContextValue | null>(null);
@@ -221,21 +318,28 @@ function useDataGrid<TData extends RowData = RowData>() {
   };
 }
 
+/** The grid's labels; the defaults outside a `DataGrid`. */
+function useDataGridLabels(): DataGridI18nLabels {
+  return (React.useContext(DataGridContext)?.i18n ?? defaultDataGridI18n).labels;
+}
+
 /** Provides the TanStack `table` to the grid parts (table, pagination, headers). */
 function DataGrid<TData extends RowData>({
   table,
   tableLayout,
   className,
   children,
+  i18n,
   ...props
 }: DataGridProps<TData>) {
   // Rebuilt every render on purpose: the table instance is stable while its
   // state changes, and the parts must re-render with it.
   const value: DataGridContextValue = {
     // The context is untyped; useDataGrid<TData>() restores the row type.
-    ...(props as Omit<DataGridProps<RowData>, "table" | "children">),
+    ...(props as Omit<DataGridProps<RowData>, "table" | "children" | "i18n">),
     table: table as TanstackTable<DataGridFeatures, RowData>,
     layout: { rowBorder: true, width: "fixed", ...tableLayout },
+    i18n: mergeDataGridI18n(i18n),
   };
   return (
     <DataGridContext.Provider value={value}>
@@ -313,6 +417,11 @@ type DataGridTableProps<TData extends RowData = RowData> = {
    * with `DataGridRowExpand` and make them expandable with `getRowCanExpand`.
    */
   renderExpandedRow?: (row: TanstackRow<DataGridFeatures, TData>) => React.ReactNode;
+  /**
+   * Footer rows (`DataGridTableFootRow`), rendered in the table's footer
+   * (`<tfoot>`), e.g. totals.
+   */
+  footerContent?: React.ReactNode;
 };
 
 // Key suffix of the full-width row rendered under an expanded row.
@@ -324,22 +433,25 @@ const EXPANDED = ":expanded";
  * TanStack holds the data model.
  */
 function DataGridTable<TData extends RowData = RowData>({
-  "aria-label": ariaLabel = "Data grid",
+  "aria-label": ariaLabelProp,
   className,
   onRowsReorder,
   isVirtualized,
   rowHeight = 40,
   renderExpandedRow,
+  footerContent,
 }: DataGridTableProps<TData>) {
   const {
     table,
     layout,
     isLoading,
     loadingMode = "skeleton",
-    loadingMessage = "Loading...",
-    emptyMessage = "No data available",
+    loadingMessage,
+    emptyMessage,
     onRowClick,
+    i18n: { labels },
   } = useDataGrid();
+  const ariaLabel = ariaLabelProp ?? labels.table;
   const state = table.store.state;
   const columns = [
     ...table.getStartVisibleLeafColumns(),
@@ -478,7 +590,7 @@ function DataGridTable<TData extends RowData = RowData>({
                 )}
                 {layout.columnsResizable && fixed && column.getCanResize() && (
                   <ColumnResizer
-                    aria-label={`Resize ${getColumnHeaderLabel(column)}`}
+                    aria-label={labels.resizeColumn(getColumnHeaderLabel(column))}
                     className="absolute inset-y-0 -end-px z-10 w-1.5 cursor-col-resize touch-none bg-transparent outline-none data-focus-visible:bg-ring data-hovered:bg-border data-resizing:bg-ring"
                   />
                 )}
@@ -489,7 +601,9 @@ function DataGridTable<TData extends RowData = RowData>({
       </TableHeader>
       <TableBody
         renderEmptyState={() => (
-          <div className="py-10 text-center text-sm text-muted-foreground">{emptyMessage}</div>
+          <div className="py-10 text-center text-sm text-muted-foreground">
+            {emptyMessage ?? labels.empty}
+          </div>
         )}
       >
         {showSkeleton
@@ -553,7 +667,9 @@ function DataGridTable<TData extends RowData = RowData>({
                     <Row
                       key={row.id + EXPANDED}
                       id={row.id + EXPANDED}
-                      textValue={`${String((rowHeaderId && row.getValue(rowHeaderId)) ?? row.id)} details`}
+                      textValue={labels.rowDetails(
+                        String((rowHeaderId && row.getValue(rowHeaderId)) ?? row.id),
+                      )}
                       data-slot="data-grid-expanded-row"
                       className={rowClassName({ ...layout, stripped: false }, isVirtualized)}
                     >
@@ -572,6 +688,7 @@ function DataGridTable<TData extends RowData = RowData>({
                 : []),
             ])}
       </TableBody>
+      {footerContent ? <DataGridTableFoot>{footerContent}</DataGridTableFoot> : null}
     </Table>
   );
 
@@ -616,7 +733,7 @@ function DataGridTable<TData extends RowData = RowData>({
           className="absolute inset-0 z-20 flex items-center justify-center gap-2 bg-background/60 text-sm text-muted-foreground"
         >
           <Spinner className="size-5" role="presentation" aria-hidden="true" />
-          {loadingMessage}
+          {loadingMessage ?? labels.loading}
         </div>
       )}
     </div>
@@ -643,6 +760,54 @@ function cellClassName(layout: DataGridLayout, isVirtualized?: boolean) {
     isVirtualized && "flex items-center",
     !isVirtualized && layout.rowBorder && "border-b [tr:last-child>&]:border-b-0",
     layout.cellBorder && "border-e last:border-e-0",
+  );
+}
+
+/** The table's footer (`<tfoot>`); `footerContent` on `DataGridTable` renders one for you. */
+function DataGridTableFoot({ className, ...props }: React.ComponentProps<typeof TableFooter>) {
+  return (
+    <TableFooter
+      data-slot="data-grid-table-foot"
+      className={cn("font-medium", className)}
+      {...props}
+    />
+  );
+}
+
+/** A footer row, inside `footerContent`. */
+function DataGridTableFootRow({ className, ...props }: React.ComponentProps<typeof Row>) {
+  const { layout } = useDataGrid();
+  return (
+    <Row
+      data-slot="data-grid-table-foot-row"
+      className={cn(
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
+        layout.footerBackground && "bg-muted/40",
+        className as string,
+      )}
+      {...props}
+    />
+  );
+}
+
+/** A footer cell; `colSpan` spans it over several columns. */
+function DataGridTableFootRowCell({ className, ...props }: React.ComponentProps<typeof Cell>) {
+  const { layout } = useDataGrid();
+  return (
+    <Cell
+      data-slot="data-grid-table-foot-cell"
+      className={cn(
+        "align-middle outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
+        layout.dense ? "px-2.5 py-1.5" : "px-4 py-2.5",
+        // The body's last row draws no bottom border: the footer's first row
+        // draws the seam.
+        "[tr:first-child>&]:border-t",
+        layout.rowBorder && "border-b [tr:last-child>&]:border-b-0",
+        layout.cellBorder && "border-e last:border-e-0",
+        className as string,
+      )}
+      {...props}
+    />
   );
 }
 
@@ -752,6 +917,7 @@ function DataGridRowExpand<TData extends RowData>({
   className?: string;
   children?: React.ReactNode;
 }) {
+  const labels = useDataGridLabels();
   const isExpanded = row.getIsExpanded();
   return (
     <span
@@ -763,7 +929,7 @@ function DataGridRowExpand<TData extends RowData>({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label={isExpanded ? "Collapse row" : "Expand row"}
+          aria-label={isExpanded ? labels.collapseRow : labels.expandRow}
           aria-expanded={isExpanded}
           onPress={() => row.toggleExpanded()}
         >
@@ -810,12 +976,13 @@ function DataGridRowPin<TData extends RowData>({
   row: TanstackRow<DataGridFeatures, TData>;
   position?: "top" | "bottom";
 }) {
+  const labels = useDataGridLabels();
   const isPinned = row.getIsPinned();
   return (
     <Button
       variant="ghost"
       size="icon-sm"
-      aria-label={isPinned ? "Unpin row" : "Pin row"}
+      aria-label={isPinned ? labels.unpinRow : labels.pinRow}
       aria-pressed={!!isPinned}
       onPress={() => row.pin(isPinned ? false : position)}
     >
@@ -845,7 +1012,12 @@ function DataGridColumnHeader<TData extends RowData, TValue extends CellData>({
   visibility = false,
   className,
 }: DataGridColumnHeaderProps<TData, TValue>) {
-  const { table, layout, isLoading } = useDataGrid<TData>();
+  const {
+    table,
+    layout,
+    isLoading,
+    i18n: { labels },
+  } = useDataGrid<TData>();
   const label = title ?? getColumnHeaderLabel(column);
   const sorted = column.getIsSorted();
   const pinned = column.getIsPinned();
@@ -927,17 +1099,17 @@ function DataGridColumnHeader<TData extends RowData, TValue extends CellData>({
           {label}
           {sortIcon}
         </Button>
-        <DropdownMenu aria-label={`${label} column`} className="w-44" onAction={onAction}>
+        <DropdownMenu aria-label={labels.columnMenu(label)} className="w-44" onAction={onAction}>
           {canSort && (
-            <DropdownMenuGroup aria-label="Sort">
-              <DropdownMenuItem id="asc" textValue="Ascending">
+            <DropdownMenuGroup aria-label={labels.sort}>
+              <DropdownMenuItem id="asc" textValue={labels.sortAscending}>
                 <ArrowUpIcon aria-hidden="true" />
-                Ascending
+                {labels.sortAscending}
                 {check(sorted === "asc")}
               </DropdownMenuItem>
-              <DropdownMenuItem id="desc" textValue="Descending">
+              <DropdownMenuItem id="desc" textValue={labels.sortDescending}>
                 <ArrowDownIcon aria-hidden="true" />
-                Descending
+                {labels.sortDescending}
                 {check(sorted === "desc")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -945,15 +1117,15 @@ function DataGridColumnHeader<TData extends RowData, TValue extends CellData>({
           {canPin && (
             <>
               {canSort && <DropdownMenuSeparator />}
-              <DropdownMenuGroup aria-label="Pin">
-                <DropdownMenuItem id="pin-start" textValue="Pin to start">
+              <DropdownMenuGroup aria-label={labels.pin}>
+                <DropdownMenuItem id="pin-start" textValue={labels.pinColumnStart}>
                   <ArrowLeftToLineIcon aria-hidden="true" className="rtl:rotate-180" />
-                  Pin to start
+                  {labels.pinColumnStart}
                   {check(pinned === "start")}
                 </DropdownMenuItem>
-                <DropdownMenuItem id="pin-end" textValue="Pin to end">
+                <DropdownMenuItem id="pin-end" textValue={labels.pinColumnEnd}>
                   <ArrowRightToLineIcon aria-hidden="true" className="rtl:rotate-180" />
-                  Pin to end
+                  {labels.pinColumnEnd}
                   {check(pinned === "end")}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -962,17 +1134,17 @@ function DataGridColumnHeader<TData extends RowData, TValue extends CellData>({
           {layout.columnsMovable && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuGroup aria-label="Move">
+              <DropdownMenuGroup aria-label={labels.move}>
                 <DropdownMenuItem id="move-left" isDisabled={index <= 0 || !!pinned}>
                   <ArrowLeftIcon aria-hidden="true" />
-                  Move left
+                  {labels.moveColumnLeft}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   id="move-right"
                   isDisabled={index >= order.length - 1 || !!pinned}
                 >
                   <ArrowRightIcon aria-hidden="true" />
-                  Move right
+                  {labels.moveColumnRight}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </>
@@ -980,8 +1152,8 @@ function DataGridColumnHeader<TData extends RowData, TValue extends CellData>({
           {layout.columnsVisibility && visibility && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuGroup aria-label="Columns">
-                <DropdownMenuLabel>Columns</DropdownMenuLabel>
+              <DropdownMenuGroup aria-label={labels.columns}>
+                <DropdownMenuLabel>{labels.columns}</DropdownMenuLabel>
                 {hideable.map((leaf) => (
                   <DropdownMenuItem
                     key={leaf.id}
@@ -1001,7 +1173,7 @@ function DataGridColumnHeader<TData extends RowData, TValue extends CellData>({
         <Button
           variant="ghost"
           size="icon-xs"
-          aria-label={`Unpin ${label} column`}
+          aria-label={labels.unpinColumn(label)}
           onPress={() => column.pin(false)}
         >
           <PinOffIcon aria-hidden="true" className="opacity-60" />
@@ -1019,12 +1191,13 @@ function DataGridColumnVisibility<TData extends RowData>({
   table: TanstackTable<DataGridFeatures, TData>;
   trigger: React.ReactElement;
 }) {
+  const labels = useDataGridLabels();
   const hideable = table.getAllLeafColumns().filter((column) => column.getCanHide());
   return (
     <DropdownMenuTrigger>
       {trigger}
       <DropdownMenu
-        aria-label="Columns"
+        aria-label={labels.columns}
         placement="bottom end"
         className="min-w-40"
         selectionMode="multiple"
@@ -1036,7 +1209,7 @@ function DataGridColumnVisibility<TData extends RowData>({
         }}
       >
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+          <DropdownMenuLabel>{labels.toggleColumns}</DropdownMenuLabel>
           {hideable.map((column) => (
             <DropdownMenuItem
               key={column.id}
@@ -1068,6 +1241,7 @@ function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
   title,
   options,
 }: DataGridColumnFilterProps<TData, TValue>) {
+  const labels = useDataGridLabels();
   const [query, setQuery] = React.useState("");
   const facets = column?.getFacetedUniqueValues?.();
   const value = column?.getFilterValue();
@@ -1086,7 +1260,7 @@ function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
         {selected.size > 0 && (
           <Badge variant="secondary" className="ms-1 px-1 font-normal">
             {selected.size > 2
-              ? `${selected.size} selected`
+              ? labels.filterSelected(selected.size)
               : options
                   .filter((option) => selected.has(option.value))
                   .map((option) => option.label)
@@ -1095,10 +1269,10 @@ function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
         )}
       </Button>
       <Popover placement="bottom start" className="w-56 gap-0 p-0">
-        <Dialog aria-label={title ?? "Filter"} className="outline-none">
+        <Dialog aria-label={title ?? labels.filter} className="outline-none">
           <div className="p-2">
             <Input
-              aria-label={`Search ${title ?? "options"}`}
+              aria-label={labels.filterSearch(title ?? labels.filter)}
               placeholder={title}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -1106,7 +1280,7 @@ function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
             />
           </div>
           <ListBox
-            aria-label={title ?? "Options"}
+            aria-label={title ?? labels.filter}
             selectionMode="multiple"
             // Escape closes the popover instead of clearing the filter.
             escapeKeyBehavior="none"
@@ -1119,7 +1293,7 @@ function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
             items={shown}
             renderEmptyState={() => (
               <div className="py-6 text-center text-sm text-muted-foreground">
-                No results found.
+                {labels.filterNoResults}
               </div>
             )}
             className="max-h-72 overflow-y-auto p-1 outline-none"
@@ -1147,7 +1321,7 @@ function DataGridColumnFilter<TData extends RowData, TValue extends CellData>({
           {selected.size > 0 && (
             <div className="border-t p-1">
               <Button variant="ghost" size="sm" className="w-full" onPress={() => setSelected([])}>
-                Clear filters
+                {labels.filterClear}
               </Button>
             </div>
           )}
@@ -1161,7 +1335,7 @@ type DataGridPaginationProps = {
   sizes?: number[];
   /** Shown instead of the page size selector while loading. */
   sizesSkeleton?: React.ReactNode;
-  /** "{from}", "{to}" and "{count}" are replaced. */
+  /** "{from}", "{to}" and "{count}" are replaced. Defaults to `i18n` `paginationInfo`. */
   info?: string;
   /** Shown instead of the record info while loading. */
   infoSkeleton?: React.ReactNode;
@@ -1200,16 +1374,25 @@ function getPageWindow(pageIndex: number, pageCount: number, moreLimit: number) 
 function DataGridPagination({
   sizes = [5, 10, 25, 50, 100],
   sizesSkeleton = <Skeleton className="h-8 w-44" />,
-  info = "{from} - {to} of {count}",
+  info,
   infoSkeleton = <Skeleton className="h-8 w-60" />,
-  rowsPerPageLabel = "Rows per page",
-  previousPageLabel = "Go to previous page",
-  nextPageLabel = "Go to next page",
+  rowsPerPageLabel: rowsPerPageProp,
+  previousPageLabel: previousPageProp,
+  nextPageLabel: nextPageProp,
   moreLimit = 5,
-  ellipsisText = "...",
+  ellipsisText: ellipsisProp,
   className,
 }: DataGridPaginationProps) {
-  const { table, recordCount, isLoading } = useDataGrid();
+  const {
+    table,
+    recordCount,
+    isLoading,
+    i18n: { labels },
+  } = useDataGrid();
+  const rowsPerPageLabel = rowsPerPageProp ?? labels.rowsPerPage;
+  const previousPageLabel = previousPageProp ?? labels.previousPage;
+  const nextPageLabel = nextPageProp ?? labels.nextPage;
+  const ellipsisText = ellipsisProp ?? labels.ellipsis;
   const { pageIndex, pageSize } = table.store.state.pagination;
   const pageCount = table.getPageCount();
   const from = recordCount === 0 ? 0 : pageIndex * pageSize + 1;
@@ -1227,7 +1410,7 @@ function DataGridPagination({
 
   return (
     <nav
-      aria-label="Pagination"
+      aria-label={labels.pagination}
       data-slot="data-grid-pagination"
       className={cn(
         "flex flex-col flex-wrap items-center justify-between gap-2.5 sm:flex-row",
@@ -1256,10 +1439,12 @@ function DataGridPagination({
       </div>
       <div className="flex flex-col items-center gap-2.5 sm:flex-row">
         <span className="text-sm text-nowrap text-muted-foreground">
-          {info
-            .replaceAll("{from}", String(from))
-            .replaceAll("{to}", String(to))
-            .replaceAll("{count}", String(recordCount))}
+          {info !== undefined
+            ? info
+                .replaceAll("{from}", String(from))
+                .replaceAll("{to}", String(to))
+                .replaceAll("{count}", String(recordCount))
+            : labels.paginationInfo({ from, to, count: recordCount })}
         </span>
         {pageCount > 1 && (
           <div className="flex items-center gap-1">
@@ -1283,7 +1468,7 @@ function DataGridPagination({
                     key={index === 1 ? "ellipsis-start" : "ellipsis-end"}
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={`Page ${target + 1}`}
+                    aria-label={labels.goToPage(target + 1)}
                     className="text-muted-foreground"
                     onPress={() => table.setPageIndex(target)}
                   >
@@ -1296,7 +1481,7 @@ function DataGridPagination({
                   key={page}
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Page ${page + 1}`}
+                  aria-label={labels.goToPage(page + 1)}
                   aria-current={page === pageIndex ? "page" : undefined}
                   className="text-muted-foreground aria-[current=page]:bg-accent aria-[current=page]:text-accent-foreground"
                   onPress={() => table.setPageIndex(page)}
@@ -1327,6 +1512,9 @@ export type {
   DataGridColumnHeaderProps,
   DataGridColumnMeta,
   DataGridFeatures,
+  DataGridI18nConfig,
+  DataGridI18nLabels,
+  DataGridI18nOverrides,
   DataGridLayout,
   DataGridPaginationProps,
   DataGridProps,
@@ -1344,8 +1532,13 @@ export {
   DataGridRowPin,
   DataGridRowSelect,
   DataGridTable,
+  DataGridTableFoot,
+  DataGridTableFootRow,
+  DataGridTableFootRowCell,
   dataGridFeatures,
+  defaultDataGridI18n,
   getColumnHeaderLabel,
   getDataGridTreeIndentStyle,
+  mergeDataGridI18n,
   useDataGrid,
 };
