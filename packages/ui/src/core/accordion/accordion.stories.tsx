@@ -52,7 +52,6 @@ export const Default: Story = {
 };
 
 export const OpensOnlyOneAtATime: Story = {
-  args: { allowsMultipleExpanded: false },
   parameters: {
     docs: {
       description: { story: "Only one item can be open at a time — opening one closes the rest." },

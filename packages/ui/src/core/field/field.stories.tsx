@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Input } from "../input/input";
 import { Label } from "../label/label";
+import { Switch } from "../switch/switch";
 import {
   Field,
   FieldContent,
@@ -46,7 +47,9 @@ export const Horizontal: Story = {
   args: { orientation: "horizontal" },
   parameters: {
     docs: {
-      description: { story: "Label and description sit beside each other instead of stacked." },
+      description: {
+        story: "The label and description sit beside the control instead of above it.",
+      },
     },
   },
   render: (args) => (
@@ -55,6 +58,7 @@ export const Horizontal: Story = {
         <FieldLabel htmlFor="notifications">Notifications</FieldLabel>
         <FieldDescription>Receive email updates about your account.</FieldDescription>
       </FieldContent>
+      <Switch id="notifications" />
     </Field>
   ),
 };

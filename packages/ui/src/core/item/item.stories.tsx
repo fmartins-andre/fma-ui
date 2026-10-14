@@ -42,8 +42,8 @@ export const Default: Story = {
         <UserIcon />
       </ItemMedia>
       <ItemContent>
-        <ItemTitle>André Martins</ItemTitle>
-        <ItemDescription>fmartins.andre@gmail.com</ItemDescription>
+        <ItemTitle>Ada Lovelace</ItemTitle>
+        <ItemDescription>ada@example.com</ItemDescription>
       </ItemContent>
       <ItemActions>
         <Button size="sm" variant="outline">

@@ -19,7 +19,6 @@ const componentMeta = {
   },
   args: {
     placeholder: "you@example.com",
-    type: "text",
   },
 } satisfies Meta<typeof Input>;
 

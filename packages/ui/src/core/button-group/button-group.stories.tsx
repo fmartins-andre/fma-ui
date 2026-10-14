@@ -13,9 +13,6 @@ const componentMeta = {
   argTypes: {
     orientation: { control: "select", options: ["horizontal", "vertical"] },
   },
-  args: {
-    orientation: "horizontal",
-  },
 } satisfies Meta<typeof ButtonGroup>;
 
 export default componentMeta;
