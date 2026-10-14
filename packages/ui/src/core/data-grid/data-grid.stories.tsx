@@ -154,7 +154,7 @@ const SELECT_COLUMN: UserColumn = {
   meta: { headerTitle: "Select" },
 };
 
-type DemoProps = {
+type UsersDataGridProps = {
   data?: User[];
   columns?: UserColumn[];
   isLoading?: boolean;
@@ -185,7 +185,7 @@ const EXPAND_COLUMN: UserColumn = {
   meta: { headerTitle: "Details" },
 };
 
-function Demo({
+function UsersDataGrid({
   data = USERS,
   columns = COLUMNS,
   isLoading,
@@ -201,7 +201,7 @@ function Demo({
   i18n,
   footer,
   tableClassNames,
-}: DemoProps) {
+}: UsersDataGridProps) {
   const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
@@ -294,7 +294,7 @@ const componentMeta = {
 } satisfies Meta<typeof DataGrid>;
 
 export default componentMeta;
-type Story = StoryObj<typeof Demo>;
+type Story = StoryObj<typeof UsersDataGrid>;
 
 const body = () => within(document.body);
 const bodyRows = (canvas: ReturnType<typeof within>): HTMLElement[] =>
@@ -303,7 +303,7 @@ const firstCells = (canvas: ReturnType<typeof within>) =>
   bodyRows(canvas).map((row) => within(row).getAllByRole("rowheader")[0]?.textContent);
 
 export const Default: Story = {
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const grid = canvas.getByRole("grid", { name: "Users" });
     await expect(grid).toBeInTheDocument();
@@ -327,7 +327,7 @@ export const Default: Story = {
 
 /** Sortable columns sort on press (or Enter on the header) and expose `aria-sort`. */
 export const Sorting: Story = {
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const name = canvas.getByRole("columnheader", { name: /Name/ });
     await userEvent.click(name);
@@ -344,7 +344,7 @@ export const Sorting: Story = {
 /** With `enableRowSelection`, `DataGridRowSelect` checkboxes select rows; the header one selects the page. */
 export const Selection: Story = {
   args: { selectable: true },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const selection = canvas.getByTestId("selection");
     const rowCheckbox = within(bodyRows(canvas)[1] as HTMLElement).getByRole("checkbox");
@@ -363,7 +363,7 @@ export const Selection: Story = {
 /** `onRowClick` makes rows actionable by pointer and keyboard. */
 export const RowClick: Story = {
   args: { onRowClick: fn() },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas, args }) => {
     await userEvent.click(within(bodyRows(canvas)[2] as HTMLElement).getByText("Carol Smith"));
     await expect(args.onRowClick).toHaveBeenLastCalledWith(USERS[2]);
@@ -374,7 +374,7 @@ export const RowClick: Story = {
 
 export const LoadingSkeleton: Story = {
   args: { isLoading: true },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas, canvasElement }) => {
     await expect(
       canvasElement.querySelector("[data-slot=data-grid-table-container]"),
@@ -386,7 +386,7 @@ export const LoadingSkeleton: Story = {
 
 export const LoadingSpinner: Story = {
   args: { isLoading: true, loadingMode: "spinner" },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByText("Alice Martin")).toBeInTheDocument();
     const overlay = canvasElement.querySelector("[data-slot=data-grid-loading]");
@@ -397,7 +397,7 @@ export const LoadingSpinner: Story = {
 
 export const Empty: Story = {
   args: { data: [], emptyMessage: "No users yet." },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText("No users yet.")).toBeVisible();
     await expect(canvas.getByText("0 - 0 of 8".replace("8", "0"))).toBeInTheDocument();
@@ -414,7 +414,7 @@ export const ColumnMenus: Story = {
       headerBackground: true,
     },
   },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const headers = () => canvas.getAllByRole("columnheader").map((h) => h.textContent?.trim());
     const openMenu = async (name: string) => {
@@ -466,7 +466,7 @@ export const FilterAndVisibility: Story = {
       </div>
     ),
   },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Status" }));
     const options = await body().findByRole("listbox", { name: "Status" });
@@ -496,7 +496,7 @@ export const FilterAndVisibility: Story = {
 /** `columnsResizable`: drag a header edge, or focus its resizer and use the arrow keys. */
 export const Resizable: Story = {
   args: { layout: { columnsResizable: true, cellBorder: true } },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvasElement, canvas }) => {
     const header = canvas.getByRole("columnheader", { name: /^ID/ });
     const before = header.getBoundingClientRect().width;
@@ -600,7 +600,7 @@ export const RowPinning: Story = {
       },
     ],
   },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const pin = within(bodyRows(canvas)[3] as HTMLElement).getByRole("button", { name: "Pin row" });
     await userEvent.click(pin);
@@ -624,7 +624,7 @@ export const RowPinningBottom: Story = {
       },
     ],
   },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const pin = within(bodyRows(canvas)[0] as HTMLElement).getByRole("button", { name: "Pin row" });
     await userEvent.click(pin);
@@ -690,7 +690,7 @@ export const Virtualized: Story = {
  */
 export const ManyPages: Story = {
   args: { data: MANY },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const nav = within(canvas.getByRole("navigation", { name: "Pagination" }));
     const labels = () =>
@@ -718,7 +718,7 @@ export const ManyPages: Story = {
 /** Layout options: dense rows, cell borders, stripes and a tinted header. */
 export const Layout: Story = {
   args: { layout: { dense: true, cellBorder: true, stripped: true, headerBackground: true } },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
 };
 
 /**
@@ -729,7 +729,7 @@ export const ScopedDarkHeader: Story = {
   args: { layout: { headerBackground: true } },
   render: (args) => (
     <div className="dark rounded-lg bg-background p-2 text-foreground">
-      <Demo {...args} />
+      <UsersDataGrid {...args} />
     </div>
   ),
   play: async ({ canvas }) => {
@@ -751,7 +751,7 @@ export const ScopedDarkHeader: Story = {
  */
 export const ExpandableRows: Story = {
   args: { expandable: true, selectable: true },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const [toggle] = canvas.getAllByRole("button", { name: "Expand row" });
     if (!toggle) throw new Error("no expand button");
@@ -787,7 +787,7 @@ export const ExpandableRows: Story = {
 /** With `columnsDraggable`, dropping a header on another moves the column to that side. */
 export const DraggableColumns: Story = {
   args: { layout: { columnsDraggable: true } },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const titles = () =>
       canvas.getAllByRole("columnheader").map((header) => header.textContent?.trim());
@@ -834,7 +834,7 @@ export const PinnedColumns: Story = {
     layout: { columnsDraggable: true, columnsPinnable: true },
     initialPinning: { start: ["id"], end: ["joined"] },
   },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const id = canvas.getByRole("columnheader", { name: /^ID/ });
     const joined = canvas.getByRole("columnheader", { name: /^Joined/ });
@@ -958,7 +958,7 @@ export const Footer: Story = {
       </DataGridTableFootRow>
     ),
   },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvasElement, canvas }) => {
     const foot = canvasElement.querySelector("tfoot[data-slot=data-grid-table-foot]");
     if (!foot) throw new Error("no tfoot");
@@ -992,7 +992,7 @@ const PT_BR: DataGridI18nOverrides = {
 /** One `i18n` prop replaces the built-in strings: menus, aria labels and pagination. */
 export const Localized: Story = {
   args: { i18n: PT_BR, layout: { columnsPinnable: true, columnsMovable: true } },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     await expect(canvas.getByText("1–5 de 8")).toBeInTheDocument();
     await expect(canvas.getByText("Linhas por página")).toBeInTheDocument();
@@ -1014,7 +1014,7 @@ export const Localized: Story = {
 
 const PAGE = 20;
 
-function InfiniteDemo({ virtualized }: { virtualized?: boolean }) {
+function InfiniteUsersDataGrid({ virtualized }: { virtualized?: boolean }) {
   const [data, setData] = React.useState(() => MANY.slice(0, PAGE));
   const [isFetchingMore, setIsFetchingMore] = React.useState(false);
   const hasMore = data.length < 3 * PAGE;
@@ -1075,7 +1075,7 @@ const scrollToEnd = async (canvasElement: HTMLElement, loaded: number) => {
  * `isFetchingMore` shows a loading row and `hasMore={false}` ends the list.
  */
 export const InfiniteScroll: Story = {
-  render: () => <InfiniteDemo />,
+  render: () => <InfiniteUsersDataGrid />,
   play: async ({ canvasElement, canvas }) => {
     await expect(canvas.getByTestId("loaded")).toHaveTextContent("20");
     await scrollToEnd(canvasElement, 40);
@@ -1086,7 +1086,7 @@ export const InfiniteScroll: Story = {
 
 /** Infinite scroll over a virtualized body. */
 export const InfiniteScrollVirtualized: Story = {
-  render: () => <InfiniteDemo virtualized />,
+  render: () => <InfiniteUsersDataGrid virtualized />,
   play: async ({ canvasElement, canvas }) => {
     await scrollToEnd(canvasElement, 40);
     await scrollToEnd(canvasElement, 60);
@@ -1107,7 +1107,7 @@ export const ClassNames: Story = {
       edgeCell: "demo-edge",
     },
   },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvas }) => {
     const grid = canvas.getByRole("grid", { name: "Users" });
     await expect(grid).toHaveClass("demo-base");
@@ -1130,7 +1130,7 @@ export const ClassNames: Story = {
 /** `columnsResizeMode: "onEnd"` commits the width to the table once, on release. */
 export const ResizeOnEnd: Story = {
   args: { layout: { columnsResizable: true, columnsResizeMode: "onEnd", cellBorder: true } },
-  render: (args) => <Demo {...args} />,
+  render: (args) => <UsersDataGrid {...args} />,
   play: async ({ canvasElement, canvas }) => {
     const header = canvas.getByRole("columnheader", { name: /^ID/ });
     const before = header.getBoundingClientRect().width;

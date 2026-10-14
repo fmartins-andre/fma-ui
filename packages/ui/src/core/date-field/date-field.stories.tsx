@@ -1,5 +1,5 @@
 import { CalendarDate } from "@internationalized/date";
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { type DateValue, I18nProvider, type RangeValue } from "react-aria-components";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
@@ -9,6 +9,60 @@ import { Label } from "@/core/label/label";
 import { DateField, DateInput } from "./date-field";
 import meta from "./meta.json";
 
+type Value = DateValue | RangeValue<DateValue> | null | undefined;
+
+function formatValue(value: Value) {
+  if (!value) return "None";
+  return "start" in value ? `${value.start} – ${value.end}` : String(value);
+}
+
+function ValueReadout({
+  initial,
+  children,
+}: {
+  initial: Value;
+  children: (show: (value: Value) => void) => React.ReactNode;
+}) {
+  const [value, setValue] = React.useState(initial);
+  return (
+    <div className="flex w-72 flex-col gap-2">
+      {children(setValue)}
+      <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
+        <span className="text-muted-foreground">Selected:</span>
+        <output data-testid="value" className="font-mono">
+          {formatValue(value)}
+        </output>
+      </div>
+    </div>
+  );
+}
+
+// Shows the value the field holds under it, for the eye and for the play
+// functions. A decorator taps `onChange`, so each story's code stays the plain
+// usage the docs show as its example.
+const withSelectedValue: Decorator = (Story, context) => {
+  const args = context.args as {
+    value?: Value;
+    defaultValue?: Value;
+    onChange?: (value: Value) => void;
+  };
+  return (
+    <ValueReadout initial={args.value ?? args.defaultValue}>
+      {(show) => (
+        <Story
+          args={{
+            ...context.args,
+            onChange: (value: Value) => {
+              show(value);
+              args.onChange?.(value);
+            },
+          }}
+        />
+      )}
+    </ValueReadout>
+  );
+};
+
 const componentMeta = {
   title: "ui/DateField",
   component: DateField,
@@ -16,8 +70,9 @@ const componentMeta = {
   parameters: {
     docs: { description: { component: meta.description } },
   },
-  // Pinned so segment order/labels don't depend on the browser's locale.
   decorators: [
+    withSelectedValue,
+    // Pinned so segment order/labels don't depend on the browser's locale.
     (Story) => (
       <I18nProvider locale="en-US">
         <Story />
@@ -30,78 +85,35 @@ const componentMeta = {
   args: {
     "aria-label": "Event date",
   },
-  render: (args) => <DateFieldWithValue {...args} />,
 } satisfies Meta<typeof DateField>;
 
 export default componentMeta;
 type Story = StoryObj<typeof componentMeta>;
 
+type RangeStory = StoryObj<typeof DateRangePicker>;
+
+/** A range field story: one meta per file, so it's typed on its own and cast. */
+function rangeStory(story: RangeStory): Story {
+  return story as Story;
+}
+
+/** A range field: a `DateRangePicker` with two inputs and no calendar. */
+const renderRangeField: RangeStory["render"] = (args) => (
+  <DateRangePicker {...args}>
+    {/* The inputs must sit in a react-aria Group (InputGroup is one): the
+        picker moves focus between segments through it. */}
+    <InputGroup>
+      <DateInput slot="start" />
+      <span aria-hidden="true" className="text-muted-foreground">
+        –
+      </span>
+      <DateInput slot="end" />
+    </InputGroup>
+  </DateRangePicker>
+);
+
 const MARCH_12 = new CalendarDate(2026, 3, 12);
 const BOOKED = [{ from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) }];
-
-function formatValue(value: DateValue | null | undefined) {
-  return value ? String(value) : "None";
-}
-
-function formatRange(range: RangeValue<DateValue> | null | undefined) {
-  return range ? `${range.start} – ${range.end}` : "None";
-}
-
-// Visual reference for every story: the value the field currently holds.
-function SelectedValue({ children }: { children: string }) {
-  return (
-    <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
-      <span className="text-muted-foreground">Selected:</span>
-      <output data-testid="value" className="font-mono">
-        {children}
-      </output>
-    </div>
-  );
-}
-
-function DateFieldWithValue(props: React.ComponentProps<typeof DateField<DateValue>>) {
-  const [value, setValue] = React.useState(props.value ?? props.defaultValue ?? null);
-  return (
-    <div className="flex w-64 flex-col gap-2">
-      <DateField
-        {...props}
-        value={value}
-        onChange={(next) => {
-          setValue(next);
-          props.onChange?.(next);
-        }}
-      />
-      <SelectedValue>{formatValue(value)}</SelectedValue>
-    </div>
-  );
-}
-
-function RangeFieldWithValue(props: React.ComponentProps<typeof DateRangePicker<DateValue>>) {
-  const [value, setValue] = React.useState(props.value ?? props.defaultValue ?? null);
-  return (
-    <div className="flex w-72 flex-col gap-2">
-      <DateRangePicker
-        {...props}
-        value={value}
-        onChange={(next) => {
-          setValue(next);
-          props.onChange?.(next);
-        }}
-      >
-        {/* The inputs must sit in a react-aria Group (InputGroup is one): the
-            picker moves focus between segments through it. */}
-        <InputGroup>
-          <DateInput slot="start" />
-          <span aria-hidden="true" className="text-muted-foreground">
-            –
-          </span>
-          <DateInput slot="end" />
-        </InputGroup>
-      </DateRangePicker>
-      <SelectedValue>{formatRange(value)}</SelectedValue>
-    </div>
-  );
-}
 
 function segment(canvasElement: HTMLElement, name: RegExp, index = 0) {
   return within(canvasElement).getAllByRole("spinbutton", { name })[index] as HTMLElement;
@@ -138,7 +150,7 @@ export const DateTime: Story = {
   args: { granularity: "minute" },
 };
 
-export const Range: Story = {
+export const Range = rangeStory({
   parameters: {
     docs: {
       description: {
@@ -147,8 +159,9 @@ export const Range: Story = {
       },
     },
   },
-  render: () => <RangeFieldWithValue aria-label="Trip dates" />,
-};
+  args: { "aria-label": "Trip dates" },
+  render: renderRangeField,
+});
 
 export const UnavailableRanges: Story = {
   parameters: {
@@ -165,7 +178,7 @@ export const UnavailableRanges: Story = {
 export const Localized: Story = {
   render: (args) => (
     <I18nProvider locale="pt-BR">
-      <DateFieldWithValue {...args} aria-label="Data do evento" />
+      <DateField {...args} aria-label="Data do evento" />
     </I18nProvider>
   ),
 };
@@ -175,6 +188,7 @@ export const Localized: Story = {
 
 export const ShouldCommitTypedDate: Story = {
   name: "when typing month/day/year into the segments, should commit the date",
+  tags: ["!autodocs"],
   args: { onChange: fn() },
   play: async ({ canvasElement, args }) => {
     await userEvent.click(segment(canvasElement, /^month/i));
@@ -188,6 +202,7 @@ export const ShouldCommitTypedDate: Story = {
 
 export const ShouldRenderOnlyYearSegment: Story = {
   name: 'when granularity is "year", should render only the year segment and commit January 1st',
+  tags: ["!autodocs"],
   args: { granularity: "year" },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -200,6 +215,7 @@ export const ShouldRenderOnlyYearSegment: Story = {
 
 export const ShouldRenderMonthAndYearSegments: Story = {
   name: 'when granularity is "month", should render month/year segments and commit the 1st',
+  tags: ["!autodocs"],
   args: { granularity: "month" },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -212,6 +228,7 @@ export const ShouldRenderMonthAndYearSegments: Story = {
 
 export const ShouldClampToMinMaxOnBlur: Story = {
   name: "when typing a date past maxValue, should keep it while editing and clamp it on blur",
+  tags: ["!autodocs"],
   args: { maxValue: new CalendarDate(2026, 6, 30) },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -226,6 +243,7 @@ export const ShouldClampToMinMaxOnBlur: Story = {
 
 export const ShouldTravelPastUnavailableOnBlur: Story = {
   name: "when typing a date inside unavailableRanges, should travel to the nearest available date on blur",
+  tags: ["!autodocs"],
   args: { unavailableRanges: BOOKED },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -242,6 +260,7 @@ export const ShouldTravelPastUnavailableOnBlur: Story = {
 
 export const ShouldTravelWhenConstraintsChange: Story = {
   name: "when the value becomes unavailable while not editing, should travel right away",
+  tags: ["!autodocs"],
   args: { defaultValue: MARCH_12, unavailableRanges: BOOKED },
   play: async ({ canvasElement }) => {
     // 03-09 and 03-15 are equally close; ties prefer the later date.
@@ -251,9 +270,11 @@ export const ShouldTravelWhenConstraintsChange: Story = {
   },
 };
 
-export const ShouldTypeRangeIndependently: Story = {
+export const ShouldTypeRangeIndependently = rangeStory({
   name: "when typing into the start and end inputs, should commit both ends without cross-talk",
-  render: () => <RangeFieldWithValue aria-label="Trip dates" />,
+  tags: ["!autodocs"],
+  args: { "aria-label": "Trip dates" },
+  render: renderRangeField,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(segment(canvasElement, /^month/i, 0));
@@ -264,17 +285,17 @@ export const ShouldTypeRangeIndependently: Story = {
       expect(canvas.getByTestId("value")).toHaveTextContent("2026-03-05 – 2026-03-20"),
     );
   },
-};
+});
 
-export const ShouldShrinkRangeSpanningUnavailableDays: Story = {
+export const ShouldShrinkRangeSpanningUnavailableDays = rangeStory({
   name: "when a preset range spans unavailableRanges, should shrink to the start's available window",
-  render: () => (
-    <RangeFieldWithValue
-      aria-label="Trip dates"
-      defaultValue={{ start: new CalendarDate(2026, 3, 5), end: new CalendarDate(2026, 3, 20) }}
-      unavailableRanges={BOOKED}
-    />
-  ),
+  tags: ["!autodocs"],
+  args: {
+    "aria-label": "Trip dates",
+    defaultValue: { start: new CalendarDate(2026, 3, 5), end: new CalendarDate(2026, 3, 20) },
+    unavailableRanges: BOOKED,
+  },
+  render: renderRangeField,
   play: async ({ canvasElement }) => {
     await waitFor(() =>
       expect(within(canvasElement).getByTestId("value")).toHaveTextContent(
@@ -282,10 +303,11 @@ export const ShouldShrinkRangeSpanningUnavailableDays: Story = {
       ),
     );
   },
-};
+});
 
 export const ShouldClearWhenNothingIsAvailable: Story = {
   name: "when min/max and unavailableRanges leave no date available, should clear the value",
+  tags: ["!autodocs"],
   args: {
     defaultValue: MARCH_12,
     minValue: new CalendarDate(2026, 3, 10),

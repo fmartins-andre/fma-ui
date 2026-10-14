@@ -1,11 +1,66 @@
 import { CalendarDate } from "@internationalized/date";
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { type DateValue, I18nProvider, type RangeValue } from "react-aria-components";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
-import type { Interval } from "@/lib/types";
 import { Calendar, RangeCalendar } from "./calendar";
 import meta from "./meta.json";
+
+type Value = DateValue | RangeValue<DateValue> | readonly (DateValue | null)[] | null | undefined;
+
+function formatValue(value: Value) {
+  if (!value) return "None";
+  if ("calendar" in value) return String(value);
+  if ("start" in value) return `${value.start} – ${value.end}`;
+  return value.length > 0 ? value.map(String).join(", ") : "None";
+}
+
+function ValueReadout({
+  initial,
+  children,
+}: {
+  initial: Value;
+  children: (show: (value: Value) => void) => React.ReactNode;
+}) {
+  const [value, setValue] = React.useState(initial);
+  return (
+    <div className="flex w-fit flex-col gap-2">
+      {children(setValue)}
+      <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
+        <span className="text-muted-foreground">Selected:</span>
+        <output data-testid="value" className="font-mono">
+          {formatValue(value)}
+        </output>
+      </div>
+    </div>
+  );
+}
+
+// Shows the value the calendar holds under it, for the eye and for the play
+// functions. A decorator taps `onChange`, so each story's code stays the plain
+// usage the docs show as its example.
+const withSelectedValue: Decorator = (Story, context) => {
+  const args = context.args as {
+    value?: Value;
+    defaultValue?: Value;
+    onChange?: (value: Value) => void;
+  };
+  return (
+    <ValueReadout initial={args.value ?? args.defaultValue}>
+      {(show) => (
+        <Story
+          args={{
+            ...context.args,
+            onChange: (value: Value) => {
+              show(value);
+              args.onChange?.(value);
+            },
+          }}
+        />
+      )}
+    </ValueReadout>
+  );
+};
 
 const componentMeta = {
   title: "ui/Calendar",
@@ -14,8 +69,9 @@ const componentMeta = {
   parameters: {
     docs: { description: { component: meta.description } },
   },
-  // Pinned so labels/assertions don't depend on the browser's locale.
   decorators: [
+    withSelectedValue,
+    // Pinned so labels/assertions don't depend on the browser's locale.
     (Story) => (
       <I18nProvider locale="en-US">
         <Story />
@@ -31,69 +87,17 @@ const componentMeta = {
   args: {
     "aria-label": "Event date",
   },
-  render: (args) => <CalendarWithValue {...args} />,
 } satisfies Meta<typeof Calendar>;
 
 export default componentMeta;
 type Story = StoryObj<typeof componentMeta>;
 
+/** A `RangeCalendar` story: one meta per file, so it's typed on its own and cast. */
+function rangeStory(story: StoryObj<typeof RangeCalendar>): Story {
+  return story as Story;
+}
+
 const MARCH_15 = new CalendarDate(2026, 3, 15);
-
-function formatValue(value: DateValue | readonly (DateValue | null)[] | null | undefined) {
-  if (!value) return "None";
-  if ("calendar" in value) return String(value);
-  return value.length > 0 ? value.map(String).join(", ") : "None";
-}
-
-function formatRange(range: RangeValue<DateValue> | null | undefined) {
-  return range ? `${range.start} – ${range.end}` : "None";
-}
-
-// Visual reference for every story: the value the calendar currently holds.
-function SelectedValue({ children }: { children: string }) {
-  return (
-    <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
-      <span className="text-muted-foreground">Selected:</span>
-      <output data-testid="value" className="font-mono">
-        {children}
-      </output>
-    </div>
-  );
-}
-
-function CalendarWithValue(props: React.ComponentProps<typeof Calendar>) {
-  const [value, setValue] = React.useState(props.value ?? props.defaultValue ?? null);
-  return (
-    <div className="flex w-fit flex-col gap-2">
-      <Calendar
-        {...props}
-        value={value}
-        onChange={(next) => {
-          setValue(next);
-          props.onChange?.(next);
-        }}
-      />
-      <SelectedValue>{formatValue(value)}</SelectedValue>
-    </div>
-  );
-}
-
-function RangeCalendarWithValue(props: React.ComponentProps<typeof RangeCalendar>) {
-  const [value, setValue] = React.useState(props.value ?? props.defaultValue ?? null);
-  return (
-    <div className="flex w-fit flex-col gap-2">
-      <RangeCalendar
-        {...props}
-        value={value}
-        onChange={(next) => {
-          setValue(next);
-          props.onChange?.(next);
-        }}
-      />
-      <SelectedValue>{formatRange(value)}</SelectedValue>
-    </div>
-  );
-}
 
 export const Default: Story = {};
 
@@ -109,9 +113,10 @@ export const TwoMonths: Story = {
   args: { numberOfMonths: 2 },
 };
 
-export const Range: Story = {
-  render: () => <RangeCalendarWithValue aria-label="Trip dates" />,
-};
+export const Range = rangeStory({
+  args: { "aria-label": "Trip dates" },
+  render: (args) => <RangeCalendar {...args} />,
+});
 
 export const MonthGranularity: Story = {
   parameters: {
@@ -132,7 +137,8 @@ export const YearGranularity: Story = {
   args: { granularity: "year" },
 };
 
-export const MonthRange: Story = {
+export const MonthRange = rangeStory({
+  args: { "aria-label": "Billing period", granularity: "month" },
   parameters: {
     docs: {
       description: {
@@ -141,8 +147,8 @@ export const MonthRange: Story = {
       },
     },
   },
-  render: () => <RangeCalendarWithValue aria-label="Billing period" granularity="month" />,
-};
+  render: (args) => <RangeCalendar {...args} />,
+});
 
 export const UnavailableRanges: Story = {
   parameters: {
@@ -168,7 +174,7 @@ export const Localized: Story = {
   },
   render: (args) => (
     <I18nProvider locale="pt-BR">
-      <CalendarWithValue {...args} aria-label="Data do evento" />
+      <Calendar {...args} aria-label="Data do evento" />
     </I18nProvider>
   ),
 };
@@ -178,6 +184,7 @@ export const Localized: Story = {
 
 export const ShouldDrillDownFromYearToDay: Story = {
   name: "when picking a year then a month from the caption, should land on that month's days without committing",
+  tags: ["!autodocs"],
   args: { defaultFocusedValue: MARCH_15, onChange: fn() },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -199,6 +206,7 @@ export const ShouldDrillDownFromYearToDay: Story = {
 
 export const ShouldReturnToDaysOnEscape: Story = {
   name: "when pressing Escape in the month grid, should return to the day grid",
+  tags: ["!autodocs"],
   args: { defaultFocusedValue: MARCH_15 },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -216,6 +224,7 @@ export const ShouldReturnToDaysOnEscape: Story = {
 
 export const ShouldCommitMonthStart: Story = {
   name: "when granularity is month, clicking a month should commit its first day",
+  tags: ["!autodocs"],
   args: { granularity: "month", defaultFocusedValue: MARCH_15, onChange: fn() },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -229,6 +238,7 @@ export const ShouldCommitMonthStart: Story = {
 
 export const ShouldDisableMonthsOutsideBounds: Story = {
   name: "when granularity is month, months entirely outside min/max should be disabled",
+  tags: ["!autodocs"],
   args: {
     granularity: "month",
     defaultFocusedValue: MARCH_15,
@@ -256,6 +266,7 @@ export const ShouldDisableMonthsOutsideBounds: Story = {
 
 export const ShouldNavigateMonthsWithKeyboard: Story = {
   name: "when granularity is month, arrow keys should move focus and Enter should commit",
+  tags: ["!autodocs"],
   args: { granularity: "month", defaultFocusedValue: MARCH_15, onChange: fn() },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -275,6 +286,7 @@ export const ShouldNavigateMonthsWithKeyboard: Story = {
 
 export const ShouldCommitYearStart: Story = {
   name: "when granularity is year, clicking a year should commit January 1st",
+  tags: ["!autodocs"],
   args: { granularity: "year", defaultFocusedValue: MARCH_15, onChange: fn() },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -284,20 +296,17 @@ export const ShouldCommitYearStart: Story = {
   },
 };
 
-const monthRangeChange = fn();
-
-export const ShouldCommitMonthRangeWithPreview: Story = {
+export const ShouldCommitMonthRangeWithPreview = rangeStory({
   name: "when granularity is month in a RangeCalendar, should preview on hover and commit whole months",
-  render: () => (
-    <RangeCalendarWithValue
-      aria-label="Billing period"
-      granularity="month"
-      defaultFocusedValue={MARCH_15}
-      onChange={monthRangeChange}
-    />
-  ),
-  play: async ({ canvasElement }) => {
-    monthRangeChange.mockClear();
+  tags: ["!autodocs"],
+  args: {
+    "aria-label": "Billing period",
+    granularity: "month",
+    defaultFocusedValue: MARCH_15,
+    onChange: fn(),
+  },
+  render: (args) => <RangeCalendar {...args} />,
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "March 2026" }));
     await userEvent.hover(canvas.getByRole("button", { name: "May 2026" }));
@@ -308,18 +317,19 @@ export const ShouldCommitMonthRangeWithPreview: Story = {
         "true",
       ),
     );
-    await expect(monthRangeChange).not.toHaveBeenCalled();
+    await expect(args.onChange).not.toHaveBeenCalled();
 
     await userEvent.click(canvas.getByRole("button", { name: "May 2026" }));
-    await expect(monthRangeChange).toHaveBeenCalledWith({
+    await expect(args.onChange).toHaveBeenCalledWith({
       start: new CalendarDate(2026, 3, 1),
       end: new CalendarDate(2026, 5, 31),
     });
   },
-};
+});
 
 export const ShouldBlockUnavailableDay: Story = {
   name: "when a day falls inside unavailableRanges, clicking it should not select it",
+  tags: ["!autodocs"],
   args: {
     defaultFocusedValue: MARCH_15,
     unavailableRanges: [{ from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) }],
@@ -335,30 +345,20 @@ export const ShouldBlockUnavailableDay: Story = {
   },
 };
 
+// Controlled from outside: a button sets the value, and `ignoreChanges` keeps
+// the parent's value whatever the calendar reports.
 function ControlledCalendar({
-  initialValue,
-  minValue,
-  maxValue,
-  unavailableRanges,
+  defaultValue,
   onChange,
   ignoreChanges,
-}: {
-  initialValue: DateValue | null;
-  minValue?: DateValue;
-  maxValue?: DateValue;
-  unavailableRanges?: Interval<DateValue>[];
-  onChange?: (value: DateValue) => void;
-  ignoreChanges?: boolean;
-}) {
-  const [value, setValue] = React.useState(initialValue);
+  ...props
+}: React.ComponentProps<typeof Calendar> & { ignoreChanges?: boolean }) {
+  const [value, setValue] = React.useState(defaultValue ?? null);
   return (
     <div className="flex w-fit flex-col gap-2">
-      <Calendar<DateValue>
-        aria-label="Event date"
+      <Calendar
+        {...props}
         value={value}
-        minValue={minValue}
-        maxValue={maxValue}
-        unavailableRanges={unavailableRanges}
         onChange={(next) => {
           onChange?.(next);
           if (!ignoreChanges) setValue(next);
@@ -367,14 +367,15 @@ function ControlledCalendar({
       <button type="button" onClick={() => setValue(new CalendarDate(2027, 8, 20))}>
         Set Aug 20, 2027
       </button>
-      <SelectedValue>{formatValue(value)}</SelectedValue>
     </div>
   );
 }
 
 export const ShouldFollowControlledValue: Story = {
   name: "when a controlled value changes from outside, should page the grid to it",
-  render: () => <ControlledCalendar initialValue={MARCH_15} />,
+  tags: ["!autodocs"],
+  args: { defaultValue: MARCH_15 },
+  render: (args) => <ControlledCalendar {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Set Aug 20, 2027" }));
@@ -387,14 +388,12 @@ export const ShouldFollowControlledValue: Story = {
 
 export const ShouldTravelToNearestAvailableDate: Story = {
   name: "when the selected value falls inside unavailableRanges, should travel to the nearest available date",
-  render: () => (
-    <ControlledCalendar
-      initialValue={new CalendarDate(2026, 3, 12)}
-      unavailableRanges={[
-        { from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) },
-      ]}
-    />
-  ),
+  tags: ["!autodocs"],
+  args: {
+    defaultValue: new CalendarDate(2026, 3, 12),
+    unavailableRanges: [{ from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) }],
+  },
+  render: (args) => <ControlledCalendar {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // 03-09 and 03-15 are equally close; ties prefer the later date.
@@ -404,81 +403,67 @@ export const ShouldTravelToNearestAvailableDate: Story = {
 
 export const ShouldClearWhenNothingIsAvailable: Story = {
   name: "when min/max and unavailableRanges leave no date available, should clear the value",
-  render: () => (
-    <ControlledCalendar
-      initialValue={new CalendarDate(2026, 3, 12)}
-      minValue={new CalendarDate(2026, 3, 10)}
-      maxValue={new CalendarDate(2026, 3, 14)}
-      unavailableRanges={[
-        { from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) },
-      ]}
-    />
-  ),
+  tags: ["!autodocs"],
+  args: {
+    defaultValue: new CalendarDate(2026, 3, 12),
+    minValue: new CalendarDate(2026, 3, 10),
+    maxValue: new CalendarDate(2026, 3, 14),
+    unavailableRanges: [{ from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) }],
+  },
+  render: (args) => <ControlledCalendar {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await waitFor(() => expect(canvas.getByTestId("value")).toHaveTextContent("None"));
   },
 };
 
-const ignoredChange = fn();
-
 export const ShouldCorrectOnlyOnceWhenParentIgnoresIt: Story = {
   name: "when a controlled parent keeps the blocked value, correction should be attempted once",
-  render: () => (
-    <ControlledCalendar
-      initialValue={new CalendarDate(2026, 3, 12)}
-      unavailableRanges={[
-        { from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) },
-      ]}
-      onChange={ignoredChange}
-      ignoreChanges
-    />
-  ),
-  play: async () => {
-    await waitFor(() => expect(ignoredChange).toHaveBeenCalled());
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    await expect(ignoredChange).toHaveBeenCalledTimes(1);
+  tags: ["!autodocs"],
+  args: {
+    defaultValue: new CalendarDate(2026, 3, 12),
+    unavailableRanges: [{ from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) }],
+    onChange: fn(),
   },
-  beforeEach: () => {
-    ignoredChange.mockClear();
+  render: (args) => <ControlledCalendar {...args} ignoreChanges />,
+  play: async ({ args }) => {
+    await waitFor(() => expect(args.onChange).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await expect(args.onChange).toHaveBeenCalledTimes(1);
   },
 };
 
 function ControlledRangeCalendar({
-  initialValue,
-  unavailableRanges,
-}: {
-  initialValue: RangeValue<DateValue>;
-  unavailableRanges: Interval<DateValue>[];
-}) {
-  const [value, setValue] = React.useState<RangeValue<DateValue> | null>(initialValue);
+  defaultValue,
+  onChange,
+  ...props
+}: React.ComponentProps<typeof RangeCalendar<DateValue>>) {
+  const [value, setValue] = React.useState(defaultValue ?? null);
   return (
-    <div className="flex w-fit flex-col gap-2">
-      <RangeCalendar
-        aria-label="Trip dates"
-        value={value}
-        onChange={setValue}
-        unavailableRanges={unavailableRanges}
-      />
-      <SelectedValue>{formatRange(value)}</SelectedValue>
-    </div>
+    <RangeCalendar
+      {...props}
+      value={value}
+      onChange={(next) => {
+        setValue(next);
+        onChange?.(next);
+      }}
+    />
   );
 }
 
-export const ShouldShrinkRangeSpanningUnavailableDays: Story = {
+export const ShouldShrinkRangeSpanningUnavailableDays = rangeStory({
   name: "when a selected range spans unavailableRanges, should shrink it to the start's available window",
-  render: () => (
-    <ControlledRangeCalendar
-      initialValue={{ start: new CalendarDate(2026, 3, 5), end: new CalendarDate(2026, 3, 20) }}
-      unavailableRanges={[
-        { from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 12) },
-      ]}
-    />
-  ),
+  tags: ["!autodocs"],
+  args: {
+    "aria-label": "Trip dates",
+    defaultValue: { start: new CalendarDate(2026, 3, 5), end: new CalendarDate(2026, 3, 20) },
+    unavailableRanges: [{ from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 12) }],
+  },
+  render: (args) => <ControlledRangeCalendar {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await waitFor(() =>
       expect(canvas.getByTestId("value")).toHaveTextContent("2026-03-05 – 2026-03-09"),
     );
   },
-};
+});
