@@ -298,6 +298,57 @@ const swatchName = (swatch: Swatch) => (typeof swatch === "string" ? swatch : sw
 /*                                   Context                                  */
 /* -------------------------------------------------------------------------- */
 
+/** Every text the picker shows or announces, so it can be translated. */
+interface ColorPickerLabels {
+  lightness: string;
+  chroma: string;
+  hue: string;
+  saturation: string;
+  brightness: string;
+  red: string;
+  green: string;
+  blue: string;
+  alpha: string;
+  /** The OKLCH area (chroma × lightness). */
+  oklchArea: string;
+  /** The HSB area (saturation × brightness). */
+  hsbArea: string;
+  swatches: string;
+  format: string;
+  hex: string;
+  copy: string;
+  copied: string;
+  eyeDropper: string;
+  /** The contrast fix buttons. */
+  fix: (level: "AA" | "AAA") => string;
+  /** The level for 3:1, enough for large text only. */
+  largeText: string;
+  fail: string;
+}
+
+const DEFAULT_COLOR_PICKER_LABELS: ColorPickerLabels = {
+  lightness: "Lightness",
+  chroma: "Chroma",
+  hue: "Hue",
+  saturation: "Saturation",
+  brightness: "Brightness",
+  red: "Red",
+  green: "Green",
+  blue: "Blue",
+  alpha: "Alpha",
+  oklchArea: "Chroma and lightness",
+  hsbArea: "Saturation and brightness",
+  swatches: "Preset colors",
+  format: "Color format",
+  hex: "Hex",
+  copy: "Copy color",
+  copied: "Copied",
+  eyeDropper: "Pick a color from the screen",
+  fix: (level) => `Fix to ${level}`,
+  largeText: "AA large",
+  fail: "Fail",
+};
+
 interface ColorPickerContextValue {
   state: ColorState;
   /** The current value as emitted. */
@@ -312,7 +363,9 @@ interface ColorPickerContextValue {
   swatches?: Swatch[];
   swatchColumns?: number;
   label: string;
+  labels: ColorPickerLabels;
   isDisabled: boolean;
+  isInvalid: boolean;
   isOpen: boolean;
   setOpen: (open: boolean) => void;
   triggerRef: RefObject<HTMLButtonElement | null>;
@@ -362,7 +415,15 @@ type ColorPickerProviderProps = {
   swatchColumns?: number;
   /** Accessible name of the trigger and the popover dialog. */
   label?: string;
+  /** Overrides any of the picker's texts (see DEFAULT_COLOR_PICKER_LABELS), e.g. to translate them. */
+  labels?: Partial<ColorPickerLabels>;
   isDisabled?: boolean;
+  /** Marks the picker invalid (the input and trigger show it). */
+  isInvalid?: boolean;
+  /** Submits the value with a form under this name (a hidden input); a form reset restores defaultValue. */
+  name?: string;
+  /** The id of the form to submit with, when the picker is outside it. */
+  form?: string;
   /** Whether the popover is open (controlled). */
   isOpen?: boolean;
   defaultOpen?: boolean;
@@ -380,7 +441,11 @@ function ColorPickerProvider({
   swatches,
   swatchColumns,
   label = "Pick color",
+  labels,
   isDisabled = false,
+  isInvalid = false,
+  name,
+  form,
   isOpen,
   defaultOpen = false,
   onOpenChange,
@@ -411,6 +476,24 @@ function ColorPickerProvider({
   const end = useCallback(() => {
     if (emitted.current !== undefined) onChangeEnd?.(emitted.current);
   }, [onChangeEnd]);
+
+  // A form reset goes back to the color the picker started with.
+  const hiddenRef = useRef<HTMLInputElement>(null);
+  const initial = useRef(defaultValue ?? value ?? "");
+  const reset = useEffectEvent(() => {
+    const next = parseState(initial.current);
+    if (next) update(next, true);
+  });
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `form` moves the hidden input to another form, whose reset to follow.
+  useEffect(() => {
+    const owner = hiddenRef.current?.form;
+    if (!owner || name === undefined) return;
+    const onReset = () => reset();
+    owner.addEventListener("reset", onReset);
+    return () => owner.removeEventListener("reset", onReset);
+  }, [name, form]);
+
+  const mergedLabels = useMemo(() => ({ ...DEFAULT_COLOR_PICKER_LABELS, ...labels }), [labels]);
 
   const [openState, setOpenState] = useState(defaultOpen);
   const setOpen = useCallback(
@@ -444,7 +527,9 @@ function ColorPickerProvider({
       swatches,
       swatchColumns,
       label,
+      labels: mergedLabels,
       isDisabled,
+      isInvalid,
       isOpen: isOpen ?? openState,
       setOpen,
       triggerRef,
@@ -462,13 +547,22 @@ function ColorPickerProvider({
       swatches,
       swatchColumns,
       label,
+      mergedLabels,
       isDisabled,
+      isInvalid,
       isOpen,
       openState,
       setOpen,
     ],
   );
-  return <ColorPickerContext.Provider value={context}>{children}</ColorPickerContext.Provider>;
+  return (
+    <ColorPickerContext.Provider value={context}>
+      {children}
+      {name !== undefined && (
+        <input ref={hiddenRef} type="hidden" name={name} form={form} value={context.value} />
+      )}
+    </ColorPickerContext.Provider>
+  );
 }
 
 /** State and actions of the surrounding ColorPicker, for custom parts. */
@@ -537,12 +631,13 @@ function ColorPickerTrigger({ className, children, ...props }: ColorPickerTrigge
       aria-label={children ? undefined : picker.label}
       aria-haspopup="dialog"
       aria-expanded={picker.isOpen}
+      data-invalid={picker.isInvalid || undefined}
       isDisabled={picker.isDisabled}
       onPress={() => picker.setOpen(!picker.isOpen)}
       className={cn(
         children
           ? buttonVariants({ variant: "outline" })
-          : "size-8 shrink-0 cursor-pointer rounded-md ring-1 ring-foreground/15 outline-none data-disabled:cursor-not-allowed data-disabled:opacity-50 data-focus-visible:ring-3 data-focus-visible:ring-ring/50",
+          : "size-8 shrink-0 cursor-pointer rounded-md ring-1 ring-foreground/15 outline-none data-disabled:cursor-not-allowed data-disabled:opacity-50 data-focus-visible:ring-3 data-focus-visible:ring-ring/50 data-invalid:ring-2 data-invalid:ring-destructive",
         className,
       )}
       style={children ? undefined : { background: swatchBackground(picker.value) }}
@@ -643,20 +738,17 @@ type ColorPickerChannel =
   | "blue"
   | "alpha";
 
-/** Each channel's label, culori key and the spaces that have it (the first is its default). */
-const CHANNELS: Record<
-  ColorPickerChannel,
-  { label: string; key?: ColorChannel; spaces: ColorSpace[] }
-> = {
-  lightness: { label: "Lightness", key: "l", spaces: ["oklch", "hsl"] },
-  chroma: { label: "Chroma", key: "c", spaces: ["oklch"] },
-  hue: { label: "Hue", key: "h", spaces: ["oklch", "hsl", "hsb"] },
-  saturation: { label: "Saturation", key: "s", spaces: ["hsb", "hsl"] },
-  brightness: { label: "Brightness", key: "v", spaces: ["hsb"] },
-  red: { label: "Red", key: "r", spaces: ["rgb"] },
-  green: { label: "Green", key: "g", spaces: ["rgb"] },
-  blue: { label: "Blue", key: "b", spaces: ["rgb"] },
-  alpha: { label: "Alpha", spaces: [] },
+/** Each channel's culori key and the spaces that have it (the first is its default). */
+const CHANNELS: Record<ColorPickerChannel, { key?: ColorChannel; spaces: ColorSpace[] }> = {
+  lightness: { key: "l", spaces: ["oklch", "hsl"] },
+  chroma: { key: "c", spaces: ["oklch"] },
+  hue: { key: "h", spaces: ["oklch", "hsl", "hsb"] },
+  saturation: { key: "s", spaces: ["hsb", "hsl"] },
+  brightness: { key: "v", spaces: ["hsb"] },
+  red: { key: "r", spaces: ["rgb"] },
+  green: { key: "g", spaces: ["rgb"] },
+  blue: { key: "b", spaces: ["rgb"] },
+  alpha: { spaces: [] },
 };
 
 /** How a channel shows: its range and step on screen, `scale` × culori's unit. */
@@ -775,7 +867,8 @@ function ColorPickerSlider({
   className,
 }: ColorPickerSliderProps) {
   const picker = usePicker("ColorPickerSlider");
-  const { label, key, spaces } = CHANNELS[channel];
+  const { key, spaces } = CHANNELS[channel];
+  const label = picker.labels[channel];
   const space = spaces.includes(colorSpace) ? colorSpace : (spaces[0] ?? "oklch");
   const { min, max, step, scale, format } = channelScale(key, space);
   const channels = channelsIn(picker.state, space);
@@ -865,15 +958,43 @@ function ColorPickerSlider({
 
 type AreaSpace = "oklch" | "hsb";
 
+/**
+ * Follows a drag over the whole window from a pointer press until its release:
+ * `onMove` gets each position (the press's too), `onEnd` the release.
+ */
+function useWindowDrag(onMove: (clientX: number, clientY: number) => void, onEnd: () => void) {
+  const [dragging, setDragging] = useState(false);
+  const move = useEffectEvent(onMove);
+  const release = useEffectEvent(() => {
+    setDragging(false);
+    onEnd();
+  });
+  useEffect(() => {
+    if (!dragging) return;
+    const onPointerMove = (event: PointerEvent) => move(event.clientX, event.clientY);
+    const onPointerUp = () => release();
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+    };
+  }, [dragging]);
+  const start = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.currentTarget.focus({ preventScroll: true });
+    setDragging(true);
+    onMove(event.clientX, event.clientY);
+  };
+  return { dragging, start };
+}
+
 const AREA = {
-  oklch: { x: "c", y: "l", label: "Chroma and lightness", xLabel: "chroma", yLabel: "Lightness" },
-  hsb: {
-    x: "s",
-    y: "v",
-    label: "Saturation and brightness",
-    xLabel: "saturation",
-    yLabel: "Brightness",
-  },
+  oklch: { x: "c", y: "l", label: "oklchArea", xName: "chroma", yName: "lightness" },
+  hsb: { x: "s", y: "v", label: "hsbArea", xName: "saturation", yName: "brightness" },
 } as const;
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
@@ -1072,7 +1193,8 @@ function ColorPickerArea({
 }: ColorPickerAreaProps) {
   const picker = usePicker("ColorPickerArea");
   const space = colorSpace;
-  const { x: xKey, y: yKey, label, xLabel, yLabel } = AREA[space];
+  const { x: xKey, y: yKey, label, xName, yName } = AREA[space];
+  const { labels } = picker;
   const channels = channelsIn(picker.state, space);
   const h = channels.h ?? 0;
   const peak = useMemo(() => (space === "oklch" ? cusp(h) : { c: 1, l: 1 }), [space, h]);
@@ -1113,30 +1235,11 @@ function ColorPickerArea({
     picker.update({ space, channels: { l, c, h }, alpha }, end);
   };
 
-  // A drag follows the pointer over the whole window until it's released.
   const areaRef = useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useState(false);
-  const moveTo = useEffectEvent((clientX: number, clientY: number) => {
+  const drag = useWindowDrag((clientX, clientY) => {
     const rect = areaRef.current?.getBoundingClientRect();
     if (rect) set((clientX - rect.left) / rect.width, 1 - (clientY - rect.top) / rect.height);
-  });
-  const release = useEffectEvent(() => {
-    setDragging(false);
-    picker.end();
-  });
-  useEffect(() => {
-    if (!dragging) return;
-    const move = (event: PointerEvent) => moveTo(event.clientX, event.clientY);
-    const up = () => release();
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", up);
-    return () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", up);
-    };
-  }, [dragging]);
+  }, picker.end);
   const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     const step = event.shiftKey ? 0.1 : 0.01;
     const moves: Record<string, [number, number]> = {
@@ -1157,13 +1260,13 @@ function ColorPickerArea({
 
   const format = (value: number) =>
     space === "oklch" ? value.toFixed(3) : `${Math.round(value * 100)}%`;
-  const valueText = `${yLabel} ${format(y)}, ${xLabel} ${format(x * xMax)}`;
+  const valueText = `${labels[yName]} ${format(y)}, ${labels[xName]} ${format(x * xMax)}`;
 
   return (
     <div
       role="slider"
       tabIndex={picker.isDisabled ? undefined : 0}
-      aria-label={ariaLabel ?? label}
+      aria-label={ariaLabel ?? labels[label]}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(y * 100)}
@@ -1184,13 +1287,9 @@ function ColorPickerArea({
           : undefined
       }
       ref={areaRef}
-      data-dragging={dragging || undefined}
-      onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => {
-        if (picker.isDisabled || event.button !== 0) return;
-        event.preventDefault();
-        event.currentTarget.focus({ preventScroll: true });
-        setDragging(true);
-        moveTo(event.clientX, event.clientY);
+      data-dragging={drag.dragging || undefined}
+      onPointerDown={(event) => {
+        if (!picker.isDisabled) drag.start(event);
       }}
       onKeyDown={onKeyDown}
     >
@@ -1218,6 +1317,179 @@ function ColorPickerArea({
 }
 
 /* -------------------------------------------------------------------------- */
+/*                                    Wheel                                   */
+/* -------------------------------------------------------------------------- */
+
+/** The ring: its middle radius and its thickness, in % of the wheel's side. */
+const RING_RADIUS = 45;
+const RING_WIDTH = 10;
+const RING_MASK = `radial-gradient(farthest-side, transparent calc(${100 - RING_WIDTH * 2}% - 0.5px), #000 ${100 - RING_WIDTH * 2}%)`;
+
+/** The ring and thumb show each hue vivid, whatever the color's own chroma. */
+const VIVID: Record<AreaSpace, Channels> = { oklch: { l: 0.7, c: 0.15 }, hsb: { s: 1, v: 1 } };
+
+/** A point at `degrees` (0 on top, clockwise) and `radius` from the center of a 100 box. */
+function polar(degrees: number, radius: number): string {
+  const radians = (degrees * Math.PI) / 180;
+  return `${50 + radius * Math.sin(radians)} ${50 - radius * Math.cos(radians)}`;
+}
+
+/** An SVG arc along the ring from `from` to `to` degrees (a full turn as two halves). */
+function ringArc(from: number, to: number): string {
+  const r = RING_RADIUS;
+  if (to - from >= 359.99) {
+    return `M${polar(0, r)}A${r} ${r} 0 1 1 ${polar(180, r)}A${r} ${r} 0 1 1 ${polar(0, r)}`;
+  }
+  return `M${polar(from, r)}A${r} ${r} 0 ${to - from > 180 ? 1 : 0} 1 ${polar(to, r)}`;
+}
+
+type ColorPickerWheelProps = {
+  /** The hue it turns: OKLCH's (default) or HSB's. */
+  colorSpace?: AreaSpace;
+  /** Content of the square inside the ring, e.g. a ColorPickerArea with `className="size-full"`. */
+  children?: ReactNode;
+  "aria-label"?: string;
+  className?: string;
+};
+
+/**
+ * A hue ring: drag around it, or use the arrow keys (Shift for 10°). With
+ * `contrastWith`, the hues failing AA are hatched and the AA/AAA thresholds
+ * marked. Its children fill the square inside the ring.
+ */
+function ColorPickerWheel({
+  colorSpace = "oklch",
+  children,
+  "aria-label": ariaLabel,
+  className,
+}: ColorPickerWheelProps) {
+  const picker = usePicker("ColorPickerWheel");
+  const space = colorSpace;
+  const h = channelsIn(picker.state, space).h ?? 0;
+  const contrast = useTrackContrast(picker.state, space, "h", picker.contrastWith);
+  const id = `color-picker-${useId().replace(/[^\w-]/g, "")}`;
+  const vivid = VIVID[space];
+  const ring = useMemo(() => {
+    const stops = Array.from({ length: 25 }, (_, i) =>
+      paint({ space, channels: { ...vivid, h: i * 15 }, alpha: 1 }),
+    );
+    return `conic-gradient(${stops.join(", ")})`;
+  }, [space, vivid]);
+
+  const set = (hue: number, end = false) =>
+    picker.update(withChannel(picker.state, space, "h", ((hue % 360) + 360) % 360), end);
+  const wheelRef = useRef<HTMLDivElement>(null);
+  const drag = useWindowDrag((clientX, clientY) => {
+    const rect = wheelRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const dx = clientX - (rect.left + rect.width / 2);
+    const dy = clientY - (rect.top + rect.height / 2);
+    set((Math.atan2(dx, -dy) * 180) / Math.PI);
+  }, picker.end);
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const step = event.shiftKey ? 10 : 1;
+    const moves: Record<string, number> = {
+      ArrowRight: step,
+      ArrowUp: step,
+      ArrowLeft: -step,
+      ArrowDown: -step,
+      PageUp: 10,
+      PageDown: -10,
+    };
+    const move = moves[event.key];
+    if (move === undefined || picker.isDisabled) return;
+    event.preventDefault();
+    set(Math.round(h) + move, true);
+  };
+
+  return (
+    <div
+      ref={wheelRef}
+      data-slot="color-picker-wheel"
+      dir="ltr"
+      className={cn("relative aspect-square size-56 shrink-0", className)}
+    >
+      <div
+        role="slider"
+        tabIndex={picker.isDisabled ? undefined : 0}
+        aria-label={ariaLabel ?? picker.labels.hue}
+        aria-valuemin={0}
+        aria-valuemax={360}
+        aria-valuenow={Math.round(h)}
+        aria-valuetext={`${Math.round(h)}°`}
+        aria-disabled={picker.isDisabled || undefined}
+        data-dragging={drag.dragging || undefined}
+        className="absolute inset-0 cursor-pointer touch-none rounded-full outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+        onPointerDown={(event) => {
+          if (!picker.isDisabled) drag.start(event);
+        }}
+        onKeyDown={onKeyDown}
+      >
+        <div
+          aria-hidden
+          className="absolute inset-0 rounded-full"
+          style={{ background: ring, mask: RING_MASK }}
+        />
+        {contrast && (
+          <svg
+            aria-hidden
+            viewBox="0 0 100 100"
+            className="pointer-events-none absolute inset-0 size-full overflow-visible"
+            fill="none"
+          >
+            <defs>
+              <pattern
+                id={`${id}-hatch`}
+                width="3"
+                height="3"
+                patternUnits="userSpaceOnUse"
+                patternTransform="rotate(45)"
+              >
+                <rect width="1.5" height="3" fill="rgb(0 0 0 / 0.35)" />
+                <rect x="1.5" width="1.5" height="3" fill="rgb(255 255 255 / 0.35)" />
+              </pattern>
+            </defs>
+            {contrast.failing.map(([from, to]) => (
+              <path
+                key={`${from}-${to}`}
+                data-slot="color-picker-failing"
+                d={ringArc(from, to)}
+                stroke={`url(#${id}-hatch)`}
+                strokeWidth={RING_WIDTH}
+              />
+            ))}
+            {contrast.marks.map((mark) => (
+              <path
+                key={mark}
+                d={`M${polar(mark, RING_RADIUS - RING_WIDTH / 2)}L${polar(mark, RING_RADIUS + RING_WIDTH / 2)}`}
+                className="stroke-foreground"
+                strokeWidth={1}
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+          </svg>
+        )}
+        <div
+          data-slot="color-picker-wheel-thumb"
+          className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_1px_rgb(0_0_0/0.4),0_1px_2px_rgb(0_0_0/0.3)]"
+          style={{
+            left: `${50 + RING_RADIUS * Math.sin((h * Math.PI) / 180)}%`,
+            top: `${50 - RING_RADIUS * Math.cos((h * Math.PI) / 180)}%`,
+            background: paint({ space, channels: { ...vivid, h }, alpha: 1 }),
+          }}
+        />
+      </div>
+      {children && (
+        // The square inscribed in the ring's inner edge, with a little gap.
+        <div className="absolute" style={{ inset: `${50 - (50 - RING_WIDTH - 2) / Math.SQRT2}%` }}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                   Fields                                   */
 /* -------------------------------------------------------------------------- */
 
@@ -1237,7 +1509,8 @@ function ColorPickerChannelInput({
   className,
 }: ColorPickerChannelInputProps) {
   const picker = usePicker("ColorPickerChannelInput");
-  const { label, key, spaces } = CHANNELS[channel];
+  const { key, spaces } = CHANNELS[channel];
+  const label = picker.labels[channel];
   const space = spaces.includes(colorSpace) ? colorSpace : (spaces[0] ?? "oklch");
   const { min, max, step, scale, format } = channelScale(key, space);
   const value = key ? (channelsIn(picker.state, space)[key] ?? 0) * scale : picker.state.alpha;
@@ -1278,7 +1551,7 @@ function HexInput() {
   return (
     <Input
       data-slot="color-picker-hex-input"
-      aria-label="Hex"
+      aria-label={picker.labels.hex}
       value={draft}
       spellCheck={false}
       disabled={picker.isDisabled}
@@ -1335,7 +1608,7 @@ function ColorPickerFields({
     <div data-slot="color-picker-fields" className={cn("flex items-center gap-1.5", className)}>
       {formats.length > 1 && (
         <Select
-          aria-label="Color format"
+          aria-label={picker.labels.format}
           value={format}
           onChange={(key) => {
             const next = formats.find((f) => f === key);
@@ -1419,7 +1692,7 @@ function ColorPickerSwatches({
   return (
     <ListBox
       data-slot="color-picker-swatches"
-      aria-label={ariaLabel ?? (ariaLabelledby ? undefined : "Preset colors")}
+      aria-label={ariaLabel ?? (ariaLabelledby ? undefined : picker.labels.swatches)}
       aria-labelledby={ariaLabelledby}
       layout="grid"
       selectionMode="single"
@@ -1531,7 +1804,7 @@ function ColorPickerInput({
           spellCheck={false}
           autoComplete="off"
           disabled={picker.isDisabled}
-          aria-invalid={!valid || undefined}
+          aria-invalid={!valid || picker.isInvalid || undefined}
           onChange={(event) => setDraft(event.target.value)}
           onBlur={(event) => {
             onBlur?.(event);
@@ -1539,7 +1812,11 @@ function ColorPickerInput({
           }}
           onKeyDown={(event) => {
             onKeyDown?.(event);
-            if (event.key === "Enter") commit();
+            if (event.key === "Enter") {
+              // A changed draft is committed first; the next Enter submits the form.
+              if (draft !== picker.value) event.preventDefault();
+              commit();
+            }
             if (event.key === "Escape") setDraft(picker.value);
           }}
           className="font-mono"
@@ -1595,7 +1872,7 @@ function ColorPickerCopy({
       data-copied={copied || undefined}
       variant={variant}
       size={size}
-      aria-label={copied ? "Copied" : "Copy color"}
+      aria-label={copied ? picker.labels.copied : picker.labels.copy}
       onPress={() => {
         navigator.clipboard.writeText(text).then(
           () => setCopied(true),
@@ -1637,7 +1914,7 @@ function ColorPickerEyeDropper({
       data-slot="color-picker-eye-dropper"
       variant={variant}
       size={size}
-      aria-label="Pick a color from the screen"
+      aria-label={picker.labels.eyeDropper}
       isDisabled={picker.isDisabled}
       onPress={async () => {
         const EyeDropper = getEyeDropper();
@@ -1693,7 +1970,13 @@ function ColorPickerPreview({ className }: { className?: string }) {
           )}
         >
           <span className="font-mono text-sm tabular-nums">{ratio.toFixed(2)}:1</span>
-          <span className="text-muted-foreground">{level === "AA18" ? "AA large" : level}</span>
+          <span className="text-muted-foreground">
+            {level === "AA18"
+              ? picker.labels.largeText
+              : level === "Fail"
+                ? picker.labels.fail
+                : level}
+          </span>
         </div>
       )}
     </div>
@@ -1741,7 +2024,7 @@ function ColorPickerFixContrast({ className }: { className?: string }) {
           }}
         >
           <ContrastIcon />
-          Fix to {name}
+          {picker.labels.fix(name)}
         </Button>
       ))}
     </div>
@@ -1758,12 +2041,14 @@ export type {
   ColorPickerFieldsProps,
   ColorPickerFormat,
   ColorPickerInputProps,
+  ColorPickerLabels,
   ColorPickerPanelProps,
   ColorPickerProps,
   ColorPickerSliderProps,
   ColorPickerSwatchesProps,
   ColorPickerSwatchProps,
   ColorPickerTriggerProps,
+  ColorPickerWheelProps,
   Swatch,
 };
 export {
@@ -1783,6 +2068,8 @@ export {
   ColorPickerSwatches,
   ColorPickerTrigger,
   ColorPickerValue,
+  ColorPickerWheel,
+  DEFAULT_COLOR_PICKER_LABELS,
   DEFAULT_SWATCHES,
   useColorPicker,
 };

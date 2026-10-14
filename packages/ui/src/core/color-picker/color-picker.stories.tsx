@@ -7,6 +7,7 @@ import {
   ColorPickerContent,
   ColorPickerCopy,
   ColorPickerEyeDropper,
+  ColorPickerFixContrast,
   ColorPickerInput,
   ColorPickerPanel,
   ColorPickerPreview,
@@ -15,6 +16,7 @@ import {
   ColorPickerSwatches,
   ColorPickerTrigger,
   ColorPickerValue,
+  ColorPickerWheel,
   DEFAULT_SWATCHES,
 } from "./color-picker";
 import meta from "./meta.json";
@@ -322,7 +324,7 @@ export const Areas: Story = {
 
     hsb.focus();
     await userEvent.keyboard("{End}");
-    expect(hsb.getAttribute("aria-valuetext")).toMatch(/saturation 100%$/);
+    expect(hsb.getAttribute("aria-valuetext")).toMatch(/Saturation 100%$/);
   },
 };
 
@@ -481,5 +483,156 @@ export const RecentColors: Story = {
     );
     await waitFor(() => expect(canvas.getByRole("button", { name: "Copied" })).toBeInTheDocument());
     writeText.mockRestore();
+  },
+};
+
+export const Wheel: Story = {
+  args: { value: "oklch(0.75 0.15 250)", contrastWith: "#ffffff" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "ColorPickerWheel turns the hue around a ring; its children fill the square inside, here the OKLCH area. With contrastWith, the hues failing AA are hatched on the ring too.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
+    return (
+      <div className="flex flex-col items-start gap-3">
+        <ColorPicker value={value} onChange={setValue} contrastWith={args.contrastWith}>
+          <ColorPickerWheel>
+            <ColorPickerArea className="size-full" />
+          </ColorPickerWheel>
+        </ColorPicker>
+        <code className="text-xs">{value}</code>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const wheel = canvas.getByRole("slider", { name: "Hue" });
+    expect(wheel).toHaveAttribute("aria-valuenow", "250");
+    // A light blue fails AA on white at every hue: the whole ring is hatched.
+    const ring = canvasElement.querySelector("[data-slot=color-picker-wheel]");
+    expect(ring?.querySelectorAll("path[data-slot=color-picker-failing]").length).toBe(1);
+
+    wheel.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => expect(canvas.getByText(/^oklch\(0\.75 \S+ 251\)$/)).toBeInTheDocument());
+
+    // Pressing the right edge of the ring picks the hue at 90°.
+    const { left, top, width, height } = wheel.getBoundingClientRect();
+    await userEvent.pointer([
+      {
+        keys: "[MouseLeft>]",
+        target: wheel,
+        coords: { clientX: left + width * 0.97, clientY: top + height / 2 },
+      },
+      { keys: "[/MouseLeft]", target: wheel },
+    ]);
+    await waitFor(() => expect(wheel).toHaveAttribute("aria-valuenow", "90"));
+  },
+};
+
+export const Localized: Story = {
+  args: { value: "oklch(0.75 0.15 250)", contrastWith: "#ffffff" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "labels overrides any text the picker shows or announces (DEFAULT_COLOR_PICKER_LABELS lists them); numbers already follow the locale of react-aria's I18nProvider.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [value, setValue] = useState(args.value);
+    return (
+      <div className="flex w-72 flex-col gap-3">
+        <ColorPicker
+          value={value}
+          onChange={setValue}
+          contrastWith={args.contrastWith}
+          labels={{
+            hue: "Matiz",
+            oklchArea: "Croma e luminosidade",
+            lightness: "Luminosidade",
+            chroma: "Croma",
+            fail: "Falha",
+            largeText: "AA texto grande",
+            fix: (level) => `Corrigir para ${level}`,
+          }}
+        >
+          <ColorPickerPreview />
+          <ColorPickerArea />
+          <ColorPickerSlider channel="hue" />
+          <ColorPickerFixContrast />
+        </ColorPicker>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.getByRole("slider", { name: "Matiz" })).toBeInTheDocument();
+    const area = canvas.getByRole("slider", { name: "Croma e luminosidade" });
+    expect(area.getAttribute("aria-valuetext")).toMatch(/^Luminosidade 0\.750, Croma /);
+    expect(canvas.getByText("Falha")).toBeInTheDocument();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Corrigir para AA" }));
+    await waitFor(() => expect(canvas.queryByText("Falha")).not.toBeInTheDocument());
+  },
+};
+
+export const FormField: Story = {
+  args: { value: "#0ea5e9" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "With name, the value is submitted with the form (a hidden input), and a form reset restores the starting color. isInvalid marks the field. Enter commits a changed draft first; the next Enter submits.",
+      },
+    },
+  },
+  render: function Render(args) {
+    const [saved, setSaved] = useState<string>();
+    return (
+      <form
+        className="flex w-64 flex-col gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setSaved(String(new FormData(event.currentTarget).get("brand") ?? ""));
+        }}
+        onReset={() => setSaved(undefined)}
+      >
+        <ColorPicker name="brand" defaultValue={args.value} format="hex" label="Brand color">
+          <ColorPickerInput aria-label="Brand color" />
+          <ColorPickerContent />
+        </ColorPicker>
+        <div className="flex items-center gap-2">
+          <button type="submit" className="rounded-md border px-2 py-1 text-sm">
+            Save
+          </button>
+          <button type="reset" className="rounded-md border px-2 py-1 text-sm">
+            Reset
+          </button>
+          <output className="ms-auto font-mono text-xs">{saved && `Saved ${saved}`}</output>
+        </div>
+      </form>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", { name: "Brand color" });
+    await userEvent.clear(input);
+    await userEvent.type(input, "tomato{Enter}");
+    // The first Enter only committed the draft.
+    expect(canvas.queryByText(/^Saved/)).not.toBeInTheDocument();
+    await waitFor(() => expect(input).toHaveValue("#ff6347"));
+
+    await userEvent.click(canvas.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(canvas.getByText("Saved #ff6347")).toBeInTheDocument());
+
+    await userEvent.click(canvas.getByRole("button", { name: "Reset" }));
+    await waitFor(() => expect(input).toHaveValue("#0ea5e9"));
   },
 };
