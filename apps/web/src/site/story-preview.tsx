@@ -1,6 +1,12 @@
 import { ArrowUpRightIcon } from "lucide-react";
 import { Component, type ReactNode } from "react";
-import { CodeBlock, CodeBlockContent, CodeBlockCopyButton } from "@/core/code-block/code-block";
+import {
+  CodeBlock,
+  CodeBlockCopyButton,
+  CodeBlockExpandButton,
+  CodeBlockHeader,
+  CodeBlockTitle,
+} from "@/core/code-block/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/tabs/tabs";
 import { cn } from "@/lib/utils";
 import type { ItemKind } from "./registry";
@@ -32,9 +38,18 @@ export function storybookStoryUrl(id: string) {
   return `${STORYBOOK_URL}?path=/story/${id}`;
 }
 
+/** The example's file, named after its component: `ButtonDemo` → `button-demo.tsx`. */
+export function snippetFileName(code: string) {
+  const name = code.match(/^export function (\w+)/m)?.[1] ?? "example";
+  return `${name.replace(/(?<=[a-z0-9])(?=[A-Z])/g, "-").toLowerCase()}.tsx`;
+}
+
+/** Longer examples start collapsed to this many lines, behind "Show more". */
+const COLLAPSED_LINES = 24;
+
 /**
- * One story, as shadcn's docs show an example: the live preview, and its code
- * in a second tab. Fullscreen stories (app shells, toasters) get an iframe, so
+ * One story, as shadcn's docs show an example: the live preview, and in a
+ * second tab its code as a component to paste into a project. Fullscreen stories (app shells, toasters) get an iframe, so
  * their fixed positioning stays inside the frame instead of over the page.
  */
 export function StoryPreview({
@@ -92,11 +107,12 @@ export function StoryPreview({
         )}
       </TabsContent>
       <TabsContent id="code">
-        <CodeBlock code={story.code} language="tsx">
-          <div className="max-h-[640px] overflow-auto rounded-[inherit]">
-            <CodeBlockContent />
-          </div>
-          <CodeBlockCopyButton />
+        <CodeBlock code={story.code} language="tsx" maxLines={COLLAPSED_LINES}>
+          <CodeBlockHeader>
+            <CodeBlockTitle>{snippetFileName(story.code)}</CodeBlockTitle>
+            <CodeBlockCopyButton className="ml-auto" />
+          </CodeBlockHeader>
+          <CodeBlockExpandButton />
         </CodeBlock>
       </TabsContent>
     </Tabs>

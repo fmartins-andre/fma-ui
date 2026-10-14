@@ -1,10 +1,10 @@
 import type { composeStories } from "@storybook/react-vite";
 import type { ComponentType } from "react";
 import type { ItemKind } from "./registry";
-import { storyCode } from "./story-code";
 
 // The registry's stories double as the docs examples (portable stories), and
-// the files' raw text as their code. Lazy globs: each page loads only its own.
+// their code is each story turned into a copyable component, generated at build
+// time (`?snippets`, see story-snippets.ts). Lazy globs: each page loads only its own.
 // Client-only (pages load them in effects): `import.meta.env.SSR` drops them, and
 // Storybook with them, from the server bundle, which must fit a Cloudflare Worker.
 type StoryModule = Parameters<typeof composeStories>[0];
@@ -20,6 +20,21 @@ const storyModules: Loaders<StoryModule> = import.meta.env.SSR
   : {
       ...import.meta.glob<StoryModule>("../../../../packages/ui/src/core/*/*.stories.tsx"),
       ...import.meta.glob<StoryModule>("../../../../packages/ui/src/blocks/*/*.stories.tsx"),
+    };
+
+type Snippets = Record<string, string>;
+
+const snippetModules: Loaders<Snippets> = import.meta.env.SSR
+  ? {}
+  : {
+      ...import.meta.glob<Snippets>("../../../../packages/ui/src/core/*/*.stories.tsx", {
+        query: "?snippets",
+        import: "default",
+      }),
+      ...import.meta.glob<Snippets>("../../../../packages/ui/src/blocks/*/*.stories.tsx", {
+        query: "?snippets",
+        import: "default",
+      }),
     };
 
 const sources: Loaders<string> = import.meta.env.SSR
@@ -43,6 +58,9 @@ const sourceByPath = new Map(
 const storiesByPath = new Map(
   Object.entries(storyModules).map(([key, load]) => [registryPath(key), load]),
 );
+const snippetsByPath = new Map(
+  Object.entries(snippetModules).map(([key, load]) => [registryPath(key), load]),
+);
 
 function storiesPath(kind: ItemKind, name: string) {
   return `src/${kind === "components" ? "core" : "blocks"}/${name}/${name}.stories.tsx`;
@@ -63,7 +81,7 @@ export interface DocStory {
   /** Story-level layout, falling back to the file's. */
   layout: "centered" | "padded" | "fullscreen";
   description?: string;
-  /** The story's own code, cut out of the stories file. */
+  /** The story as a component to paste into a project (imports included). */
   code: string;
   /** Has its own render or args, so it shows something the first story doesn't. */
   isExample: boolean;
@@ -73,7 +91,6 @@ export interface DocStories {
   /** Storybook's docs id for the file, e.g. "ui-badge--docs". */
   docsId: string;
   stories: DocStory[];
-  file: string;
 }
 
 type RawStory = {
@@ -86,19 +103,20 @@ type RawStory = {
 export async function loadStories(kind: ItemKind, name: string): Promise<DocStories | null> {
   const path = storiesPath(kind, name);
   const load = storiesByPath.get(path);
-  if (!load) return null;
-  const [module, file, { composeStories }] = await Promise.all([
+  const loadSnippets = snippetsByPath.get(path);
+  if (!load || !loadSnippets) return null;
+  const [module, snippets, { composeStories }] = await Promise.all([
     load(),
-    loadSource(path),
+    loadSnippets(),
     loadStorybook(),
   ]);
   const composed = composeStories(module) as Record<
     string,
     ComponentType & { id: string; storyName?: string; parameters?: RawStory["parameters"] }
   >;
-  // A module namespace lists exports alphabetically; the file's order is the authored one.
-  const order = (exportName: string) =>
-    file.search(new RegExp(`^export const ${exportName}\\b`, "m"));
+  // A module namespace lists exports alphabetically; the snippets keep the file's order.
+  const authored = Object.keys(snippets);
+  const order = (exportName: string) => authored.indexOf(exportName);
   const stories: DocStory[] = Object.entries(composed)
     .sort(([a], [b]) => order(a) - order(b))
     .filter(([exportName]) => {
@@ -114,10 +132,10 @@ export async function loadStories(kind: ItemKind, name: string): Promise<DocStor
         Component,
         layout: Component.parameters?.layout ?? "centered",
         description: raw.parameters?.docs?.description?.story,
-        code: storyCode(file, exportName),
+        code: snippets[exportName] ?? "",
         isExample: Boolean(raw.render || raw.args || raw.parameters?.docs?.description?.story),
       };
     });
   const docsId = `${stories[0]?.id.split("--")[0] ?? name}--docs`;
-  return { docsId, stories, file };
+  return { docsId, stories };
 }

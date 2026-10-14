@@ -36,6 +36,11 @@ function slug(text: string) {
     .replace(/^-|-$/g, "");
 }
 
+/** A story's code minus its component's name, which every story has its own of. */
+function codeKey(code: string) {
+  return code.replace(/^export function \w+/m, "export function");
+}
+
 function useStories(kind: ItemKind, name: string) {
   const [state, setState] = useState<{ name: string; stories: DocStories | null } | null>(null);
   useEffect(() => {
@@ -233,7 +238,15 @@ export function ItemPage({ kind, item }: { kind: ItemKind; item: RegistryItem })
   const loaded = useStories(kind, item.name);
   const stories = loaded?.stories?.stories ?? [];
   const [first, ...rest] = stories;
-  const examples = rest.filter((story) => story.isExample);
+  // Stories that only exist for an interaction test often render the same code
+  // as an earlier one; an example shows something new.
+  const shown = new Set(first ? [codeKey(first.code)] : []);
+  const examples = rest.filter((story) => {
+    const key = codeKey(story.code);
+    if (!story.isExample || shown.has(key)) return false;
+    shown.add(key);
+    return true;
+  });
   const headings = ["Installation", ...(examples.length ? ["Examples"] : []), "Dependencies"];
 
   return (

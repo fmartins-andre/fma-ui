@@ -96,7 +96,12 @@ test("a component page shows a live preview, its code and the install command", 
   const preview = page.locator("[data-slot=story-preview]").first();
   await expect(preview.getByRole("button").first()).toBeVisible();
   await page.getByRole("tab", { name: "Code" }).first().click();
-  await expect(page.getByRole("tabpanel").first()).toContainText("export const");
+  // The story as a component to paste, not the story object.
+  const code = page.getByRole("tabpanel").first();
+  await expect(code).toContainText("button-demo.tsx");
+  await expect(code).toContainText('import { Button } from "@/components/fma-ui/button";');
+  await expect(code).toContainText("export function ButtonDemo()");
+  await expect(code).not.toContainText("args");
   await expect(page.getByText("pnpm dlx shadcn@latest add @fma-ui/button")).toBeVisible();
   await page.getByRole("tab", { name: "Manual" }).click();
   await expect(page.getByText("components/fma-ui/button.tsx")).toBeVisible();
