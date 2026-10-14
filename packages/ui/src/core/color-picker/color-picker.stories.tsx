@@ -288,8 +288,19 @@ export const Areas: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "ColorPickerArea in OKLCH (chroma across, lightness up; what sRGB can't show is left blank and chroma stops at its edge) and in HSB (saturation × brightness). Both show the contrast against contrastWith.",
+        story: `ColorPickerArea in OKLCH (chroma across, lightness up, at the current hue) and in HSB (saturation × brightness). Both show the contrast against contrastWith.
+
+**Why the OKLCH area is a triangle.** It only paints the colors an sRGB screen can show, and in the chroma × lightness plane those form a rough triangle:
+
+- At lightness 0 the color is black and at 1 it is white, both with no chroma, so the edges meet at the left (chroma 0, the grays) at the top and bottom.
+- In between, the most chroma sRGB reaches grows to a peak (the *cusp*) and falls again: the tip of the triangle.
+- Each hue peaks at its own lightness (yellow near the top, L ≈ 0.97; blue low, L ≈ 0.45), so the shape changes as the hue moves.
+
+The blank part holds colors OKLCH can describe but sRGB can't display; the browser would clip them. It is left blank instead of painting the clipped color, so the point you pick is the color you get, and dragging into it stops chroma at the edge.
+
+**Why the HSB area is a square.** HSB is derived from the RGB cube itself, so every point is a displayable color. The cost is that it isn't perceptual: equal brightness doesn't look equally light across hues, so contrast thresholds curve through it and are harder to reason about for tokens.
+
+The OKLCH area keeps its axes as the literal values written to a token (as on oklch.com). A square, perceptual alternative would be Okhsv (all in gamut, but its axes are no longer OKLCH chroma), or scaling chroma to the maximum at each lightness (the same x then means different chroma at different heights).`,
       },
     },
   },

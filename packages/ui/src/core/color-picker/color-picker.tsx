@@ -1173,8 +1173,13 @@ function AreaContrast({ aa, aaa }: { aa: PassingColumn[]; aaa: PassingColumn[] }
 
 type ColorPickerAreaProps = {
   /**
-   * OKLCH (default): chroma across, lightness up, at the current hue; the part
-   * sRGB can't show is left blank. HSB: saturation across, brightness up.
+   * OKLCH (default): chroma across, lightness up, at the current hue. Only what
+   * sRGB can show is painted, a rough triangle: black and white have no chroma,
+   * and the most chroma peaks (the cusp) at a lightness that depends on the
+   * hue. The rest is left blank and chroma stops at its edge, so the axes stay
+   * the literal values written to a token.
+   * HSB: saturation across, brightness up; a full square (HSB is the RGB cube
+   * reshaped) but not perceptual.
    */
   colorSpace?: AreaSpace;
   "aria-label"?: string;
