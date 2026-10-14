@@ -256,6 +256,34 @@ Os testes rodam no Vitest com dois projects (`packages/ui/vitest.config.ts`):
   teste: use `play` functions com `storybook/test`, sem arquivo `.test.tsx` separado. Não roda
   no CI de PR, para manter o job leve.
 
+### A story é o exemplo do site
+
+O site mostra cada story como exemplo, e na aba **Code** o código dela convertido num componente
+pronto para colar no projeto do consumidor (`packages/ui/scripts/story-snippets.ts`, rodado no
+build do `apps/web` como `<arquivo>.stories.tsx?snippets`):
+
+- o `render` vira o corpo de `export function <Item><Story>()`; sem `render`, vira
+  `<Componente {...args} />`;
+- `{...args}` e `args.x` viram as props que representam (args do meta + da story). Ficam de fora
+  os spies `fn()` (props e chamadas `args.onX?.(...)`), args do meta com `false` (padrão do
+  controle), variantes `"default"` do cva, args zerados pela story (`undefined`/`null`) e o
+  `defaultX` quando o elemento passa `x` controlado;
+- `play`, `decorators`, `data-testid` e leituras invisíveis (`<output data-testid
+  className="sr-only">`) somem; constantes e helpers do arquivo usados pelo exemplo vêm junto;
+- os imports apontam para onde o CLI instala (`@/components/fma-ui/<nome>`,
+  `@/lib/fma-ui/...`, `@/hooks/fma-ui/...`), e o Biome formata o resultado.
+
+Por isso, **escreva o render como o uso real do componente** e deixe o que só serve à story fora
+dele: providers de teste (`I18nProvider` fixo, `RouterProvider` com spy), fixtures (dados
+offline, fuso fixo) e a leitura do valor para os testes vão em `decorators`, que podem injetar
+args (`<Story args={{ ...context.args, onChange }} />`). Stories que só existem como teste de
+regressão (`Should*`) levam `tags: ["!autodocs"]` e ficam fora da documentação. Story de outro
+componente do mesmo arquivo (ex.: `DateRangePicker` em `date-picker.stories.tsx`) usa uma factory
+tipada (`rangeStory({ ... })`), que o gerador também lê. Quando nada disso basta,
+`parameters.docs.source.code` fixa o código à mão. O `tests/story-snippets.test.ts` confere que
+todo snippet é autocontido (nada da story vaza, todo nome usado é importado ou declarado, imports
+nos caminhos instalados).
+
 ## Temas
 
 Temas curados ficam em `packages/ui/src/themes/<nome>.json` (schema `ThemeSchema` em
