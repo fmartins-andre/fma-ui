@@ -131,6 +131,7 @@ export function OtherPanel({
               label={`Color (${mode})`}
               value={shadow.color}
               onChange={(color) => setShadow({ color })}
+              onChangeEnd={() => dispatch({ type: "checkpoint" })}
             />
             <SliderField
               label="Opacity"

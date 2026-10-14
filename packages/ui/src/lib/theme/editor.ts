@@ -25,6 +25,8 @@ export type ThemeEditorAction =
   | { type: "load"; theme: Theme }
   | { type: "edit"; update: (theme: Theme) => Theme; at: number }
   | { type: "hsl"; hsl: HslAdjustment; at: number }
+  /** Ends the current undo step (a drag released, a pick made): the next edit starts a new one. */
+  | { type: "checkpoint" }
   | { type: "reset" }
   | { type: "undo" }
   | { type: "redo" };
@@ -101,6 +103,8 @@ export function themeEditorReducer(
           };
       return { ...commit(state, theme, action.at), hsl: action.hsl, hslSource: source };
     }
+    case "checkpoint":
+      return state.lastEditAt === 0 ? state : { ...state, lastEditAt: 0 };
     case "reset":
       return {
         ...state,

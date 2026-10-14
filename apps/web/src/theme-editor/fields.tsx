@@ -1,6 +1,10 @@
-import { type ReactNode, useEffect, useId, useState } from "react";
+import { type ReactNode, useId } from "react";
 import { Badge } from "@/core/badge/badge";
-import { ColorPicker } from "@/core/color-picker/color-picker";
+import {
+  ColorPicker,
+  ColorPickerContent,
+  ColorPickerInput,
+} from "@/core/color-picker/color-picker";
 import { Input } from "@/core/input/input";
 import { Label } from "@/core/label/label";
 import { Slider } from "@/core/slider/slider";
@@ -36,23 +40,18 @@ export function ColorField({
   label,
   value,
   onChange,
+  onChangeEnd,
   contrastWith,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  /** The background this color is text on: shows a contrast badge. */
+  /** A pick finished (drag released, preset, committed text). */
+  onChangeEnd?: () => void;
+  /** The background this color is text on: shows a contrast badge, and contrast in the picker. */
   contrastWith?: string;
 }) {
   const id = useId();
-  const [draft, setDraft] = useState(value);
-  useEffect(() => setDraft(value), [value]);
-  const valid = isColor(draft);
-
-  const commit = () => {
-    if (valid && draft !== value) onChange(toOklch(draft));
-    else setDraft(value);
-  };
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -62,26 +61,21 @@ export function ColorField({
         </Label>
         {contrastWith && <ContrastBadge background={contrastWith} foreground={value} />}
       </div>
-      <div className="flex items-center gap-2">
-        <ColorPicker
-          label={`Pick ${label}`}
-          value={value}
-          onChange={onChange}
-          contrastWith={contrastWith}
-        />
-        <Input
+      <ColorPicker
+        label={`Pick ${label}`}
+        value={value}
+        onChange={onChange}
+        onChangeEnd={onChangeEnd}
+        contrastWith={contrastWith}
+      >
+        <ColorPickerInput
           id={id}
-          value={draft}
-          aria-invalid={!valid || undefined}
-          className="font-mono text-xs"
-          spellCheck={false}
-          onChange={(event) => setDraft(event.target.value)}
-          onBlur={commit}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") commit();
-          }}
+          // Also takes shadcn v3's bare "222 47% 11%" triplets.
+          parseValue={(text) => (isColor(text) ? toOklch(text) : undefined)}
+          className="[&_[data-slot=input-group-control]]:text-xs"
         />
-      </div>
+        <ColorPickerContent />
+      </ColorPicker>
     </div>
   );
 }

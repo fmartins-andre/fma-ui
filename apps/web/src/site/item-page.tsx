@@ -12,7 +12,7 @@ import {
 } from "@/core/code-block/code-block";
 import { Skeleton } from "@/core/skeleton/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/core/tabs/tabs";
-import { InlineMarkdown } from "./markdown";
+import { InlineMarkdown, Markdown } from "./markdown";
 import {
   categoryTitle,
   type ItemKind,
@@ -309,9 +309,10 @@ export function ItemPage({ kind, item }: { kind: ItemKind; item: RegistryItem })
                   {story.name}
                 </h3>
                 {story.description && (
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    <InlineMarkdown text={story.description} />
-                  </p>
+                  <Markdown
+                    text={story.description}
+                    className="mt-1 text-sm text-muted-foreground"
+                  />
                 )}
                 <StoryPreview kind={kind} name={item.name} story={story} className="mt-4" />
               </section>

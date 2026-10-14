@@ -11,10 +11,13 @@ export function ColorsPanel({
   theme,
   mode,
   edit,
+  checkpoint,
 }: {
   theme: Theme;
   mode: ThemeMode;
   edit: (update: (theme: Theme) => Theme) => void;
+  /** Ends the undo step when a color pick finishes. */
+  checkpoint: () => void;
 }) {
   const colors = theme[mode];
   return (
@@ -31,6 +34,7 @@ export function ColorsPanel({
                   label={`${label} (--${token})`}
                   value={colors[token]}
                   contrastWith={on ? colors[on] : undefined}
+                  onChangeEnd={checkpoint}
                   onChange={(value) =>
                     edit((current) => ({
                       ...current,
