@@ -1,5 +1,5 @@
 import { CalendarDate } from "@internationalized/date";
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { type DateValue, I18nProvider, type RangeValue } from "react-aria-components";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
@@ -9,6 +9,60 @@ import { Label } from "@/core/label/label";
 import { DatePicker, DatePickerContent, DatePickerTrigger, DateRangePicker } from "./date-picker";
 import meta from "./meta.json";
 
+type Value = DateValue | RangeValue<DateValue> | null | undefined;
+
+function formatValue(value: Value) {
+  if (!value) return "None";
+  return "start" in value ? `${value.start} – ${value.end}` : String(value);
+}
+
+function ValueReadout({
+  initial,
+  children,
+}: {
+  initial: Value;
+  children: (show: (value: Value) => void) => React.ReactNode;
+}) {
+  const [value, setValue] = React.useState(initial);
+  return (
+    <div className="flex w-80 flex-col gap-2">
+      {children(setValue)}
+      <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
+        <span className="text-muted-foreground">Selected:</span>
+        <output data-testid="value" className="font-mono">
+          {formatValue(value)}
+        </output>
+      </div>
+    </div>
+  );
+}
+
+// Shows the value the picker holds under it, for the eye and for the play
+// functions. A decorator taps `onChange`, so each story's code stays the plain
+// usage the docs show as its example.
+const withSelectedValue: Decorator = (Story, context) => {
+  const args = context.args as {
+    value?: Value;
+    defaultValue?: Value;
+    onChange?: (value: Value) => void;
+  };
+  return (
+    <ValueReadout initial={args.value ?? args.defaultValue}>
+      {(show) => (
+        <Story
+          args={{
+            ...context.args,
+            onChange: (value: Value) => {
+              show(value);
+              args.onChange?.(value);
+            },
+          }}
+        />
+      )}
+    </ValueReadout>
+  );
+};
+
 const componentMeta = {
   title: "ui/DatePicker",
   component: DatePicker,
@@ -16,8 +70,9 @@ const componentMeta = {
   parameters: {
     docs: { description: { component: meta.description } },
   },
-  // Pinned so segment order/labels don't depend on the browser's locale.
   decorators: [
+    withSelectedValue,
+    // Pinned so segment order/labels don't depend on the browser's locale.
     (Story) => (
       <I18nProvider locale="en-US">
         <Story />
@@ -30,68 +85,18 @@ const componentMeta = {
   args: {
     "aria-label": "Event date",
   },
-  render: (args) => <DatePickerWithValue {...args} />,
 } satisfies Meta<typeof DatePicker>;
 
 export default componentMeta;
 type Story = StoryObj<typeof componentMeta>;
 
+/** A `DateRangePicker` story: one meta per file, so it's typed on its own and cast. */
+function rangeStory(story: StoryObj<typeof DateRangePicker>): Story {
+  return story as Story;
+}
+
 const MARCH_15 = new CalendarDate(2026, 3, 15);
 const BOOKED = [{ from: new CalendarDate(2026, 3, 10), to: new CalendarDate(2026, 3, 14) }];
-
-function formatValue(value: DateValue | null | undefined) {
-  return value ? String(value) : "None";
-}
-
-function formatRange(range: RangeValue<DateValue> | null | undefined) {
-  return range ? `${range.start} – ${range.end}` : "None";
-}
-
-// Visual reference for every story: the value the picker currently holds.
-function SelectedValue({ children }: { children: string }) {
-  return (
-    <div className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
-      <span className="text-muted-foreground">Selected:</span>
-      <output data-testid="value" className="font-mono">
-        {children}
-      </output>
-    </div>
-  );
-}
-
-function DatePickerWithValue(props: React.ComponentProps<typeof DatePicker<DateValue>>) {
-  const [value, setValue] = React.useState(props.value ?? props.defaultValue ?? null);
-  return (
-    <div className="flex w-64 flex-col gap-2">
-      <DatePicker
-        {...props}
-        value={value}
-        onChange={(next) => {
-          setValue(next);
-          props.onChange?.(next);
-        }}
-      />
-      <SelectedValue>{formatValue(value)}</SelectedValue>
-    </div>
-  );
-}
-
-function DateRangePickerWithValue(props: React.ComponentProps<typeof DateRangePicker<DateValue>>) {
-  const [value, setValue] = React.useState(props.value ?? props.defaultValue ?? null);
-  return (
-    <div className="flex w-80 flex-col gap-2">
-      <DateRangePicker
-        {...props}
-        value={value}
-        onChange={(next) => {
-          setValue(next);
-          props.onChange?.(next);
-        }}
-      />
-      <SelectedValue>{formatRange(value)}</SelectedValue>
-    </div>
-  );
-}
 
 async function openCalendar(canvasElement: HTMLElement) {
   await userEvent.click(within(canvasElement).getByRole("button", { name: /calend/i }));
@@ -135,13 +140,15 @@ export const YearGranularity: Story = {
   args: { granularity: "year" },
 };
 
-export const Range: Story = {
-  render: () => <DateRangePickerWithValue aria-label="Trip dates" />,
-};
+export const Range = rangeStory({
+  args: { "aria-label": "Trip dates" },
+  render: (args) => <DateRangePicker {...args} />,
+});
 
-export const MonthRange: Story = {
-  render: () => <DateRangePickerWithValue aria-label="Billing period" granularity="month" />,
-};
+export const MonthRange = rangeStory({
+  args: { "aria-label": "Billing period", granularity: "month" },
+  render: (args) => <DateRangePicker {...args} />,
+});
 
 export const MinMax: Story = {
   args: {
@@ -158,7 +165,7 @@ export const UnavailableRanges: Story = {
 export const Localized: Story = {
   render: (args) => (
     <I18nProvider locale="pt-BR">
-      <DatePickerWithValue {...args} aria-label="Data do evento" />
+      <DatePicker {...args} aria-label="Data do evento" />
     </I18nProvider>
   ),
 };
@@ -168,6 +175,7 @@ export const Localized: Story = {
 
 export const ShouldFillInputFromCalendar: Story = {
   name: "when clicking a day in the calendar, should fill the input and close the popover",
+  tags: ["!autodocs"],
   args: { placeholderValue: MARCH_15, onChange: fn() },
   play: async ({ canvasElement, args }) => {
     const dialog = await openCalendar(canvasElement);
@@ -181,6 +189,7 @@ export const ShouldFillInputFromCalendar: Story = {
 
 export const ShouldFollowTypingWhileOpen: Story = {
   name: "when clicking the input and typing while the popover is open, should stay open and follow the typed date",
+  tags: ["!autodocs"],
   args: { defaultValue: MARCH_15 },
   play: async ({ canvasElement }) => {
     const dialog = await openCalendar(canvasElement);
@@ -201,6 +210,7 @@ export const ShouldFollowTypingWhileOpen: Story = {
 
 export const ShouldCloseOnOutsidePress: Story = {
   name: "when pressing outside the picker, should close the popover",
+  tags: ["!autodocs"],
   play: async ({ canvasElement }) => {
     await openCalendar(canvasElement);
     await userEvent.click(within(canvasElement).getByTestId("value"));
@@ -210,6 +220,7 @@ export const ShouldCloseOnOutsidePress: Story = {
 
 export const ShouldPickWholeMonth: Story = {
   name: 'when granularity is "month", should show month/year segments and commit the 1st from the calendar',
+  tags: ["!autodocs"],
   args: { granularity: "month", placeholderValue: MARCH_15, onChange: fn() },
   play: async ({ canvasElement, args }) => {
     await expect(within(canvasElement).getAllByRole("spinbutton")).toHaveLength(2);
@@ -223,6 +234,7 @@ export const ShouldPickWholeMonth: Story = {
 
 export const ShouldPickWholeYear: Story = {
   name: 'when granularity is "year", should show only the year segment and commit January 1st',
+  tags: ["!autodocs"],
   args: { granularity: "year", placeholderValue: MARCH_15, onChange: fn() },
   play: async ({ canvasElement, args }) => {
     await expect(within(canvasElement).getAllByRole("spinbutton")).toHaveLength(1);
@@ -234,60 +246,51 @@ export const ShouldPickWholeYear: Story = {
   },
 };
 
-const rangeChange = fn();
-
-export const ShouldCloseAfterRangeEnd: Story = {
+export const ShouldCloseAfterRangeEnd = rangeStory({
   name: "when picking a range, should stay open after the start and close after the end",
-  render: () => (
-    <DateRangePickerWithValue
-      aria-label="Trip dates"
-      placeholderValue={MARCH_15}
-      onChange={rangeChange}
-    />
-  ),
-  play: async ({ canvasElement }) => {
-    rangeChange.mockClear();
+  tags: ["!autodocs"],
+  args: { "aria-label": "Trip dates", placeholderValue: MARCH_15, onChange: fn() },
+  render: (args) => <DateRangePicker {...args} />,
+  play: async ({ canvasElement, args }) => {
     const dialog = await openCalendar(canvasElement);
     await userEvent.click(within(dialog).getByRole("button", { name: /March 5, 2026/ }));
     await expect(within(document.body).getByRole("dialog")).toBe(dialog);
 
     await userEvent.click(within(dialog).getByRole("button", { name: /March 20, 2026/ }));
     await waitFor(() => expect(within(document.body).queryByRole("dialog")).toBeNull());
-    await expect(rangeChange).toHaveBeenCalledWith({
+    await expect(args.onChange).toHaveBeenCalledWith({
       start: new CalendarDate(2026, 3, 5),
       end: new CalendarDate(2026, 3, 20),
     });
   },
-};
+});
 
-const monthRangeChange = fn();
-
-export const ShouldPickWholeMonthRange: Story = {
+export const ShouldPickWholeMonthRange = rangeStory({
   name: "when granularity is \"month\" in a range, should commit the start month's 1st to the end month's last day",
-  render: () => (
-    <DateRangePickerWithValue
-      aria-label="Billing period"
-      granularity="month"
-      placeholderValue={MARCH_15}
-      onChange={monthRangeChange}
-    />
-  ),
-  play: async ({ canvasElement }) => {
-    monthRangeChange.mockClear();
+  tags: ["!autodocs"],
+  args: {
+    "aria-label": "Billing period",
+    granularity: "month",
+    placeholderValue: MARCH_15,
+    onChange: fn(),
+  },
+  render: (args) => <DateRangePicker {...args} />,
+  play: async ({ canvasElement, args }) => {
     const dialog = await openCalendar(canvasElement);
     await userEvent.click(within(dialog).getByRole("button", { name: "March 2026" }));
     await userEvent.click(within(dialog).getByRole("button", { name: "May 2026" }));
 
     await waitFor(() => expect(within(document.body).queryByRole("dialog")).toBeNull());
-    await expect(monthRangeChange).toHaveBeenCalledWith({
+    await expect(args.onChange).toHaveBeenCalledWith({
       start: new CalendarDate(2026, 3, 1),
       end: new CalendarDate(2026, 5, 31),
     });
   },
-};
+});
 
 export const ShouldDisableDaysOutsideMinMax: Story = {
   name: "when min/max are set, should disable calendar days outside them",
+  tags: ["!autodocs"],
   args: {
     defaultValue: MARCH_15,
     minValue: new CalendarDate(2026, 3, 5),
@@ -307,6 +310,7 @@ export const ShouldDisableDaysOutsideMinMax: Story = {
 
 export const ShouldThreadUnavailableRanges: Story = {
   name: "when unavailableRanges is set, should block those days in the calendar and move a typed one on blur",
+  tags: ["!autodocs"],
   args: { placeholderValue: MARCH_15, unavailableRanges: BOOKED },
   play: async ({ canvasElement }) => {
     const dialog = await openCalendar(canvasElement);
@@ -329,9 +333,10 @@ export const ShouldThreadUnavailableRanges: Story = {
 
 export const ShouldLocalizeInputAndCalendar: Story = {
   name: "when the locale is pt-BR, should localize both the segments and the calendar",
+  tags: ["!autodocs"],
   render: (args) => (
     <I18nProvider locale="pt-BR">
-      <DatePickerWithValue {...args} aria-label="Data do evento" defaultValue={MARCH_15} />
+      <DatePicker {...args} aria-label="Data do evento" defaultValue={MARCH_15} />
     </I18nProvider>
   ),
   play: async ({ canvasElement }) => {

@@ -43,7 +43,7 @@ export const WithLabel: Story = {
 };
 
 export const Indeterminate: Story = {
-  args: { isIndeterminate: true },
+  args: { isIndeterminate: true, value: undefined },
   parameters: {
     docs: {
       description: { story: "isIndeterminate for when progress can't be measured yet." },

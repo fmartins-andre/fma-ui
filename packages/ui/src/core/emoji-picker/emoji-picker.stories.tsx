@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { Card } from "@/core/card/card";
@@ -82,6 +82,21 @@ const DATA: EmojiPickerData = {
   ],
 };
 
+// Offline and repeatable: the fixture instead of the emojibase CDN, and no
+// recents or skin tone carried over between stories. A decorator, so the docs
+// examples show the plain `<EmojiPicker />` an app writes.
+const withFixture: Decorator = (Story, { args }) => (
+  <Story
+    args={{
+      data: DATA,
+      emojiVersion: 15,
+      recentStorageKey: null,
+      skinToneStorageKey: null,
+      ...args,
+    }}
+  />
+);
+
 const componentMeta = {
   title: "ui/EmojiPicker",
   component: EmojiPicker,
@@ -90,11 +105,8 @@ const componentMeta = {
     layout: "centered",
     docs: { description: { component: meta.description } },
   },
+  decorators: [withFixture],
   args: {
-    data: DATA,
-    emojiVersion: 15,
-    recentStorageKey: null,
-    skinToneStorageKey: null,
     onChange: fn(),
     onEmojiSelect: fn(),
   },
@@ -181,15 +193,16 @@ export const Categories: Story = {
 
 /** `selectionMode="multiple"` toggles emoji in and out and keeps the picker open; `max` caps the list. */
 export const Multiple: Story = {
-  render: function Render() {
+  // Takes the fixture props from the decorator one by one: the args are typed single-select.
+  render: function Render(args) {
     const [values, setValues] = React.useState<string[]>(["🎉"]);
     return (
       <div className="flex flex-col items-center gap-2">
         <EmojiPicker
-          data={DATA}
-          emojiVersion={15}
-          recentStorageKey={null}
-          skinToneStorageKey={null}
+          data={args.data}
+          emojiVersion={args.emojiVersion}
+          recentStorageKey={args.recentStorageKey}
+          skinToneStorageKey={args.skinToneStorageKey}
           selectionMode="multiple"
           max={2}
           value={values}

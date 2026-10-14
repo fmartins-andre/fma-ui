@@ -30,11 +30,11 @@ export const Default: Story = {
         <EmptyMedia variant="icon">
           <InboxIcon />
         </EmptyMedia>
-        <EmptyTitle>No components yet</EmptyTitle>
-        <EmptyDescription>Add one with pnpm add:shadcn &lt;name&gt;.</EmptyDescription>
+        <EmptyTitle>No projects yet</EmptyTitle>
+        <EmptyDescription>Get started by creating your first project.</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button size="sm">Browse the registry</Button>
+        <Button size="sm">Create project</Button>
       </EmptyContent>
     </Empty>
   ),

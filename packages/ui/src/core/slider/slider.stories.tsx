@@ -18,9 +18,6 @@ const componentMeta = {
   },
   args: {
     defaultValue: 33,
-    minValue: 0,
-    maxValue: 100,
-    step: 1,
   },
   render: (args) => (
     <div className="w-64">

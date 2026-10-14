@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import type { Plugin } from "vite";
 import { SHADCN_ADD } from "./src/site/shadcn.ts";
-import { storyCode } from "./src/site/story-code.ts";
+import { readStorySnippets } from "./story-snippets.ts";
 
 // /llms.txt and /llms-full.txt (https://llmstxt.org), generated from
 // packages/ui/registry.json so they never go stale. Written into public/ at
@@ -37,20 +37,12 @@ function pagePath(item: Item) {
   return item.type === "registry:block" ? `/blocks/${item.name}` : `/components/${item.name}`;
 }
 
-/** The first story that renders something of its own and carries no interaction test. */
+/** The item's first docs example, as copyable code. */
 function usageExample(item: Item) {
   const folder = item.type === "registry:block" ? "blocks" : "core";
   const path = join(UI, "src", folder, item.name, `${item.name}.stories.tsx`);
   if (!existsSync(path)) return "";
-  const file = readFileSync(path, "utf8");
-  const stories = [...file.matchAll(/^export const (\w+)\b/gm)].map((match) =>
-    storyCode(file, match[1] ?? ""),
-  );
-  return (
-    stories.find((code) => code.includes("render:") && !code.includes("play:")) ??
-    stories.find((code) => code.includes("render:")) ??
-    ""
-  );
+  return Object.values(readStorySnippets(path))[0] ?? "";
 }
 
 function header(siteUrl: string) {

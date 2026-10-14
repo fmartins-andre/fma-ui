@@ -30,7 +30,8 @@ packages/ui/        → @fma-ui/ui: os componentes
   src/design-tokens/                  stories dos tokens; tokens em src/styles.css (Tailwind v4)
   src/themes/<nome>.json              temas curados (registry:theme "theme-<nome>"); lista em index.ts
   src/lib/theme/                      lib de temas (schema, CSS, import, item de registro); não publicada
-  scripts/                            gen-registry-json, add-shadcn, add-from-registry
+  scripts/                            gen-registry-json, add-shadcn, add-from-registry,
+                                      story-snippets (código dos exemplos do site)
   tests/                              testes unit (vitest) + gates estruturais
   registry.json                       GERADO — não editar à mão
 apps/web/           → TanStack Start; serve public/r/<nome>.json (GERADO — não editar à mão)
@@ -45,6 +46,8 @@ apps/web/           → TanStack Start; serve public/r/<nome>.json (GERADO — n
                                       reaproveita se estiver em dia com src/ e .storybook/, senão
                                       roda build-storybook, e copia pra public/storybook (ignorado
                                       pelo git); no dev, usa o build se existir (senão link pra :6006)
+  story-snippets.ts                   plugin Vite: `<arquivo>.stories.tsx?snippets`, o código de
+                                      cada story como componente copiável (aba Code do site)
   llms-txt.ts                         plugin Vite: gera /llms.txt e /llms-full.txt a partir do
                                       registry.json (no build, em public/, ignorado pelo git; no
                                       dev, a cada request)
@@ -156,6 +159,12 @@ variable `FMA_UI_SITE_URL`; no Cloudflare, das variáveis de build. Variável no
 7. **Stories**: formato CSF3 com `satisfies Meta<typeof X>`, `tags: ["autodocs"]`, título
    `ui/<Nome>`. Testes de interação são `play` functions dentro da story (sem `.test.tsx`
    separado), usando `storybook/test`. Siga uma story existente (ex.: `core/badge/`).
+   O render de cada story **é o exemplo copiável** do site (`scripts/story-snippets.ts`
+   converte em `export function`, resolvendo `{...args}`/`args.x`, tirando spies `fn()`,
+   `play`, `decorators` e `data-testid`): escreva o uso real do componente. Ambiente de teste
+   (providers fixos, fixtures, leitura do valor, `RouterProvider` com spy) vai em `decorators`;
+   stories só de regressão (`Should*`) levam `tags: ["!autodocs"]`. Detalhes no
+   `CONTRIBUTING.md` ("A story é o exemplo do site"); `tests/story-snippets.test.ts` impõe.
 8. **Novo componente vindo do shadcn**: use `pnpm add:shadcn <nome>` em vez de copiar código
    — o script instala deps, move pra `src/core/<nome>/` e cria o `meta.json` stub (edite
    descrição/categoria/tags depois).

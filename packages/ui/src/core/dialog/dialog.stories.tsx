@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DialogTrigger } from "react-aria-components";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Button } from "../button/button";
 import {
@@ -9,6 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "./dialog";
 import meta from "./meta.json";
 

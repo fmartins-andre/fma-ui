@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import { Settings2Icon } from "lucide-react";
 import * as React from "react";
 import { DialogTrigger, I18nProvider } from "react-aria-components";
@@ -81,45 +81,40 @@ const BUSY_DAY: CalendarEvent[] = Array.from({ length: 6 }, (_, i) => ({
   end: at(18, 9 + i, 45),
 }));
 
-type DemoProps = {
-  events?: CalendarEvent[];
-  view?: CalendarView;
-  onEventClick?: () => void;
-  onEventUpdate?: () => void;
-  onSelectSlot?: () => void;
-};
-
-function Demo({ events = EVENTS, view = "week", ...callbacks }: DemoProps) {
-  return (
-    <div className="flex h-[640px] w-[960px] flex-col rounded-lg border">
-      <EventCalendar
-        defaultEvents={events}
-        defaultView={view}
-        defaultDate={TODAY}
-        timeZone="UTC"
-        locale="en-US"
-        resources={TEAM}
-        dayStartHour={7}
-        className="flex min-h-0 flex-1 flex-col"
-        {...callbacks}
-      >
-        <EventCalendarNav />
-        <EventCalendarContent />
-      </EventCalendar>
-    </div>
-  );
-}
+// The wall clock and language the fixed week is asserted in. A decorator, so
+// the docs examples don't carry them: an app uses the viewer's own.
+const withFixedClock: Decorator = (Story, { args }) => (
+  <Story args={{ timeZone: "UTC", locale: "en-US", ...args }} />
+);
 
 const componentMeta = {
   title: "blocks/EventCalendar",
-  component: Demo,
+  component: EventCalendar,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
     docs: { description: { component: meta.description } },
   },
-  args: { onEventClick: fn(), onEventUpdate: fn(), onSelectSlot: fn() },
-} satisfies Meta<typeof Demo>;
+  decorators: [withFixedClock],
+  args: {
+    defaultEvents: EVENTS,
+    defaultView: "week",
+    defaultDate: TODAY,
+    resources: TEAM,
+    dayStartHour: 7,
+    onEventClick: fn(),
+    onEventUpdate: fn(),
+    onSelectSlot: fn(),
+  },
+  render: (args) => (
+    <div className="flex h-[640px] w-[960px] flex-col rounded-lg border">
+      <EventCalendar {...args} className="flex min-h-0 flex-1 flex-col">
+        <EventCalendarNav />
+        <EventCalendarContent />
+      </EventCalendar>
+    </div>
+  ),
+} satisfies Meta<typeof EventCalendar>;
 
 export default componentMeta;
 type Story = StoryObj<typeof componentMeta>;
@@ -183,7 +178,7 @@ export const SelectEvent: Story = {
 
 /** A crowded month day collapses into "+N more", which opens the day's list. */
 export const MonthOverflow: Story = {
-  args: { view: "month", events: [...EVENTS, ...BUSY_DAY] },
+  args: { defaultView: "month", defaultEvents: [...EVENTS, ...BUSY_DAY] },
   play: async ({ canvas }) => {
     const more = await canvas.findByRole("button", { name: /more/ });
     await expect(more).toHaveAttribute("aria-expanded", "false");
@@ -199,7 +194,7 @@ export const MonthOverflow: Story = {
 
 /** The resource view lays out one column per team member. */
 export const Resources: Story = {
-  args: { view: "resource" },
+  args: { defaultView: "resource" },
   play: async ({ canvas }) => {
     for (const member of ["Alex", "Mia", "Sam"]) {
       await expect(canvas.getAllByText(member).length).toBeGreaterThan(0);
@@ -210,7 +205,7 @@ export const Resources: Story = {
 
 /** With no events in range, the agenda shows its empty state. */
 export const EmptyAgenda: Story = {
-  args: { view: "agenda", events: [] },
+  args: { defaultView: "agenda", defaultEvents: [] },
   play: async ({ canvasElement }) => {
     await expect(canvasElement.querySelector("[data-slot=icon-stack]")).not.toBeNull();
   },
@@ -249,32 +244,27 @@ export const DragToMove: Story = {
   },
 };
 
-function ControlledViewDemo() {
-  const [view, setView] = React.useState<CalendarView>("day");
-  return (
-    <div className="flex h-[560px] w-[720px] flex-col gap-2">
-      <output data-testid="view">{view}</output>
-      <div className="flex min-h-0 flex-1 flex-col rounded-lg border">
-        <EventCalendar
-          defaultEvents={EVENTS}
-          view={view}
-          onViewChange={setView}
-          defaultDate={TODAY}
-          timeZone="UTC"
-          locale="en-US"
-          className="flex min-h-0 flex-1 flex-col"
-        >
-          <EventCalendarNav />
-          <EventCalendarContent />
-        </EventCalendar>
-      </div>
-    </div>
-  );
-}
-
 /** `view`/`onViewChange` make the view controlled. */
 export const ControlledView: Story = {
-  render: () => <ControlledViewDemo />,
+  render: function Render(args) {
+    const [view, setView] = React.useState<CalendarView>("day");
+    return (
+      <div className="flex h-[560px] w-[720px] flex-col gap-2">
+        <output data-testid="view">{view}</output>
+        <div className="flex min-h-0 flex-1 flex-col rounded-lg border">
+          <EventCalendar
+            {...args}
+            view={view}
+            onViewChange={setView}
+            className="flex min-h-0 flex-1 flex-col"
+          >
+            <EventCalendarNav />
+            <EventCalendarContent />
+          </EventCalendar>
+        </div>
+      </div>
+    );
+  },
   play: async ({ canvas }) => {
     await expect(canvas.getByTestId("view")).toHaveTextContent("day");
     await userEvent.click(canvas.getByRole("button", { name: /Select view/ }));
@@ -284,34 +274,25 @@ export const ControlledView: Story = {
   },
 };
 
-function ShortcutsDemo() {
-  return (
+/**
+ * The keys hinted in the view switcher switch views while focus is inside the
+ * calendar (`shortcutsScope="focus-within"`), but not while typing in a field.
+ */
+export const KeyboardShortcuts: Story = {
+  // An interaction test (fields inside and outside the calendar), not an example.
+  tags: ["!autodocs"],
+  render: (args) => (
     <div className="flex h-[560px] w-[720px] flex-col gap-2">
       <input aria-label="Outside" className="rounded border px-2" />
       <div className="flex min-h-0 flex-1 flex-col rounded-lg border">
-        <EventCalendar
-          defaultEvents={EVENTS}
-          defaultView="week"
-          defaultDate={TODAY}
-          timeZone="UTC"
-          locale="en-US"
-          className="flex min-h-0 flex-1 flex-col"
-        >
+        <EventCalendar {...args} className="flex min-h-0 flex-1 flex-col">
           <input aria-label="Inside" className="rounded border px-2" />
           <EventCalendarNav />
           <EventCalendarContent />
         </EventCalendar>
       </div>
     </div>
-  );
-}
-
-/**
- * The keys hinted in the view switcher switch views while focus is inside the
- * calendar (`shortcutsScope="focus-within"`), but not while typing in a field.
- */
-export const KeyboardShortcuts: Story = {
-  render: () => <ShortcutsDemo />,
+  ),
   play: async ({ canvasElement, canvas }) => {
     const view = () => slot(canvasElement, "event-calendar-content")?.getAttribute("data-view");
     await expect(view()).toBe("week");
@@ -345,14 +326,10 @@ const onSlotClick = fn();
  * `onSlotClick` for that day, reachable with Tab.
  */
 export const KeyboardCreate: Story = {
-  render: () => (
+  render: (args) => (
     <div className="flex h-[560px] w-[860px] flex-col rounded-lg border">
       <EventCalendar
-        defaultEvents={EVENTS}
-        defaultView="week"
-        defaultDate={TODAY}
-        timeZone="UTC"
-        locale="en-US"
+        {...args}
         showDayAddButton
         onSlotClick={onSlotClick}
         className="flex min-h-0 flex-1 flex-col"
@@ -436,7 +413,7 @@ export const ResizeEvent: Story = {
 
 /** In the resource view, dragging a chip into another member's column reassigns it. */
 export const DragBetweenResources: Story = {
-  args: { view: "resource" },
+  args: { defaultView: "resource" },
   play: async ({ canvas, args }) => {
     const chip = canvas.getByRole("button", { name: /Product demo/ });
     // Column headers carry the members' names; move from Sam's to Mia's column.
@@ -453,52 +430,46 @@ export const DragBetweenResources: Story = {
   },
 };
 
-function SingleOccurrenceDemo() {
-  const [events, setEvents] = React.useState<CalendarEvent[]>(EVENTS);
-  return (
-    <div className="flex h-[640px] w-[960px] flex-col rounded-lg border">
-      <EventCalendar
-        events={events}
-        onEventsChange={setEvents}
-        // "This occurrence only": add an override of that occurrence
-        // (RECURRENCE-ID semantics) and keep the series as it is.
-        onEventUpdate={({ event, occurrence, start, end, allDay }) => {
-          if (!occurrence?.isRecurring) return;
-          setEvents((current) => [
-            ...current,
-            {
-              ...event,
-              id: `${event.id}-${occurrence.start.getTime()}`,
-              recurrence: undefined,
-              recurringEventId: event.id,
-              originalStart: occurrence.start,
-              start,
-              end,
-              allDay,
-            },
-          ]);
-          return false;
-        }}
-        defaultView="week"
-        defaultDate={TODAY}
-        timeZone="UTC"
-        locale="en-US"
-        dayStartHour={7}
-        className="flex min-h-0 flex-1 flex-col"
-      >
-        <EventCalendarNav />
-        <EventCalendarContent />
-      </EventCalendar>
-    </div>
-  );
-}
-
 /**
  * Moving one occurrence of a recurring event reports that occurrence; the
  * consumer decides the scope. Here: "this occurrence only".
  */
 export const EditSingleOccurrence: Story = {
-  render: () => <SingleOccurrenceDemo />,
+  render: function Render(args) {
+    const [events, setEvents] = React.useState<CalendarEvent[]>(EVENTS);
+    return (
+      <div className="flex h-[640px] w-[960px] flex-col rounded-lg border">
+        <EventCalendar
+          {...args}
+          events={events}
+          onEventsChange={setEvents}
+          // "This occurrence only": add an override of that occurrence
+          // (RECURRENCE-ID semantics) and keep the series as it is.
+          onEventUpdate={({ event, occurrence, start, end, allDay }) => {
+            if (!occurrence?.isRecurring) return;
+            setEvents((current) => [
+              ...current,
+              {
+                ...event,
+                id: `${event.id}-${occurrence.start.getTime()}`,
+                recurrence: undefined,
+                recurringEventId: event.id,
+                originalStart: occurrence.start,
+                start,
+                end,
+                allDay,
+              },
+            ]);
+            return false;
+          }}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <EventCalendarNav />
+          <EventCalendarContent />
+        </EventCalendar>
+      </div>
+    );
+  },
   play: async ({ canvas }) => {
     const standups = () =>
       canvas

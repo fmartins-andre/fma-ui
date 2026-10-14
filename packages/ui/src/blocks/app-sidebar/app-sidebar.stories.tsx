@@ -83,16 +83,22 @@ const componentMeta = {
     onAddTeam: fn(),
     onUserAction: fn(),
   },
+  // The router only lets the play functions assert on navigation; an app has its own.
+  decorators: [
+    (Story) => (
+      <RouterProvider navigate={navigate}>
+        <Story />
+      </RouterProvider>
+    ),
+  ],
   render: (args) => (
-    <RouterProvider navigate={navigate}>
-      <SidebarProvider className="h-[560px] min-h-0">
-        <AppSidebar {...args} />
-        <SidebarInset className="p-4">
-          <SidebarTrigger />
-          <p className="mt-4 text-sm text-muted-foreground">Page content goes here.</p>
-        </SidebarInset>
-      </SidebarProvider>
-    </RouterProvider>
+    <SidebarProvider className="h-[560px] min-h-0">
+      <AppSidebar {...args} />
+      <SidebarInset className="p-4">
+        <SidebarTrigger />
+        <p className="mt-4 text-sm text-muted-foreground">Page content goes here.</p>
+      </SidebarInset>
+    </SidebarProvider>
   ),
 } satisfies Meta<typeof AppSidebar>;
 

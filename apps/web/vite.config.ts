@@ -6,6 +6,7 @@ import { defineConfig } from "vite";
 import { readRegistryEnv } from "../../packages/registry/src/env.ts";
 import { llmsTxtPlugin } from "./llms-txt.ts";
 import { shikiClientOnly } from "./shiki-client-only.ts";
+import { storySnippetsPlugin } from "./story-snippets.ts";
 import { storybookStatic } from "./storybook-static.ts";
 
 export default defineConfig(({ command }) => {
@@ -26,6 +27,8 @@ export default defineConfig(({ command }) => {
       storybookStatic(),
       // /llms.txt and /llms-full.txt, from packages/ui/registry.json.
       llmsTxtPlugin(siteUrl),
+      // The docs examples' code, from the stories (`<file>.stories.tsx?snippets`).
+      storySnippetsPlugin(),
       // Keeps shiki (the code block's highlighter) out of the server bundle.
       shikiClientOnly(),
       tanstackStart(),

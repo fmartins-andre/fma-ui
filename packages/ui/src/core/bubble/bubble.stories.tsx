@@ -18,8 +18,6 @@ const componentMeta = {
     align: { control: "select", options: ["start", "end"] },
   },
   args: {
-    variant: "default",
-    align: "start",
     children: <BubbleContent>Hey, how's the new design system coming along?</BubbleContent>,
   },
 } satisfies Meta<typeof Bubble>;

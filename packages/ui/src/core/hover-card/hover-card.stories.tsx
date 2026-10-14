@@ -30,11 +30,11 @@ export const Default: Story = {
   },
   render: (args) => (
     <HoverCardTrigger>
-      <Button variant="link">@fmartinsandre</Button>
+      <Button variant="link">@ada</Button>
       <HoverCard {...args}>
         <div className="flex flex-col gap-1">
-          <p className="font-medium">@fmartinsandre</p>
-          <p className="text-muted-foreground">Personal shadcn-compatible component registry.</p>
+          <p className="font-medium">@ada</p>
+          <p className="text-muted-foreground">Mathematician, and the first programmer.</p>
         </div>
       </HoverCard>
     </HoverCardTrigger>
