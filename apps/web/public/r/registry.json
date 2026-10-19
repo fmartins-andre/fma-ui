@@ -2263,6 +2263,41 @@
       }
     },
     {
+      "name": "page-header",
+      "type": "registry:block",
+      "title": "Page Header",
+      "description": "The top of a page, composed from parts: `PageHeader` > `PageHeaderBreadcrumbs` (an `items` trail whose last entry is the current page), `PageHeaderContent` (heading on one side, actions on the other, stacked on narrow screens) with `PageHeaderHeading` (`PageHeaderTitle` — the `<h1>`, with an `isLoading` skeleton — and `PageHeaderDescription`) and `PageHeaderActions` (buttons that stretch on mobile), and `PageHeaderNav` for an area's sub-pages, usually a `TabNav`. Anything that belongs beside the title, like a status select, goes inside `PageHeaderHeading`. Wrap the app in react-aria's `RouterProvider` so breadcrumb and tab links route client-side.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/page-header/page-header.tsx",
+          "target": "components/fma-ui/page-header/page-header.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/breadcrumb",
+        "@fma-ui/skeleton"
+      ],
+      "dependencies": [
+        "cn@^0.4.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "block",
+          "header",
+          "page",
+          "breadcrumb",
+          "navigation"
+        ]
+      }
+    },
+    {
       "name": "pagination",
       "type": "registry:ui",
       "title": "Pagination",
@@ -2891,6 +2926,38 @@
         "tags": [
           "forms",
           "toggle",
+          "react-aria"
+        ]
+      }
+    },
+    {
+      "name": "tab-nav",
+      "type": "registry:ui",
+      "title": "Tab Nav",
+      "description": "Navigation between the pages of an area that looks like tabs: a `<nav>` of react-aria links where the current page carries `aria-current=\"page\"`. Unlike `Tabs` there are no panels — each item is a route — so use it for sub-pages and `Tabs` for in-page views. `variant` matches the tab styles: `default` (segmented on `muted`, the current page raised) or `line` (underlined). An item is current when `isCurrent` is set or its `href` matches `TabNav`'s `currentHref` (exactly, or with `matchPrefix` also on sub-paths). `TabNavItem` takes an icon before its label; `TabNavSeparator` divides groups. When items don't fit, the strip scrolls sideways and keeps the current page in view. Wrap the app in react-aria's `RouterProvider` for client routing.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "src/core/tab-nav/tab-nav.tsx",
+          "target": "components/fma-ui/tab-nav.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "navigation",
+          "tabs",
+          "routing",
           "react-aria"
         ]
       }

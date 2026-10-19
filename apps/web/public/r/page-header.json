@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "page-header",
+  "title": "Page Header",
+  "author": "@fma-ui/ui",
+  "description": "The top of a page, composed from parts: `PageHeader` > `PageHeaderBreadcrumbs` (an `items` trail whose last entry is the current page), `PageHeaderContent` (heading on one side, actions on the other, stacked on narrow screens) with `PageHeaderHeading` (`PageHeaderTitle` — the `<h1>`, with an `isLoading` skeleton — and `PageHeaderDescription`) and `PageHeaderActions` (buttons that stretch on mobile), and `PageHeaderNav` for an area's sub-pages, usually a `TabNav`. Anything that belongs beside the title, like a status select, goes inside `PageHeaderHeading`. Wrap the app in react-aria's `RouterProvider` so breadcrumb and tab links route client-side.",
+  "dependencies": [
+    "cn@^0.4.0"
+  ],
+  "registryDependencies": [
+    "@fma-ui/breadcrumb",
+    "@fma-ui/skeleton"
+  ],
+  "files": [
+    {
+      "path": "src/blocks/page-header/page-header.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"cn\";\nimport type * as React from \"react\";\nimport {\n  Breadcrumb,\n  BreadcrumbItem,\n  BreadcrumbLink,\n  BreadcrumbList,\n  BreadcrumbPage,\n} from \"@/core/breadcrumb/breadcrumb\";\nimport { Skeleton } from \"@/core/skeleton/skeleton\";\n\n/**\n * The top of a page: breadcrumbs, title, description, actions and, for areas\n * with sub-pages, a `TabNav` in `PageHeaderNav`. Stacks on narrow screens.\n */\nfunction PageHeader({ className, ...props }: React.ComponentProps<\"header\">) {\n  return (\n    <header\n      data-slot=\"page-header\"\n      className={cn(\"flex min-w-0 flex-col gap-3\", className)}\n      {...props}\n    />\n  );\n}\n\ntype PageHeaderBreadcrumb = { label: React.ReactNode; href?: string };\n\n/** The trail to this page; the last item is the current page and isn't a link. */\nfunction PageHeaderBreadcrumbs({\n  items,\n  className,\n  \"aria-label\": ariaLabel = \"Breadcrumb\",\n}: {\n  items: PageHeaderBreadcrumb[];\n  className?: string;\n  \"aria-label\"?: string;\n}) {\n  return (\n    <Breadcrumb aria-label={ariaLabel} className={className}>\n      <BreadcrumbList>\n        {items.map((item, index) => {\n          const isLast = index === items.length - 1;\n          return (\n            // biome-ignore lint/suspicious/noArrayIndexKey: a breadcrumb trail is positional\n            <BreadcrumbItem key={index}>\n              {isLast || !item.href ? (\n                <BreadcrumbPage>{item.label}</BreadcrumbPage>\n              ) : (\n                <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>\n              )}\n            </BreadcrumbItem>\n          );\n        })}\n      </BreadcrumbList>\n    </Breadcrumb>\n  );\n}\n\n/** Holds the heading on one side and the actions on the other. */\nfunction PageHeaderContent({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"page-header-content\"\n      className={cn(\n        \"flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Title, description and anything that sits beside the title (e.g. a status select). */\nfunction PageHeaderHeading({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"page-header-heading\"\n      className={cn(\"flex min-w-0 flex-col gap-1\", className)}\n      {...props}\n    />\n  );\n}\n\n/** The page's `<h1>`. `isLoading` shows a skeleton while the name loads. */\nfunction PageHeaderTitle({\n  className,\n  isLoading = false,\n  children,\n  ...props\n}: React.ComponentProps<\"h1\"> & { isLoading?: boolean }) {\n  return (\n    <h1\n      data-slot=\"page-header-title\"\n      aria-busy={isLoading || undefined}\n      className={cn(\"min-w-0 text-2xl leading-tight font-semibold tracking-tight\", className)}\n      {...props}\n    >\n      {isLoading ? <Skeleton className=\"h-8 w-48 max-w-full\" /> : children}\n    </h1>\n  );\n}\n\nfunction PageHeaderDescription({ className, ...props }: React.ComponentProps<\"p\">) {\n  return (\n    <p\n      data-slot=\"page-header-description\"\n      className={cn(\"max-w-prose text-sm text-muted-foreground\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Page actions; they wrap, and stretch to the full width on narrow screens. */\nfunction PageHeaderActions({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"page-header-actions\"\n      className={cn(\n        \"flex shrink-0 flex-wrap items-center gap-2 max-sm:*:[[data-slot=button]]:flex-1\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Navigation between the area's sub-pages, under the heading — usually a `TabNav`. */\nfunction PageHeaderNav({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"page-header-nav\" className={cn(\"min-w-0 pt-1\", className)} {...props} />;\n}\n\nexport type { PageHeaderBreadcrumb };\nexport {\n  PageHeader,\n  PageHeaderActions,\n  PageHeaderBreadcrumbs,\n  PageHeaderContent,\n  PageHeaderDescription,\n  PageHeaderHeading,\n  PageHeaderNav,\n  PageHeaderTitle,\n};\n",
+      "type": "registry:component",
+      "target": "components/fma-ui/page-header/page-header.tsx"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "block",
+      "header",
+      "page",
+      "breadcrumb",
+      "navigation"
+    ]
+  },
+  "categories": [
+    "blocks"
+  ],
+  "type": "registry:block"
+}
