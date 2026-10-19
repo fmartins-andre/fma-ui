@@ -1,6 +1,11 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
+// Status as a colored dot before plain text: no surface, so it sits in lists,
+// select items and table cells; the text carries the meaning, not the color.
+const DOT =
+  "bg-transparent text-foreground before:size-1.5 before:shrink-0 before:rounded-full [a]:hover:bg-accent [a]:hover:text-accent-foreground";
+
 const badgeVariantsConfig = {
   variant: {
     default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
@@ -29,6 +34,14 @@ const badgeVariantsConfig = {
     "destructive-outline":
       "bg-background border-destructive/30 text-destructive-foreground dark:bg-input/30",
     "invert-outline": "bg-background border-invert/30 text-foreground dark:bg-input/30",
+    muted: "bg-muted border-border/60 text-muted-foreground",
+    "muted-outline": "bg-background border-border text-muted-foreground dark:bg-input/30",
+    "primary-dot": `${DOT} before:bg-primary`,
+    "success-dot": `${DOT} before:bg-success`,
+    "warning-dot": `${DOT} before:bg-warning`,
+    "info-dot": `${DOT} before:bg-info`,
+    "destructive-dot": `${DOT} before:bg-destructive`,
+    "muted-dot": `${DOT} before:bg-muted-foreground`,
   },
   size: {
     xs: "px-1 py-0.25 text-[0.6rem] leading-none h-4 min-w-4 gap-1",

@@ -95,6 +95,49 @@ export const Semantic: Story = {
   ),
 };
 
+/** Neutral status: inactive, pending, unknown or already seen. */
+export const Muted: Story = {
+  render: (args) => (
+    <div className="flex gap-2">
+      <Badge {...args} variant="muted">
+        Cancelado
+      </Badge>
+      <Badge {...args} variant="muted-outline">
+        Pendente
+      </Badge>
+    </div>
+  ),
+};
+
+/**
+ * `*-dot` puts a colored dot before plain text, with no surface — for select
+ * items, dense lists and table cells. The text carries the status, not the color.
+ */
+export const Dot: Story = {
+  render: (args) => (
+    <div className="flex flex-col items-start gap-1">
+      <Badge {...args} variant="success-dot">
+        Ativo
+      </Badge>
+      <Badge {...args} variant="warning-dot">
+        Próximo do vencimento
+      </Badge>
+      <Badge {...args} variant="destructive-dot">
+        Bloqueado
+      </Badge>
+      <Badge {...args} variant="info-dot">
+        Em processamento
+      </Badge>
+      <Badge {...args} variant="primary-dot">
+        Novo
+      </Badge>
+      <Badge {...args} variant="muted-dot">
+        Cancelado
+      </Badge>
+    </div>
+  ),
+};
+
 export const Sizes: Story = {
   render: (args) => (
     <div className="flex items-center gap-2">
