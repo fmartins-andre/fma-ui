@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "confirm-dialog",
+  "title": "Confirm Dialog",
+  "author": "@fma-ui/ui",
+  "description": "A ready-made yes/no dialog on top of the `use-dialog-promise` hook: `const ask = useDialogPromise<D>()`, render `<ConfirmDialog controller={ask} title=… />` once, then `const result = await ask.open(data)` and check `result.status` (`confirmed`, `cancelled`, or `dismissed` by Escape). `title` and `description` take the opened `data` when given as functions; `media` adds an icon; `tone=\"destructive\"` marks a destructive action; `cancelLabel={null}` leaves a single action. `onConfirm` runs with the dialog open and the button pending, and if it throws the dialog stays open with `errorMessage`. Labels default to English; pass translations through the label props. For dialogs that collect a value or hold a form, render your own dialog with the same hook and call `confirm(value)`.",
+  "dependencies": [
+    "cn@^0.4.0",
+    "lucide-react@^1.55.0"
+  ],
+  "registryDependencies": [
+    "@fma-ui/alert-dialog",
+    "@fma-ui/button",
+    "@fma-ui/use-dialog-promise"
+  ],
+  "files": [
+    {
+      "path": "src/core/confirm-dialog/confirm-dialog.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"cn\";\nimport { Loader2Icon } from \"lucide-react\";\nimport type * as React from \"react\";\nimport {\n  AlertDialog,\n  AlertDialogCancel,\n  AlertDialogDescription,\n  AlertDialogFooter,\n  AlertDialogHeader,\n  AlertDialogMedia,\n  AlertDialogTitle,\n} from \"@/core/alert-dialog/alert-dialog\";\nimport { Button } from \"@/core/button/button\";\nimport type { DialogController } from \"@/hooks/use-dialog-promise\";\n\ntype OrFromData<T, D> = T | ((data: D | undefined) => T);\n\ntype ConfirmDialogProps<D> = {\n  /** From `useDialogPromise<D>()`; `await controller.open(data)` to ask. */\n  controller: DialogController<D, void>;\n  title: OrFromData<React.ReactNode, D>;\n  description?: OrFromData<React.ReactNode, D>;\n  /** Extra content under the description. */\n  children?: React.ReactNode;\n  /** An icon shown beside the title. */\n  media?: React.ReactNode;\n  /** `destructive` paints the confirm button as a destructive action. */\n  tone?: \"default\" | \"destructive\";\n  confirmLabel?: React.ReactNode;\n  /** `null` hides the cancel button (a notice with a single action). */\n  cancelLabel?: React.ReactNode | null;\n  pendingLabel?: React.ReactNode;\n  /**\n   * Runs on confirm with the dialog still open and the button pending; if it\n   * throws, the dialog stays open and shows `errorMessage`.\n   */\n  onConfirm?: (data: D | undefined) => Promise<void> | void;\n  errorMessage?: OrFromData<React.ReactNode, unknown>;\n  size?: \"default\" | \"sm\";\n  className?: string;\n};\n\nfunction resolve<T, D>(value: OrFromData<T, D> | undefined, data: D | undefined) {\n  return typeof value === \"function\" ? (value as (data: D | undefined) => T)(data) : value;\n}\n\n/**\n * The ready-made yes/no on top of `useDialogPromise`: title, description,\n * cancel and confirm. Its promise resolves `confirmed`, `cancelled` or\n * `dismissed` (Escape).\n */\nfunction ConfirmDialog<D = void>({\n  controller,\n  title,\n  description,\n  children,\n  media,\n  tone = \"default\",\n  confirmLabel = \"Confirm\",\n  cancelLabel = \"Cancel\",\n  pendingLabel = \"Please wait…\",\n  onConfirm,\n  errorMessage = \"Something went wrong. Please try again.\",\n  size = \"default\",\n  className,\n}: ConfirmDialogProps<D>) {\n  const { data, isPending, error, dialogProps, confirm, cancel } = controller;\n\n  function handleConfirm() {\n    void confirm(onConfirm ? async () => onConfirm(data) : undefined);\n  }\n\n  return (\n    <AlertDialog {...dialogProps} size={size} className={className}>\n      <AlertDialogHeader>\n        {media && <AlertDialogMedia>{media}</AlertDialogMedia>}\n        <AlertDialogTitle>{resolve(title, data)}</AlertDialogTitle>\n        {description !== undefined && (\n          <AlertDialogDescription>{resolve(description, data)}</AlertDialogDescription>\n        )}\n      </AlertDialogHeader>\n      {children}\n      {error !== undefined && (\n        <p role=\"alert\" data-slot=\"confirm-dialog-error\" className=\"text-sm text-destructive\">\n          {typeof errorMessage === \"function\"\n            ? (errorMessage as (error: unknown) => React.ReactNode)(error)\n            : errorMessage}\n        </p>\n      )}\n      <AlertDialogFooter>\n        {cancelLabel !== null && (\n          <AlertDialogCancel isDisabled={isPending} onPress={cancel}>\n            {cancelLabel}\n          </AlertDialogCancel>\n        )}\n        <Button\n          variant={tone === \"destructive\" ? \"destructive\" : \"default\"}\n          isPending={isPending}\n          onPress={handleConfirm}\n          className={cn(isPending && \"cursor-progress\")}\n        >\n          {isPending ? (\n            <>\n              <Loader2Icon aria-hidden=\"true\" className=\"animate-spin\" />\n              {pendingLabel}\n            </>\n          ) : (\n            confirmLabel\n          )}\n        </Button>\n      </AlertDialogFooter>\n    </AlertDialog>\n  );\n}\n\nexport type { ConfirmDialogProps };\nexport { ConfirmDialog };\n",
+      "type": "registry:component",
+      "target": "components/fma-ui/confirm-dialog.tsx"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "overlay",
+      "dialog",
+      "confirm",
+      "alert"
+    ]
+  },
+  "categories": [
+    "overlay"
+  ],
+  "type": "registry:ui"
+}
