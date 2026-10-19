@@ -29,7 +29,7 @@
     "test:storybook": "vitest run --project storybook"
   },
   "dependencies": {
-    "@base-ui/react": "^1.8.0",
+    "@base-ui/react": "^1.9.0",
     "@fma-ui/registry": "workspace:*",
     "@fontsource-variable/geist": "^5.3.0",
     "@internationalized/date": "^3.12.4",
@@ -43,10 +43,10 @@
     "culori": "^4.0.2",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.5.0",
-    "lucide-react": "^1.52.0",
+    "lucide-react": "^1.55.0",
     "next-themes": "^0.4.6",
-    "react-aria-components": "^1.21.1",
-    "react-resizable-panels": "^4.14.2",
+    "react-aria-components": "^1.22.1",
+    "react-resizable-panels": "^4.14.4",
     "recharts": "3.10.1",
     "shadcn": "^4.21.4",
     "shiki": "^4.5.0",
@@ -78,16 +78,16 @@
     "@vitest/browser-playwright": "^4.1.11",
     "date-fns": "^4.4.0",
     "happy-dom": "^20.14.5",
-    "playwright": "^1.63.0",
+    "playwright": "^1.64.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-hook-form": "^7.89.0",
+    "react-hook-form": "^7.90.0",
     "storybook": "^10.6.1",
     "tailwindcss": "catalog:",
     "tsx": "^4.20.3",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "^4.1.11",
-    "zod": "^4.6.5"
+    "zod": "^4.6.6"
   }
 }
