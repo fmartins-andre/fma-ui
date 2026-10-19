@@ -6019,6 +6019,41 @@
       }
     },
     {
+      "name": "trace",
+      "type": "registry:ui",
+      "title": "Trace",
+      "description": "A compact activity log for AI agents: `Trace` stacks `TraceLine`s (an optional `TraceIcon`, a `TraceTitle` and a `TraceDescription`), with a `status` of running (shimmering title), pending or error. Wrap a line in `TraceCollapsible` with `TraceCollapsibleTrigger` and `TraceCollapsibleContent` to reveal the details of a step.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "chat"
+      ],
+      "files": [
+        {
+          "path": "src/core/trace/trace.tsx",
+          "target": "components/fma-ui/trace.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/collapsible"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "shadcn",
+        "tags": [
+          "chat",
+          "ai",
+          "agent",
+          "collapsible"
+        ]
+      }
+    },
+    {
       "name": "type-helper",
       "type": "registry:lib",
       "title": "Type Helper",
