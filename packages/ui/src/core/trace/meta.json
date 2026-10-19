@@ -1,0 +1,8 @@
+{
+  "name": "trace",
+  "category": "chat",
+  "status": "experimental",
+  "source": "shadcn",
+  "description": "A compact activity log for AI agents: `Trace` stacks `TraceLine`s (an optional `TraceIcon`, a `TraceTitle` and a `TraceDescription`), with a `status` of running (shimmering title), pending or error. Wrap a line in `TraceCollapsible` with `TraceCollapsibleTrigger` and `TraceCollapsibleContent` to reveal the details of a step.",
+  "tags": ["chat", "ai", "agent", "collapsible"]
+}
