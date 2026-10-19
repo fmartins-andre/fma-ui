@@ -33,9 +33,10 @@ O desenho detalhado de cada um é feito no próprio PR.
   painel como exemplo, usando dados genéricos plausíveis.
 - **Tema sóbrio**: os tokens extras do app (`primary-dark`, `primary-lighter`, `secondary-*`,
   `muted-light`...) não entram; o app usa só os tokens semânticos atuais.
-- **Idioma padrão pt-BR**: todo texto embutido nasce em pt-BR e continua sobrescrevível por prop
-  (padrão `i18n`/`labels` do `data-grid`). Os componentes existentes hoje têm defaults em inglês
-  ("Next", "Previous", "Toggle Sidebar", "Loading..."): ver A10.
+- **Textos padrão em inglês, traduzidos por i18n**: todo texto embutido tem default em inglês,
+  como os componentes existentes, e é sobrescrevível por prop (padrão `i18n`/`labels` do
+  `data-grid`, ou uma prop de rótulo). O app passa as traduções pt-BR onde precisar. As stories
+  mostram o uso em pt-BR passando essas props.
 - **Fora de escopo por ora**: temas das outras marcas (safeweb, efacil, iob) e o host do iframe de
   integração (`cross-origin-iframe`).
 
@@ -91,7 +92,7 @@ composições com Button/Alert/Progress/Badge, não um componente. Serve de base
   adições seguidas); `onFilesChange` chamado dentro do updater do `setState` (roda duas vezes no
   StrictMode); preview criado para todo arquivo mas revogado só para imagens (vaza object URL);
   `maxSize` validado duas vezes.
-- Adaptações ao nosso padrão: mensagens de erro em pt-BR e sobrescrevíveis (A10), retornando
+- Adaptações ao nosso padrão: mensagens de erro sobrescrevíveis (i18n), retornando
   código + arquivo em vez de só string; modo controlado (`value`/`onChange`) além de
   `initialFiles`, como os demais inputs; `isDisabled`; os handlers de drag DOM saem, porque o drop
   passa a ser do `DropZone` do react-aria (teclado, colar e anúncios para leitor de tela, que o
@@ -113,7 +114,7 @@ composições com Button/Alert/Progress/Badge, não um componente. Serve de base
 | A5  | `data-grid`   | Ações por linha sem disparar o clique da linha; pré-carregar o detalhe ao passar o mouse. → `DataGridRowActions` (menu com `dropdown-menu`, estado "sem ações"); `onRowHover` opcional. |
 | A8  | `carousel`    | Banners rotativos que avançam sozinhos (topo de Certificados digitais e Notas adicionais). → Prop `autoplay` (`boolean \| { delay }`) com comportamento acessível por padrão: botão pausar/retomar rotulado (WCAG 2.2.2), pausa com hover e foco dentro do carrossel, desligado com `prefers-reduced-motion`, slide atual anunciado sem interromper (`aria-live="off"` enquanto roda). Implementado com a API do embla (timer + `scrollNext`), sem dependência nova; o `plugins` atual continua para outros casos. Story `Autoplay` com `play` cobrindo pausa por botão e por foco. |
 | A9  | `badge`       | Status neutro (inativo, pendente, indefinido, já lido) e status como ponto + texto (itens de `select` de status, listas densas). → Variantes `muted` e `muted-outline`, e a família `*-dot` (`primary-dot`, `success-dot`, `warning-dot`, `info-dot`, `destructive-dot`, `muted-dot`): sem fundo nem borda, texto `foreground` e ponto na cor semântica via `before:` (não depende só da cor: o texto é o rótulo). Sem token novo; hover de badge-link com `accent` (regra 11). Stories `Semantic` e `Dot`. Substitui o antigo C5 (`status-dot`). |
-| A10 | i18n          | Idioma padrão pt-BR. → Trocar os defaults de texto dos componentes e blocos existentes para pt-BR, mantendo as props de sobrescrita; atualizar stories e testes que buscam por texto. |
+| A10 | i18n          | ~~Trocar os defaults para pt-BR~~ — **descartado**: os defaults ficam em inglês e a tradução entra pelas props de i18n de cada componente. |
 | A11 | `field` + `checkbox`/`radio-group` | Escolher entre poucas opções ricas, em cards com ícone, título e descrição (módulos do cliente, meio de pagamento, tipo de pessoa). → Sem componente novo: é o padrão "choice card" do shadcn (`FieldLabel` envolvendo um `Field`), cujo CSS já está no nosso `field` e é o que o reui `c-checkbox-14` usa. Falta torná-lo válido com react-aria: hoje `Checkbox`/`Radio` renderizam o próprio `<label>`, que fica aninhado no `FieldLabel` (HTML inválido); o hover usa `bg-muted/50` e passa a `accent` (regra 11), o que torna o `field` `customized`. Seleção única com `RadioGroup`, múltipla com `CheckboxGroup` (A3); indicador no formato do controle (quadrado para checkbox), não redondo como no reui. Stories `ChoiceCard` nos três componentes, com `icon-tile`. |
 
 Uso de A9 no app (~12 pontos, hoje `muted` ou `tertiary`): cliente cancelado; nota fiscal sem
@@ -124,7 +125,7 @@ situação do cliente (ativo/bloqueado/cancelado).
 
 ## Blocks novos (`src/blocks`)
 
-Cada bloco: `meta.json`, stories por cenário (incluindo os do painel), textos pt-BR sobrescrevíveis,
+Cada bloco: `meta.json`, stories por cenário (incluindo os do painel), textos padrão em inglês sobrescrevíveis (i18n),
 tokens de interação da regra 11, sem estado de servidor (tudo por props/callbacks).
 
 ### Shell
@@ -192,7 +193,7 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
      corpo, validação (inclusive react-hook-form no app) e botões são livres. Renderizado fora dos
      menus de ação das tabelas, sobrevive ao fechamento do menu.
   3. **`ConfirmDialog`** (componente): o sim/não pronto sobre o hook (`title`, `description`,
-     `tone`, rótulos em pt-BR, ação destrutiva).
+     `tone`, rótulos sobrescrevíveis, ação destrutiva).
   4. **Depois, se aparecer uso real**: `confirm()` + `<ConfirmHost />` para disparar de qualquer
      lugar (notificações urgentes, sair com alterações), com store interno via
      `useSyncExternalStore` (como o `sonner`), sem zustand, devolvendo o mesmo `DialogResult`.
@@ -233,15 +234,34 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
 - Ícones `@fmartins.andre/emitte-icons`: os blocks recebem ícones como `ReactNode`; o registro não
   depende do pacote.
 
+## Progresso
+
+Implementados (um PR por item):
+
+| Item | Branch |
+| --- | --- |
+| C9 `glance` | `feat/glance` |
+| A9 `badge` neutro e `*-dot` | `feat/badge-neutral-dot` |
+| A3 `CheckboxGroup` | `feat/checkbox-group` |
+| A4 máscara `mm/yy` | `feat/mask-card-expiry` |
+| C1 `password-input` | `feat/password-input` |
+| C2 `password-rules` | `feat/password-rules` (sobre C1) |
+| C4 `description-list` | `feat/description-list` |
+| C8 `loading-overlay` | `feat/loading-overlay` |
+| A5 `DataGridRowActions` + `onRowHover` | `feat/data-grid-row-actions` |
+| C10 `tab-nav` | `feat/tab-nav` |
+| B3 `page-header` | `feat/page-header` (sobre C10) |
+| B10 `use-dialog-promise` + `confirm-dialog` | `feat/dialog-promise` |
+
 ## Ordem de execução
 
 Um PR por item contra `main`; `gh stack` só quando um item depende de outro ainda não mergeado
 (dependências entre parênteses).
 
-1. **Fundação**: A10, A9, C1, C2, C4, C8, A3, A4, A5, C10, B10, B3 (C10).
+1. **Fundação**: A9, C1, C2, C4, C8, A3, A4, A5, C10, B10, B3 (C10).
 2. **Shell**: A1, B1 (A1, C9), B2 (C9, B10). Ao fim, o app já troca o layout inteiro.
 3. **Listas e painéis**: B4, B5, B6 (A5), B9 (C4).
-4. **Formulários e fluxos**: C3 (A10), A11 (A3), A2, B8, B11, B12 (C1, C2, B11), B13 (C4), B14 (A2, B10).
+4. **Formulários e fluxos**: C3, A11 (A3), A2, B8, B11, B12 (C1, C2, B11), B13 (C4), B14 (A2, B10).
 5. **Restante**: C7, B15 (C7, A4, B10), B16 (A11), B17, A8.
 
 Pronto = `pnpm lint && pnpm type-check && pnpm test && pnpm --filter @fma-ui/ui build`, story com
