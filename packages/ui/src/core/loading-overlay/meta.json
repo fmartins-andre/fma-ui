@@ -1,0 +1,8 @@
+{
+  "name": "loading-overlay",
+  "category": "feedback",
+  "status": "stable",
+  "source": "original",
+  "description": "Blocks interaction while an operation runs. `LoadingOverlay` wraps a region: while `isLoading`, its children stay visible under a veil with a spinner and `label` (default \"Loading…\"; pass a translation as needed; announced via `role=\"status\"`), become `inert` and the region is `aria-busy`. `LoadingScreen` does the same for the whole app as a non-dismissable modal (focus held, page hidden from assistive tech, scroll locked) — for operations that must finish before anything else, like saving a status change. No brand animation: just a spinner.",
+  "tags": ["feedback", "loading", "overlay", "busy"]
+}

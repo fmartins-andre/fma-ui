@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "loading-overlay",
+  "title": "Loading Overlay",
+  "author": "@fma-ui/ui",
+  "description": "Blocks interaction while an operation runs. `LoadingOverlay` wraps a region: while `isLoading`, its children stay visible under a veil with a spinner and `label` (default \"Loading…\"; pass a translation as needed; announced via `role=\"status\"`), become `inert` and the region is `aria-busy`. `LoadingScreen` does the same for the whole app as a non-dismissable modal (focus held, page hidden from assistive tech, scroll locked) — for operations that must finish before anything else, like saving a status change. No brand animation: just a spinner.",
+  "dependencies": [
+    "cn@^0.4.0",
+    "lucide-react@^1.55.0",
+    "react-aria-components@^1.22.1"
+  ],
+  "files": [
+    {
+      "path": "src/core/loading-overlay/loading-overlay.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"cn\";\nimport { Loader2Icon } from \"lucide-react\";\nimport type * as React from \"react\";\nimport { Dialog, Modal, ModalOverlay } from \"react-aria-components\";\n\nfunction LoadingStatus({ label, className }: { label: React.ReactNode; className?: string }) {\n  return (\n    <div\n      role=\"status\"\n      data-slot=\"loading-overlay-status\"\n      className={cn(\"flex items-center gap-2 text-sm font-medium text-foreground\", className)}\n    >\n      <Loader2Icon aria-hidden=\"true\" className=\"size-5 animate-spin text-muted-foreground\" />\n      {label}\n    </div>\n  );\n}\n\ntype LoadingOverlayProps = React.ComponentProps<\"div\"> & {\n  isLoading: boolean;\n  /** Shown next to the spinner and announced to screen readers. */\n  label?: React.ReactNode;\n  /** Classes for the wrapper around `children`. */\n  contentClassName?: string;\n};\n\n/**\n * Covers its children while `isLoading`: they stay visible under a veil but\n * are `inert` (no pointer, keyboard or screen-reader access) and the region\n * is `aria-busy`. For the whole page, use `LoadingScreen`.\n */\nfunction LoadingOverlay({\n  isLoading,\n  label = \"Loading…\",\n  className,\n  contentClassName,\n  children,\n  ...props\n}: LoadingOverlayProps) {\n  return (\n    <div\n      data-slot=\"loading-overlay\"\n      data-loading={isLoading || undefined}\n      aria-busy={isLoading || undefined}\n      className={cn(\"relative\", className)}\n      {...props}\n    >\n      <div inert={isLoading} className={contentClassName}>\n        {children}\n      </div>\n      {isLoading && (\n        <div\n          data-slot=\"loading-overlay-veil\"\n          className=\"absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-background/70 duration-150 animate-in fade-in-0 supports-backdrop-filter:backdrop-blur-[1px]\"\n        >\n          <LoadingStatus label={label} />\n        </div>\n      )}\n    </div>\n  );\n}\n\n/**\n * Blocks the whole app during an operation that must finish first (saving a\n * status change, completing a purchase). A non-dismissable modal: focus is\n * held, the page behind is hidden from assistive tech and scroll is locked.\n */\nfunction LoadingScreen({\n  isLoading,\n  label = \"Loading…\",\n  className,\n}: {\n  isLoading: boolean;\n  label?: React.ReactNode;\n  className?: string;\n}) {\n  return (\n    <ModalOverlay\n      isOpen={isLoading}\n      isDismissable={false}\n      isKeyboardDismissDisabled\n      data-slot=\"loading-screen\"\n      className={cn(\n        \"fixed inset-0 z-50 flex items-center justify-center bg-background/70 duration-150 data-entering:animate-in data-entering:fade-in-0 data-exiting:animate-out data-exiting:fade-out-0 supports-backdrop-filter:backdrop-blur-xs\",\n        className,\n      )}\n    >\n      <Modal className=\"outline-none\">\n        <Dialog\n          aria-label={typeof label === \"string\" ? label : \"Loading\"}\n          className=\"rounded-xl bg-popover px-5 py-4 shadow-md ring-1 ring-foreground/10 outline-none\"\n        >\n          <LoadingStatus label={label} />\n        </Dialog>\n      </Modal>\n    </ModalOverlay>\n  );\n}\n\nexport type { LoadingOverlayProps };\nexport { LoadingOverlay, LoadingScreen };\n",
+      "type": "registry:component",
+      "target": "components/fma-ui/loading-overlay.tsx"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "feedback",
+      "loading",
+      "overlay",
+      "busy"
+    ]
+  },
+  "categories": [
+    "feedback"
+  ],
+  "type": "registry:ui"
+}
