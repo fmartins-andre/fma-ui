@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { Label } from "../label/label";
-import { Checkbox } from "./checkbox";
+import { Checkbox, CheckboxGroup } from "./checkbox";
 import meta from "./meta.json";
 
 const componentMeta = {
@@ -70,5 +70,34 @@ export const Interactive: Story = {
     expect(checkbox).toBeChecked();
     await userEvent.click(checkbox);
     expect(checkbox).not.toBeChecked();
+  },
+};
+
+/** Several options under one label; the group's value is the array of checked `value`s. */
+export const Group: Story = {
+  render: () => (
+    <CheckboxGroup defaultValue={["emissor"]}>
+      <Label>Módulos</Label>
+      <div className="flex items-center gap-2">
+        <Checkbox value="emissor" id="module-emissor" />
+        <Label htmlFor="module-emissor">Emissor de notas</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <Checkbox value="radar" id="module-radar" />
+        <Label htmlFor="module-radar">Radar de notas</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <Checkbox value="validador" id="module-validador" />
+        <Label htmlFor="module-validador">Validador tributário</Label>
+      </div>
+    </CheckboxGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const group = canvas.getByRole("group", { name: "Módulos" });
+    const radar = within(group).getByRole("checkbox", { name: "Radar de notas" });
+    await expect(within(group).getByRole("checkbox", { name: "Emissor de notas" })).toBeChecked();
+    await userEvent.click(radar);
+    await expect(radar).toBeChecked();
   },
 };

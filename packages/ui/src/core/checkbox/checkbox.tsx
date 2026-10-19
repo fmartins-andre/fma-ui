@@ -1,6 +1,8 @@
 import { cn } from "cn";
 import { CheckIcon } from "lucide-react";
 import {
+  CheckboxGroup as CheckboxGroupPrimitive,
+  type CheckboxGroupProps,
   Checkbox as CheckboxPrimitive,
   type CheckboxProps,
   composeRenderProps,
@@ -31,4 +33,20 @@ function Checkbox({ className, children, ...props }: CheckboxProps) {
   );
 }
 
-export { Checkbox };
+/**
+ * Groups checkboxes under one label and one `value` array (each `Checkbox`
+ * takes a `value`). A `Label` without `htmlFor` inside names the group.
+ */
+function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
+  return (
+    <CheckboxGroupPrimitive
+      data-slot="checkbox-group"
+      className={composeRenderProps(className, (className) =>
+        cn("grid w-full gap-2 data-[disabled]:opacity-50", className),
+      )}
+      {...props}
+    />
+  );
+}
+
+export { Checkbox, CheckboxGroup };
