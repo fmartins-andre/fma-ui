@@ -850,6 +850,8 @@ export function formatSnippets(snippets: Record<string, string>) {
           "check",
           "--write",
           "--linter-enabled=false",
+          // The temp dir is outside the repo; Biome 2.5.15 panics on the VCS ignore file there.
+          "--vcs-enabled=false",
           `--config-path=${join(ROOT, "biome.json")}`,
           dir,
         ],
