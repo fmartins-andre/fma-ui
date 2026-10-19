@@ -28,6 +28,14 @@ const REQUIRED_VARIANTS = [
   "info-outline",
   "destructive-outline",
   "invert-outline",
+  "muted",
+  "muted-outline",
+  "primary-dot",
+  "success-dot",
+  "warning-dot",
+  "info-dot",
+  "destructive-dot",
+  "muted-dot",
 ] as const;
 
 const REQUIRED_SIZES = ["xs", "sm", "default", "lg", "xl"] as const;
@@ -49,6 +57,14 @@ const EXPECTED_CLASS = {
   "success-outline": "border-success/30",
   "warning-outline": "border-warning/30",
   "destructive-outline": "border-destructive/30",
+  muted: "text-muted-foreground",
+  "muted-outline": "text-muted-foreground",
+  "primary-dot": "before:bg-primary",
+  "success-dot": "before:bg-success",
+  "warning-dot": "before:bg-warning",
+  "info-dot": "before:bg-info",
+  "destructive-dot": "before:bg-destructive",
+  "muted-dot": "before:bg-muted-foreground",
 } as const;
 
 describe("Badge variant contract", () => {
