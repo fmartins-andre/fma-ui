@@ -1477,6 +1477,43 @@
       }
     },
     {
+      "name": "glance",
+      "type": "registry:ui",
+      "title": "Glance",
+      "description": "A quick piece of information that opens more context one click away — an account notice, a balance, a count of pending items. `Glance` wraps react-aria's `DialogTrigger` and shares a `tone` (`default`, `info`, `success`, `warning`, `destructive`) with its parts. `GlanceTrigger` is the compact button: an icon plus `GlanceText` (a `GlanceLabel` caption over a `GlanceValue`), or icon-only with `size=\"icon\"` and an `aria-label`; `GlanceIndicator` pins a dot or count to its corner. `GlanceContent` is a popover holding a dialog (focus moves in, Escape closes, focus returns), laid out with `GlanceHeader`, `GlanceMedia` (an `IconTile` in the tone), `GlanceTitle`, `GlanceDescription` and `GlanceFooter`; its children can be a function of `{ close }` to close it from an action. Tone tints the trigger like `Alert`, with no motion — urgency comes from tone and wording.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "overlay"
+      ],
+      "files": [
+        {
+          "path": "src/core/glance/glance.tsx",
+          "target": "components/fma-ui/glance.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/icon-tile",
+        "@fma-ui/popover"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "overlay",
+          "popover",
+          "notice",
+          "status",
+          "header"
+        ]
+      }
+    },
+    {
       "name": "hover-card",
       "type": "registry:ui",
       "title": "Hover Card",
