@@ -1901,6 +1901,38 @@
       }
     },
     {
+      "name": "loading-overlay",
+      "type": "registry:ui",
+      "title": "Loading Overlay",
+      "description": "Blocks interaction while an operation runs. `LoadingOverlay` wraps a region: while `isLoading`, its children stay visible under a veil with a spinner and `label` (default \"Loading…\"; pass a translation as needed; announced via `role=\"status\"`), become `inert` and the region is `aria-busy`. `LoadingScreen` does the same for the whole app as a non-dismissable modal (focus held, page hidden from assistive tech, scroll locked) — for operations that must finish before anything else, like saving a status change. No brand animation: just a spinner.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "feedback"
+      ],
+      "files": [
+        {
+          "path": "src/core/loading-overlay/loading-overlay.tsx",
+          "target": "components/fma-ui/loading-overlay.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "feedback",
+          "loading",
+          "overlay",
+          "busy"
+        ]
+      }
+    },
+    {
       "name": "marker",
       "type": "registry:ui",
       "title": "Marker",
