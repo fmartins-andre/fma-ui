@@ -1,0 +1,8 @@
+{
+  "name": "use-dialog-promise",
+  "category": "utils",
+  "status": "stable",
+  "source": "original",
+  "description": "useDialogPromise<D, V>(): state and promise for a dialog you render yourself. `open(data)` opens it and returns a promise of a `DialogResult<V>` — `{ status: \"confirmed\", value }`, `{ status: \"cancelled\" }` or `{ status: \"dismissed\" }` (Escape, outside click, a new open or unmount) — that never rejects. Spread `dialogProps` (`isOpen`/`onOpenChange`) on any overlay (`AlertDialog`, `Dialog`, `Sheet`) and call `confirm(value)` or `cancel()` from it. `confirm(async () => value)` keeps the dialog open with `isPending` until it resolves, and open with `error` if it throws. `data` holds what `open` passed (kept after closing for exit animations), so the dialog can be its own component that receives the controller.",
+  "tags": ["hook", "dialog", "promise", "overlay"]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "confirm-dialog",
+  "category": "overlay",
+  "status": "stable",
+  "source": "original",
+  "description": "A ready-made yes/no dialog on top of the `use-dialog-promise` hook: `const ask = useDialogPromise<D>()`, render `<ConfirmDialog controller={ask} title=… />` once, then `const result = await ask.open(data)` and check `result.status` (`confirmed`, `cancelled`, or `dismissed` by Escape). `title` and `description` take the opened `data` when given as functions; `media` adds an icon; `tone=\"destructive\"` marks a destructive action; `cancelLabel={null}` leaves a single action. `onConfirm` runs with the dialog open and the button pending, and if it throws the dialog stays open with `errorMessage`. Labels default to English; pass translations through the label props. For dialogs that collect a value or hold a form, render your own dialog with the same hook and call `confirm(value)`.",
+  "tags": ["overlay", "dialog", "confirm", "alert"]
+}

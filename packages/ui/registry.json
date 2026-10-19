@@ -811,6 +811,42 @@
       }
     },
     {
+      "name": "confirm-dialog",
+      "type": "registry:ui",
+      "title": "Confirm Dialog",
+      "description": "A ready-made yes/no dialog on top of the `use-dialog-promise` hook: `const ask = useDialogPromise<D>()`, render `<ConfirmDialog controller={ask} title=… />` once, then `const result = await ask.open(data)` and check `result.status` (`confirmed`, `cancelled`, or `dismissed` by Escape). `title` and `description` take the opened `data` when given as functions; `media` adds an icon; `tone=\"destructive\"` marks a destructive action; `cancelLabel={null}` leaves a single action. `onConfirm` runs with the dialog open and the button pending, and if it throws the dialog stays open with `errorMessage`. Labels default to English; pass translations through the label props. For dialogs that collect a value or hold a form, render your own dialog with the same hook and call `confirm(value)`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "overlay"
+      ],
+      "files": [
+        {
+          "path": "src/core/confirm-dialog/confirm-dialog.tsx",
+          "target": "components/fma-ui/confirm-dialog.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/alert-dialog",
+        "@fma-ui/button",
+        "@fma-ui/use-dialog-promise"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "overlay",
+          "dialog",
+          "confirm",
+          "alert"
+        ]
+      }
+    },
+    {
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Context Menu",
@@ -6135,6 +6171,34 @@
           "date",
           "hook",
           "validation"
+        ]
+      }
+    },
+    {
+      "name": "use-dialog-promise",
+      "type": "registry:hook",
+      "title": "Use Dialog Promise",
+      "description": "useDialogPromise<D, V>(): state and promise for a dialog you render yourself. `open(data)` opens it and returns a promise of a `DialogResult<V>` — `{ status: \"confirmed\", value }`, `{ status: \"cancelled\" }` or `{ status: \"dismissed\" }` (Escape, outside click, a new open or unmount) — that never rejects. Spread `dialogProps` (`isOpen`/`onOpenChange`) on any overlay (`AlertDialog`, `Dialog`, `Sheet`) and call `confirm(value)` or `cancel()` from it. `confirm(async () => value)` keeps the dialog open with `isPending` until it resolves, and open with `error` if it throws. `data` holds what `open` passed (kept after closing for exit animations), so the dialog can be its own component that receives the controller.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/hooks/use-dialog-promise.ts",
+          "target": "hooks/fma-ui/use-dialog-promise.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "dependencies": [],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "hook",
+          "dialog",
+          "promise",
+          "overlay"
         ]
       }
     },
