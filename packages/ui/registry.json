@@ -2263,6 +2263,47 @@
       }
     },
     {
+      "name": "notification-center",
+      "type": "registry:block",
+      "title": "Notification Center",
+      "description": "Notifications in the header and on their own page, driven by props and callbacks (no server state). `NotificationMenu` is the bell: an icon `GlanceTrigger` whose `GlanceIndicator` shows the unread count (also in the button's name), opening a panel with the recent items, \"Mark all as read\" (`onMarkAllAsRead`), loading and empty states and a \"View all\" link (`viewAllHref`). `NotificationList` lists every notification as cards with a read/unread `Badge`, for a page paired with `Pagination`. Each `NotificationItem` shows an unread dot (or an `icon`), the title — a link when it has `href`, calling `onOpen` — message, date (formatted in the `I18nProvider` locale) and icon buttons for `onMarkAsRead` and `onDelete`, described by the title. Built-in text is English; override it with `i18n.labels`. Urgent notifications are a `ConfirmDialog` opened with `useDialogPromise`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/notification-center/notification-center.tsx",
+          "target": "components/fma-ui/notification-center/notification-center.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/badge",
+        "@fma-ui/button",
+        "@fma-ui/empty",
+        "@fma-ui/glance",
+        "@fma-ui/skeleton",
+        "@fma-ui/tooltip"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "notifications",
+          "header",
+          "popover",
+          "list"
+        ]
+      }
+    },
+    {
       "name": "page-header",
       "type": "registry:block",
       "title": "Page Header",

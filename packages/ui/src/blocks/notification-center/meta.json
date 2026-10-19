@@ -1,0 +1,8 @@
+{
+  "name": "notification-center",
+  "category": "blocks",
+  "status": "experimental",
+  "source": "original",
+  "description": "Notifications in the header and on their own page, driven by props and callbacks (no server state). `NotificationMenu` is the bell: an icon `GlanceTrigger` whose `GlanceIndicator` shows the unread count (also in the button's name), opening a panel with the recent items, \"Mark all as read\" (`onMarkAllAsRead`), loading and empty states and a \"View all\" link (`viewAllHref`). `NotificationList` lists every notification as cards with a read/unread `Badge`, for a page paired with `Pagination`. Each `NotificationItem` shows an unread dot (or an `icon`), the title — a link when it has `href`, calling `onOpen` — message, date (formatted in the `I18nProvider` locale) and icon buttons for `onMarkAsRead` and `onDelete`, described by the title. Built-in text is English; override it with `i18n.labels`. Urgent notifications are a `ConfirmDialog` opened with `useDialogPromise`.",
+  "tags": ["block", "notifications", "header", "popover", "list"]
+}
