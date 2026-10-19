@@ -114,6 +114,12 @@ export const MonthYear: Story = {
   play: typesAs("122024", "12/2024"),
 };
 
+/** Card expiry: two-digit year, read as 20yy in the raw value ("2030-06"). */
+export const CardExpiry: Story = {
+  args: { mask: { type: "date", mode: "mm/yy" }, "aria-label": "Validade" },
+  play: typesAs("0630", "06/30"),
+};
+
 export const Time: Story = {
   args: { mask: "time", "aria-label": "Time" },
   play: typesAs("0930", "09:30"),

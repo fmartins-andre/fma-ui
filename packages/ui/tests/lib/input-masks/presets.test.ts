@@ -14,6 +14,7 @@ const ROUND_TRIPS: [MaskSpec, string, string][] = [
   ["credit-card", "1234 5678 9012 3456", "1234567890123456"],
   ["date", "31/12/2024", "2024-12-31"],
   [{ type: "date", mode: "mm/yyyy" }, "12/2024", "2024-12"],
+  [{ type: "date", mode: "mm/yy" }, "06/30", "2030-06"],
   [{ type: "date", mode: "yyyy" }, "2024", "2024"],
   ["time", "09:30", "09:30"],
   ["date-range", "01/01/2024 – 31/12/2024", "0101202431122024"],
@@ -58,6 +59,7 @@ describe("resolveMask", () => {
     expect(resolveMask("decimal")).toMatchObject({ inputMode: "decimal", placeholder: "0,00" });
     expect(resolveMask({ type: "decimal", prefix: "R$ " }).placeholder).toBe("R$ 0,00");
     expect(resolveMask({ type: "date", mode: "mm/yyyy" }).placeholder).toBe("mm/aaaa");
+    expect(resolveMask({ type: "date", mode: "mm/yy" }).placeholder).toBe("mm/aa");
     expect(resolveMask("date-time").placeholder).toBe("dd/mm/aaaa, hh:mm");
     expect(resolveMask("date-range").placeholder).toBe("dd/mm/aaaa – dd/mm/aaaa");
   });

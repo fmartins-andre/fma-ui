@@ -79,7 +79,10 @@ function transformWith(options: StableMaskitoOptions) {
 
 // "dd/mm/yyyy" → "dd/mm/aaaa": placeholders follow the pt-BR masks.
 const datePlaceholder = (mode: string, separator = "/") =>
-  mode.replace("yyyy", "aaaa").replaceAll("/", separator);
+  mode
+    .replace("yyyy", "aaaa")
+    .replace(/\byy\b/, "aa")
+    .replaceAll("/", separator);
 
 function resolveDigits(
   options: StableMaskitoOptions,

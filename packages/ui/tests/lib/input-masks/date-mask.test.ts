@@ -45,6 +45,14 @@ describe("dateMaskRemover", () => {
     expect(dateMaskRemover("06/2024", "mm/yyyy")).toBe("2024-06");
   });
 
+  it("converts mm/yy to ISO year-month, reading the year as 20yy", () => {
+    expect(dateMaskRemover("06/30", "mm/yy")).toBe("2030-06");
+  });
+
+  it("returns empty string for incomplete mm/yy", () => {
+    expect(dateMaskRemover("06/3", "mm/yy")).toBe("");
+  });
+
   it("returns empty string for incomplete mm/yyyy", () => {
     expect(dateMaskRemover("06", "mm/yyyy")).toBe("");
   });
@@ -110,6 +118,16 @@ describe("dateMaskFormatter", () => {
 
     it("formats a raw 6-digit string as mm/yyyy", () => {
       expect(dateMaskFormatter("062024", { mode: "mm/yyyy" })).toBe("06/2024");
+    });
+  });
+
+  describe("mm/yy mode", () => {
+    it("formats a Date object as mm/yy", () => {
+      expect(dateMaskFormatter(new Date(2030, 5, 1), { mode: "mm/yy" })).toBe("06/30");
+    });
+
+    it("formats a raw 4-digit string as mm/yy", () => {
+      expect(dateMaskFormatter("0630", { mode: "mm/yy" })).toBe("06/30");
     });
   });
 
