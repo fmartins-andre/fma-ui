@@ -252,6 +252,7 @@ Implementados (um PR por item):
 | C10 `tab-nav` | `feat/tab-nav` |
 | B3 `page-header` | `feat/page-header` (sobre C10) |
 | B10 `use-dialog-promise` + `confirm-dialog` | `feat/dialog-promise` |
+| B2 `notification-center` | `feat/notification-center` |
 
 ## Ordem de execução
 
