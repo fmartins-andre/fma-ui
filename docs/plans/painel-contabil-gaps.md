@@ -158,12 +158,14 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   loading/vazio (`empty`)/conteúdo; stories com `chart` e `data-grid`. A toolbar é só um slot:
   controles específicos de cada card (ex.: anterior/próxima nos cards de certificados e DAS a
   vencer de `/dashboard/gestao-mei`) ficam no app, compostos com `button`.
-- **B6 `data-table-filters`** — *Necessidade*: listas com busca, filtros rápidos, filtros avançados,
-  filtros ativos visíveis e atualizar. *Direção*: toolbar do `data-grid` com estado controlado
-  (objeto `value`/`onChange`, amigável a search params): busca, `toggle-group`, chips de filtros
-  ativos removíveis, `sheet` de filtros (children com `Field`s, "Aplicar"/"Limpar", contagem no
-  gatilho), atualizar. Células prontas: entidade (avatar + nome + documento), status (`badge`),
-  ações (A5).
+- **B6 `filter-toolbar`** — *Necessidade*: listas com busca, filtros rápidos, filtros avançados,
+  filtros ativos visíveis e atualizar. *Direção*: bloco genérico (serve ao `data-grid` e a qualquer
+  lista) de partes controladas uma a uma (`value`/`onChange`, cada uma mapeável num search param):
+  `FilterToolbar` (layout que empilha no mobile), `FilterSearch` (dispara no Enter e ao limpar;
+  `debounceMs` opcional), `FilterQuickToggles` (`toggle-group`), `FilterSheet` (`sheet` com os
+  `Field`s como children, "Aplicar"/"Limpar", contagem no gatilho; o rascunho fica no app),
+  `FilterChips` (removíveis um a um + "Limpar filtros") e `FilterRefresh`. A célula de entidade
+  (avatar + nome + documento) fica no app: só uma tabela a usa. Status usa `badge`; ações, A5.
 - **B7** — *removido*: o menu vertical lateral das áreas com subpáginas sai do padrão; todas
   passam a usar o `tab-nav` (C10) no cabeçalho (B3).
 - **B8 `settings-form`** — *Necessidade*: formulários de edição longos em seções, salvando só quando

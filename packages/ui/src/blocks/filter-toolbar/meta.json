@@ -1,0 +1,8 @@
+{
+  "name": "filter-toolbar",
+  "category": "blocks",
+  "status": "experimental",
+  "source": "original",
+  "description": "The controls above a list or `DataGrid`, composed from parts that are each controlled (`value`/`onChange`), so every filter maps to a search param. `FilterToolbar` lays them out (wrapping on narrow screens) and its `i18n.labels` reaches every part. `FilterSearch` is a react-aria `SearchField` that commits the term on Enter and when cleared — and, with `debounceMs`, after the user stops typing. `FilterQuickToggles` is an outlined `ToggleGroup` for one-press filters. `FilterToolbarActions` holds the trailing actions: `FilterSheet` (a \"Filters\" button with the active count opening a side `Sheet`; its children are the `Field`s of a draft the app keeps, `onApply` commits it — return `false` to stay open — `onClear` empties it, and Enter applies) and `FilterRefresh` (spins while `isPending`). `FilterChips` shows the applied filters as a react-aria `TagGroup`, each removable with its × or Backspace/Delete, plus \"Clear filters\"; it renders nothing when empty.",
+  "tags": ["block", "filters", "search", "toolbar", "list"]
+}
