@@ -170,7 +170,7 @@ function GlanceContent({
       className={cn("w-80 p-0", className)}
       {...props}
     >
-      <Dialog aria-label={ariaLabel} className="flex flex-col gap-3 p-3 outline-none">
+      <Dialog aria-label={ariaLabel} className="flex min-h-0 flex-col gap-3 p-3 outline-none">
         {children}
       </Dialog>
     </Popover>
