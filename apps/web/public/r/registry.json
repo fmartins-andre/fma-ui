@@ -2696,6 +2696,38 @@
       }
     },
     {
+      "name": "tab-nav",
+      "type": "registry:ui",
+      "title": "Tab Nav",
+      "description": "Navigation between the pages of an area that looks like tabs: a `<nav>` of react-aria links where the current page carries `aria-current=\"page\"`. Unlike `Tabs` there are no panels — each item is a route — so use it for sub-pages and `Tabs` for in-page views. `variant` matches the tab styles: `default` (segmented on `muted`, the current page raised) or `line` (underlined). An item is current when `isCurrent` is set or its `href` matches `TabNav`'s `currentHref` (exactly, or with `matchPrefix` also on sub-paths). `TabNavItem` takes an icon before its label; `TabNavSeparator` divides groups. When items don't fit, the strip scrolls sideways and keeps the current page in view. Wrap the app in react-aria's `RouterProvider` for client routing.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "navigation"
+      ],
+      "files": [
+        {
+          "path": "src/core/tab-nav/tab-nav.tsx",
+          "target": "components/fma-ui/tab-nav.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "navigation",
+          "tabs",
+          "routing",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "table",
       "type": "registry:ui",
       "title": "Table",
