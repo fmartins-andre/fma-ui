@@ -175,10 +175,30 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
 
 ### Fluxos
 
-- **B10 `confirm-dialog`** — *Necessidade*: confirmações e avisos disparados de qualquer lugar,
-  inclusive assíncronos (~25 pontos). *Direção*: `ConfirmDialogProvider` + `useConfirm()` →
-  `confirm({ title, description, content, confirmLabel, cancelLabel | null, tone })` retornando
-  `Promise<boolean>`, sobre o nosso `alert-dialog`; ação assíncrona com estado pendente; fila.
+- **B10 `use-dialog-promise` + `confirm-dialog`** — *Necessidade*: confirmações, avisos e diálogos
+  pequenos com entrada e validação, aguardados com `await` (22 usos no app). Hoje a promise só
+  devolve `boolean`, o que gera contornos: promise paralela com variável de closure para obter a
+  data do vencimento do DAS; `closeDialog({ resolveWith: true })` sem dizer qual das três opções
+  de "usar cashback" foi escolhida; checkbox do diálogo de assinatura gravando num store global;
+  Escape bloqueado porque cancelar e dispensar dão o mesmo resultado. *Direção*, em camadas:
+  1. **Hook `use-dialog-promise`** (`registry:hook`, sem dependências): `useDialogPromise<D, V>()`
+     devolve um controlador `{ data, isPending, dialogProps, open(data), confirm(value | () =>
+     Promise<V>), cancel(), bind() }`. `open` devolve `Promise<DialogResult<V>>`, uma união
+     `{ status: "confirmed"; value } | { status: "cancelled" } | { status: "dismissed" }`
+     (Escape/clique fora), o que libera o Escape em todos os diálogos. `confirm` assíncrono mantém
+     o diálogo aberto com `isPending` e não fecha em erro. Testes unit + `expectTypeOf`.
+  2. **O diálogo é JSX declarativo e independente**: um componente do app recebe o controlador
+     (ou `bind()`) e usa `alert-dialog`, `dialog` ou `sheet` com `isOpen`/`onOpenChange`; título,
+     corpo, validação (inclusive react-hook-form no app) e botões são livres. Renderizado fora dos
+     menus de ação das tabelas, sobrevive ao fechamento do menu.
+  3. **`ConfirmDialog`** (componente): o sim/não pronto sobre o hook (`title`, `description`,
+     `tone`, rótulos em pt-BR, ação destrutiva).
+  4. **Depois, se aparecer uso real**: `confirm()` + `<ConfirmHost />` para disparar de qualquer
+     lugar (notificações urgentes, sair com alterações), com store interno via
+     `useSyncExternalStore` (como o `sonner`), sem zustand, devolvendo o mesmo `DialogResult`.
+
+  Stories: o sim/não, um diálogo com data validada, um com várias saídas (`action` no `value`), e
+  ação assíncrona com erro.
 - **B11 `form-wizard`** — *Necessidade*: cadastros em etapas, em diálogo (cliente, 4 etapas) e em
   página (contador, 7 etapas). *Direção*: `stepper` + painéis + rodapé Voltar/Próximo/Concluir;
   `step` controlado e `onNext` assíncrono que pode barrar o avanço; funciona em `dialog` e em `card`.
