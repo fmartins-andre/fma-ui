@@ -6,7 +6,7 @@
   "description": "A horizontal progress bar communicating the completion of a task, determinate or indeterminate, with optional label/value slots.",
   "dependencies": [
     "cn@^0.4.0",
-    "react-aria-components@^1.21.1"
+    "react-aria-components@^1.22.1"
   ],
   "files": [
     {

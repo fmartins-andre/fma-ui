@@ -6,8 +6,8 @@
   "description": "Shows the user's current location within a hierarchy, as a trail of links back to parent pages, with an ellipsis for collapsing long paths.",
   "dependencies": [
     "cn@^0.4.0",
-    "lucide-react@^1.52.0",
-    "react-aria-components@^1.21.1"
+    "lucide-react@^1.55.0",
+    "react-aria-components@^1.22.1"
   ],
   "files": [
     {

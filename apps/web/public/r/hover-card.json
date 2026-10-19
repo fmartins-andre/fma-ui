@@ -6,7 +6,7 @@
   "description": "A popover that shows on hover or focus instead of click, for previewing content (a profile card, a link preview) without navigating away. Unlike a tooltip, it can contain interactive content.",
   "dependencies": [
     "cn@^0.4.0",
-    "react-aria-components@^1.21.1"
+    "react-aria-components@^1.22.1"
   ],
   "files": [
     {
