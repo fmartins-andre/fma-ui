@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "description-list",
+  "title": "Description List",
+  "author": "@fma-ui/ui",
+  "description": "Term/value pairs on a semantic `<dl>`: `DescriptionList` > `DescriptionItem` > `DescriptionTerm` + `DescriptionDetails`. `layout=\"inline\"` (default) puts each value at the end of its row, right-aligned with tabular numbers — for order summaries, totals and plan details; `layout=\"stacked\"` puts the value under a smaller term, in a grid whose columns you set with `className` — for record details. `divided` draws rules between rows. An icon inside `DescriptionTerm` sits before the label.",
+  "dependencies": [
+    "class-variance-authority@^0.7.1",
+    "cn@^0.4.0"
+  ],
+  "files": [
+    {
+      "path": "src/core/description-list/description-list.tsx",
+      "content": "import { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"cn\";\nimport type * as React from \"react\";\n\nconst descriptionListVariants = cva(\"group/description-list text-sm\", {\n  variants: {\n    layout: {\n      // Label left, value right: summaries, totals, plan details.\n      inline: \"flex flex-col gap-2\",\n      // Label over value, in a grid: record details.\n      stacked: \"grid gap-x-6 gap-y-4\",\n    },\n    divided: {\n      true: \"gap-0 divide-y *:py-2 *:first:pt-0 *:last:pb-0\",\n      false: \"\",\n    },\n  },\n  defaultVariants: {\n    layout: \"inline\",\n    divided: false,\n  },\n});\n\n/**\n * Term/value pairs on a semantic `<dl>`. `layout=\"inline\"` puts each value at\n * the end of its row; `layout=\"stacked\"` puts it under its term, in a grid\n * whose columns you set with `className` (e.g. `sm:grid-cols-2`).\n */\nfunction DescriptionList({\n  className,\n  layout = \"inline\",\n  divided = false,\n  ...props\n}: React.ComponentProps<\"dl\"> & VariantProps<typeof descriptionListVariants>) {\n  return (\n    <dl\n      data-slot=\"description-list\"\n      data-layout={layout}\n      className={cn(descriptionListVariants({ layout, divided }), className)}\n      {...props}\n    />\n  );\n}\n\n/** One term/value pair (a `<div>` inside the `<dl>`, as HTML allows). */\nfunction DescriptionItem({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"description-item\"\n      className={cn(\n        \"min-w-0\",\n        \"group-data-[layout=inline]/description-list:flex group-data-[layout=inline]/description-list:items-baseline group-data-[layout=inline]/description-list:justify-between group-data-[layout=inline]/description-list:gap-4\",\n        \"group-data-[layout=stacked]/description-list:flex group-data-[layout=stacked]/description-list:flex-col group-data-[layout=stacked]/description-list:gap-1\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\n/** The label. An icon child sits before the text. */\nfunction DescriptionTerm({ className, ...props }: React.ComponentProps<\"dt\">) {\n  return (\n    <dt\n      data-slot=\"description-term\"\n      className={cn(\n        \"flex min-w-0 items-center gap-1.5 text-muted-foreground [&>svg]:shrink-0 [&>svg:not([class*='size-'])]:size-4\",\n        \"group-data-[layout=stacked]/description-list:text-xs\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\n/** The value. Long values wrap; `truncate` in `className` keeps one line. */\nfunction DescriptionDetails({ className, ...props }: React.ComponentProps<\"dd\">) {\n  return (\n    <dd\n      data-slot=\"description-details\"\n      className={cn(\n        \"min-w-0 font-medium break-words text-foreground\",\n        \"group-data-[layout=inline]/description-list:text-right group-data-[layout=inline]/description-list:tabular-nums\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nexport {\n  DescriptionDetails,\n  DescriptionItem,\n  DescriptionList,\n  DescriptionTerm,\n  descriptionListVariants,\n};\n",
+      "type": "registry:component",
+      "target": "components/fma-ui/description-list.tsx"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "data-display",
+      "list",
+      "summary",
+      "key-value"
+    ]
+  },
+  "categories": [
+    "data-display"
+  ],
+  "type": "registry:ui"
+}

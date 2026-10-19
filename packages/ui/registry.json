@@ -1101,6 +1101,37 @@
       }
     },
     {
+      "name": "description-list",
+      "type": "registry:ui",
+      "title": "Description List",
+      "description": "Term/value pairs on a semantic `<dl>`: `DescriptionList` > `DescriptionItem` > `DescriptionTerm` + `DescriptionDetails`. `layout=\"inline\"` (default) puts each value at the end of its row, right-aligned with tabular numbers — for order summaries, totals and plan details; `layout=\"stacked\"` puts the value under a smaller term, in a grid whose columns you set with `className` — for record details. `divided` draws rules between rows. An icon inside `DescriptionTerm` sits before the label.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/description-list/description-list.tsx",
+          "target": "components/fma-ui/description-list.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "data-display",
+          "list",
+          "summary",
+          "key-value"
+        ]
+      }
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",

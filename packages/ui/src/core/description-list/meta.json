@@ -1,0 +1,8 @@
+{
+  "name": "description-list",
+  "category": "data-display",
+  "status": "stable",
+  "source": "original",
+  "description": "Term/value pairs on a semantic `<dl>`: `DescriptionList` > `DescriptionItem` > `DescriptionTerm` + `DescriptionDetails`. `layout=\"inline\"` (default) puts each value at the end of its row, right-aligned with tabular numbers — for order summaries, totals and plan details; `layout=\"stacked\"` puts the value under a smaller term, in a grid whose columns you set with `className` — for record details. `divided` draws rules between rows. An icon inside `DescriptionTerm` sits before the label.",
+  "tags": ["data-display", "list", "summary", "key-value"]
+}
