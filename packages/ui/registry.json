@@ -2160,6 +2160,40 @@
       }
     },
     {
+      "name": "password-input",
+      "type": "registry:ui",
+      "title": "Password Input",
+      "description": "A password field with a show/hide toggle, built on `InputGroup`. The toggle is a button named by `toggleLabel` (default \"Show password\"; pass a translation as needed) whose `aria-pressed` reports whether the text is revealed; visibility is uncontrolled (`defaultRevealed`) or controlled (`isRevealed`/`onRevealedChange`). The rest of the props go to the input, so it works inside a react-aria `TextField` (label, description, validation) and takes `autoComplete=\"current-password\"` or `\"new-password\"`. Hides Edge's built-in reveal button. Pair with `password-rules` when creating a password.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/password-input/password-input.tsx",
+          "target": "components/fma-ui/password-input.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/input-group"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "form",
+          "input",
+          "password",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
