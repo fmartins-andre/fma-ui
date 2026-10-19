@@ -37,7 +37,7 @@
     "@maskito/kit": "^5.6.0",
     "@maskito/react": "^5.6.0",
     "@shadcn/react": "^0.3.1",
-    "@tanstack/react-table": "^9.2.6",
+    "@tanstack/react-table": "^9.2.8",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
     "culori": "^4.0.2",
