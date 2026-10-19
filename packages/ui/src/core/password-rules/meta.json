@@ -1,0 +1,8 @@
+{
+  "name": "password-rules",
+  "category": "forms",
+  "status": "stable",
+  "source": "original",
+  "description": "The rules a new password must follow, each marked pending, met or unmet as the user types — by icon and a screen-reader state label (`stateLabels`), not color alone. `rules` takes `PasswordRule` objects (`id`, `label`, `test(value, confirmation)`); `passwordRules` builds the usual ones (each takes a `label` to translate it) (`minLength(n)`, `maxLength(n)`, `uppercase()`, `lowercase()`, `number()`, `special()`, `match()` against `confirmation`), defaulting to 8+ characters, upper, lower and a number. Rules stay neutral until there's something to judge. The pure helpers `evaluatePasswordRules` and `isPasswordValid` share the same rules for form validation. Give it an `id` and point the input's `aria-describedby` at it.",
+  "tags": ["form", "password", "validation"]
+}
