@@ -17,6 +17,7 @@ import * as React from "react";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { Badge } from "@/core/badge/badge";
 import { Button } from "@/core/button/button";
+import { DropdownMenuItem } from "@/core/dropdown-menu/dropdown-menu";
 import { Skeleton } from "@/core/skeleton/skeleton";
 import {
   DataGrid,
@@ -28,6 +29,7 @@ import {
   type DataGridI18nOverrides,
   type DataGridLayout,
   DataGridPagination,
+  DataGridRowActions,
   DataGridRowDragHandle,
   DataGridRowExpand,
   DataGridRowPin,
@@ -607,6 +609,53 @@ export const RowPinning: Story = {
     await expect(firstCells(canvas)[0]).toBe("USR-004");
     await userEvent.click(canvas.getByRole("button", { name: "Go to next page" }));
     await expect(firstCells(canvas)[0]).toBe("USR-004");
+  },
+};
+
+/**
+ * `DataGridRowActions` puts a row's actions behind a menu button. Pressing it
+ * doesn't trigger `onRowClick`; with no actions left (inactive users here) the
+ * menu says so.
+ */
+export const RowActions: Story = {
+  args: {
+    onRowClick: fn(),
+    columns: [
+      ...COLUMNS,
+      {
+        id: "actions",
+        size: 60,
+        header: () => <span className="sr-only">Actions</span>,
+        enableSorting: false,
+        enableResizing: false,
+        enableHiding: false,
+        cell: ({ row }) => (
+          <DataGridRowActions rowLabel={row.original.name}>
+            {row.original.status !== "Inactive" && (
+              <DropdownMenuItem id="edit">Edit</DropdownMenuItem>
+            )}
+            {row.original.status !== "Inactive" && (
+              <DropdownMenuItem id="deactivate" variant="destructive">
+                Deactivate
+              </DropdownMenuItem>
+            )}
+          </DataGridRowActions>
+        ),
+      },
+    ],
+  },
+  render: (args) => <UsersDataGrid {...args} />,
+  play: async ({ canvas, args }) => {
+    const body = within(document.body);
+    await userEvent.click(canvas.getByRole("button", { name: "Actions for Alice Martin" }));
+    await body.findByRole("menuitem", { name: "Edit" });
+    await expect(args.onRowClick).not.toHaveBeenCalled();
+    await userEvent.keyboard("{Escape}");
+
+    await userEvent.click(canvas.getByRole("button", { name: "Actions for Carol Smith" }));
+    const empty = await body.findByRole("menuitem", { name: "No actions available" });
+    await expect(empty).toHaveAttribute("aria-disabled", "true");
+    await expect(args.onRowClick).not.toHaveBeenCalled();
   },
 };
 

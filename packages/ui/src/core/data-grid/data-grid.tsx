@@ -44,6 +44,7 @@ import {
   ChevronRightIcon,
   ChevronsUpDownIcon,
   CirclePlusIcon,
+  EllipsisVerticalIcon,
   GripVerticalIcon,
   PinIcon,
   PinOffIcon,
@@ -227,6 +228,8 @@ type DataGridI18nLabels = {
   rowDetails: (row: string) => string;
   pinRow: string;
   unpinRow: string;
+  rowActions: (row?: string) => string;
+  noRowActions: string;
   filter: string;
   filterSearch: (title: string) => string;
   filterNoResults: string;
@@ -272,6 +275,8 @@ const defaultDataGridI18n: DataGridI18nConfig = {
     rowDetails: (row) => `${row} details`,
     pinRow: "Pin row",
     unpinRow: "Unpin row",
+    rowActions: (row) => (row ? `Actions for ${row}` : "Row actions"),
+    noRowActions: "No actions available",
     filter: "Filter",
     filterSearch: (title) => `Search ${title}`,
     filterNoResults: "No results found.",
@@ -334,6 +339,8 @@ type DataGridProps<TData extends RowData> = {
   i18n?: DataGridI18nOverrides;
   /** Makes rows actionable: pressing one (or Enter on it) calls this. */
   onRowClick?: (row: TData) => void;
+  /** Fires when the pointer enters a row, e.g. to prefetch its details. */
+  onRowHover?: (row: TData) => void;
   tableLayout?: DataGridLayout;
   tableClassNames?: DataGridTableClassNames;
   className?: string;
@@ -510,6 +517,7 @@ function DataGridTable<TData extends RowData = RowData>({
     allRowsLoadedMessage,
     emptyMessage,
     onRowClick,
+    onRowHover,
     tableClassNames: classNames = {},
     i18n: { labels },
   } = useDataGrid();
@@ -741,6 +749,7 @@ function DataGridTable<TData extends RowData = RowData>({
                 // Names the row in drag-and-drop and selection announcements.
                 textValue={String((rowHeaderId && row.getValue(rowHeaderId)) ?? row.id)}
                 data-row-id={row.id}
+                onHoverStart={onRowHover ? () => onRowHover(row.original) : undefined}
                 data-depth={row.depth || undefined}
                 data-row-pinned={row.getIsPinned() || undefined}
                 data-row-pinned-boundary={
@@ -1126,6 +1135,48 @@ function DataGridRowDragHandle({ className, ...props }: React.ComponentProps<typ
     >
       <GripVerticalIcon aria-hidden="true" className="size-4" />
     </AriaButton>
+  );
+}
+
+/**
+ * A row's actions in a menu behind an icon button; put it in a cell. Children
+ * are `DropdownMenuItem`s; pressing the button or an item doesn't trigger
+ * `onRowClick`. With no items (all hidden), the menu says so instead of
+ * opening empty. `rowLabel` names the button ("Actions for …").
+ */
+function DataGridRowActions({
+  rowLabel,
+  "aria-label": ariaLabel,
+  children,
+  className,
+}: {
+  rowLabel?: string;
+  "aria-label"?: string;
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  const labels = useDataGridLabels();
+  const hasActions = React.Children.toArray(children).length > 0;
+  return (
+    <DropdownMenuTrigger>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={ariaLabel ?? labels.rowActions(rowLabel)}
+        className={className}
+      >
+        <EllipsisVerticalIcon aria-hidden="true" />
+      </Button>
+      <DropdownMenu placement="bottom end" className="w-auto min-w-44">
+        {hasActions ? (
+          children
+        ) : (
+          <DropdownMenuItem id="no-actions" isDisabled>
+            {labels.noRowActions}
+          </DropdownMenuItem>
+        )}
+      </DropdownMenu>
+    </DropdownMenuTrigger>
   );
 }
 
@@ -1689,6 +1740,7 @@ export {
   DataGridColumnVisibility,
   DataGridContainer,
   DataGridPagination,
+  DataGridRowActions,
   DataGridRowDragHandle,
   DataGridRowExpand,
   DataGridRowPin,
