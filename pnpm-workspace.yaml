@@ -34,6 +34,16 @@ allowBuilds:
   esbuild: false
   workerd: false
 
+# Transitive deps with a published security fix that their parents haven't
+# picked up yet. Drop each entry once the parent range includes the fix.
+overrides:
+  # GHSA-wq5f-xc86-pv6w (via wrangler > miniflare)
+  sharp: ">=0.35.5"
+  # GHSA-6qxp-vccf-f47h (via shadcn)
+  "@modelcontextprotocol/sdk": ">=1.31.0"
+  # source-map-js <1.2.2 advisory (via postcss)
+  source-map-js: ">=1.2.2"
+
 catalog:
   react: ^19.3.0
   react-dom: ^19.3.0
