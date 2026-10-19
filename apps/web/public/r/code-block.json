@@ -6,7 +6,7 @@
   "description": "A code block with shiki syntax highlighting for docs and AI chat UIs. `<CodeBlock code={code} language=\"tsx\" />` is complete; compose `CodeBlockHeader` (`CodeBlockTitle`, `CodeBlockLanguage`, `CodeBlockWrapToggle`, `CodeBlockCopyButton`, `CodeBlockDownloadButton`) as chrome, `CodeBlockExpandButton` with `maxLines`, and `CodeBlockContent` inside your own scroll container. shiki loads lazily on the first highlight (JavaScript regex engine, no WebAssembly) through the `code-block-highlight` lib; pass `lines` from `highlightCode()` in a server loader, or `highlight={false}`, to never load it. Light and dark token colors switch with the theme. `showLineNumbers`/`startLine`, `highlightedLines`/`highlightedWords`/`focusedLines` (line specs like `\"2-4,7\"`), `diff` and `lineLevels` mark lines, as do shiki `transformers`. `streaming` grows the code with a caret and stick-to-bottom, re-rendering only changed lines. `foldable` folds by indentation, `selectable` turns lines into a multi-select listbox, and `CodeBlockLineActions` renders one action group on the hovered or focused line. A pinned copy button stays put while the code scrolls.",
   "dependencies": [
     "cn@^0.4.0",
-    "lucide-react@^1.52.0"
+    "lucide-react@^1.55.0"
   ],
   "registryDependencies": [
     "@fma-ui/button",

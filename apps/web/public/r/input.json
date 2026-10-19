@@ -6,7 +6,7 @@
   "description": "A single-line text input, styled to match the rest of the registry. Plain native attributes (disabled, not isDisabled) since it wraps react-aria-components' bare Input rather than a higher-level field primitive.",
   "dependencies": [
     "cn@^0.4.0",
-    "react-aria-components@^1.21.1"
+    "react-aria-components@^1.22.1"
   ],
   "files": [
     {
