@@ -1,0 +1,8 @@
+{
+  "name": "glance",
+  "category": "overlay",
+  "status": "experimental",
+  "source": "original",
+  "description": "A quick piece of information that opens more context one click away — an account notice, a balance, a count of pending items. `Glance` wraps react-aria's `DialogTrigger` and shares a `tone` (`default`, `info`, `success`, `warning`, `destructive`) with its parts. `GlanceTrigger` is the compact button: an icon plus `GlanceText` (a `GlanceLabel` caption over a `GlanceValue`), or icon-only with `size=\"icon\"` and an `aria-label`; `GlanceIndicator` pins a dot or count to its corner. `GlanceContent` is a popover holding a dialog (focus moves in, Escape closes, focus returns), laid out with `GlanceHeader`, `GlanceMedia` (an `IconTile` in the tone), `GlanceTitle`, `GlanceDescription` and `GlanceFooter`; its children can be a function of `{ close }` to close it from an action. Tone tints the trigger like `Alert`, with no motion — urgency comes from tone and wording.",
+  "tags": ["overlay", "popover", "notice", "status", "header"]
+}
