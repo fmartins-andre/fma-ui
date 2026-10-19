@@ -2127,6 +2127,41 @@
       }
     },
     {
+      "name": "page-header",
+      "type": "registry:block",
+      "title": "Page Header",
+      "description": "The top of a page, composed from parts: `PageHeader` > `PageHeaderBreadcrumbs` (an `items` trail whose last entry is the current page), `PageHeaderContent` (heading on one side, actions on the other, stacked on narrow screens) with `PageHeaderHeading` (`PageHeaderTitle` — the `<h1>`, with an `isLoading` skeleton — and `PageHeaderDescription`) and `PageHeaderActions` (buttons that stretch on mobile), and `PageHeaderNav` for an area's sub-pages, usually a `TabNav`. Anything that belongs beside the title, like a status select, goes inside `PageHeaderHeading`. Wrap the app in react-aria's `RouterProvider` so breadcrumb and tab links route client-side.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/page-header/page-header.tsx",
+          "target": "components/fma-ui/page-header/page-header.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/breadcrumb",
+        "@fma-ui/skeleton"
+      ],
+      "dependencies": [
+        "cn@^0.4.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "block",
+          "header",
+          "page",
+          "breadcrumb",
+          "navigation"
+        ]
+      }
+    },
+    {
       "name": "pagination",
       "type": "registry:ui",
       "title": "Pagination",
