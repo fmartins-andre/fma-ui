@@ -112,6 +112,7 @@ export function dateRangeMaskFormatter(
 const SEGMENT_PATTERN_BY_MODE: Record<DateMaskMode, string> = {
   "dd/mm/yyyy": String.raw`\d{2}\/\d{2}\/\d{4}`,
   "mm/yyyy": String.raw`\d{2}\/\d{4}`,
+  "mm/yy": String.raw`\d{2}\/\d{2}`,
   yyyy: String.raw`\d{4}`,
 };
 

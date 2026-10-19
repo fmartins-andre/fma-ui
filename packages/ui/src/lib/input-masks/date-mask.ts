@@ -9,6 +9,8 @@ import { makeStableMaskitoOptions, type StableMaskitoOptions } from "./stable-ma
 const PLACEHOLDER_BY_MODE = {
   "dd/mm/yyyy": "__/__/____",
   "mm/yyyy": "__/____",
+  // Card expiry. The two-digit year is read as 20yy.
+  "mm/yy": "__/__",
   yyyy: "____",
 } as const;
 
@@ -26,6 +28,13 @@ export function dateMaskRemover(
     const match = trimmed.match(/^(\d{4})$/);
     if (!match) return "";
     return match[1];
+  }
+
+  if (mode === "mm/yy") {
+    const match = trimmed.match(/^(\d{2})\/(\d{2})$/);
+    if (!match) return "";
+    const [, mm, yy] = match;
+    return `20${yy}-${mm}`;
   }
 
   if (mode === "mm/yyyy") {
@@ -106,7 +115,8 @@ export function dateMaskFormatter(
 }
 
 // `dateMaskRemover`'s output is an ISO-ish string ("yyyy-mm-dd", "yyyy-mm",
-// or "yyyy" depending on mode). `new Date(iso)` parses date-only ISO
+// or "yyyy" depending on mode; "mm/yy" also yields "yyyy-mm").
+// `new Date(iso)` parses date-only ISO
 // strings as UTC, which can shift by a day once rendered in local time —
 // split and construct locally instead.
 export function parseIsoDateParts(iso: string): Date | undefined {
