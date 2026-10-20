@@ -108,6 +108,9 @@ export const Group: Story = {
 /**
  * Choice cards: `CheckboxCard` makes the whole card the checkbox, for a few
  * options that need an icon and a description (the modules a customer uses).
+ * For an option with a secondary action, or options grouped under titles, see
+ * RadioGroup's `ChoiceCardWithAction` and `ChoiceCardGroups`: the same
+ * composition works with `CheckboxCard` in a `CheckboxGroup`.
  */
 export const ChoiceCard: Story = {
   render: () => (
