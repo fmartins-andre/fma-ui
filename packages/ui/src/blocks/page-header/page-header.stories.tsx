@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/core/select/select";
-import { TabNav, TabNavItem, TabNavSeparator } from "@/core/tab-nav/tab-nav";
+import { TabNav, TabNavItem } from "@/core/tab-nav/tab-nav";
 import meta from "./meta.json";
 import {
   PageHeader,
@@ -118,13 +118,12 @@ export const WithNavigation: Story = {
         </PageHeaderContent>
         <PageHeaderNav>
           <TabNav aria-label="Seções do cliente" currentHref={currentPath}>
-            <TabNavItem href="/clientes/42/notas-fiscais">Notas fiscais</TabNavItem>
-            <TabNavItem href="/clientes/42/das-mei">DAS MEI</TabNavItem>
-            <TabNavSeparator />
             <TabNavItem href="/clientes/42/info">Informações</TabNavItem>
             <TabNavItem href="/clientes/42/inscricoes-estaduais">Inscrições estaduais</TabNavItem>
             <TabNavItem href="/clientes/42/modulos">Módulos</TabNavItem>
             <TabNavItem href="/clientes/42/certificado-digital">Certificado digital</TabNavItem>
+            <TabNavItem href="/clientes/42/notas-fiscais">Notas fiscais</TabNavItem>
+            <TabNavItem href="/clientes/42/das-mei">DAS MEI</TabNavItem>
           </TabNav>
         </PageHeaderNav>
       </PageHeader>
