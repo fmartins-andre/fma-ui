@@ -1630,6 +1630,44 @@
       }
     },
     {
+      "name": "form-wizard",
+      "type": "registry:block",
+      "title": "Form Wizard",
+      "description": "A form in steps, in a dialog or on a page (a new customer, an onboarding). `FormWizard` takes `steps` (`{ title, description }` per step) and the current step, controlled (`step`/`onStepChange`) or not (`defaultStep`). It's a react-aria `Form` whose submit is Next, so Enter advances and the current step's fields validate natively (only that step is mounted); then `onNext(step)` runs — validate or save there (react-hook-form's `trigger`); returning `false` or throwing keeps the user on the step and a promise shows Next as pending. Finish runs `onNext` of the last step and then `onComplete`. `FormWizardSteps` is the `stepper` list: earlier steps are reachable, later ones only through Next; titles show when the wizard is wide enough for that many steps, and narrower only the numbers, with the current title under them (container query). `FormWizardStep` holds a step's fields; after Back or Next, focus moves to its first field. `FormWizardFooter` shows the progress (\"Step 2 of 4\", announced politely), `children` before Back (a dialog's Cancel), Back and Next/Finish. The values stay in the app; with react-hook-form, keep `shouldUnregister` off. Built-in text is in English; translate it with `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/form-wizard/form-wizard.tsx",
+          "target": "components/fma-ui/form-wizard/form-wizard.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/spinner",
+        "@fma-ui/stepper"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "form",
+          "wizard",
+          "stepper",
+          "steps"
+        ]
+      }
+    },
+    {
       "name": "glance",
       "type": "registry:ui",
       "title": "Glance",

@@ -276,6 +276,7 @@ Implementados (um PR por item):
 | A11 `CheckboxCard` / `RadioCard` | `feat/choice-card` |
 | A2 `slider` com `marks` | `feat/slider-marks` |
 | B8 `settings-form` | `feat/settings-form` |
+| B11 `form-wizard` | `feat/form-wizard` |
 
 ## Ordem de execução
 
