@@ -2934,6 +2934,44 @@
       }
     },
     {
+      "name": "pricing-plans",
+      "type": "registry:block",
+      "title": "Pricing Plans",
+      "description": "Choose one of a few fixed plans, then confirm. `PricingPlans` lays out the options and an optional `summary` (an `OrderSummary` with the chosen plan and a \"Continue\" action: sticky card on large screens, bar fixed to the bottom on smaller ones). `PricingPeriod` is the billing period as a segmented toggle that always has one selected (`value`/`onChange`, `PricingPeriodOption` with an `id`, a `Badge` inside for the saving). `PricingPlanGroup` is a radio group of `PricingPlan` cards, stacked in one list on small screens and side by side in equal columns once its own width fits them; each card has `name`, `badge` (\"Most popular\"), `description`, `price` and `period` formatted by the app, `priceNote` (the equivalent, \"R$ 718,80 per year\") and `isFeatured` for a `primary` border, with the radio named by the plan and described by its price. `PricingPlanFeature` lists what the plan has (`isIncluded={false}` for a dash, muted text and \"Not included\" read before it). For a plan built from quantities and add-ons, use `plan-builder`. Built-in text is in English; translate it with `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/pricing-plans/pricing-plans.tsx",
+          "target": "components/fma-ui/pricing-plans/pricing-plans.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/badge",
+        "@fma-ui/radio-group",
+        "@fma-ui/toggle-group"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "checkout",
+          "plan",
+          "pricing",
+          "subscription"
+        ]
+      }
+    },
+    {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
