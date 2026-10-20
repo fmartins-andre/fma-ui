@@ -1,0 +1,8 @@
+{
+  "name": "dashboard-card",
+  "category": "blocks",
+  "status": "experimental",
+  "source": "original",
+  "description": "A dashboard panel: a `Card` with a standard header and a body that handles its own states. `DashboardCardHeader` takes the `title` (a heading, `headingLevel` 2 by default), an `icon` (in a `soft` `IconTile`), a `description`, `help` (opened by an ⓘ button in a popover, so it works with touch and keyboard), `updatedAt` (a `Date` or timestamp, formatted with `Intl` in the react-aria locale), `isRefreshing` (a spinner next to the date while the content stays on screen) and a `toolbar` slot for the card's own controls, which wraps below the title on narrow cards. `DashboardCardBody` shows the first state that applies — `isLoading` (skeleton, first load only), `isError` (message plus \"Try again\" with `onRetry`), `isEmpty` (`Empty`) — or its children; `emptyState`/`errorState` replace the built-in messages. Charts, tables and `stat-cards` go in the body; footers use `CardFooter`. `DashboardCard`'s `i18n.labels` reaches every built-in text.",
+  "tags": ["block", "dashboard", "card", "chart"]
+}
