@@ -277,7 +277,7 @@ function FilterSheet({
           </Badge>
         )}
       </Button>
-      <Sheet side="right" className={cn("sm:max-w-md", className)}>
+      <Sheet side="right" size="md" className={className}>
         <SheetHeader>
           <SheetTitle>{title ?? labels.filtersTitle}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}

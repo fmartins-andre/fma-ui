@@ -2,7 +2,8 @@
   "name": "sheet",
   "category": "overlay",
   "status": "stable",
-  "source": "shadcn",
-  "description": "A modal panel that slides in from an edge of the screen (top/right/bottom/left) — for navigation drawers, filters, or forms that need more room than a popover.",
+  "source": "customized",
+  "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
+  "description": "A modal panel that slides in from an edge of the screen (top/right/bottom/left) — for navigation drawers, filters, or forms that need more room than a popover. `size` (`sm` 384px default, `md` 448px, `lg` 672px) caps a left/right sheet from the `sm` breakpoint up; a width in `className` replaces it.",
   "tags": ["overlay", "modal", "drawer", "react-aria"]
 }

@@ -1,3 +1,4 @@
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 import { XIcon } from "lucide-react";
 import type * as React from "react";
@@ -58,26 +59,47 @@ function SheetOverlay({
   );
 }
 
+/**
+ * The width cap of a left/right sheet from `sm` up (below it, 3/4 of the
+ * screen). Plain `sm:max-w-*` classes, not under `data-[side]`, so a width in
+ * the consumer's `className` replaces them instead of losing on specificity.
+ */
+const sheetSizeVariants = cva("", {
+  variants: {
+    size: {
+      sm: "sm:max-w-sm",
+      md: "sm:max-w-md",
+      lg: "sm:max-w-2xl",
+    },
+  },
+  defaultVariants: { size: "sm" },
+});
+
 function Sheet({
   className,
   children,
   side = "right",
+  size = "sm",
   showCloseButton = true,
   ...props
 }: Omit<ModalOverlayPrimitiveProps, "className" | "children"> &
-  Pick<React.ComponentProps<typeof ModalPrimitive>, "isDismissable"> & {
+  Pick<React.ComponentProps<typeof ModalPrimitive>, "isDismissable"> &
+  VariantProps<typeof sheetSizeVariants> & {
     className?: string;
     children: React.ReactNode;
     side?: "top" | "right" | "bottom" | "left";
     showCloseButton?: boolean;
   }) {
+  const isSidePanel = side === "left" || side === "right";
   return (
     <SheetOverlay {...props}>
       <ModalPrimitive
         data-slot="sheet-content"
         data-side={side}
+        data-size={isSidePanel ? size : undefined}
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out data-entering:opacity-0 data-exiting:opacity-0 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:data-entering:translate-y-[2.5rem] data-[side=bottom]:data-exiting:translate-y-[2.5rem] data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:data-entering:translate-x-[-2.5rem] data-[side=left]:data-exiting:translate-x-[-2.5rem] data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:data-entering:translate-x-[2.5rem] data-[side=right]:data-exiting:translate-x-[2.5rem] data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:data-entering:translate-y-[-2.5rem] data-[side=top]:data-exiting:translate-y-[-2.5rem] data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm",
+          "fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out data-entering:opacity-0 data-exiting:opacity-0 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:data-entering:translate-y-[2.5rem] data-[side=bottom]:data-exiting:translate-y-[2.5rem] data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:data-entering:translate-x-[-2.5rem] data-[side=left]:data-exiting:translate-x-[-2.5rem] data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:data-entering:translate-x-[2.5rem] data-[side=right]:data-exiting:translate-x-[2.5rem] data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:data-entering:translate-y-[-2.5rem] data-[side=top]:data-exiting:translate-y-[-2.5rem]",
+          isSidePanel && sheetSizeVariants({ size }),
           className,
         )}
       >
@@ -167,4 +189,5 @@ export {
   SheetTitle,
   SheetTrigger,
   type SheetTriggerPrimitiveProps,
+  sheetSizeVariants,
 };
