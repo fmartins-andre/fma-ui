@@ -232,9 +232,16 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   que abre os detalhes num sheet; descontos e total com hierarquia tipográfica (não só cor); stories
   de aplicar saldo e de entidade selecionada.
 - **B14 `plan-builder`** — *Necessidade*: montar um plano escolhendo quantidades por recurso e ver o
-  preço em tempo real; comprar pacotes por quantidade. *Direção*: card de recurso (ícone,
-  título, descrição, `slider` com marcas A2, valor, slot para add-on, `accordion` "o que está
-  incluso") + resumo fixo com CTA que confirma via diálogo; variante de quantidade com atalhos.
+  preço em tempo real; comprar pacotes por quantidade. *Direção*: um bloco para os dois casos.
+  `PlanBuilder` é só o layout (recursos à esquerda, `summary` = `order-summary` B13 à direita) com
+  `isCalculating`, que vira skeleton em cada `PlanPrice`; `PlanResource` é o card (ícone,
+  título, descrição, `slider` controlado com marcas A2, `hint`, add-ons como filhos e `accordion`
+  "o que está incluso" opcional); `PlanResourceAddon` é o switch de add-on (validador
+  tributário). Preço, debounce, regras de estoque e avisos ficam no app. O estoque vira a prop
+  `limit` do `slider` (core): escala e marcas até `maxValue`, valor parado no limite, trecho
+  acima tracejado e marcas acima desabilitadas, `description` lida com o valor — sem diálogo de
+  "quantidade indisponível". Stories `CustomPlan` (confirma via B10), `QuantityPurchase` (notas
+  adicionais) e `Blocked`.
 - **B15 `payment-card`** — *Necessidade*: ver/remover o cartão salvo e cadastrar outro. *Direção*:
   C7 + `description-list` + remover via B10; formulário com pré-visualização ao vivo e máscaras (A4).
 - **B16 `feature-promo`** — *Necessidade*: telas de recurso bloqueado/oferta (notas adicionais,
@@ -283,6 +290,7 @@ Implementados (um PR por item):
 | B11 `form-wizard` | `feat/form-wizard` |
 | B12 `auth` | `feat/auth` |
 | B13 `order-summary` | `feat/order-summary` |
+| B14 `plan-builder` (+ `limit` no `slider`) | `feat/plan-builder` |
 
 ## Ordem de execução
 

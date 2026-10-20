@@ -3,7 +3,7 @@
   "category": "forms",
   "status": "stable",
   "source": "customized",
-  "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value. `label` names it above the track and `showValue` prints the value (or range) beside it, formatted by `formatValue` (\"200 notas\") or `formatOptions` (currency, percent — also what screen readers announce). `marks` adds labelled stops under the track (`number` or `{ value, label }`); clicking one moves the nearest thumb there and fires `onChangeEnd`, while the keyboard keeps using the thumb.",
+  "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value. `label` names it above the track and `showValue` prints the value (or range) beside it, formatted by `formatValue` (\"200 notas\") or `formatOptions` (currency, percent — also what screen readers announce). `marks` adds labelled stops under the track (`number` or `{ value, label }`); clicking one moves the nearest thumb there and fires `onChangeEnd`, while the keyboard keeps using the thumb. `limit` caps the value below `maxValue` (stock left, plan quota): the scale and marks still run to `maxValue`, the track above the limit is drawn as unavailable and its marks are disabled; `description` under the track says why and is read with the value.",
   "tags": ["forms", "input", "react-aria"],
   "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)"
 }
