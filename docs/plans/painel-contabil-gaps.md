@@ -244,6 +244,10 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   adicionais) e `Blocked`.
 - **B15 `payment-card`** — *Necessidade*: ver/remover o cartão salvo e cadastrar outro. *Direção*:
   C7 + `description-list` + remover via B10; formulário com pré-visualização ao vivo e máscaras (A4).
+  Campos prontos (`TextField` react-aria controláveis, ligados à prévia por valor e foco): número
+  com máscara por bandeira, nome (um campo; `part="first"`/`"last"` para gateways que separam),
+  validade `MM/YY` e código do tamanho da bandeira. Validação pela lib `credit-card-validation`
+  (C7), no app; react-hook-form via `Controller`.
 - **B16 `feature-promo`** — *Necessidade*: telas de recurso bloqueado/oferta (notas adicionais,
   radar, contratar plano, suporte, onboarding de cobrança). *Direção*: card com título, texto,
   lista de benefícios com `icon-tile`, CTA (opcionalmente liberado por um aceite) e mídia opcional;
@@ -291,7 +295,8 @@ Implementados (um PR por item):
 | B12 `auth` | `feat/auth` |
 | B13 `order-summary` | `feat/order-summary` |
 | B14 `plan-builder` (+ `limit` no `slider`) | `feat/plan-builder` |
-| C7 `credit-card` | `feat/credit-card` |
+| C7 `credit-card` + lib `credit-card-validation` | `feat/credit-card` |
+| B15 `payment-card` | `feat/payment-card` (sobre C7) |
 
 ## Ordem de execução
 
