@@ -6597,7 +6597,7 @@
       "name": "toggle",
       "type": "registry:ui",
       "title": "Toggle",
-      "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup.",
+      "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup. Pressed uses `accent` (theme's selected surface); hover stays `muted`, as in shadcn, so hovering and pressed look different.",
       "author": "@fma-ui/ui",
       "categories": [
         "buttons"
@@ -6616,7 +6616,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "buttons",
           "toggle",
