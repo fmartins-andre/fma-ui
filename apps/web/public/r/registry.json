@@ -2950,6 +2950,43 @@
       }
     },
     {
+      "name": "stat-cards",
+      "type": "registry:block",
+      "title": "Stat Cards",
+      "description": "Totals above a list or on a dashboard. `Stat` is a label (`StatLabel`), a value (`StatValue`, formatted by the app, with `isLoading` and `isUnavailable` states), an optional `StatIcon` (a `soft` `IconTile`) and a `StatDescription`; `tone` (`default`, `success`, `warning`, `info`, `destructive`, `muted`) tints the icon and the value, and `size=\"lg\"` enlarges the value. On its own, `Stat` has no surface, for several figures inside one card. The cards come in four kinds: `StatCard` (static), `StatCardButton` (runs `onPress` or opens a dialog as the child of a `DialogTrigger`), `StatCardLink` (navigates, e.g. to the list already filtered) and `StatCardToggle`, the selectable cards of a `StatCardGroup` — a react-aria `ToggleButtonGroup` that filters a list: `selectionMode=\"single\"` behaves like radios, `\"multiple\"` like checkboxes, controlled by `selectedKeys`/`onSelectionChange` so it maps to a search param. `StatGrid` and `StatCardGroup` lay cards out in as many columns as fit, and their `i18n.labels` reach every value inside.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/stat-cards/stat-cards.tsx",
+          "target": "components/fma-ui/stat-cards/stat-cards.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/icon-tile",
+        "@fma-ui/skeleton"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "stats",
+          "dashboard",
+          "totals",
+          "filters"
+        ]
+      }
+    },
+    {
       "name": "stepper",
       "type": "registry:ui",
       "title": "Stepper",

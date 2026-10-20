@@ -1,0 +1,8 @@
+{
+  "name": "stat-cards",
+  "category": "blocks",
+  "status": "experimental",
+  "source": "original",
+  "description": "Totals above a list or on a dashboard. `Stat` is a label (`StatLabel`), a value (`StatValue`, formatted by the app, with `isLoading` and `isUnavailable` states), an optional `StatIcon` (a `soft` `IconTile`) and a `StatDescription`; `tone` (`default`, `success`, `warning`, `info`, `destructive`, `muted`) tints the icon and the value, and `size=\"lg\"` enlarges the value. On its own, `Stat` has no surface, for several figures inside one card. The cards come in four kinds: `StatCard` (static), `StatCardButton` (runs `onPress` or opens a dialog as the child of a `DialogTrigger`), `StatCardLink` (navigates, e.g. to the list already filtered) and `StatCardToggle`, the selectable cards of a `StatCardGroup` — a react-aria `ToggleButtonGroup` that filters a list: `selectionMode=\"single\"` behaves like radios, `\"multiple\"` like checkboxes, controlled by `selectedKeys`/`onSelectionChange` so it maps to a search param. `StatGrid` and `StatCardGroup` lay cards out in as many columns as fit, and their `i18n.labels` reach every value inside.",
+  "tags": ["block", "stats", "dashboard", "totals", "filters"]
+}
