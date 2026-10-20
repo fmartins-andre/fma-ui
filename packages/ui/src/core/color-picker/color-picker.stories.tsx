@@ -492,7 +492,7 @@ export const RecentColors: Story = {
     expect(writeText).toHaveBeenCalledWith(
       canvasElement.querySelector("[data-slot=color-picker-value]")?.textContent,
     );
-    await waitFor(() => expect(canvas.getByRole("button", { name: "Copied" })).toBeInTheDocument());
+    await expect(await canvas.findByText("Copied")).toHaveAttribute("role", "status");
     writeText.mockRestore();
   },
 };

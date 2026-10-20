@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "cn";
-import { CheckIcon, ChevronDownIcon, ChevronRightIcon, CopyIcon, DownloadIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, DownloadIcon } from "lucide-react";
 import type {
   ComponentProps,
   CSSProperties,
@@ -24,6 +24,7 @@ import {
   useState,
 } from "react";
 import { Button } from "@/core/button/button";
+import { CopyButton } from "@/core/copy-button/copy-button";
 import type {
   CodeBlockDiffSpec,
   CodeBlockLevelSpec,
@@ -1690,8 +1691,8 @@ export type CodeBlockCopyButtonProps = {
   timeout?: number;
   onCopy?: (value: string) => void;
   onCopyError?: (error: unknown) => void;
-  /** Accessible names, for localisation. */
-  labels?: { copy?: string; copied?: string };
+  /** Accessible name and announced outcomes, for localisation. */
+  labels?: { copy?: string; copied?: string; failed?: string };
   /** `pinned` floats over the surface; `inline` sits in a header. */
   position?: "auto" | "pinned" | "inline";
   alwaysVisible?: boolean;
@@ -1720,8 +1721,6 @@ function CodeBlockCopyButton({
   ...props
 }: CodeBlockCopyButtonProps) {
   const inHeader = useContext(CodeBlockHeaderContext);
-  const [copied, setCopied] = useState(false);
-  const [copyFailed, setCopyFailed] = useState(false);
 
   const resolvedPosition = position === "auto" ? (inHeader ? "inline" : "pinned") : position;
 
@@ -1730,56 +1729,31 @@ function CodeBlockCopyButton({
      shadcn button, so this stays style-aware instead of pinning a pixel size. */
   const resolvedSize = size ?? (resolvedPosition === "inline" ? "icon-sm" : "icon");
 
-  useEffect(() => {
-    if (!copied || timeout === 0) return;
-    const id = window.setTimeout(() => setCopied(false), timeout);
-    return () => window.clearTimeout(id);
-  }, [copied, timeout]);
-
-  useEffect(() => {
-    if (!copyFailed) return;
-    const id = window.setTimeout(() => setCopyFailed(false), 2000);
-    return () => window.clearTimeout(id);
-  }, [copyFailed]);
-
   const document_ = useContext(CodeBlockDocumentContext);
 
-  const handleClick = useCallback(() => {
-    /* Server-highlighted blocks pass `lines` and no `code`, so the document
-       text is the fallback; without it this rendered a labelled control that
-       did nothing on the exact path the docs advertise. */
+  /* Server-highlighted blocks pass `lines` and no `code`, so the document
+     text is the fallback; without it this rendered a labelled control that
+     did nothing on the exact path the docs advertise. */
+  const payload = useCallback(() => {
     const fallback = document_?.code || document_?.lines.map((line) => line.text).join("\n");
-    const payload = stripNotationComments(value ?? fallback ?? "");
-    if (!payload) return;
-    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
-      return;
-    }
-
-    navigator.clipboard.writeText(payload).then(
-      () => {
-        setCopied(true);
-        onCopy?.(payload);
-      },
-      /* Rejection is routine: a denied permission, or a document that lost
-         focus. Without the handler it surfaced as an unhandled rejection in
-         the consumer's error monitoring. */
-      (error: unknown) => {
-        setCopyFailed(true);
-        onCopyError?.(error);
-      },
-    );
-  }, [value, document_, onCopy, onCopyError]);
+    return stripNotationComments(value ?? fallback ?? "");
+  }, [value, document_]);
 
   return (
-    <Button
+    <CopyButton
       data-slot="code-block-copy"
-      data-copied={copied || undefined}
-      data-copy-failed={copyFailed || undefined}
       data-position={resolvedPosition}
-      aria-label={copied ? (labels?.copied ?? "Copied") : (labels?.copy ?? "Copy code")}
+      value={payload}
+      timeout={timeout}
+      onCopy={onCopy}
+      onCopyError={onCopyError}
+      labels={{
+        copy: labels?.copy ?? "Copy code",
+        ...(labels?.copied && { copied: labels.copied }),
+        ...(labels?.failed && { failed: labels.failed }),
+      }}
       variant={variant}
       size={resolvedSize}
-      onPress={handleClick}
       className={cn(
         "shrink-0 [&_svg]:size-3.5",
         resolvedPosition === "pinned" &&
@@ -1794,8 +1768,8 @@ function CodeBlockCopyButton({
       )}
       {...props}
     >
-      {children ?? (copied ? <CheckIcon aria-hidden="true" /> : <CopyIcon aria-hidden="true" />)}
-    </Button>
+      {children}
+    </CopyButton>
   );
 }
 

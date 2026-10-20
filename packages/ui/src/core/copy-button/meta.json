@@ -1,0 +1,8 @@
+{
+  "name": "copy-button",
+  "category": "buttons",
+  "status": "stable",
+  "source": "original",
+  "description": "An icon button that copies a value too long to type (protocol, access key, Pix code, token) to the clipboard. The icon turns into a check, or a cross on failure, for a moment, and the outcome is announced in a separate live region; labels are translatable and an optional tooltip shows them. Also exports `useCopyToClipboard` for other triggers, such as a menu item.",
+  "tags": ["buttons", "clipboard", "copy"]
+}
