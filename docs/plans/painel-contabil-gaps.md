@@ -179,8 +179,8 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
 - **B7** — *removido*: o menu vertical lateral das áreas com subpáginas sai do padrão; todas
   passam a usar o `tab-nav` (C10) no cabeçalho (B3).
 - **B8 `settings-form`** — *Necessidade*: formulários de edição longos em seções, salvando só quando
-  há mudança. *Direção*: seções em duas colunas (título e descrição ao lado dos campos, empilhando
-  em formulários estreitos; campos em grade de duas colunas) e barra de salvar fixa no fim da tela
+  há mudança. *Direção*: seções com título e descrição empilhados acima dos campos (o app tem
+  sidebar, então a largura fica para os campos, em grade de duas colunas quando cabe) e barra de salvar fixa no fim da tela
   com estado (sem alterações / não salvas / salvando), Descartar opcional (`onReset`) e Salvar;
   props `isDirty`, `isPending`, `onSubmit`. Aviso ao sair com alterações fica no app.
 - **B9** — *absorvido pelo B5*: mostrar o estado de um recurso (certificado digital, plano atual)

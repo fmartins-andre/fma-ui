@@ -86,9 +86,9 @@ function SettingsForm({
 }
 
 /**
- * One group of settings: title and description beside its fields on wide
- * forms, above them on narrow ones. The fields sit in a two-column grid when
- * there's room; give a field `col-span-full` to take the whole row.
+ * One group of settings: title and description above its fields, which sit
+ * in a two-column grid when there's room; give a field `col-span-full` to
+ * take the whole row.
  */
 function SettingsSection({
   title,
@@ -114,10 +114,7 @@ function SettingsSection({
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
       data-slot="settings-section"
-      className={cn(
-        "grid gap-x-10 gap-y-4 border-b py-8 first:pt-0 last-of-type:border-b-0 @3xl/settings-form:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]",
-        className,
-      )}
+      className={cn("grid gap-4 border-b py-8 first:pt-0 last-of-type:border-b-0", className)}
       {...props}
     >
       <div data-slot="settings-section-header" className="flex flex-col gap-1">
