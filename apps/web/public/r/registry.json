@@ -2464,6 +2464,46 @@
       }
     },
     {
+      "name": "order-summary",
+      "type": "registry:block",
+      "title": "Order Summary",
+      "description": "What the user is about to confirm before buying: lines, an applicable benefit, discounts, the total and the action. `OrderSummary` takes the `title`, `totalLabel`, `total` and optional `totalDescription` (values formatted by the app) and the `action` button; on large screens it's a card that sticks while the page scrolls (put it in the side column), smaller it becomes a bar fixed to the bottom with the total and the action, whose total opens the lines in a bottom sheet (leave room under the page, e.g. `pb-28 lg:pb-0`). Its children sit in a `description-list`: `OrderSummaryLine` (`label`, `value`, `description` under the label — an item, a fee, who the order is for; `tone=\"discount\"` for a negative value) and `OrderSummaryOption` (a benefit behind a `Switch`, such as the account balance, its amount struck through while off). The total stands apart by size and weight, not only color. Built-in text is in English; translate it with `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/order-summary/order-summary.tsx",
+          "target": "components/fma-ui/order-summary/order-summary.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/card",
+        "@fma-ui/description-list",
+        "@fma-ui/separator",
+        "@fma-ui/sheet",
+        "@fma-ui/switch"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "checkout",
+          "summary",
+          "order",
+          "total"
+        ]
+      }
+    },
+    {
       "name": "page-header",
       "type": "registry:block",
       "title": "Page Header",
