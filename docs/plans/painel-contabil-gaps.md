@@ -226,9 +226,11 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   senha e redefinição em **duas etapas** (o servidor valida o código, depois a nova senha). Cadastro
   como story com B11, depois do merge dele.
 - **B13 `order-summary`** — *Necessidade*: resumo de compra com itens, benefício aplicável
-  (brinde, saldo de cashback), descontos e total antes de confirmar. *Direção*: card fixo com
-  `description-list`, linha de opção com `switch`, descontos e total com hierarquia tipográfica
-  (não só cor), CTA com pendência; stories de aplicar saldo e de entidade selecionada.
+  (brinde, saldo de cashback), descontos e total antes de confirmar. *Direção*: por partes
+  (`OrderSummaryLine`, `OrderSummaryOption` com `switch`) numa `description-list`, total e CTA por
+  props; card sticky na coluna lateral em telas grandes e, menores, barra fixa embaixo com total + CTA
+  que abre os detalhes num sheet; descontos e total com hierarquia tipográfica (não só cor); stories
+  de aplicar saldo e de entidade selecionada.
 - **B14 `plan-builder`** — *Necessidade*: montar um plano escolhendo quantidades por recurso e ver o
   preço em tempo real; comprar pacotes por quantidade. *Direção*: card de recurso (ícone,
   título, descrição, `slider` com marcas A2, valor, slot para add-on, `accordion` "o que está
@@ -280,6 +282,7 @@ Implementados (um PR por item):
 | B8 `settings-form` | `feat/settings-form` |
 | B11 `form-wizard` | `feat/form-wizard` |
 | B12 `auth` | `feat/auth` |
+| B13 `order-summary` | `feat/order-summary` |
 
 ## Ordem de execução
 
