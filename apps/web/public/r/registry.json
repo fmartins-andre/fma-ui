@@ -508,7 +508,7 @@
       "name": "carousel",
       "type": "registry:ui",
       "title": "Carousel",
-      "description": "A carousel for cycling through slides (images, cards, or any content) with keyboard, swipe, and button navigation. Built on embla-carousel-react; CarouselPrevious/CarouselNext are Buttons wired to the carousel API.",
+      "description": "A carousel for cycling through slides (images, cards, or any content) with keyboard, swipe, and button navigation. Built on embla-carousel-react; CarouselPrevious/CarouselNext are Buttons wired to the carousel API. `autoplay` (`true` or `{ delay }`, 5000 ms by default) advances on its own and wraps to the first slide; pair it with `CarouselAutoplayToggle` (pause/resume, required for moving content by WCAG 2.2.2; a dev warning flags its absence). Rotation pauses while the pointer is over the carousel or focus is inside it, starts paused under reduced motion, and slide changes are announced (`aria-live`) only when not rotating. `CarouselDots` shows one dot per slide, marks the current one and goes to a slide on press. The toggle and dots are not positioned; place them where they fit. Built-in labels are in English; translate them with `i18n.labels`.",
       "author": "@fma-ui/ui",
       "categories": [
         "data-display"
@@ -530,7 +530,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "tags": [
           "data-display",
           "carousel",
