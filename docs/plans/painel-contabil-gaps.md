@@ -149,15 +149,25 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   `breadcrumb`, `h1` com skeleton, descrição, slot de ações e slot de navegação (`tab-nav`, C10);
   empilha no mobile.
 - **B4 `stat-cards`** — *Necessidade*: totais no topo de listas e painéis (clientes por situação,
-  notas por status, saldos por período). *Direção*: `StatCard` (rótulo, valor, ícone em
-  `icon-tile`, tom semântico opcional, descrição/variação, loading, indisponível) + grid; um card
-  com vários valores e seletor de período no cabeçalho.
+  notas por status, saldos por período); em listas, os totais às vezes **filtram** a listagem.
+  *Direção*: `Stat` (rótulo, valor formatado pelo app, ícone em `icon-tile` `soft`, descrição,
+  `isLoading`, `isUnavailable`; `tone` semântico tinge ícone **e** valor; `size="lg"` para um
+  saldo em destaque), sem superfície, para vários valores num card; `StatGrid` (colunas
+  `auto-fit`). Cards: `StatCard` (estático), `StatCardButton` (`onPress` ou gatilho de
+  `DialogTrigger`), `StatCardLink` (navega) e `StatCardGroup` + `StatCardToggle` (filtro:
+  `ToggleButtonGroup` com `selectionMode` `single` = rádios ou `multiple` = checkboxes,
+  controlado por `selectedKeys`, mapeável num search param). Borda colorida e ícone sólido do app
+  não entram; variação (↑/↓) só se aparecer, via `StatDescription` + `badge`.
 - **B5 `dashboard-card`** — *Necessidade*: cards de painel com título, ajuda, hora da atualização,
-  filtros e conteúdo (gráfico, mini tabela) com loading e vazio. *Direção*: `card` com cabeçalho
-  padronizado (ícone, título, ajuda em `tooltip`, "Atualizado em…", toolbar) e corpo que alterna
-  loading/vazio (`empty`)/conteúdo; stories com `chart` e `data-grid`. A toolbar é só um slot:
-  controles específicos de cada card (ex.: anterior/próxima nos cards de certificados e DAS a
-  vencer de `/dashboard/gestao-mei`) ficam no app, compostos com `button`.
+  filtros e conteúdo (gráfico, mini tabela, totais) com loading, vazio e erro. *Direção*: `card`
+  com cabeçalho padronizado (ícone, título, descrição, ajuda num botão ⓘ que abre `popover` —
+  toque e teclado —, "Atualizado em…" via `Intl` + `i18n`, `isRefreshing` com spinner sem tirar o
+  conteúdo da tela, toolbar como slot) e corpo que alterna loading/vazio (`empty`)/erro
+  (`isError` + `onRetry`)/conteúdo; rodapé é o `CardFooter`. O card com vários valores e seletor
+  de período (resumo de cashback) e o de saldo com alerta e ação são composições com B4
+  (`StatGrid`/`Stat size="lg"`), nas stories. A toolbar é só um slot: controles específicos de
+  cada card (ex.: anterior/próxima nos cards de certificados e DAS a vencer de
+  `/dashboard/gestao-mei`) ficam no app, compostos com `button`.
 - **B6 `filter-toolbar`** — *Necessidade*: listas com busca, filtros rápidos, filtros avançados,
   filtros ativos visíveis e atualizar. *Direção*: bloco genérico (serve ao `data-grid` e a qualquer
   lista) de partes controladas uma a uma (`value`/`onChange`, cada uma mapeável num search param):
@@ -255,6 +265,8 @@ Implementados (um PR por item):
 | B3 `page-header` | `feat/page-header` (sobre C10) |
 | B10 `use-dialog-promise` + `confirm-dialog` | `feat/dialog-promise` |
 | B2 `notification-center` | `feat/notification-center` |
+| B6 `filter-toolbar` | `feat/filter-toolbar` |
+| B4 `stat-cards` | `feat/stat-cards` |
 
 ## Ordem de execução
 
@@ -263,7 +275,7 @@ Um PR por item contra `main`; `gh stack` só quando um item depende de outro ain
 
 1. **Fundação**: A9, C1, C2, C4, C8, A3, A4, A5, C10, B10, B3 (C10).
 2. **Shell**: A1, B1 (A1, C9), B2 (C9, B10). Ao fim, o app já troca o layout inteiro.
-3. **Listas e painéis**: B4, B5, B6 (A5), B9 (C4).
+3. **Listas e painéis**: B4, B5 (B4), B6 (A5), B9 (C4).
 4. **Formulários e fluxos**: C3, A11 (A3), A2, B8, B11, B12 (C1, C2, B11), B13 (C4), B14 (A2, B10).
 5. **Restante**: C7, B15 (C7, A4, B10), B16 (A11), B17, A8.
 
