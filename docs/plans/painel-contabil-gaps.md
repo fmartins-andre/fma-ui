@@ -179,8 +179,10 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
 - **B7** — *removido*: o menu vertical lateral das áreas com subpáginas sai do padrão; todas
   passam a usar o `tab-nav` (C10) no cabeçalho (B3).
 - **B8 `settings-form`** — *Necessidade*: formulários de edição longos em seções, salvando só quando
-  há mudança. *Direção*: seções com `FieldSet`/`FieldLegend` em grade responsiva e rodapé com
-  estado (sem alterações / salvando) e ação de salvar; props `isDirty`, `isPending`, `onSubmit`.
+  há mudança. *Direção*: seções em duas colunas (título e descrição ao lado dos campos, empilhando
+  em formulários estreitos; campos em grade de duas colunas) e barra de salvar fixa no fim da tela
+  com estado (sem alterações / não salvas / salvando), Descartar opcional (`onReset`) e Salvar;
+  props `isDirty`, `isPending`, `onSubmit`. Aviso ao sair com alterações fica no app.
 - **B9** — *absorvido pelo B5*: mostrar o estado de um recurso (certificado digital, plano atual)
   com detalhes e ações é um `panel-card` com `status` (`badge`) no cabeçalho, `description-list`
   no corpo, problema num `alert` dentro do card (nunca recolorindo o card), ausência como
@@ -273,6 +275,7 @@ Implementados (um PR por item):
 | C3 `file-upload` + `use-file-upload` | `feat/file-upload` |
 | A11 `CheckboxCard` / `RadioCard` | `feat/choice-card` |
 | A2 `slider` com `marks` | `feat/slider-marks` |
+| B8 `settings-form` | `feat/settings-form` |
 
 ## Ordem de execução
 
