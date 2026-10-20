@@ -2814,6 +2814,41 @@
       }
     },
     {
+      "name": "settings-form",
+      "type": "registry:block",
+      "title": "Settings Form",
+      "description": "A long edit form in sections, saved as a whole (account, company, preferences). `SettingsForm` is a react-aria `Form` that only shows state the app owns: `isDirty` (enables Save and Discard), `isPending` (spinner on Save, `aria-busy`) and `onReset` (adds a Discard button that should restore the saved values), so react-hook-form or any other form state fits. `SettingsSection` groups fields under a `title` and `description` (a labelled group) stacked above them, leaving the width to the fields next to an app sidebar; the fields fall into a two-column grid when there's room (container query), and `col-span-full` takes the whole row. `SettingsFormFooter` is a save bar stuck to the bottom of the viewport with a polite status line (no changes / unsaved / saving), optional children before the buttons, Discard and Save. Warning before leaving with unsaved changes stays in the app (it depends on the router; use `confirm-dialog`). Built-in text is in English; translate it with `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/settings-form/settings-form.tsx",
+          "target": "components/fma-ui/settings-form/settings-form.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/spinner"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "form",
+          "settings",
+          "fields"
+        ]
+      }
+    },
+    {
       "name": "sheet",
       "type": "registry:ui",
       "title": "Sheet",
