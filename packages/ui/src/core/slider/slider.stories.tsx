@@ -136,3 +136,49 @@ export const RangeWithMarks: Story = {
     await expect(max).toHaveValue("100000");
   },
 };
+
+/**
+ * `limit` caps the value below `maxValue`: the scale keeps its marks, the
+ * track above the limit is drawn as unavailable and its marks are disabled.
+ * `description` says why, and screen readers hear it with the value.
+ */
+export const Limit: Story = {
+  args: {
+    label: "Notas adicionais",
+    showValue: true,
+    formatValue: (value) => `${value} notas`,
+    minValue: 0,
+    maxValue: 60,
+    step: 10,
+    defaultValue: 10,
+    limit: 20,
+    description: "Só 20 disponíveis neste ciclo.",
+    marks: [0, 10, 20, 30, 40, 50, 60],
+    onChange: fn(),
+    onChangeEnd: fn(),
+  },
+  render: (args) => (
+    <div className="w-80">
+      <Slider {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const slider = canvas.getByRole("slider", { name: "Notas adicionais" });
+    await expect(slider).toHaveAccessibleDescription("Só 20 disponíveis neste ciclo.");
+    await expect(canvas.getByRole("button", { name: "30" })).toBeDisabled();
+
+    // The keyboard stops at the limit, not at maxValue.
+    await userEvent.click(canvas.getByRole("button", { name: "20" }));
+    await expect(slider).toHaveValue("20");
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.keyboard("{End}");
+    await expect(slider).toHaveValue("20");
+    await expect(canvas.getByText("20 notas")).toBeInTheDocument();
+    await expect(args.onChangeEnd).toHaveBeenLastCalledWith(20);
+    await expect(args.onChange).not.toHaveBeenCalledWith(30);
+
+    await userEvent.keyboard("{Home}");
+    await expect(slider).toHaveValue("0");
+  },
+};

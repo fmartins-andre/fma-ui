@@ -2678,6 +2678,46 @@
       }
     },
     {
+      "name": "plan-builder",
+      "type": "registry:block",
+      "title": "Plan Builder",
+      "description": "Build what the user is about to buy by choosing quantities, with the price in real time: a custom plan with several resources, or a quantity of one item (extra notes, credits). `PlanBuilder` lays out the resources and its `summary` (an `OrderSummary`: sticky card on large screens, bar fixed to the bottom on smaller ones); `isCalculating` turns every `PlanPrice` (a price formatted by the app) into a skeleton while the app recalculates. `PlanResource` is a card with `icon`, `title`, `description` and a controlled `Slider` named by `label` (`value`/`onChange`, `minValue`/`maxValue`/`step`, `marks`, `formatValue`, `limit` for stock or quota left, `isDisabled`), a `hint` under the slider saying why it stops or is disabled, add-ons as children (`PlanResourceAddon`: a switch with label and description) and an optional `included` accordion. The price, debouncing, limits and notices stay in the app. Built-in text is in English; translate it with `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/plan-builder/plan-builder.tsx",
+          "target": "components/fma-ui/plan-builder/plan-builder.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/accordion",
+        "@fma-ui/card",
+        "@fma-ui/icon-tile",
+        "@fma-ui/skeleton",
+        "@fma-ui/slider",
+        "@fma-ui/switch"
+      ],
+      "dependencies": [
+        "cn@^0.4.0"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "checkout",
+          "plan",
+          "pricing",
+          "slider",
+          "quantity"
+        ]
+      }
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
@@ -3070,7 +3110,7 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
-      "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value. `label` names it above the track and `showValue` prints the value (or range) beside it, formatted by `formatValue` (\"200 notas\") or `formatOptions` (currency, percent — also what screen readers announce). `marks` adds labelled stops under the track (`number` or `{ value, label }`); clicking one moves the nearest thumb there and fires `onChangeEnd`, while the keyboard keeps using the thumb.",
+      "description": "A draggable single- or range-value slider, horizontal or vertical — pass an array default/value to get one thumb per value. `label` names it above the track and `showValue` prints the value (or range) beside it, formatted by `formatValue` (\"200 notas\") or `formatOptions` (currency, percent — also what screen readers announce). `marks` adds labelled stops under the track (`number` or `{ value, label }`); clicking one moves the nearest thumb there and fires `onChangeEnd`, while the keyboard keeps using the thumb. `limit` caps the value below `maxValue` (stock left, plan quota): the scale and marks still run to `maxValue`, the track above the limit is drawn as unavailable and its marks are disabled; `description` under the track says why and is read with the value.",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"

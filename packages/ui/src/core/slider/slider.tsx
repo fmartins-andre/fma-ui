@@ -1,5 +1,5 @@
 import { cn } from "cn";
-import type * as React from "react";
+import * as React from "react";
 import {
   SliderFill,
   SliderOutput,
@@ -35,9 +35,28 @@ type SliderProps<T extends SliderValue = SliderValue> = Omit<
    * there; the keyboard keeps using the thumb.
    */
   marks?: SliderMark[];
+  /**
+   * A cap below `maxValue`: the scale and the marks still run to `maxValue`,
+   * but the value stops here (dragging, keys and marks above it), and the part
+   * of the track above it is drawn as unavailable. Say why in `description`.
+   */
+  limit?: number;
+  /** Text under the track ("Only 20 left"); screen readers read it with the value. */
+  description?: React.ReactNode;
 };
 
 const toMark = (mark: SliderMark) => (typeof mark === "number" ? { value: mark } : mark);
+
+function clampTo<T extends SliderValue>(value: T, limit: number): T {
+  return (
+    Array.isArray(value) ? value.map((item) => Math.min(item, limit)) : Math.min(value, limit)
+  ) as T;
+}
+
+const sameValue = (a: SliderValue, b: SliderValue) =>
+  Array.isArray(a) && Array.isArray(b)
+    ? a.length === b.length && a.every((item, index) => item === b[index])
+    : a === b;
 
 /** Moves the thumb closest to `value` there, reporting it as a finished change; returns its index. */
 function moveNearestThumb(state: SliderState, value: number) {
@@ -52,7 +71,15 @@ function moveNearestThumb(state: SliderState, value: number) {
   return nearest;
 }
 
-function SliderMarks({ marks, state }: { marks: SliderMark[]; state: SliderState }) {
+function SliderMarks({
+  marks,
+  state,
+  limit,
+}: {
+  marks: SliderMark[];
+  state: SliderState;
+  limit?: number;
+}) {
   return (
     <div
       data-slot="slider-marks"
@@ -67,7 +94,7 @@ function SliderMarks({ marks, state }: { marks: SliderMark[]; state: SliderState
             // The thumb is the keyboard path; marks are a pointer shortcut.
             tabIndex={-1}
             data-slot="slider-mark"
-            disabled={state.isDisabled}
+            disabled={state.isDisabled || (limit !== undefined && value > limit)}
             // Hand focus to the moved thumb, so the arrow keys pick up from there.
             onMouseDown={(event) => event.preventDefault()}
             onClick={(event) => {
@@ -81,7 +108,7 @@ function SliderMarks({ marks, state }: { marks: SliderMark[]; state: SliderState
               state.orientation === "vertical" ? { bottom: `${percent}%` } : { left: `${percent}%` }
             }
             className={cn(
-              "absolute rounded-sm px-1 whitespace-nowrap tabular-nums transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none",
+              "absolute rounded-sm px-1 whitespace-nowrap tabular-nums transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50",
               "group-data-horizontal:top-0 group-data-vertical:left-0",
               percent <= 0
                 ? "group-data-horizontal:-translate-x-1 group-data-vertical:translate-y-0"
@@ -104,8 +131,31 @@ function Slider<T extends SliderValue = SliderValue>({
   showValue = false,
   formatValue,
   marks,
+  limit,
+  description,
   ...props
 }: SliderProps<T>) {
+  const descriptionId = React.useId();
+  const [uncontrolled, setUncontrolled] = React.useState(props.defaultValue);
+
+  // With a limit the value is held here, so a change past it can be pulled back.
+  let limitProps: Partial<SliderPrimitiveProps<T>> = {};
+  if (limit !== undefined) {
+    const { value, onChange, onChangeEnd } = props;
+    const current = clampTo(value ?? uncontrolled ?? ((props.minValue ?? 0) as T), limit);
+    limitProps = {
+      defaultValue: undefined,
+      value: current,
+      onChange: (next) => {
+        const clamped = clampTo(next, limit);
+        if (sameValue(clamped, current)) return;
+        if (value === undefined) setUncontrolled(clamped);
+        onChange?.(clamped);
+      },
+      onChangeEnd: onChangeEnd && ((next) => onChangeEnd(clampTo(next, limit))),
+    };
+  }
+
   return (
     <SliderPrimitive
       className={cn(
@@ -114,9 +164,17 @@ function Slider<T extends SliderValue = SliderValue>({
       )}
       data-slot="slider"
       {...props}
+      {...limitProps}
+      aria-describedby={
+        cn(props["aria-describedby"], description != null && descriptionId) || undefined
+      }
     >
       {({ state }) => {
         const format = formatValue ?? ((value: number) => state.getFormattedValue(value));
+        const limitPercent =
+          limit !== undefined && limit < (props.maxValue ?? 100)
+            ? state.getValuePercent(limit) * 100
+            : undefined;
         return (
           <>
             {(label || showValue) && (
@@ -151,7 +209,31 @@ function Slider<T extends SliderValue = SliderValue>({
                     data-slot="slider-range"
                     className="absolute bg-primary select-none data-horizontal:h-full data-vertical:w-full"
                   />
+                  {limitPercent !== undefined && (
+                    <div
+                      aria-hidden="true"
+                      data-slot="slider-unavailable"
+                      style={
+                        state.orientation === "vertical"
+                          ? { bottom: `${limitPercent}%` }
+                          : { left: `${limitPercent}%` }
+                      }
+                      className="absolute bg-[repeating-linear-gradient(90deg,var(--muted-foreground)_0_2px,transparent_2px_5px)] opacity-40 group-data-horizontal:inset-y-0 group-data-horizontal:right-0 group-data-vertical:inset-x-0 group-data-vertical:top-0 group-data-vertical:bg-[repeating-linear-gradient(0deg,var(--muted-foreground)_0_2px,transparent_2px_5px)]"
+                    />
+                  )}
                 </SliderTrack>
+                {limitPercent !== undefined && (
+                  <span
+                    aria-hidden="true"
+                    data-slot="slider-limit"
+                    style={
+                      state.orientation === "vertical"
+                        ? { bottom: `${limitPercent}%` }
+                        : { left: `${limitPercent}%` }
+                    }
+                    className="absolute rounded-full bg-muted-foreground/60 group-data-horizontal:h-3 group-data-horizontal:w-0.5 group-data-horizontal:-translate-x-1/2 group-data-vertical:h-0.5 group-data-vertical:w-3 group-data-vertical:translate-y-1/2"
+                  />
+                )}
                 {state.values.map((_, index) => (
                   <SliderThumb
                     data-slot="slider-thumb"
@@ -162,8 +244,19 @@ function Slider<T extends SliderValue = SliderValue>({
                   />
                 ))}
               </div>
-              {marks && marks.length > 0 && <SliderMarks marks={marks} state={state} />}
+              {marks && marks.length > 0 && (
+                <SliderMarks marks={marks} state={state} limit={limit} />
+              )}
             </div>
+            {description != null && (
+              <p
+                id={descriptionId}
+                data-slot="slider-description"
+                className="text-sm text-muted-foreground"
+              >
+                {description}
+              </p>
+            )}
           </>
         );
       }}
