@@ -291,6 +291,7 @@ Implementados (um PR por item):
 | B12 `auth` | `feat/auth` |
 | B13 `order-summary` | `feat/order-summary` |
 | B14 `plan-builder` (+ `limit` no `slider`) | `feat/plan-builder` |
+| C7 `credit-card` | `feat/credit-card` |
 
 ## Ordem de execução
 
