@@ -2,9 +2,7 @@
 
 import { cn } from "cn";
 import {
-  CheckIcon,
   ChevronDownIcon,
-  CopyIcon,
   LockIcon,
   RotateCwIcon,
   SearchXIcon,
@@ -17,6 +15,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/core/collapsible/collapsible";
+import { CopyButton } from "@/core/copy-button/copy-button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia } from "@/core/empty/empty";
 import { IconStack } from "@/core/icon-stack/icon-stack";
 
@@ -91,12 +90,14 @@ type ErrorDetailsLabels = {
   details: string;
   copy: string;
   copied: string;
+  copyFailed: string;
 };
 
 const defaultErrorDetailsLabels: ErrorDetailsLabels = {
   details: "Error details",
   copy: "Copy details",
   copied: "Copied",
+  copyFailed: "Couldn't copy",
 };
 
 /** The error as text: the stack when there is one (it starts with the message). */
@@ -125,13 +126,6 @@ function ErrorDetails({
 }) {
   const labels = { ...defaultErrorDetailsLabels, ...labelsProp };
   const text = formatError(error);
-  const [copied, setCopied] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!copied) return;
-    const timeout = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timeout);
-  }, [copied]);
 
   return (
     <Collapsible
@@ -148,20 +142,12 @@ function ErrorDetails({
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="relative mt-2 rounded-lg border bg-muted/50">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={copied ? labels.copied : labels.copy}
-            onPress={() => {
-              navigator.clipboard.writeText(text).then(
-                () => setCopied(true),
-                () => setCopied(false),
-              );
-            }}
+          <CopyButton
+            value={text}
+            timeout={1500}
+            labels={{ copy: labels.copy, copied: labels.copied, failed: labels.copyFailed }}
             className="absolute top-1.5 right-1.5"
-          >
-            {copied ? <CheckIcon /> : <CopyIcon />}
-          </Button>
+          />
           <pre className="max-h-64 overflow-auto p-3 pr-11 font-mono text-xs/relaxed wrap-anywhere whitespace-pre-wrap text-muted-foreground">
             {text}
           </pre>

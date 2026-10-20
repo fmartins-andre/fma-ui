@@ -10,7 +10,7 @@ import {
   formatRgb,
   parse,
 } from "culori";
-import { CheckIcon, ContrastIcon, CopyIcon, PipetteIcon } from "lucide-react";
+import { ContrastIcon, PipetteIcon } from "lucide-react";
 import {
   type ComponentProps,
   createContext,
@@ -42,6 +42,7 @@ import {
   SliderTrack,
 } from "react-aria-components";
 import { Button, buttonVariants } from "@/core/button/button";
+import { CopyButton } from "@/core/copy-button/copy-button";
 import { Input } from "@/core/input/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/core/input-group/input-group";
 import { Popover } from "@/core/popover/popover";
@@ -318,6 +319,7 @@ interface ColorPickerLabels {
   hex: string;
   copy: string;
   copied: string;
+  copyFailed: string;
   eyeDropper: string;
   /** The contrast fix buttons. */
   fix: (level: "AA" | "AAA") => string;
@@ -343,6 +345,7 @@ const DEFAULT_COLOR_PICKER_LABELS: ColorPickerLabels = {
   hex: "Hex",
   copy: "Copy color",
   copied: "Copied",
+  copyFailed: "Couldn't copy",
   eyeDropper: "Pick a color from the screen",
   fix: (level) => `Fix to ${level}`,
   largeText: "AA large",
@@ -1864,30 +1867,22 @@ function ColorPickerCopy({
   ...props
 }: ColorPickerCopyProps) {
   const picker = usePicker("ColorPickerCopy");
-  const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    if (!copied) return;
-    const timeout = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timeout);
-  }, [copied]);
-  const text = format ? formatState(picker.state, format) : picker.value;
   return (
-    <Button
+    <CopyButton
       data-slot="color-picker-copy"
-      data-copied={copied || undefined}
+      value={() => (format ? formatState(picker.state, format) : picker.value)}
+      timeout={1500}
+      labels={{
+        copy: picker.labels.copy,
+        copied: picker.labels.copied,
+        failed: picker.labels.copyFailed,
+      }}
       variant={variant}
       size={size}
-      aria-label={copied ? picker.labels.copied : picker.labels.copy}
-      onPress={() => {
-        navigator.clipboard.writeText(text).then(
-          () => setCopied(true),
-          () => setCopied(false),
-        );
-      }}
       {...props}
     >
-      {children ?? (copied ? <CheckIcon /> : <CopyIcon />)}
-    </Button>
+      {children}
+    </CopyButton>
   );
 }
 

@@ -77,6 +77,7 @@ export const UnexpectedErrorPage: Story = {
           details: "Detalhes do erro",
           copy: "Copiar detalhes",
           copied: "Copiado",
+          copyFailed: "Não foi possível copiar",
         },
       }}
     />

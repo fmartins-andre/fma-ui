@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "copy-button",
+  "title": "Copy Button",
+  "author": "@fma-ui/ui",
+  "description": "An icon button that copies a value too long to type (protocol, access key, Pix code, token) to the clipboard. The icon turns into a check, or a cross on failure, for a moment, and the outcome is announced in a separate live region; labels are translatable and an optional tooltip shows them. Also exports `useCopyToClipboard` for other triggers, such as a menu item.",
+  "dependencies": [
+    "cn@^0.4.0",
+    "lucide-react@^1.55.0"
+  ],
+  "registryDependencies": [
+    "@fma-ui/button",
+    "@fma-ui/tooltip"
+  ],
+  "files": [
+    {
+      "path": "src/core/copy-button/copy-button.tsx",
+      "content": "import { cn } from \"cn\";\nimport { CheckIcon, CopyIcon, XIcon } from \"lucide-react\";\nimport * as React from \"react\";\nimport { Button } from \"@/core/button/button\";\nimport { Tooltip, TooltipTrigger } from \"@/core/tooltip/tooltip\";\n\ntype CopyStatus = \"idle\" | \"copied\" | \"failed\";\n\ntype UseCopyToClipboardOptions = {\n  /** How long the copied/failed state lasts, in ms. `0` keeps it until the next copy. */\n  timeout?: number;\n  onCopy?: (value: string) => void;\n  onCopyError?: (error: unknown) => void;\n};\n\n/**\n * Copies text and tracks the outcome for a moment. For triggers other than\n * `CopyButton`, such as a menu item; the timer is cleared on unmount.\n */\nfunction useCopyToClipboard({\n  timeout = 2000,\n  onCopy,\n  onCopyError,\n}: UseCopyToClipboardOptions = {}) {\n  // `count` restarts the timer on every copy, even when the status repeats.\n  const [state, setState] = React.useState<{ status: CopyStatus; count: number }>({\n    status: \"idle\",\n    count: 0,\n  });\n\n  React.useEffect(() => {\n    if (state.status === \"idle\" || timeout === 0) return;\n    const id = window.setTimeout(\n      () => setState((current) => ({ ...current, status: \"idle\" })),\n      timeout,\n    );\n    return () => window.clearTimeout(id);\n  }, [state, timeout]);\n\n  const copy = React.useCallback(\n    async (value: string) => {\n      try {\n        if (!navigator.clipboard?.writeText) throw new Error(\"Clipboard API unavailable\");\n        await navigator.clipboard.writeText(value);\n        setState((current) => ({ status: \"copied\", count: current.count + 1 }));\n        onCopy?.(value);\n        return true;\n      } catch (error) {\n        /* Rejection is routine: a denied permission, or a document without\n           focus. It is reported, never thrown as an unhandled rejection. */\n        setState((current) => ({ status: \"failed\", count: current.count + 1 }));\n        onCopyError?.(error);\n        return false;\n      }\n    },\n    [onCopy, onCopyError],\n  );\n\n  const reset = React.useCallback(\n    () => setState((current) => ({ ...current, status: \"idle\" })),\n    [],\n  );\n\n  return { status: state.status, count: state.count, copy, reset };\n}\n\ntype CopyButtonLabels = {\n  /** The button's accessible name; name what is copied (\"Copy access key\"). */\n  copy: string;\n  copied: string;\n  failed: string;\n};\n\nconst defaultCopyButtonLabels: CopyButtonLabels = {\n  copy: \"Copy\",\n  copied: \"Copied\",\n  failed: \"Couldn't copy\",\n};\n\ntype CopyButtonProps = Omit<React.ComponentProps<typeof Button>, \"value\" | \"onCopy\" | \"children\"> &\n  UseCopyToClipboardOptions & {\n    /** The text copied, or a function read at press time. Empty text copies nothing. */\n    value: string | (() => string);\n    labels?: Partial<CopyButtonLabels>;\n    /** Shows the label, then the outcome, in a tooltip. */\n    tooltip?: boolean;\n    /** Replaces the icon, e.g. for a text button. */\n    children?: React.ReactNode;\n  };\n\n/**\n * Copies a value too long to type. The icon turns into a check (or a cross)\n * for a moment, and the outcome is announced in a separate live region: a\n * name change on the focused button is something screen readers rarely read.\n */\nfunction CopyButton({\n  value,\n  timeout,\n  onCopy,\n  onCopyError,\n  labels: labelsProp,\n  tooltip = false,\n  variant = \"ghost\",\n  size = \"icon-sm\",\n  className,\n  children,\n  onPress,\n  ...props\n}: CopyButtonProps) {\n  const labels = { ...defaultCopyButtonLabels, ...labelsProp };\n  const { status, count, copy } = useCopyToClipboard({ timeout, onCopy, onCopyError });\n  const outcome = status === \"copied\" ? labels.copied : status === \"failed\" ? labels.failed : \"\";\n\n  const button = (\n    <Button\n      data-slot=\"copy-button\"\n      data-copied={status === \"copied\" || undefined}\n      data-copy-failed={status === \"failed\" || undefined}\n      variant={variant}\n      size={size}\n      aria-label={children ? undefined : labels.copy}\n      className={cn(className)}\n      onPress={(event) => {\n        onPress?.(event);\n        const text = typeof value === \"function\" ? value() : value;\n        if (text) void copy(text);\n      }}\n      {...props}\n    >\n      {children ??\n        (status === \"copied\" ? (\n          <CheckIcon aria-hidden=\"true\" />\n        ) : status === \"failed\" ? (\n          <XIcon aria-hidden=\"true\" />\n        ) : (\n          <CopyIcon aria-hidden=\"true\" />\n        ))}\n    </Button>\n  );\n\n  return (\n    <>\n      {tooltip ? (\n        <TooltipTrigger>\n          {button}\n          <Tooltip>{outcome || labels.copy}</Tooltip>\n        </TooltipTrigger>\n      ) : (\n        button\n      )}\n      <span role=\"status\" className=\"sr-only\">\n        {/* A repeated outcome alternates a trailing space so it is read again. */}\n        {outcome && (count % 2 ? outcome : `${outcome} `)}\n      </span>\n    </>\n  );\n}\n\nexport {\n  CopyButton,\n  type CopyButtonLabels,\n  type CopyButtonProps,\n  type CopyStatus,\n  defaultCopyButtonLabels,\n  type UseCopyToClipboardOptions,\n  useCopyToClipboard,\n};\n",
+      "type": "registry:component",
+      "target": "components/fma-ui/copy-button.tsx"
+    }
+  ],
+  "meta": {
+    "status": "stable",
+    "source": "original",
+    "tags": [
+      "buttons",
+      "clipboard",
+      "copy"
+    ]
+  },
+  "categories": [
+    "buttons"
+  ],
+  "type": "registry:ui"
+}

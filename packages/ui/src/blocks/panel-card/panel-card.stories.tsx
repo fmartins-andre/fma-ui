@@ -3,7 +3,6 @@ import {
   AlertTriangleIcon,
   CheckIcon,
   ChevronRightIcon,
-  CopyIcon,
   FileBadgeIcon,
   FilesIcon,
   FileTextIcon,
@@ -37,6 +36,7 @@ import {
   ChartTooltipContent,
 } from "@/core/chart/chart";
 import { ConfirmDialog } from "@/core/confirm-dialog/confirm-dialog";
+import { CopyButton } from "@/core/copy-button/copy-button";
 import {
   DescriptionDetails,
   DescriptionItem,
@@ -60,7 +60,6 @@ import {
 } from "@/core/select/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/core/table/table";
 import { ToggleGroup, ToggleGroupItem } from "@/core/toggle-group/toggle-group";
-import { Tooltip, TooltipTrigger } from "@/core/tooltip/tooltip";
 import { useDialogPromise } from "@/hooks/use-dialog-promise";
 import meta from "./meta.json";
 import { PanelCard, PanelCardBody, PanelCardHeader, type PanelCardI18n } from "./panel-card";
@@ -437,36 +436,6 @@ const CERTIFICATE_STATUS = {
 
 const SERIAL_NUMBER = "5A3F9C21D07E4B88A1C6F2E90B7D3E45";
 
-/** Copies a value and confirms it in the button's label and icon. */
-function CopyValueButton({ value, label }: { value: string; label: string }) {
-  const [copied, setCopied] = React.useState(false);
-
-  function copy() {
-    navigator.clipboard?.writeText(value).then(
-      () => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-      },
-      () => setCopied(false),
-    );
-  }
-
-  return (
-    <TooltipTrigger>
-      <Button
-        variant="ghost"
-        size="icon-xs"
-        aria-label={copied ? "Copiado" : label}
-        onPress={copy}
-        className="text-muted-foreground"
-      >
-        {copied ? <CheckIcon /> : <CopyIcon />}
-      </Button>
-      <Tooltip>{copied ? "Copiado" : label}</Tooltip>
-    </TooltipTrigger>
-  );
-}
-
 /**
  * One resource and its status: the status is a badge next to the title,
  * a problem is an `Alert` inside the card (the card keeps its colors), the
@@ -557,7 +526,17 @@ export const ResourceStatus: Story = {
                   <span className="truncate" title={SERIAL_NUMBER}>
                     {SERIAL_NUMBER}
                   </span>
-                  <CopyValueButton value={SERIAL_NUMBER} label="Copiar número de série" />
+                  <CopyButton
+                    value={SERIAL_NUMBER}
+                    tooltip
+                    size="icon-xs"
+                    className="text-muted-foreground"
+                    labels={{
+                      copy: "Copiar número de série",
+                      copied: "Número de série copiado",
+                      failed: "Não foi possível copiar",
+                    }}
+                  />
                 </DescriptionDetails>
               </DescriptionItem>
             </DescriptionList>

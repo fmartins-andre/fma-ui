@@ -66,7 +66,7 @@ export const Default: Story = {
     const writeText = spyOn(navigator.clipboard, "writeText").mockResolvedValue();
     await userEvent.click(canvas.getByRole("button", { name: "Copy code" }));
     await expect(writeText).toHaveBeenCalledWith(CODE);
-    await expect(await canvas.findByRole("button", { name: "Copied" })).toBeInTheDocument();
+    await expect(await canvas.findByText("Copied")).toHaveAttribute("role", "status");
     writeText.mockRestore();
   },
 };
