@@ -706,6 +706,44 @@
       }
     },
     {
+      "name": "collection-field",
+      "type": "registry:block",
+      "title": "Collection Field",
+      "description": "A list edited in place inside a form: the user adds an item and fills it right there (payment methods, lots, recipients). Rows, state and validation stay in the app (`useFieldArray`'s `fields`, `append`, `remove`). `CollectionField` takes the `label` (a legend), `description`, the list's `error`, `itemCount`, `onAdd` and `addLabel`; `minItems` removes the remove buttons at the minimum and `maxItems` swaps the add button for a note once reached; an empty list shows `emptyMessage`. Adding announces the new item and focuses its first field; removing announces it and focuses the add button. `CollectionFieldItem` (`label` numbered, \"Lot 2\", which also names its remove button; `onRemove`) has two layouts: `row` for a few fields side by side on wide screens with the remove button at the end, and `group` for many fields under a visible legend with a static border, so items stay apart when fields stack on small screens. `CollectionFieldSummary` with `CollectionFieldSummaryItem` shows the total, what is allocated and what remains (`isEmphasized`: by size and weight, with the state in words). Lists filled elsewhere first and only shown here (edited in a dialog, listed in a table) are a composition of `data-grid`/`item` and `dialog`, not this block. Built-in text is in English; translate it with `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/collection-field/collection-field.tsx",
+          "target": "components/fma-ui/collection-field/collection-field.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/description-list",
+        "@fma-ui/empty",
+        "@fma-ui/field"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "form",
+          "field-array",
+          "list",
+          "repeater"
+        ]
+      }
+    },
+    {
       "name": "color-contrast",
       "type": "registry:lib",
       "title": "Color Contrast",
