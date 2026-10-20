@@ -1660,7 +1660,7 @@
       "name": "field",
       "type": "registry:ui",
       "title": "Field",
-      "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends. `choiceCardClassName` is the choice-card surface shared by `CheckboxCard` and `RadioCard` (with react-aria the control is the card, instead of shadcn's `FieldLabel` wrapping a `Field`, which would nest labels); hover uses `accent`.",
+      "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, FieldSeparator for splitting a group, and FieldHelp, an ⓘ button beside a label or column header that opens help in a popover (touch and keyboard, unlike a tooltip; its required `label` names the subject). Pairs with Label, Input, and friends. `choiceCardClassName` is the choice-card surface shared by `CheckboxCard` and `RadioCard` (with react-aria the control is the card, instead of shadcn's `FieldLabel` wrapping a `Field`, which would nest labels); hover uses `accent`.",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"
@@ -1673,12 +1673,16 @@
         }
       ],
       "registryDependencies": [
+        "@fma-ui/button",
         "@fma-ui/label",
+        "@fma-ui/popover",
         "@fma-ui/separator"
       ],
       "dependencies": [
         "class-variance-authority@^0.7.1",
-        "cn@^0.4.0"
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
       ],
       "meta": {
         "status": "stable",
@@ -2733,8 +2737,8 @@
         "@fma-ui/button",
         "@fma-ui/card",
         "@fma-ui/empty",
+        "@fma-ui/field",
         "@fma-ui/icon-tile",
-        "@fma-ui/popover",
         "@fma-ui/skeleton",
         "@fma-ui/spinner"
       ],

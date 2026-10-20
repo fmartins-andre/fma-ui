@@ -181,7 +181,7 @@ export const Default: Story = {
     await expect(canvas.getByText(/^Atualizado em /)).toBeInTheDocument();
     await expect(canvas.getByText("1.996")).toBeInTheDocument();
 
-    await userEvent.click(canvas.getByRole("button", { name: "Mais informações" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Mais informações: Notas emitidas" }));
     await waitFor(() => expect(body.getByText(/Quantidade mensal/)).toBeVisible());
     await userEvent.keyboard("{Escape}");
 

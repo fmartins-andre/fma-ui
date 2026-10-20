@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "cn";
-import { CircleAlertIcon, InboxIcon, InfoIcon, RefreshCwIcon } from "lucide-react";
+import { CircleAlertIcon, InboxIcon, RefreshCwIcon } from "lucide-react";
 import * as React from "react";
 import { useLocale } from "react-aria-components";
 import { Button } from "@/core/button/button";
@@ -14,13 +14,13 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/core/empty/empty";
+import { FieldHelp } from "@/core/field/field";
 import { IconTile } from "@/core/icon-tile/icon-tile";
-import { Popover, PopoverTrigger } from "@/core/popover/popover";
 import { Skeleton } from "@/core/skeleton/skeleton";
 import { Spinner } from "@/core/spinner/spinner";
 
 type PanelCardLabels = {
-  /** The help button's accessible name. */
+  /** The help button's accessible name; a text `title` is appended ("More information: Sales"). */
   help: string;
   /** The "last updated" line, given the formatted date. */
   updatedAt: (formatted: string) => string;
@@ -127,19 +127,11 @@ function PanelCardHeader({
               {title}
             </CardTitle>
             {help && (
-              <PopoverTrigger>
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-label={labels.help}
-                  className="text-muted-foreground"
-                >
-                  <InfoIcon />
-                </Button>
-                <Popover placement="bottom start" className="text-sm">
-                  {help}
-                </Popover>
-              </PopoverTrigger>
+              <FieldHelp
+                label={typeof title === "string" ? `${labels.help}: ${title}` : labels.help}
+              >
+                {help}
+              </FieldHelp>
             )}
             {status && (
               <span data-slot="panel-card-status" className="ml-1 inline-flex">
