@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { FileTextIcon, RadarIcon, ReceiptIcon } from "lucide-react";
 import { expect, userEvent, within } from "storybook/test";
+import { FieldContent, FieldDescription, FieldTitle } from "../field/field";
+import { IconTile } from "../icon-tile/icon-tile";
 import { Label } from "../label/label";
-import { Checkbox, CheckboxGroup } from "./checkbox";
+import { Checkbox, CheckboxCard, CheckboxGroup } from "./checkbox";
 import meta from "./meta.json";
 
 const componentMeta = {
@@ -99,5 +102,58 @@ export const Group: Story = {
     await expect(within(group).getByRole("checkbox", { name: "Emissor de notas" })).toBeChecked();
     await userEvent.click(radar);
     await expect(radar).toBeChecked();
+  },
+};
+
+/**
+ * Choice cards: `CheckboxCard` makes the whole card the checkbox, for a few
+ * options that need an icon and a description (the modules a customer uses).
+ */
+export const ChoiceCard: Story = {
+  render: () => (
+    <CheckboxGroup defaultValue={["emissor"]} className="w-96">
+      <Label>Módulos do cliente</Label>
+      <CheckboxCard value="emissor">
+        <IconTile variant="soft" size="sm">
+          <ReceiptIcon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Emissor de notas</FieldTitle>
+          <FieldDescription>Emissão de NF-e, NFS-e e NFC-e.</FieldDescription>
+        </FieldContent>
+      </CheckboxCard>
+      <CheckboxCard value="radar">
+        <IconTile variant="soft" size="sm">
+          <RadarIcon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Radar de notas</FieldTitle>
+          <FieldDescription>Notas emitidas contra o CNPJ, capturadas na Sefaz.</FieldDescription>
+        </FieldContent>
+      </CheckboxCard>
+      <CheckboxCard value="das" isDisabled>
+        <IconTile variant="soft" size="sm">
+          <FileTextIcon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Guias DAS</FieldTitle>
+          <FieldDescription>Disponível só para clientes MEI.</FieldDescription>
+        </FieldContent>
+      </CheckboxCard>
+    </CheckboxGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const emissor = canvas.getByRole("checkbox", { name: /Emissor de notas/ });
+    const radar = canvas.getByRole("checkbox", { name: /Radar de notas/ });
+    await expect(emissor).toBeChecked();
+    // A click anywhere on the card toggles it.
+    await userEvent.click(canvas.getByText("Notas emitidas contra o CNPJ, capturadas na Sefaz."));
+    await expect(radar).toBeChecked();
+    await userEvent.click(canvas.getByText("Emissor de notas"));
+    await expect(emissor).not.toBeChecked();
+    await expect(canvas.getByRole("checkbox", { name: /Guias DAS/ })).toBeDisabled();
+    // No label nested in another label.
+    await expect(canvasElement.querySelector("label label")).toBeNull();
   },
 };

@@ -1,5 +1,5 @@
 import { cn } from "cn";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, MinusIcon } from "lucide-react";
 import {
   CheckboxGroup as CheckboxGroupPrimitive,
   type CheckboxGroupProps,
@@ -7,6 +7,7 @@ import {
   type CheckboxProps,
   composeRenderProps,
 } from "react-aria-components";
+import { choiceCardClassName } from "@/core/field/field";
 
 function Checkbox({ className, children, ...props }: CheckboxProps) {
   return (
@@ -34,6 +35,34 @@ function Checkbox({ className, children, ...props }: CheckboxProps) {
 }
 
 /**
+ * A checkbox drawn as a card: the whole card toggles it. Children are the
+ * card's content (an `IconTile`, a `FieldContent` with `FieldTitle` and
+ * `FieldDescription`); a square indicator sits at the end. Use inside a
+ * `CheckboxGroup` with a `value`, or alone.
+ */
+function CheckboxCard({ className, children, ...props }: CheckboxProps) {
+  return (
+    <CheckboxPrimitive
+      data-slot="checkbox-card"
+      className={composeRenderProps(className, (className) => cn(choiceCardClassName, className))}
+      {...props}
+    >
+      {composeRenderProps(children, (children, { isSelected, isIndeterminate }) => (
+        <>
+          {children}
+          <span
+            data-slot="checkbox-card-indicator"
+            className="mt-0.5 ml-auto flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors group-data-indeterminate/choice-card:border-primary group-data-indeterminate/choice-card:bg-primary group-data-indeterminate/choice-card:text-primary-foreground group-data-selected/choice-card:border-primary group-data-selected/choice-card:bg-primary group-data-selected/choice-card:text-primary-foreground dark:bg-input/30 [&>svg]:size-3.5"
+          >
+            {isIndeterminate ? <MinusIcon /> : isSelected && <CheckIcon />}
+          </span>
+        </>
+      ))}
+    </CheckboxPrimitive>
+  );
+}
+
+/**
  * Groups checkboxes under one label and one `value` array (each `Checkbox`
  * takes a `value`). A `Label` without `htmlFor` inside names the group.
  */
@@ -49,4 +78,4 @@ function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
   );
 }
 
-export { Checkbox, CheckboxGroup };
+export { Checkbox, CheckboxCard, CheckboxGroup };

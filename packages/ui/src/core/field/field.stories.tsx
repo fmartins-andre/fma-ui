@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Building2Icon, UserIcon } from "lucide-react";
+import { expect, userEvent, within } from "storybook/test";
+import { IconTile } from "../icon-tile/icon-tile";
 import { Input } from "../input/input";
 import { Label } from "../label/label";
+import { RadioCard, RadioGroup } from "../radio-group/radio-group";
 import { Switch } from "../switch/switch";
 import {
   Field,
@@ -12,6 +16,7 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
+  FieldTitle,
 } from "./field";
 import meta from "./meta.json";
 
@@ -102,4 +107,41 @@ export const FieldSetExample: Story = {
       </FieldGroup>
     </FieldSet>
   ),
+};
+
+/**
+ * Choice cards: few options with an icon and a description. The card is the
+ * control itself (`RadioCard`, or `CheckboxCard` for several), filled with
+ * `FieldContent`, `FieldTitle` and `FieldDescription`; wrapping a react-aria
+ * control in a `FieldLabel` would nest one label in another.
+ */
+export const ChoiceCard: Story = {
+  render: () => (
+    <RadioGroup defaultValue="pj" className="w-[30rem] grid-cols-2">
+      <Label className="col-span-2">Tipo de pessoa</Label>
+      <RadioCard value="pf">
+        <IconTile variant="soft" size="sm">
+          <UserIcon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Pessoa física</FieldTitle>
+          <FieldDescription>Cadastro pelo CPF.</FieldDescription>
+        </FieldContent>
+      </RadioCard>
+      <RadioCard value="pj">
+        <IconTile variant="soft" size="sm">
+          <Building2Icon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Pessoa jurídica</FieldTitle>
+          <FieldDescription>Cadastro pelo CNPJ.</FieldDescription>
+        </FieldContent>
+      </RadioCard>
+    </RadioGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByText("Pessoa física"));
+    await expect(canvas.getByRole("radio", { name: /Pessoa física/ })).toBeChecked();
+  },
 };
