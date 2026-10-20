@@ -267,6 +267,7 @@ Implementados (um PR por item):
 | B2 `notification-center` | `feat/notification-center` |
 | B6 `filter-toolbar` | `feat/filter-toolbar` |
 | B4 `stat-cards` | `feat/stat-cards` |
+| B5 `dashboard-card` | `feat/dashboard-card` (sobre B4) |
 
 ## Ordem de execução
 
