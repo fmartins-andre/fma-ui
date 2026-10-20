@@ -1,75 +1,10 @@
 import { cn } from "cn";
-import creditCardType from "credit-card-type";
 import type { ComponentProps } from "react";
-
-/* -------------------------------------------------------------------------- */
-/*                                   Issuers                                  */
-/* -------------------------------------------------------------------------- */
-
-/** What `credit-card-type` knows about an issuer: name, lengths and digit groups. */
-type CreditCardIssuer = {
-  /** The id (`visa`, `mastercard`, `american-express`, `elo`…). */
-  type: string;
-  /** The display name (`Visa`, `American Express`…). */
-  niceType: string;
-  /** The valid number lengths. */
-  lengths: number[];
-  /** Where the number breaks into groups (`[4, 8, 12]`, Amex `[4, 10]`). */
-  gaps: number[];
-  /** The security code's name (`CVV`, `CVC`, `CID`…) and size. */
-  code: { name: string; size: number };
-};
-
-/** The ids `issuer` also accepts, as card data often spells them. */
-const ISSUER_ALIASES: Record<string, string> = {
-  amex: "american-express",
-  americanexpress: "american-express",
-  diners: "diners-club",
-  dinersclub: "diners-club",
-  master: "mastercard",
-};
-
-function toIssuer(type: string): CreditCardIssuer | null {
-  const id = type
-    .trim()
-    .toLowerCase()
-    .replace(/[\s_]+/g, "-");
-  const info: CreditCardIssuer | null = creditCardType.getTypeInfo(
-    ISSUER_ALIASES[id.replace(/-/g, "")] ?? id,
-  );
-  if (!info) return null;
-  const { type: issuerType, niceType, lengths, gaps, code } = info;
-  return { type: issuerType, niceType, lengths, gaps, code };
-}
-
-/**
- * The issuer of a card number, from its first digits, or `null` while more
- * than one issuer still matches (a lone `4` can be Visa or Elo) or none does.
- */
-function getCreditCardIssuer(number: string): CreditCardIssuer | null {
-  const digits = number.replace(/\D/g, "");
-  if (!digits) return null;
-  const matches = creditCardType(digits);
-  return matches.length === 1 && matches[0] ? toIssuer(matches[0].type) : null;
-}
-
-/** Whether a card number is complete for its issuer and passes the Luhn check. */
-function isValidCreditCardNumber(number: string): boolean {
-  const digits = number.replace(/[\s-]/g, "");
-  if (!/^\d+$/.test(digits)) return false;
-  const lengths = getCreditCardIssuer(digits)?.lengths ?? [12, 13, 14, 15, 16, 17, 18, 19];
-  if (!lengths.includes(digits.length)) return false;
-  let sum = 0;
-  for (let index = 0; index < digits.length; index++) {
-    let digit = Number(digits[digits.length - 1 - index]);
-    if (index % 2 === 1) {
-      digit *= 2;
-      if (digit > 9) digit -= 9;
-    }
-    sum += digit;
-  }
-  return sum % 10 === 0;
-}
+import {
+  type CreditCardIssuer,
+  getCreditCardIssuer,
+  getCreditCardIssuerById,
+} from "@/lib/credit-card-validation";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Artwork                                   */
@@ -251,7 +186,7 @@ function CreditCard({
   ...props
 }: CreditCardProps) {
   const labels = { ...defaultCreditCardLabels, ...labelsProp };
-  const issuer = issuerProp ? toIssuer(issuerProp) : getCreditCardIssuer(number);
+  const issuer = issuerProp ? getCreditCardIssuerById(issuerProp) : getCreditCardIssuer(number);
   const look = (issuer && ISSUER_LOOKS[issuer.type]) || {};
   const isAmex = issuer?.type === "american-express";
   const isFlipped = focused === "cvc" && !isAmex;
@@ -373,5 +308,5 @@ function CreditCard({
   );
 }
 
-export type { CreditCardField, CreditCardIssuer, CreditCardLabels, CreditCardProps };
-export { CreditCard, getCreditCardIssuer, isValidCreditCardNumber };
+export type { CreditCardField, CreditCardLabels, CreditCardProps };
+export { CreditCard };

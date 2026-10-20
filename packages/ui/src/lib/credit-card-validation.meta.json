@@ -1,0 +1,8 @@
+{
+  "name": "credit-card-validation",
+  "category": "forms",
+  "status": "stable",
+  "source": "original",
+  "description": "Payment card helpers for forms, without React: `getCreditCardIssuer(number)` detects the issuer from the first digits with `credit-card-type` (`null` while ambiguous) and `getCreditCardIssuerById` reads it from saved card data (`visa`, `Mastercard`, `amex`); each returns the name, valid lengths, digit groups and security-code size. `isValidCreditCardNumber` checks the length for the issuer and the Luhn digit, `isValidCreditCardExpiry` a real month not yet ended (`MM/YY`, `MM/YYYY` or digits only) and `isValidCreditCardCode` the code size for the issuer. `getCreditCardNumberLayout` gives the digit groups for what's typed (Amex 4-6-5), used by the `credit-card` mask and component.",
+  "tags": ["forms", "validation", "credit-card", "payment"]
+}

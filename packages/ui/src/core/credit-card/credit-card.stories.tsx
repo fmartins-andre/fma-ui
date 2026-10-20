@@ -4,7 +4,8 @@ import { expect, userEvent } from "storybook/test";
 import { Input } from "@/core/input/input";
 import { Label } from "@/core/label/label";
 import { MaskedInput } from "@/core/masked-input/masked-input";
-import { CreditCard, type CreditCardField, getCreditCardIssuer } from "./credit-card";
+import { getCreditCardIssuer } from "@/lib/credit-card-validation";
+import { CreditCard, type CreditCardField } from "./credit-card";
 import meta from "./meta.json";
 
 const componentMeta = {

@@ -3,6 +3,6 @@
   "category": "forms",
   "status": "stable",
   "source": "original",
-  "description": "Input-mask system built on Maskito: mask option hooks, formatters and remover utilities for Brazilian documents and common formats (CPF, CNPJ, CPF-or-CNPJ, CEP, phone, credit card, date, date range, date-time, time, decimal).",
+  "description": "Input-mask system built on Maskito: mask option hooks, formatters and remover utilities for Brazilian documents and common formats (CPF, CNPJ, CPF-or-CNPJ, CEP, phone, credit card (grouped by issuer: Amex 4-6-5, up to 19 digits), date, date range, date-time, time, decimal).",
   "tags": ["forms", "mask", "input", "pt-BR"]
 }
