@@ -2213,7 +2213,7 @@
       "name": "item",
       "type": "registry:ui",
       "title": "Item",
-      "description": "A generic row layout for lists of things — media/icon, title, description, and trailing actions — that renders as a <div> or, when given an href, a real link. Use ItemGroup to stack several with consistent spacing.",
+      "description": "A generic row layout for lists of things — media/icon, title, description, and trailing actions — that renders as a <div> or, when given an href, a real link (hovered with the theme's `accent`). Use ItemGroup to stack several with consistent spacing.",
       "author": "@fma-ui/ui",
       "categories": [
         "layout"
@@ -2235,7 +2235,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
         "tags": [
           "layout",
