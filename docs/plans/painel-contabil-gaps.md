@@ -257,8 +257,11 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   ações até o aceite, via contexto. Sem gradientes ou imagens de fundo: a mídia é um painel com
   moldura.
 - **B17 `error-pages`** — *Necessidade*: página não encontrada, sem permissão e erro inesperado
-  com nova tentativa. *Direção*: sobre `empty` + `icon-stack`, em página inteira ou dentro do
-  layout; detalhes técnicos em `collapsible`.
+  com nova tentativa. *Direção*: sobre `empty` + `icon-stack`, `layout="page"` (viewport) ou
+  `"inline"` (área de conteúdo do layout). Presets `NotFound` (404), `Forbidden` (403) e
+  `UnexpectedError` (`onRetry` com pending; com `error`, `ErrorDetails` em `collapsible` com
+  mensagem, stack e botão de copiar) sobre o `ErrorPage` genérico; código de status como rótulo
+  pequeno acima do título. Ligação com o router, report e recarga automática ficam no app.
 
 ## Fica no app (fora do registro)
 
@@ -302,6 +305,7 @@ Implementados (um PR por item):
 | C7 `credit-card` + lib `credit-card-validation` | `feat/credit-card` |
 | B15 `payment-card` | `feat/payment-card` (sobre C7) |
 | B16 `feature-promo` | `feat/feature-promo` |
+| B17 `error-pages` | `feat/error-pages` |
 
 ## Ordem de execução
 

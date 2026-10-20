@@ -1470,6 +1470,46 @@
       }
     },
     {
+      "name": "error-pages",
+      "type": "registry:block",
+      "title": "Error Pages",
+      "description": "Error screens on top of `empty` and `icon-stack`: `NotFound` (404), `Forbidden` (403) and `UnexpectedError`, plus the bare `ErrorPage` for other cases (maintenance, expired link). Each shows an icon, the status `code` as a small label, the title as the page's `h1`, a description and your `actions` (home, back, support). `layout=\"page\"` fills the viewport; `layout=\"inline\"` fills the content area of the app's layout. `UnexpectedError` puts a \"Try again\" button first with `onRetry` (pending while its promise runs) and, with `error`, a collapsible `ErrorDetails` with the message and stack and a button that copies them; leave `error` out where users shouldn't see it. Wiring to the router (error and not-found routes), reporting and automatic reloads stay in the app. Built-in text is in English; translate it with `i18n.labels`, or override `title` and `description`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/error-pages/error-pages.tsx",
+          "target": "components/fma-ui/error-pages/error-pages.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/collapsible",
+        "@fma-ui/empty",
+        "@fma-ui/icon-stack"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "error",
+          "404",
+          "403",
+          "not-found",
+          "forbidden",
+          "empty-state"
+        ]
+      }
+    },
+    {
       "name": "event-calendar",
       "type": "registry:block",
       "title": "Event Calendar",
