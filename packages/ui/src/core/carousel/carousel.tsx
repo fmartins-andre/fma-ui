@@ -2,7 +2,7 @@
 
 import { cn } from "cn";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from "lucide-react";
 import * as React from "react";
 import { Button } from "@/core/button/button";
 
@@ -11,12 +11,44 @@ type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
 type CarouselOptions = UseCarouselParameters[0];
 type CarouselPlugin = UseCarouselParameters[1];
 
+type CarouselLabels = {
+  previous: string;
+  next: string;
+  pause: string;
+  /** Starts the rotation (also when reduced motion started it paused). */
+  start: string;
+  /** A dot's label, given the slide number (1-based) and the total. */
+  goToSlide: (slide: number, total: number) => string;
+};
+
+type CarouselI18n = { labels?: Partial<CarouselLabels> };
+
+const defaultCarouselLabels: CarouselLabels = {
+  previous: "Previous slide",
+  next: "Next slide",
+  pause: "Pause slides",
+  start: "Play slides",
+  goToSlide: (slide, total) => `Go to slide ${slide} of ${total}`,
+};
+
 type CarouselProps = {
   opts?: CarouselOptions;
   plugins?: CarouselPlugin;
   orientation?: "horizontal" | "vertical";
   setApi?: (api: CarouselApi) => void;
+  /**
+   * Advances on its own every `delay` ms (5000 by default), back to the first
+   * slide after the last. Pair it with `CarouselAutoplayToggle`.
+   */
+  autoplay?: boolean | { delay?: number };
+  i18n?: CarouselI18n;
 };
+
+// Bundlers replace process.env.NODE_ENV at build time; declared here so
+// the component doesn't need Node types.
+declare const process: { env: { NODE_ENV?: string } };
+
+const DEFAULT_AUTOPLAY_DELAY = 5000;
 
 type CarouselContextProps = {
   carouselRef: ReturnType<typeof useEmblaCarousel>[0];
@@ -25,7 +57,15 @@ type CarouselContextProps = {
   scrollNext: () => void;
   canScrollPrev: boolean;
   canScrollNext: boolean;
-} & CarouselProps;
+  labels: CarouselLabels;
+  selectedIndex: number;
+  slideCount: number;
+  scrollTo: (index: number) => void;
+  hasAutoplay: boolean;
+  isPlaying: boolean;
+  setPlaying: (isPlaying: boolean) => void;
+  registerAutoplayToggle: () => () => void;
+} & Omit<CarouselProps, "autoplay" | "i18n">;
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
@@ -44,10 +84,17 @@ function Carousel({
   opts,
   setApi,
   plugins,
+  autoplay,
+  i18n,
   className,
   children,
+  onPointerMove,
+  onPointerLeave,
+  onFocus,
+  onBlur,
   ...props
 }: React.ComponentProps<"div"> & CarouselProps) {
+  const labels = { ...defaultCarouselLabels, ...i18n?.labels };
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
@@ -58,11 +105,62 @@ function Carousel({
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
 
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [slideCount, setSlideCount] = React.useState(0);
+
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return;
     setCanScrollPrev(api.canScrollPrev());
     setCanScrollNext(api.canScrollNext());
+    setSelectedIndex(api.selectedScrollSnap());
+    setSlideCount(api.scrollSnapList().length);
   }, []);
+
+  const scrollTo = React.useCallback((index: number) => api?.scrollTo(index), [api]);
+
+  // Autoplay: the user's choice (the toggle), suspended while the pointer is
+  // over the carousel or focus is inside it (except on the toggle itself).
+  const hasAutoplay = Boolean(autoplay);
+  const delay = (typeof autoplay === "object" && autoplay.delay) || DEFAULT_AUTOPLAY_DELAY;
+  const [isPlaying, setPlaying] = React.useState(hasAutoplay);
+  const [isHovered, setHovered] = React.useState(false);
+  const [hasFocusWithin, setFocusWithin] = React.useState(false);
+  const isRotating = hasAutoplay && isPlaying && !isHovered && !hasFocusWithin;
+
+  // Reduced motion: start paused; the toggle can still start it.
+  React.useEffect(() => {
+    if (hasAutoplay && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setPlaying(false);
+    }
+  }, [hasAutoplay]);
+
+  // Re-armed on every slide change, so manual navigation restarts the delay.
+  React.useEffect(() => {
+    if (!api || !isRotating || selectedIndex < 0) return;
+    const timer = setTimeout(() => {
+      if (api.canScrollNext()) api.scrollNext();
+      else api.scrollTo(0);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [api, isRotating, delay, selectedIndex]);
+
+  // A ref, not state: the toggle's effect runs before this component's, so
+  // the count is already up to date when the check below runs.
+  const toggleCount = React.useRef(0);
+  const registerAutoplayToggle = React.useCallback(() => {
+    toggleCount.current += 1;
+    return () => {
+      toggleCount.current -= 1;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "production" && hasAutoplay && toggleCount.current === 0) {
+      console.warn(
+        "[carousel] `autoplay` without a `CarouselAutoplayToggle`: users need a way to pause moving content (WCAG 2.2.2).",
+      );
+    }
+  }, [hasAutoplay]);
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev();
@@ -97,6 +195,7 @@ function Carousel({
     api.on("select", onSelect);
 
     return () => {
+      api?.off("reInit", onSelect);
       api?.off("select", onSelect);
     };
   }, [api, onSelect]);
@@ -112,6 +211,14 @@ function Carousel({
         scrollNext,
         canScrollPrev,
         canScrollNext,
+        labels,
+        selectedIndex,
+        slideCount,
+        scrollTo,
+        hasAutoplay,
+        isPlaying,
+        setPlaying,
+        registerAutoplayToggle,
       }}
     >
       <div
@@ -120,6 +227,26 @@ function Carousel({
         role="region"
         aria-roledescription="carousel"
         data-slot="carousel"
+        data-rotating={isRotating || undefined}
+        // Hover is a moving mouse: slides passing under a still cursor don't pause it.
+        onPointerMove={(event) => {
+          if (event.pointerType === "mouse") setHovered(true);
+          onPointerMove?.(event);
+        }}
+        onPointerLeave={(event) => {
+          setHovered(false);
+          onPointerLeave?.(event);
+        }}
+        onFocus={(event) => {
+          setFocusWithin(
+            !(event.target as Element).closest("[data-slot=carousel-autoplay-toggle]"),
+          );
+          onFocus?.(event);
+        }}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) setFocusWithin(false);
+          onBlur?.(event);
+        }}
         {...props}
       >
         {children}
@@ -129,11 +256,13 @@ function Carousel({
 }
 
 function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
-  const { carouselRef, orientation } = useCarousel();
+  const { carouselRef, orientation, hasAutoplay, isPlaying } = useCarousel();
 
   return (
     <div ref={carouselRef} className="overflow-hidden" data-slot="carousel-content">
       <div
+        // Slide changes are announced only when the user drives them.
+        aria-live={hasAutoplay && isPlaying ? "off" : "polite"}
         className={cn("flex", orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col", className)}
         {...props}
       />
@@ -165,7 +294,7 @@ function CarouselPrevious({
   size = "icon-sm",
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+  const { orientation, scrollPrev, canScrollPrev, labels } = useCarousel();
 
   return (
     <Button
@@ -184,7 +313,7 @@ function CarouselPrevious({
       {...props}
     >
       <ChevronLeftIcon />
-      <span className="sr-only">Previous slide</span>
+      <span className="sr-only">{labels.previous}</span>
     </Button>
   );
 }
@@ -195,7 +324,7 @@ function CarouselNext({
   size = "icon-sm",
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollNext, canScrollNext } = useCarousel();
+  const { orientation, scrollNext, canScrollNext, labels } = useCarousel();
 
   return (
     <Button
@@ -214,15 +343,82 @@ function CarouselNext({
       {...props}
     >
       <ChevronRightIcon />
-      <span className="sr-only">Next slide</span>
+      <span className="sr-only">{labels.next}</span>
     </Button>
   );
 }
 
+/**
+ * Pauses and resumes `autoplay`. Required whenever the carousel moves on its
+ * own (WCAG 2.2.2); it isn't positioned, place it where it fits.
+ */
+function CarouselAutoplayToggle({
+  className,
+  variant = "outline",
+  size = "icon-sm",
+  ...props
+}: React.ComponentProps<typeof Button>) {
+  const { isPlaying, setPlaying, labels, registerAutoplayToggle } = useCarousel();
+
+  React.useEffect(registerAutoplayToggle, [registerAutoplayToggle]);
+
+  return (
+    <Button
+      data-slot="carousel-autoplay-toggle"
+      variant={variant}
+      size={size}
+      className={cn("touch-manipulation rounded-full", className)}
+      onPress={() => setPlaying(!isPlaying)}
+      {...props}
+    >
+      {isPlaying ? <PauseIcon /> : <PlayIcon />}
+      <span className="sr-only">{isPlaying ? labels.pause : labels.start}</span>
+    </Button>
+  );
+}
+
+/**
+ * One dot per slide, the current one marked; pressing a dot goes to its
+ * slide. Not positioned, like the toggle.
+ */
+function CarouselDots({ className, ...props }: React.ComponentProps<"div">) {
+  const { selectedIndex, slideCount, scrollTo, labels } = useCarousel();
+
+  return (
+    <div
+      data-slot="carousel-dots"
+      className={cn("flex items-center justify-center gap-1", className)}
+      {...props}
+    >
+      {Array.from({ length: slideCount }, (_, index) => (
+        // A native button: react-aria's Button doesn't forward `aria-current`.
+        <button
+          // biome-ignore lint/suspicious/noArrayIndexKey: one dot per scroll snap, the index is its identity
+          key={index}
+          type="button"
+          data-slot="carousel-dot"
+          aria-label={labels.goToSlide(index + 1, slideCount)}
+          aria-current={index === selectedIndex || undefined}
+          onClick={() => scrollTo(index)}
+          className="group/carousel-dot flex size-5 items-center justify-center rounded-full outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <span
+            aria-hidden="true"
+            className="size-2 rounded-full bg-foreground/20 transition-all group-aria-current/carousel-dot:w-4 group-aria-current/carousel-dot:bg-primary"
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export type { CarouselI18n, CarouselLabels };
 export {
   Carousel,
   type CarouselApi,
+  CarouselAutoplayToggle,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
