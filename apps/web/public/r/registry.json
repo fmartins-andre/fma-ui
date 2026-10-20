@@ -2743,6 +2743,50 @@
       }
     },
     {
+      "name": "payment-card",
+      "type": "registry:block",
+      "title": "Payment Card",
+      "description": "The payment card screens: the saved card and the form to add one. `PaymentCardDetails` draws the saved card (`credit-card`) beside a `description-list` (issuer, last digits, holder, expiry) from the gateway's data (`number` with hidden digits, `issuer`, `name`, `expiry`), with `actions` under it; `PaymentCardRemove` is the destructive button that asks through a `ConfirmDialog` and runs `onRemove` with the dialog pending, showing an error if it throws. `PaymentCardForm` is a react-aria `Form` that lays `PaymentCardPreview` beside `PaymentCardFields` (stacked when narrow); its fields are ready-made react-aria `TextField`s that feed the live preview with their value and focus (the code field turns the card): `PaymentCardNumberField` (masked by issuer), `PaymentCardNameField` (`part=\"first\"`/`\"last\"` split it for gateways that take them apart), `PaymentCardExpiryField` (`MM/YY`) and `PaymentCardCodeField` (digits, sized by the issuer). Each takes `value`/`onChange` or `defaultValue`, `name`, `validate`, `isInvalid` and `errorMessage` (for react-hook-form's `Controller`), `label` and `description`; validate with the `credit-card-validation` lib. Built-in text is in English; translate it with `label`, `placeholder` and `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/payment-card/payment-card.tsx",
+          "target": "components/fma-ui/payment-card/payment-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/confirm-dialog",
+        "@fma-ui/credit-card",
+        "@fma-ui/description-list",
+        "@fma-ui/input",
+        "@fma-ui/label",
+        "@fma-ui/masked-input",
+        "@fma-ui/use-dialog-promise",
+        "@fma-ui/credit-card-validation"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "payment",
+          "credit-card",
+          "form",
+          "billing"
+        ]
+      }
+    },
+    {
       "name": "plan-builder",
       "type": "registry:block",
       "title": "Plan Builder",
