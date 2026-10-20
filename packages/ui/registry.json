@@ -2414,6 +2414,48 @@
       }
     },
     {
+      "name": "panel-card",
+      "type": "registry:block",
+      "title": "Panel Card",
+      "description": "A panel on a `Card`: a dashboard chart or table, or one resource and its status (a certificate, the current plan), with a standard header and a body that handles its own states. `PanelCardHeader` takes the `title` (a heading, `headingLevel` 2 by default), an `icon` (in a `soft` `IconTile`), a `description`, `help` (opened by an ⓘ button in a popover, so it works with touch and keyboard), `status` (a `Badge` next to the title), `updatedAt` (a `Date` or timestamp, formatted with `Intl` in the react-aria locale), `isRefreshing` (a spinner next to the date while the content stays on screen) and a `toolbar` slot for the card's own controls, which wraps below the title on narrow cards. `PanelCardBody` shows the first state that applies — `isLoading` (skeleton, first load only), `isError` (message plus \"Try again\" with `onRetry`), `isEmpty` (`Empty`) — or its children; `emptyState`/`errorState` replace the built-in messages (e.g. a missing resource with the action that adds it). Charts, tables, `stat-cards` and `description-list` go in the body; problems with the resource go in an `Alert` there, not in the card colors; actions go in a `CardFooter`. `PanelCard`'s `i18n.labels` reaches every built-in text.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/panel-card/panel-card.tsx",
+          "target": "components/fma-ui/panel-card/panel-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/card",
+        "@fma-ui/empty",
+        "@fma-ui/icon-tile",
+        "@fma-ui/popover",
+        "@fma-ui/skeleton",
+        "@fma-ui/spinner"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "dashboard",
+          "card",
+          "chart",
+          "status"
+        ]
+      }
+    },
+    {
       "name": "password-input",
       "type": "registry:ui",
       "title": "Password Input",
@@ -2946,6 +2988,43 @@
         "tags": [
           "feedback",
           "loading"
+        ]
+      }
+    },
+    {
+      "name": "stat-cards",
+      "type": "registry:block",
+      "title": "Stat Cards",
+      "description": "Totals above a list or on a dashboard. `Stat` is a label (`StatLabel`), a value (`StatValue`, formatted by the app, with `isLoading` and `isUnavailable` states), an optional `StatIcon` (a `soft` `IconTile`) and a `StatDescription`; `tone` (`default`, `success`, `warning`, `info`, `destructive`, `muted`) tints the icon and the value, and `size=\"lg\"` enlarges the value. On its own, `Stat` has no surface, for several figures inside one card. The cards come in four kinds: `StatCard` (static), `StatCardButton` (runs `onPress` or opens a dialog as the child of a `DialogTrigger`), `StatCardLink` (navigates, e.g. to the list already filtered) and `StatCardToggle`, the selectable cards of a `StatCardGroup` — a react-aria `ToggleButtonGroup` that filters a list: `selectionMode=\"single\"` behaves like radios, `\"multiple\"` like checkboxes, controlled by `selectedKeys`/`onSelectionChange` so it maps to a search param. `StatGrid` and `StatCardGroup` lay cards out in as many columns as fit, and their `i18n.labels` reach every value inside.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/stat-cards/stat-cards.tsx",
+          "target": "components/fma-ui/stat-cards/stat-cards.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/icon-tile",
+        "@fma-ui/skeleton"
+      ],
+      "dependencies": [
+        "class-variance-authority@^0.7.1",
+        "cn@^0.4.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "stats",
+          "dashboard",
+          "totals",
+          "filters"
         ]
       }
     },
