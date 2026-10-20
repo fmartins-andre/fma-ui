@@ -272,6 +272,7 @@ Implementados (um PR por item):
 | B5 `panel-card` (+ B9) | `feat/dashboard-card` (sobre B4) |
 | C3 `file-upload` + `use-file-upload` | `feat/file-upload` |
 | A11 `CheckboxCard` / `RadioCard` | `feat/choice-card` |
+| A2 `slider` com `marks` | `feat/slider-marks` |
 
 ## Ordem de execução
 
