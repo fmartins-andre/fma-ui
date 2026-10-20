@@ -3,6 +3,12 @@ import { CalculatorIcon, MailCheckIcon } from "lucide-react";
 import { useState } from "react";
 import { FieldError, Form, Link, TextField } from "react-aria-components";
 import { expect, userEvent, waitFor, within } from "storybook/test";
+import {
+  FormWizard,
+  FormWizardFooter,
+  FormWizardStep,
+  FormWizardSteps,
+} from "@/blocks/form-wizard/form-wizard";
 import { Alert, AlertDescription } from "@/core/alert/alert";
 import { LinkButton } from "@/core/button/button";
 import { IconTile } from "@/core/icon-tile/icon-tile";
@@ -384,6 +390,254 @@ export const ResetPassword: Story = {
     await expect(submit).toBeEnabled();
     await userEvent.click(submit);
     await expect(canvas.getByRole("heading", { name: "Senha redefinida" })).toBeInTheDocument();
+  },
+};
+
+/** Stands in for the app's API: is this e-mail free to sign up? */
+const isEmailAvailable = (email: string) =>
+  new Promise<boolean>((resolve) =>
+    setTimeout(() => resolve(email !== "ana@silvacontabil.com.br"), 300),
+  );
+
+/**
+ * Signing up in steps, with `FormWizard` inside the card: each step's fields
+ * validate natively, then `onNext` asks the server (e-mail taken, wrong code)
+ * and keeps the user on the step when it fails. Only the current step is
+ * mounted, so the values live in state.
+ */
+export const SignUp: Story = {
+  render: () => {
+    const [account, setAccount] = useState({
+      name: "",
+      email: "",
+      phone: "",
+      cnpj: "",
+      company: "",
+    });
+    const [code, setCode] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmation, setConfirmation] = useState("");
+    const [error, setError] = useState<string>();
+    const [isDone, setIsDone] = useState(false);
+    const field = (name: keyof typeof account) => ({
+      name,
+      value: account[name],
+      onChange: (value: string) => setAccount((current) => ({ ...current, [name]: value })),
+    });
+
+    if (isDone) {
+      return (
+        <AuthLayout logo={<Logo />} brand={<BrandPanel />}>
+          <AuthCard title="Conta criada" description={`Bem-vindo, ${account.name.split(" ")[0]}!`}>
+            <LinkButton href="#painel" size="lg" className="w-full">
+              Ir para o painel
+            </LinkButton>
+          </AuthCard>
+        </AuthLayout>
+      );
+    }
+
+    return (
+      <AuthLayout logo={<Logo />} brand={<BrandPanel />}>
+        <AuthCard
+          title="Criar conta"
+          description="Leva menos de dois minutos."
+          footer={
+            <>
+              Já tem conta?{" "}
+              <Link href="#entrar" className={linkClass}>
+                Entrar
+              </Link>
+            </>
+          }
+        >
+          <FormWizard
+            steps={[
+              { title: "Seus dados" },
+              { title: "Escritório" },
+              { title: "Confirmar celular" },
+              { title: "Senha" },
+            ]}
+            onStepChange={() => setError(undefined)}
+            onNext={async (step) => {
+              setError(undefined);
+              if (step === 1 && !(await isEmailAvailable(account.email))) {
+                setError("Este e-mail já tem uma conta. Entre ou use outro e-mail.");
+                return false;
+              }
+              if (step === 3 && !(await verifyCode(code))) {
+                setError("Código inválido ou expirado.");
+                return false;
+              }
+              if (step === 4) return isPasswordValid(password, NEW_PASSWORD_RULES, confirmation);
+            }}
+            onComplete={() => setIsDone(true)}
+            i18n={{
+              labels: {
+                steps: "Etapas do cadastro",
+                back: "Voltar",
+                next: "Continuar",
+                finish: "Criar conta",
+                progress: (step, total) => `Etapa ${step} de ${total}`,
+              },
+            }}
+          >
+            <FormWizardSteps />
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            <FormWizardStep step={1}>
+              <TextField {...field("name")} isRequired className="flex flex-col gap-2">
+                <Label>Nome completo</Label>
+                <Input autoComplete="name" />
+                <FieldError className="text-sm text-destructive" />
+              </TextField>
+              <TextField
+                {...field("email")}
+                type="email"
+                isRequired
+                className="flex flex-col gap-2"
+              >
+                <Label>E-mail</Label>
+                <Input autoComplete="email" />
+                <FieldError className="text-sm text-destructive" />
+              </TextField>
+              <TextField {...field("phone")} type="tel" isRequired className="flex flex-col gap-2">
+                <Label>Celular</Label>
+                <Input autoComplete="tel" placeholder="(11) 91234-5678" />
+                <FieldError className="text-sm text-destructive" />
+              </TextField>
+            </FormWizardStep>
+            <FormWizardStep step={2}>
+              <TextField {...field("cnpj")} isRequired className="flex flex-col gap-2">
+                <Label>CNPJ do escritório</Label>
+                <Input inputMode="numeric" placeholder="00.000.000/0000-00" />
+                <FieldError className="text-sm text-destructive" />
+              </TextField>
+              <TextField {...field("company")} isRequired className="flex flex-col gap-2">
+                <Label>Nome do escritório</Label>
+                <Input autoComplete="organization" />
+                <FieldError className="text-sm text-destructive" />
+              </TextField>
+            </FormWizardStep>
+            <FormWizardStep step={3}>
+              <div className="flex flex-col items-center gap-3">
+                <Label htmlFor="sign-up-code" className="text-center font-normal">
+                  Código enviado por SMS para {account.phone}
+                </Label>
+                <InputOTP
+                  id="sign-up-code"
+                  maxLength={6}
+                  value={code}
+                  onChange={setCode}
+                  autoComplete="one-time-code"
+                  required
+                >
+                  <InputOTPGroup>
+                    {[0, 1, 2, 3, 4, 5].map((index) => (
+                      <InputOTPSlot key={index} index={index} />
+                    ))}
+                  </InputOTPGroup>
+                </InputOTP>
+                <ResendCode
+                  onResend={resendCode}
+                  i18n={{
+                    labels: {
+                      resend: "Reenviar código",
+                      resendIn: (time) => `Reenviar código em ${time}`,
+                    },
+                  }}
+                />
+              </div>
+            </FormWizardStep>
+            <FormWizardStep step={4}>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="sign-up-password">Senha</Label>
+                <PasswordInput
+                  id="sign-up-password"
+                  autoComplete="new-password"
+                  toggleLabel="Mostrar senha"
+                  aria-describedby="sign-up-password-rules"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="sign-up-confirmation">Confirmar senha</Label>
+                <PasswordInput
+                  id="sign-up-confirmation"
+                  autoComplete="new-password"
+                  toggleLabel="Mostrar senha"
+                  value={confirmation}
+                  onChange={(event) => setConfirmation(event.target.value)}
+                />
+              </div>
+              <PasswordRules
+                id="sign-up-password-rules"
+                value={password}
+                confirmation={confirmation}
+                rules={NEW_PASSWORD_RULES}
+                stateLabels={{ neutral: "pendente", met: "atendido", unmet: "não atendido" }}
+              />
+            </FormWizardStep>
+            <FormWizardFooter />
+          </FormWizard>
+        </AuthCard>
+      </AuthLayout>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const next = () => userEvent.click(canvas.getByRole("button", { name: "Continuar" }));
+
+    await userEvent.type(canvas.getByRole("textbox", { name: "Nome completo" }), "Ana Silva");
+    await userEvent.type(
+      canvas.getByRole("textbox", { name: "E-mail" }),
+      "ana@silvacontabil.com.br",
+    );
+    await userEvent.type(canvas.getByRole("textbox", { name: "Celular" }), "11912345678");
+    await next();
+    await waitFor(() =>
+      expect(canvas.getByRole("alert")).toHaveTextContent("Este e-mail já tem uma conta."),
+    );
+    await expect(canvas.getByText("Etapa 1 de 4")).toBeInTheDocument();
+
+    const email = canvas.getByRole("textbox", { name: "E-mail" });
+    await userEvent.clear(email);
+    await userEvent.type(email, "ana.silva@silvacontabil.com.br");
+    await next();
+    await waitFor(() => expect(canvas.getByText("Etapa 2 de 4")).toBeInTheDocument());
+
+    await userEvent.type(
+      canvas.getByRole("textbox", { name: "CNPJ do escritório" }),
+      "12345678000195",
+    );
+    await userEvent.type(
+      canvas.getByRole("textbox", { name: "Nome do escritório" }),
+      "Silva Contábil",
+    );
+    await next();
+    await waitFor(() => expect(canvas.getByText("Etapa 3 de 4")).toBeInTheDocument());
+
+    const code = canvas.getByLabelText(/Código enviado por SMS/);
+    await userEvent.type(code, "000000");
+    await next();
+    await waitFor(() =>
+      expect(canvas.getByRole("alert")).toHaveTextContent("Código inválido ou expirado."),
+    );
+    await userEvent.clear(code);
+    await userEvent.type(code, "123456");
+    await next();
+    await waitFor(() => expect(canvas.getByText("Etapa 4 de 4")).toBeInTheDocument());
+
+    await userEvent.type(canvas.getByLabelText("Senha"), "Segredo123");
+    await userEvent.type(canvas.getByLabelText("Confirmar senha"), "Segredo123");
+    await userEvent.click(canvas.getByRole("button", { name: "Criar conta" }));
+    await waitFor(() =>
+      expect(canvas.getByRole("heading", { name: "Conta criada" })).toBeInTheDocument(),
+    );
   },
 };
 

@@ -224,7 +224,7 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   padrão dos blocos de login do shadcn), `AuthCard`, `AuthSubmit` e `ResendCode` (reenvio com
   contagem); os campos são do app (C1, C2, `input-otp`) e aparecem nas stories de login, esqueci a
   senha e redefinição em **duas etapas** (o servidor valida o código, depois a nova senha). Cadastro
-  como story com B11, depois do merge dele.
+  na story `SignUp`, em etapas com B11.
 - **B13 `order-summary`** — *Necessidade*: resumo de compra com itens, benefício aplicável
   (brinde, saldo de cashback), descontos e total antes de confirmar. *Direção*: por partes
   (`OrderSummaryLine`, `OrderSummaryOption` com `switch`) numa `description-list`, total e CTA por
