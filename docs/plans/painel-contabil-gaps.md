@@ -158,15 +158,15 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   `ToggleButtonGroup` com `selectionMode` `single` = rádios ou `multiple` = checkboxes,
   controlado por `selectedKeys`, mapeável num search param). Borda colorida e ícone sólido do app
   não entram; variação (↑/↓) só se aparecer, via `StatDescription` + `badge`.
-- **B5 `dashboard-card`** — *Necessidade*: cards de painel com título, ajuda, hora da atualização,
-  filtros e conteúdo (gráfico, mini tabela, totais) com loading, vazio e erro. *Direção*: `card`
-  com cabeçalho padronizado (ícone, título, descrição, ajuda num botão ⓘ que abre `popover` —
-  toque e teclado —, "Atualizado em…" via `Intl` + `i18n`, `isRefreshing` com spinner sem tirar o
-  conteúdo da tela, toolbar como slot) e corpo que alterna loading/vazio (`empty`)/erro
-  (`isError` + `onRetry`)/conteúdo; rodapé é o `CardFooter`. O card com vários valores e seletor
-  de período (resumo de cashback) e o de saldo com alerta e ação são composições com B4
-  (`StatGrid`/`Stat size="lg"`), nas stories. A toolbar é só um slot: controles específicos de
-  cada card (ex.: anterior/próxima nos cards de certificados e DAS a vencer de
+- **B5 `panel-card`** (antes `dashboard-card`) — *Necessidade*: cards de painel com título, ajuda,
+  hora da atualização, filtros e conteúdo (gráfico, mini tabela, totais) com loading, vazio e erro.
+  *Direção*: `card` com cabeçalho padronizado (ícone, título, `status` em `badge`, descrição, ajuda
+  num botão ⓘ que abre `popover` — toque e teclado —, "Atualizado em…" via `Intl` + `i18n`,
+  `isRefreshing` com spinner sem tirar o conteúdo da tela, toolbar como slot) e corpo que alterna
+  loading/vazio (`empty`)/erro (`isError` + `onRetry`)/conteúdo; rodapé é o `CardFooter`. O card com
+  vários valores e seletor de período (resumo de cashback) e o de saldo com alerta e ação são
+  composições com B4 (`StatGrid`/`Stat size="lg"`), nas stories. A toolbar é só um slot: controles
+  específicos de cada card (ex.: anterior/próxima nos cards de certificados e DAS a vencer de
   `/dashboard/gestao-mei`) ficam no app, compostos com `button`.
 - **B6 `filter-toolbar`** — *Necessidade*: listas com busca, filtros rápidos, filtros avançados,
   filtros ativos visíveis e atualizar. *Direção*: bloco genérico (serve ao `data-grid` e a qualquer
@@ -181,10 +181,12 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
 - **B8 `settings-form`** — *Necessidade*: formulários de edição longos em seções, salvando só quando
   há mudança. *Direção*: seções com `FieldSet`/`FieldLegend` em grade responsiva e rodapé com
   estado (sem alterações / salvando) e ação de salvar; props `isDirty`, `isPending`, `onSubmit`.
-- **B9 `status-card`** — *Necessidade*: mostrar o estado de um recurso (certificado digital, plano
-  atual, integração de módulo) com detalhes e ações. *Direção*: card com título, `badge` de status,
-  ícone, `description-list` e ações; estado de ausência/problema expresso por `alert`/badge, não
-  por recolorir o card inteiro.
+- **B9** — *absorvido pelo B5*: mostrar o estado de um recurso (certificado digital, plano atual)
+  com detalhes e ações é um `panel-card` com `status` (`badge`) no cabeçalho, `description-list`
+  no corpo, problema num `alert` dentro do card (nunca recolorindo o card), ausência como
+  `emptyState` com a ação que adiciona, e ações no `CardFooter` (remover via `confirm-dialog`).
+  Valor longo (nº de série) trunca com botão de copiar. Stories no B5. O status de integração de
+  módulo já é um `alert`.
 
 ### Fluxos
 
@@ -267,7 +269,7 @@ Implementados (um PR por item):
 | B2 `notification-center` | `feat/notification-center` |
 | B6 `filter-toolbar` | `feat/filter-toolbar` |
 | B4 `stat-cards` | `feat/stat-cards` |
-| B5 `dashboard-card` | `feat/dashboard-card` (sobre B4) |
+| B5 `panel-card` (+ B9) | `feat/dashboard-card` (sobre B4) |
 
 ## Ordem de execução
 
@@ -276,7 +278,7 @@ Um PR por item contra `main`; `gh stack` só quando um item depende de outro ain
 
 1. **Fundação**: A9, C1, C2, C4, C8, A3, A4, A5, C10, B10, B3 (C10).
 2. **Shell**: A1, B1 (A1, C9), B2 (C9, B10). Ao fim, o app já troca o layout inteiro.
-3. **Listas e painéis**: B4, B5 (B4), B6 (A5), B9 (C4).
+3. **Listas e painéis**: B4, B5 (B4; inclui B9), B6 (A5).
 4. **Formulários e fluxos**: C3, A11 (A3), A2, B8, B11, B12 (C1, C2, B11), B13 (C4), B14 (A2, B10).
 5. **Restante**: C7, B15 (C7, A4, B10), B16 (A11), B17, A8.
 
