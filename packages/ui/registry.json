@@ -1544,6 +1544,47 @@
       }
     },
     {
+      "name": "file-upload",
+      "type": "registry:ui",
+      "title": "File Upload",
+      "description": "Picks files by dragging them in, pasting them or browsing, and lists them; it doesn't upload. `FileUpload` holds the `use-file-upload` state — `accept` (`.pfx,.p12`, `image/*`), `maxSize`, `multiple` + `maxFiles`, uncontrolled (`defaultValue`) or controlled (`value`/`onChange`), `isDisabled` — and the parts read it: `FileUploadDropzone` (react-aria `DropZone`, with keyboard and paste support; by default an icon, title, `description` and a trigger, highlighted with `accent` while a drag is over it), `FileUploadTrigger` (a `FileTrigger` button), `FileUploadList` (renders each file with a function) and `FileUploadItem` (file-type icon or image thumbnail, name, size, optional `progress`, `error`, extra `actions` such as retry, and a remove button that keeps focus in the widget). Validation errors (type, size, count) render in `FileUploadError`, a `FieldError`. Upload progress and retries stay with the app, keyed by file id. Built-in text is in English; translate labels and error messages with `i18n`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/core/file-upload/file-upload.tsx",
+          "target": "components/fma-ui/file-upload.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/field",
+        "@fma-ui/file-type",
+        "@fma-ui/icon-tile",
+        "@fma-ui/progress",
+        "@fma-ui/use-file-upload"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "form",
+          "file",
+          "upload",
+          "dropzone",
+          "react-aria"
+        ]
+      }
+    },
+    {
       "name": "filter-toolbar",
       "type": "registry:block",
       "title": "Filter Toolbar",
@@ -6592,6 +6633,35 @@
           "dialog",
           "promise",
           "overlay"
+        ]
+      }
+    },
+    {
+      "name": "use-file-upload",
+      "type": "registry:hook",
+      "title": "Use File Upload",
+      "description": "useFileUpload: headless state for picking files, without uploading them. `addFiles` validates each file against `accept` (extensions and MIME types, as in `<input accept>`), `maxSize` and, with `multiple`, `maxFiles` (a batch that goes over is rejected whole) and skips duplicates; without `multiple` a new file replaces the current one. Works uncontrolled (`defaultValue`) or controlled (`value`/`onChange`), takes `isDisabled`, and returns `files` (`{ id, file }`, where `file` is a `File` or metadata of one already stored) plus `errors` as `{ code, message, file }` with `messages` to translate them. Progress and retries stay with the caller, keyed by file id. Also exports `formatBytes` and `matchesAccept`. Based on reui's hook, with its batch, stale-state and StrictMode bugs fixed and its DOM drag handlers left to react-aria's `DropZone` (see `file-upload`).",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/hooks/use-file-upload.ts",
+          "target": "hooks/fma-ui/use-file-upload.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "dependencies": [],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "reui.io (https://reui.io/r/use-file-upload.json, MIT)",
+        "tags": [
+          "hook",
+          "forms",
+          "file",
+          "upload"
         ]
       }
     },
