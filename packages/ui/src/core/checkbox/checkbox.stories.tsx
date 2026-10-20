@@ -1,7 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FileTextIcon, RadarIcon, ReceiptIcon } from "lucide-react";
-import { expect, userEvent, within } from "storybook/test";
-import { FieldContent, FieldDescription, FieldTitle } from "../field/field";
+import { Controller, useForm } from "react-hook-form";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import * as z from "zod";
+import { Button } from "../button/button";
+import { Field, FieldContent, FieldDescription, FieldError, FieldTitle } from "../field/field";
 import { IconTile } from "../icon-tile/icon-tile";
 import { Label } from "../label/label";
 import { Checkbox, CheckboxCard, CheckboxGroup } from "./checkbox";
@@ -158,5 +162,107 @@ export const ChoiceCard: Story = {
     await expect(canvas.getByRole("checkbox", { name: /Guias DAS/ })).toBeDisabled();
     // No label nested in another label.
     await expect(canvasElement.querySelector("label label")).toBeNull();
+  },
+};
+
+const acceptanceSchema = z.object({
+  acceptedTerms: z.boolean().refine(Boolean, "Aceite os termos de compra para continuar."),
+});
+
+type AcceptanceValues = z.infer<typeof acceptanceSchema>;
+
+const finishPurchase = fn(async (_values: AcceptanceValues) => {});
+
+function AcceptanceForm() {
+  const form = useForm<AcceptanceValues>({
+    resolver: zodResolver(acceptanceSchema),
+    defaultValues: { acceptedTerms: false },
+  });
+
+  return (
+    <form
+      onSubmit={form.handleSubmit(finishPurchase)}
+      className="flex w-96 flex-col gap-4"
+      noValidate
+    >
+      <Controller
+        control={form.control}
+        name="acceptedTerms"
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="accept-terms"
+                inputRef={field.ref}
+                name={field.name}
+                isSelected={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                isInvalid={fieldState.invalid}
+                aria-describedby={fieldState.invalid ? "accept-terms-error" : undefined}
+                className="mt-0.5"
+              />
+              <Label htmlFor="accept-terms" className="font-normal">
+                <span>
+                  Li e aceito os{" "}
+                  <a
+                    href="https://example.com/termos-de-compra"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium underline underline-offset-4"
+                  >
+                    termos de compra
+                  </a>
+                </span>
+              </Label>
+            </div>
+            {fieldState.invalid && (
+              <FieldError id="accept-terms-error" errors={[fieldState.error]} />
+            )}
+          </Field>
+        )}
+      />
+      <Button type="submit" isPending={form.formState.isSubmitting}>
+        Finalizar compra
+      </Button>
+    </form>
+  );
+}
+
+/**
+ * Accepting terms: a required `Checkbox` in a React Hook Form + Zod form. The
+ * button stays enabled; submitting without the check shows a `FieldError`
+ * and focuses the checkbox. The link in the label opens the terms without
+ * checking the box. The button is pending only while the purchase runs.
+ */
+export const Acceptance: Story = {
+  render: () => <AcceptanceForm />,
+  play: async ({ canvas }) => {
+    const checkbox = canvas.getByRole("checkbox", { name: /Li e aceito os termos de compra/ });
+    const submit = canvas.getByRole("button", { name: "Finalizar compra" });
+    await expect(submit).toBeEnabled();
+
+    await userEvent.click(submit);
+    await expect(
+      await canvas.findByText("Aceite os termos de compra para continuar."),
+    ).toBeVisible();
+    await waitFor(() => expect(checkbox).toHaveFocus());
+    await expect(checkbox).toHaveAccessibleDescription(
+      "Aceite os termos de compra para continuar.",
+    );
+    await expect(finishPurchase).not.toHaveBeenCalled();
+
+    // The link opens the terms; it doesn't check the box.
+    const link = canvas.getByRole("link", { name: "termos de compra" });
+    link.addEventListener("click", (event) => event.preventDefault(), { once: true });
+    await userEvent.click(link);
+    await expect(checkbox).not.toBeChecked();
+
+    await userEvent.click(checkbox);
+    await expect(checkbox).toBeChecked();
+    await userEvent.click(submit);
+    await waitFor(() =>
+      expect(finishPurchase).toHaveBeenCalledWith({ acceptedTerms: true }, expect.anything()),
+    );
   },
 };
