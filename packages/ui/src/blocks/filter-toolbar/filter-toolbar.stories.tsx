@@ -354,6 +354,11 @@ export const Default: Story = {
     // The sheet edits a draft; "Aplicar" commits it and shows a chip.
     await userEvent.click(canvas.getByRole("button", { name: "Filtros" }));
     const sheet = await body.findByRole("dialog", { name: "Filtrar resultados" });
+    // `size="md"`: 448px wide, not the default 384px.
+    await expect(sheet.closest("[data-slot=sheet-content]")).toHaveAttribute("data-size", "md");
+    await waitFor(() =>
+      expect(sheet.closest("[data-slot=sheet-content]")?.getBoundingClientRect().width).toBe(448),
+    );
     await userEvent.click(within(sheet).getByRole("button", { name: /Situação/ }));
     await userEvent.click(await body.findByRole("option", { name: "Bloqueado" }));
     await userEvent.click(within(sheet).getByRole("button", { name: "Aplicar" }));
