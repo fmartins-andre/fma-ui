@@ -63,6 +63,7 @@ O app troca pelo equivalente daqui e adota a API e o visual do registro.
 | Cadastro em etapas num diálogo (dados bancários) | `form-wizard` (B11) — ajustes em A17 |
 | Serviços adicionais com switch e barra fixa de total (Turbine sua assinatura) | `plan-builder` `PlanResourceAddon` (B14) + `order-summary` (B13) |
 | Resumo de contratação (valor, fidelidade, total) | `order-summary` (B13) + `description-list` (C4) |
+| Valores em reais (frete, seguro, desconto, valor por forma de pagamento), percentuais (copropriedade, alíquotas), quantidade e preço do item da nota (4 e 8 casas) | `masked-input` preset `decimal` (`prefix: "R$ "`, `postfix: "%"`, `maximumFractionDigits`, `min`/`max`); o app troca `react-intl-currency-input` e as próprias máscaras decimais por ele |
 | Detalhes rótulo/valor (contador, classificação, emissão) | `description-list` |
 | Seções recolhíveis da aba Avançado | `accordion` |
 | Seleção dependente (adquirente → modelo) e listas agrupadas | `select`/`combobox` com grupos |
@@ -72,7 +73,7 @@ O app troca pelo equivalente daqui e adota a API e o visual do registro.
 
 | ID | Nome | Necessidade → direção |
 | -- | ---- | --------------------- |
-| C11 | `number-field` | Quantidades com −/+ (carrinho, maquininhas), quantidade e preço por item da nota (4 e 8 casas), percentuais (copropriedade, alíquotas), valores em reais (frete, desconto, valor por forma de pagamento). O app usa `react-intl-currency-input` e máscaras decimais. → `NumberField` do react-aria (formatação por `Intl` com `formatOptions` — moeda, percentual, casas —, `minValue`/`maxValue`/`step`, teclado e roda), botões de incremento opcionais no `input-group` com rótulos traduzíveis, tamanho `sm` para células de tabela. Funciona controlado dentro de `Field`. Stories: quantidade, moeda, percentual e itens editáveis numa `table` com rodapé de totais. |
+| C11 | `number-field` | Escolher uma **quantidade inteira com − / +**: usuários adicionais e maquininhas no carrinho (1–20), maquininhas na contratação do SmartTEF (1–10). Hoje cada tela desenha os botões à mão: "−" e "+" sem rótulo acessível, valor não anunciado como campo numérico, sem setas do teclado e sem estado desabilitado nos limites (só um `Math.min`). O `slider` (A2) serve a faixas grandes com marcas, não a "2 usuários". → `NumberField` do react-aria só para quantidades: campo e botões no `input-group`, com rótulos traduzíveis ("Decrease"/"Increase") e desabilitados em `minValue`/`maxValue`; `spinbutton` com setas e Page Up/Down; valor numérico (`value`/`onChange`, controlado dentro de `Field`); tamanho `sm` para a linha do carrinho. Moeda, percentual e casas decimais **não** entram: continuam no `masked-input` preset `decimal` (ver "O que já está coberto"). Stories: quantidade simples, com limites e na linha de um carrinho. |
 | C12 | `acceptance` | Aceitar termos ou confirmar que entendeu antes de liberar a ação: carrinho, compra de recurso, contratação, cancelar recebimento/nota ("Entendi que a nota será cancelada"). Hoje só existe preso ao `feature-promo`. → Extrair o mecanismo do `FeaturePromoAcceptance`: `Acceptance` (estado, controlado ou não) com `AcceptanceCheckbox` (checkbox simples ou `CheckboxCard`) e as ações do escopo desabilitadas até o aceite (via `ButtonContext`/`LinkContext`, como hoje). O `feature-promo` passa a usá-lo, sem mudar a API dele. |
 | C13 | `qr-code` | Ativar a maquininha lendo um QR Code; o app já mostra QR de Pix. → SVG gerado a partir do texto (dependência pequena e sem dependências próprias, a escolher no PR), `size`, rótulo acessível obrigatório e o código em texto ao lado para digitar (com C14). |
 | C14 | `copy-button` | Copiar token, protocolo, chave de acesso, nº de série. → Botão de ícone que copia `value`, troca o ícone por ✓ por alguns segundos e anuncia "Copiado" (`aria-live`); rótulos traduzíveis. |
@@ -190,8 +191,8 @@ vídeos e textos de marca, e o painel "Cenários" (só do protótipo).
 
 Um PR por item contra `main`; `gh stack` só quando um depende de outro ainda não mergeado.
 
-1. **Fundação**: C11, C12 (refatora o `feature-promo`), C14, A13, A15, A16, A18, A12.
-2. **Foco**: B18 (A15), B19 (C11, C12, A18).
+1. **Fundação**: C12 (refatora o `feature-promo`), C14, A13, A15, A16, A18, A12.
+2. **Foco**: B18 (A15), C11, B19 (C11, C12, A18).
 3. **Fluxos**: B20 (B10), A17, A14, B21.
 4. **Restante**: C13 (C14), B22, B23.
 
