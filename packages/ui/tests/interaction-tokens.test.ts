@@ -41,6 +41,11 @@ const ALLOWED: Record<string, { classes: string[]; reason: string }> = {
     ],
     reason: GHOST_BUTTON_REASON,
   },
+  "src/core/toggle/toggle.tsx": {
+    classes: ["hover:bg-muted"],
+    reason:
+      "hover stays muted (as in shadcn's toggle) so it differs from the pressed state, which uses accent",
+  },
   "src/core/date-field/date-field.tsx": {
     classes: ["data-focused:bg-muted"],
     reason: "the focused segment is a text-editing caret highlight, not a picked item",

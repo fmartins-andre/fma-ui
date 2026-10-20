@@ -2,7 +2,7 @@
   "name": "toggle",
   "category": "buttons",
   "status": "stable",
-  "source": "shadcn",
-  "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup.",
+  "source": "customized",
+  "description": "A single two-state pressable button (on/off), in default/outline variants and three sizes — the single-button counterpart to ToggleGroup. Pressed uses `accent` (theme's selected surface); hover stays `muted`, as in shadcn, so hovering and pressed look different.",
   "tags": ["buttons", "toggle", "react-aria"]
 }
