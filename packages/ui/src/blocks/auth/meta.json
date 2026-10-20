@@ -1,0 +1,8 @@
+{
+  "name": "auth",
+  "category": "blocks",
+  "status": "experimental",
+  "source": "original",
+  "description": "The frame of sign-in, sign-up and password recovery screens; the fields are the app's (`TextField`, `password-input`, `input-otp`, `password-rules`). `AuthLayout` puts the `logo` on top and the content centered; with `brand` (product message, illustration) the page splits in two on wide screens, without it the column sits on a muted page. `AuthCard` is the form's card: `title` as the page's `h1`, `description`, your fields, and a centered `footer` for the links between screens. `AuthSubmit` is the full-width submit button with a spinner while `isPending`. `ResendCode` is \"Resend code\" behind a cooldown (`cooldown` seconds, 60 by default, started on mount): disabled with an `m:ss` countdown, then `onResend` (pending while its promise runs) restarts it. The stories show sign-in, forgot password and a two-step reset (the server checks the code, then the new password follows the rules). Built-in text is in English; translate `ResendCode` with `i18n.labels`.",
+  "tags": ["block", "auth", "login", "password", "otp"]
+}
