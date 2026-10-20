@@ -235,6 +235,9 @@ type DataGridI18nLabels = {
   filterNoResults: string;
   filterClear: string;
   filterSelected: (count: number) => string;
+  selectedRows: (count: number) => string;
+  selectedOnOtherPages: (count: number) => string;
+  clearSelection: string;
   pagination: string;
   rowsPerPage: string;
   paginationInfo: (info: { from: number; to: number; count: number }) => string;
@@ -282,6 +285,9 @@ const defaultDataGridI18n: DataGridI18nConfig = {
     filterNoResults: "No results found.",
     filterClear: "Clear filters",
     filterSelected: (count) => `${count} selected`,
+    selectedRows: (count) => `${count} selected`,
+    selectedOnOtherPages: (count) => `(${count} on other pages)`,
+    clearSelection: "Clear selection",
     pagination: "Pagination",
     rowsPerPage: "Rows per page",
     paginationInfo: ({ from, to, count }) => `${from} - ${to} of ${count}`,
@@ -1180,6 +1186,73 @@ function DataGridRowActions({
   );
 }
 
+/**
+ * What is selected and what to do with it. Shows while rows are selected:
+ * the count ("3 selected", plus "(1 on other pages)" when part of the
+ * selection isn't on screen), your actions as children and "Clear selection".
+ * The count is announced from a status region that stays mounted, so the
+ * first selection is read too. Put it above or below the `DataGridContainer`.
+ */
+function DataGridSelectionBar({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  const {
+    table,
+    i18n: { labels },
+  } = useDataGrid();
+  const barRef = React.useRef<HTMLDivElement>(null);
+  const { rowSelection } = table.store.state;
+  const selected = Object.keys(rowSelection).filter((id) => rowSelection[id]);
+  const pageIds = new Set(table.getRowModel().rows.map((row) => row.id));
+  const offPage = selected.filter((id) => !pageIds.has(id)).length;
+  const summary =
+    selected.length > 0
+      ? [labels.selectedRows(selected.length), offPage > 0 && labels.selectedOnOtherPages(offPage)]
+          .filter(Boolean)
+          .join(" ")
+      : "";
+
+  const clear = () => {
+    // The bar unmounts with the selection; focus goes back to the grid.
+    barRef.current
+      ?.closest("[data-slot=data-grid]")
+      ?.querySelector<HTMLElement>("[role=grid]")
+      ?.focus();
+    table.resetRowSelection(true);
+  };
+
+  return (
+    <>
+      <span role="status" data-slot="data-grid-selection-status" className="sr-only">
+        {summary}
+      </span>
+      {selected.length > 0 && (
+        <div
+          ref={barRef}
+          data-slot="data-grid-selection-bar"
+          className={cn(
+            "flex flex-wrap items-center gap-2 rounded-lg bg-muted px-3 py-1.5 text-sm",
+            className,
+          )}
+        >
+          {/* Read from the status region; hidden here so it isn't read twice. */}
+          <span aria-hidden="true" className="me-auto font-medium tabular-nums">
+            {summary}
+          </span>
+          {children}
+          <Button variant="ghost" size="sm" onPress={clear}>
+            {labels.clearSelection}
+          </Button>
+        </div>
+      )}
+    </>
+  );
+}
+
 /** Pins a row to the top, or to the bottom (TanStack row pinning); put it in a cell. */
 function DataGridRowPin<TData extends RowData>({
   row,
@@ -1745,6 +1818,7 @@ export {
   DataGridRowExpand,
   DataGridRowPin,
   DataGridRowSelect,
+  DataGridSelectionBar,
   DataGridTable,
   DataGridTableFoot,
   DataGridTableFootRow,

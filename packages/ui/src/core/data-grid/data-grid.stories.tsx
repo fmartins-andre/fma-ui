@@ -34,6 +34,7 @@ import {
   DataGridRowExpand,
   DataGridRowPin,
   DataGridRowSelect,
+  DataGridSelectionBar,
   DataGridTable,
   type DataGridTableClassNames,
   DataGridTableFootRow,
@@ -359,6 +360,52 @@ export const Selection: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Go to next page" }));
     await userEvent.click(within(bodyRows(canvas)[0] as HTMLElement).getByRole("checkbox"));
     await expect(selection).toHaveTextContent("USR-001,USR-002,USR-003,USR-004,USR-005,USR-006");
+  },
+};
+
+/**
+ * Bulk actions: `DataGridSelectionBar` shows while rows are selected, with the
+ * count (and how many are on other pages), your actions and "Clear selection".
+ */
+export const SelectionBar: Story = {
+  args: {
+    selectable: true,
+    toolbar: () => (
+      <DataGridSelectionBar>
+        <Button variant="outline" size="sm">
+          Export
+        </Button>
+        <Button variant="outline" size="sm">
+          Send invite
+        </Button>
+      </DataGridSelectionBar>
+    ),
+  },
+  render: (args) => <UsersDataGrid {...args} />,
+  play: async ({ canvas, canvasElement }) => {
+    // The grid's own <output>s are statuses too.
+    const status = canvasElement.querySelector("[data-slot=data-grid-selection-status]");
+    await expect(status).toBeEmptyDOMElement();
+    await expect(canvas.queryByRole("button", { name: "Export" })).toBeNull();
+
+    await userEvent.click(within(bodyRows(canvas)[1] as HTMLElement).getByRole("checkbox"));
+    await expect(status).toHaveTextContent("1 selected");
+    await expect(canvas.getByRole("button", { name: "Export" })).toBeVisible();
+
+    await userEvent.click(canvas.getByRole("checkbox", { name: /select all/i }));
+    await expect(status).toHaveTextContent("5 selected");
+    await userEvent.click(canvas.getByRole("button", { name: "Go to next page" }));
+    await expect(status).toHaveTextContent("5 selected (5 on other pages)");
+    await userEvent.click(within(bodyRows(canvas)[0] as HTMLElement).getByRole("checkbox"));
+    await expect(status).toHaveTextContent("6 selected (5 on other pages)");
+
+    await userEvent.click(canvas.getByRole("button", { name: "Clear selection" }));
+    await expect(status).toBeEmptyDOMElement();
+    await expect(canvas.getByTestId("selection")).toBeEmptyDOMElement();
+    await expect(canvas.queryByRole("button", { name: "Export" })).toBeNull();
+    await expect(canvas.getByRole("grid", { name: "Users" }).contains(document.activeElement)).toBe(
+      true,
+    );
   },
 };
 
