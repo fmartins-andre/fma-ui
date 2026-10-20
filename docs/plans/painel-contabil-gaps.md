@@ -270,6 +270,7 @@ Implementados (um PR por item):
 | B6 `filter-toolbar` | `feat/filter-toolbar` |
 | B4 `stat-cards` | `feat/stat-cards` |
 | B5 `panel-card` (+ B9) | `feat/dashboard-card` (sobre B4) |
+| C3 `file-upload` + `use-file-upload` | `feat/file-upload` |
 
 ## Ordem de execução
 

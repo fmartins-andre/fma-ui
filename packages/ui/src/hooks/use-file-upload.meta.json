@@ -1,0 +1,9 @@
+{
+  "name": "use-file-upload",
+  "category": "forms",
+  "status": "stable",
+  "source": "third-party",
+  "origin": "reui.io (https://reui.io/r/use-file-upload.json, MIT)",
+  "description": "useFileUpload: headless state for picking files, without uploading them. `addFiles` validates each file against `accept` (extensions and MIME types, as in `<input accept>`), `maxSize` and, with `multiple`, `maxFiles` (a batch that goes over is rejected whole) and skips duplicates; without `multiple` a new file replaces the current one. Works uncontrolled (`defaultValue`) or controlled (`value`/`onChange`), takes `isDisabled`, and returns `files` (`{ id, file }`, where `file` is a `File` or metadata of one already stored) plus `errors` as `{ code, message, file }` with `messages` to translate them. Progress and retries stay with the caller, keyed by file id. Also exports `formatBytes` and `matchesAccept`. Based on reui's hook, with its batch, stale-state and StrictMode bugs fixed and its DOM drag handlers left to react-aria's `DropZone` (see `file-upload`).",
+  "tags": ["hook", "forms", "file", "upload"]
+}
