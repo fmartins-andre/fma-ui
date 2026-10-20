@@ -1,0 +1,8 @@
+{
+  "name": "pricing-plans",
+  "category": "blocks",
+  "status": "experimental",
+  "source": "original",
+  "description": "Choose one of a few fixed plans, then confirm. `PricingPlans` lays out the options and an optional `summary` (an `OrderSummary` with the chosen plan and a \"Continue\" action: sticky card on large screens, bar fixed to the bottom on smaller ones). `PricingPeriod` is the billing period as a segmented toggle that always has one selected (`value`/`onChange`, `PricingPeriodOption` with an `id`, a `Badge` inside for the saving). `PricingPlanGroup` is a radio group of `PricingPlan` cards, stacked in one list on small screens and side by side in equal columns once its own width fits them; each card has `name`, `badge` (\"Most popular\"), `description`, `price` and `period` formatted by the app, `priceNote` (the equivalent, \"R$ 718,80 per year\") and `isFeatured` for a `primary` border, with the radio named by the plan and described by its price. `PricingPlanFeature` lists what the plan has (`isIncluded={false}` for a dash, muted text and \"Not included\" read before it). For a plan built from quantities and add-ons, use `plan-builder`. Built-in text is in English; translate it with `i18n.labels`.",
+  "tags": ["block", "checkout", "plan", "pricing", "subscription"]
+}
