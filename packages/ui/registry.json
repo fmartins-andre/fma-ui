@@ -1580,6 +1580,43 @@
       }
     },
     {
+      "name": "feature-promo",
+      "type": "registry:block",
+      "title": "Feature Promo",
+      "description": "A locked feature or an offer on a card: why it matters, what it gives and the call to action. Put `FeaturePromoContent` (with `FeaturePromoTitle`, one or more `FeaturePromoDescription`, `FeaturePromoBenefits` of `FeaturePromoBenefit` with an `icon` tile, and `FeaturePromoActions`), an optional `FeaturePromoMedia` and an optional `FeaturePromoGrid` inside `FeaturePromo`. `layout=\"split\"` puts the media beside the content and hides it when the card is narrow; `layout=\"centered\"` stacks everything in the middle. The grid spans the full width with one to three columns: choice cards, `Item`s with `href` for shortcuts, or cards that explain options. With a `FeaturePromoAcceptance` (a checkbox card), the buttons in `FeaturePromoActions` stay disabled until it is checked; uncontrolled (`defaultAccepted`) or controlled (`isAccepted` + `onAcceptedChange`). No background images or gradients: the media is a framed panel.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/feature-promo/feature-promo.tsx",
+          "target": "components/fma-ui/feature-promo/feature-promo.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/checkbox",
+        "@fma-ui/icon-tile"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "promo",
+          "upsell",
+          "locked",
+          "onboarding",
+          "empty-state"
+        ]
+      }
+    },
+    {
       "name": "field",
       "type": "registry:ui",
       "title": "Field",
