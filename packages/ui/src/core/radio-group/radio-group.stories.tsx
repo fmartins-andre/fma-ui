@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { BarcodeIcon, CreditCardIcon, QrCodeIcon } from "lucide-react";
 import { expect, fn, userEvent, within } from "storybook/test";
+import { FieldContent, FieldDescription, FieldTitle } from "../field/field";
+import { IconTile } from "../icon-tile/icon-tile";
 import { Label } from "../label/label";
 import meta from "./meta.json";
-import { RadioGroup, RadioGroupItem } from "./radio-group";
+import { RadioCard, RadioGroup, RadioGroupItem } from "./radio-group";
 
 const componentMeta = {
   title: "ui/RadioGroup",
@@ -89,5 +92,55 @@ export const Interactive: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("radio", { name: "Comfortable" }));
     expect(args.onChange).toHaveBeenCalledWith("comfortable");
+  },
+};
+
+/**
+ * Choice cards: `RadioCard` makes the whole card the radio, for a few options
+ * that need an icon and a description (the payment method).
+ */
+export const ChoiceCard: Story = {
+  args: { defaultValue: "pix" },
+  render: (args) => (
+    <RadioGroup {...args} className="w-96">
+      <Label>Forma de pagamento</Label>
+      <RadioCard value="card">
+        <IconTile variant="soft" size="sm">
+          <CreditCardIcon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Cartão de crédito</FieldTitle>
+          <FieldDescription>Cobrança automática todo mês.</FieldDescription>
+        </FieldContent>
+      </RadioCard>
+      <RadioCard value="pix">
+        <IconTile variant="soft" size="sm">
+          <QrCodeIcon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Pix</FieldTitle>
+          <FieldDescription>Aprovação na hora.</FieldDescription>
+        </FieldContent>
+      </RadioCard>
+      <RadioCard value="boleto">
+        <IconTile variant="soft" size="sm">
+          <BarcodeIcon />
+        </IconTile>
+        <FieldContent>
+          <FieldTitle>Boleto</FieldTitle>
+          <FieldDescription>Compensação em até 3 dias úteis.</FieldDescription>
+        </FieldContent>
+      </RadioCard>
+    </RadioGroup>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("radio", { name: /Pix/ })).toBeChecked();
+    await userEvent.click(canvas.getByText("Compensação em até 3 dias úteis."));
+    await expect(canvas.getByRole("radio", { name: /Boleto/ })).toBeChecked();
+    expect(args.onChange).toHaveBeenCalledWith("boleto");
+    await userEvent.keyboard("{ArrowUp}");
+    await expect(canvas.getByRole("radio", { name: /Pix/ })).toBeChecked();
+    await expect(canvasElement.querySelector("label label")).toBeNull();
   },
 };

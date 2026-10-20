@@ -6,6 +6,7 @@ import {
   Radio as RadioPrimitive,
   type RadioProps,
 } from "react-aria-components";
+import { choiceCardClassName } from "@/core/field/field";
 
 function RadioGroup({ className, ...props }: RadioGroupProps) {
   return (
@@ -44,4 +45,33 @@ function RadioGroupItem({ className, children, ...props }: RadioProps) {
   );
 }
 
-export { RadioGroup, RadioGroupItem };
+/**
+ * A radio drawn as a card: the whole card selects it. Children are the card's
+ * content (an `IconTile`, a `FieldContent` with `FieldTitle` and
+ * `FieldDescription`); a round indicator sits at the end.
+ */
+function RadioCard({ className, children, ...props }: RadioProps) {
+  return (
+    <RadioPrimitive
+      data-slot="radio-card"
+      className={composeRenderProps(className, (className) => cn(choiceCardClassName, className))}
+      {...props}
+    >
+      {composeRenderProps(children, (children, { isSelected }) => (
+        <>
+          {children}
+          <span
+            data-slot="radio-card-indicator"
+            className="relative mt-0.5 ml-auto flex size-4 shrink-0 rounded-full border border-input transition-colors group-data-selected/choice-card:border-primary group-data-selected/choice-card:bg-primary dark:bg-input/30"
+          >
+            {isSelected && (
+              <span className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-foreground" />
+            )}
+          </span>
+        </>
+      ))}
+    </RadioPrimitive>
+  );
+}
+
+export { RadioCard, RadioGroup, RadioGroupItem };

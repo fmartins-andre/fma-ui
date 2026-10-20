@@ -538,7 +538,7 @@
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
-      "description": "A control for a single on/off/indeterminate value. Pair with an external Label (via id/htmlFor) laid out as a flex row rather than passing label text as children. `CheckboxGroup` gathers several under one label and a `value` array (react-aria `CheckboxGroup`; each `Checkbox` takes a `value`).",
+      "description": "A control for a single on/off/indeterminate value. Pair with an external Label (via id/htmlFor) laid out as a flex row rather than passing label text as children. `CheckboxGroup` gathers several under one label and a `value` array (react-aria `CheckboxGroup`; each `Checkbox` takes a `value`). `CheckboxCard` is a choice card: the whole card is the checkbox, its children are the content (an `IconTile`, `FieldContent` with `FieldTitle` and `FieldDescription`) and a square indicator sits at the end; selected cards take a `primary` tint, hovered ones `accent`.",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"
@@ -549,6 +549,9 @@
           "target": "components/fma-ui/checkbox.tsx",
           "type": "registry:component"
         }
+      ],
+      "registryDependencies": [
+        "@fma-ui/field"
       ],
       "dependencies": [
         "cn@^0.4.0",
@@ -1480,7 +1483,7 @@
       "name": "field",
       "type": "registry:ui",
       "title": "Field",
-      "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends.",
+      "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends. `choiceCardClassName` is the choice-card surface shared by `CheckboxCard` and `RadioCard` (with react-aria the control is the card, instead of shadcn's `FieldLabel` wrapping a `Field`, which would nest labels); hover uses `accent`.",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"
@@ -1502,7 +1505,7 @@
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
         "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
         "tags": [
           "forms",
@@ -2658,7 +2661,7 @@
       "name": "radio-group",
       "type": "registry:ui",
       "title": "Radio Group",
-      "description": "A set of mutually-exclusive radio options. Pair each RadioGroupItem with an external Label via id/htmlFor — its own children slot is for a custom indicator, not label text.",
+      "description": "A set of mutually-exclusive radio options. Pair each RadioGroupItem with an external Label via id/htmlFor — its own children slot is for a custom indicator, not label text. `RadioCard` is a choice card: the whole card is the radio, its children are the content (an `IconTile`, `FieldContent` with `FieldTitle` and `FieldDescription`) and a round indicator sits at the end; selected cards take a `primary` tint, hovered ones `accent`. Lay several out with a `className` grid on the group.",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"
@@ -2670,13 +2673,17 @@
           "type": "registry:component"
         }
       ],
+      "registryDependencies": [
+        "@fma-ui/field"
+      ],
       "dependencies": [
         "cn@^0.4.0",
         "react-aria-components@^1.22.1"
       ],
       "meta": {
         "status": "stable",
-        "source": "shadcn",
+        "source": "customized",
+        "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
         "tags": [
           "form",
           "selection",

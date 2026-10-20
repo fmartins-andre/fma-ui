@@ -95,7 +95,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
     <Label
       data-slot="field-label"
       className={cn(
-        "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-data-selected:border-primary/30 has-data-selected:bg-primary/5 has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-slot=field]]:has-[:focus-visible]:border-ring has-[>[data-slot=field]]:has-[:focus-visible]:ring-3 has-[>[data-slot=field]]:has-[:focus-visible]:ring-ring/50 *:data-[slot=field]:p-2.5 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 dark:has-data-selected:border-primary/20 dark:has-data-selected:bg-primary/10",
+        "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-data-selected:border-primary/30 has-data-selected:bg-primary/5 has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-accent has-[>[data-slot=field]]:has-[:focus-visible]:border-ring has-[>[data-slot=field]]:has-[:focus-visible]:ring-3 has-[>[data-slot=field]]:has-[:focus-visible]:ring-ring/50 *:data-[slot=field]:p-2.5 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 dark:has-data-selected:border-primary/20 dark:has-data-selected:bg-primary/10",
         "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col",
         className,
       )}
@@ -103,6 +103,19 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
     />
   );
 }
+
+/**
+ * The card surface of a choice card (`CheckboxCard`, `RadioCard`): the
+ * react-aria control is the card itself, so its label isn't nested in a
+ * `FieldLabel`. Same look as a `FieldLabel` wrapping a `Field`.
+ */
+const choiceCardClassName = cn(
+  "group/choice-card relative flex w-full items-start gap-3 rounded-lg border p-3 text-sm transition-colors outline-none",
+  "not-data-selected:not-data-disabled:data-hovered:bg-accent",
+  "data-selected:border-primary/30 data-selected:bg-primary/5 dark:data-selected:border-primary/20 dark:data-selected:bg-primary/10",
+  "data-focus-visible:border-ring data-focus-visible:ring-3 data-focus-visible:ring-ring/50",
+  "data-invalid:border-destructive data-disabled:cursor-not-allowed data-disabled:opacity-50",
+);
 
 function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -212,6 +225,7 @@ function FieldError({
 }
 
 export {
+  choiceCardClassName,
   Field,
   FieldContent,
   FieldDescription,
