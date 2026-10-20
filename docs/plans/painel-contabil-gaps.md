@@ -249,9 +249,13 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   validade `MM/YY` e código do tamanho da bandeira. Validação pela lib `credit-card-validation`
   (C7), no app; react-hook-form via `Controller`.
 - **B16 `feature-promo`** — *Necessidade*: telas de recurso bloqueado/oferta (notas adicionais,
-  radar, contratar plano, suporte, onboarding de cobrança). *Direção*: card com título, texto,
-  lista de benefícios com `icon-tile`, CTA (opcionalmente liberado por um aceite) e mídia opcional;
-  variante centralizada com grade de choice cards (A11) ou, para atalhos que navegam ("onde usar o saldo"), de `item`s com `href`. Sem gradientes ou imagens de fundo.
+  radar, contratar plano, suporte, onboarding de cobrança). *Direção*: bloco de partes sobre uma
+  superfície de card: título (`h2`), parágrafos, lista de benefícios com `icon-tile`, ações e mídia
+  opcional. `layout="split"` (mídia ao lado, some com o card estreito) ou `"centered"`; grade
+  opcional de largura total para choice cards (A11), `item`s com `href` (atalhos como "onde usar o
+  saldo") ou cards que explicam opções. `FeaturePromoAcceptance` (checkbox card) trava os botões das
+  ações até o aceite, via contexto. Sem gradientes ou imagens de fundo: a mídia é um painel com
+  moldura.
 - **B17 `error-pages`** — *Necessidade*: página não encontrada, sem permissão e erro inesperado
   com nova tentativa. *Direção*: sobre `empty` + `icon-stack`, em página inteira ou dentro do
   layout; detalhes técnicos em `collapsible`.
@@ -297,6 +301,7 @@ Implementados (um PR por item):
 | B14 `plan-builder` (+ `limit` no `slider`) | `feat/plan-builder` |
 | C7 `credit-card` + lib `credit-card-validation` | `feat/credit-card` |
 | B15 `payment-card` | `feat/payment-card` (sobre C7) |
+| B16 `feature-promo` | `feat/feature-promo` |
 
 ## Ordem de execução
 
