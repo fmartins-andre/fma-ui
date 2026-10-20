@@ -1,10 +1,17 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import {
   AlertTriangleIcon,
+  CheckIcon,
   ChevronRightIcon,
+  CopyIcon,
+  FileBadgeIcon,
   FilesIcon,
   FileTextIcon,
+  FileXIcon,
+  PlusIcon,
+  ReceiptTextIcon,
   RefreshCwIcon,
+  Trash2Icon,
   WalletIcon,
 } from "lucide-react";
 import * as React from "react";
@@ -19,7 +26,7 @@ import {
   StatLabel,
   StatValue,
 } from "@/blocks/stat-cards/stat-cards";
-import { Alert, AlertTitle } from "@/core/alert/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/core/alert/alert";
 import { Badge } from "@/core/badge/badge";
 import { Button } from "@/core/button/button";
 import { CardFooter } from "@/core/card/card";
@@ -29,6 +36,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/core/chart/chart";
+import { ConfirmDialog } from "@/core/confirm-dialog/confirm-dialog";
+import {
+  DescriptionDetails,
+  DescriptionItem,
+  DescriptionList,
+  DescriptionTerm,
+} from "@/core/description-list/description-list";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/core/empty/empty";
 import {
   Select,
   SelectContent,
@@ -38,13 +60,10 @@ import {
 } from "@/core/select/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/core/table/table";
 import { ToggleGroup, ToggleGroupItem } from "@/core/toggle-group/toggle-group";
-import {
-  DashboardCard,
-  DashboardCardBody,
-  DashboardCardHeader,
-  type DashboardCardI18n,
-} from "./dashboard-card";
+import { Tooltip, TooltipTrigger } from "@/core/tooltip/tooltip";
+import { useDialogPromise } from "@/hooks/use-dialog-promise";
 import meta from "./meta.json";
+import { PanelCard, PanelCardBody, PanelCardHeader, type PanelCardI18n } from "./panel-card";
 
 const withPtBR: Decorator = (Story) => (
   <I18nProvider locale="pt-BR">
@@ -53,22 +72,22 @@ const withPtBR: Decorator = (Story) => (
 );
 
 const componentMeta = {
-  title: "blocks/DashboardCard",
-  component: DashboardCard,
+  title: "blocks/PanelCard",
+  component: PanelCard,
   tags: ["autodocs"],
   decorators: [withPtBR],
   parameters: {
     layout: "padded",
     docs: { description: { component: meta.description } },
   },
-} satisfies Meta<typeof DashboardCard>;
+} satisfies Meta<typeof PanelCard>;
 
 export default componentMeta;
 type Story = StoryObj<typeof componentMeta>;
 
 const body = within(document.body);
 
-const ptBR: DashboardCardI18n = {
+const ptBR: PanelCardI18n = {
   labels: {
     help: "Mais informações",
     updatedAt: (formatted) => `Atualizado em ${formatted}`,
@@ -115,8 +134,8 @@ export const Default: Story = {
       0,
     );
     return (
-      <DashboardCard i18n={ptBR} className="max-w-2xl">
-        <DashboardCardHeader
+      <PanelCard i18n={ptBR} className="max-w-2xl">
+        <PanelCardHeader
           icon={<FilesIcon />}
           title="Notas emitidas"
           help="Quantidade mensal de notas fiscais emitidas pelos seus clientes, por tipo."
@@ -138,7 +157,7 @@ export const Default: Story = {
             </Select>
           }
         />
-        <DashboardCardBody className="gap-4">
+        <PanelCardBody className="gap-4">
           <Stat>
             <StatLabel>Total no semestre</StatLabel>
             <StatValue>{total.toLocaleString("pt-BR")}</StatValue>
@@ -153,8 +172,8 @@ export const Default: Story = {
               ))}
             </BarChart>
           </ChartContainer>
-        </DashboardCardBody>
-      </DashboardCard>
+        </PanelCardBody>
+      </PanelCard>
     );
   },
   play: async ({ canvas }) => {
@@ -204,9 +223,9 @@ export const States: Story = {
           <ToggleGroupItem id="empty">Vazio</ToggleGroupItem>
           <ToggleGroupItem id="ready">Com dados</ToggleGroupItem>
         </ToggleGroup>
-        <DashboardCard i18n={ptBR} className="w-full">
-          <DashboardCardHeader icon={<FileTextIcon />} title="Últimas notas emitidas" />
-          <DashboardCardBody
+        <PanelCard i18n={ptBR} className="w-full">
+          <PanelCardHeader icon={<FileTextIcon />} title="Últimas notas emitidas" />
+          <PanelCardBody
             isLoading={state === "loading"}
             isError={state === "error"}
             isEmpty={state === "empty"}
@@ -214,8 +233,8 @@ export const States: Story = {
             className="min-h-56"
           >
             <p className="text-sm">12 notas emitidas hoje.</p>
-          </DashboardCardBody>
-        </DashboardCard>
+          </PanelCardBody>
+        </PanelCard>
       </div>
     );
   },
@@ -259,8 +278,8 @@ export const Refreshing: Story = {
     }
 
     return (
-      <DashboardCard i18n={ptBR} className="max-w-2xl">
-        <DashboardCardHeader
+      <PanelCard i18n={ptBR} className="max-w-2xl">
+        <PanelCardHeader
           icon={<FilesIcon />}
           title="DAS MEI a vencer"
           help="Guias DAS dos seus clientes MEI que vencem ou venceram neste mês."
@@ -278,7 +297,7 @@ export const Refreshing: Story = {
             </Button>
           }
         />
-        <DashboardCardBody>
+        <PanelCardBody>
           <Table aria-label="DAS MEI a vencer">
             <TableHeader>
               <TableHead isRowHeader>Cliente</TableHead>
@@ -300,8 +319,8 @@ export const Refreshing: Story = {
               ))}
             </TableBody>
           </Table>
-        </DashboardCardBody>
-      </DashboardCard>
+        </PanelCardBody>
+      </PanelCard>
     );
   },
   play: async ({ canvas }) => {
@@ -330,8 +349,8 @@ export const WithStats: Story = {
     const [period, setPeriod] = React.useState("30");
     return (
       <div className="flex max-w-5xl flex-col gap-4 xl:flex-row">
-        <DashboardCard i18n={ptBR} className="grow">
-          <DashboardCardHeader
+        <PanelCard i18n={ptBR} className="grow">
+          <PanelCardHeader
             title="Resumo do período"
             description="Movimentações de cashback"
             toolbar={
@@ -353,7 +372,7 @@ export const WithStats: Story = {
               </Select>
             }
           />
-          <DashboardCardBody>
+          <PanelCardBody>
             <StatGrid i18n={statPtBR}>
               <Stat>
                 <StatLabel>Saldo inicial</StatLabel>
@@ -376,16 +395,16 @@ export const WithStats: Story = {
                 <StatDescription>Valor não utilizado</StatDescription>
               </Stat>
             </StatGrid>
-          </DashboardCardBody>
-        </DashboardCard>
-        <DashboardCard i18n={ptBR} className="xl:w-80">
-          <DashboardCardHeader
+          </PanelCardBody>
+        </PanelCard>
+        <PanelCard i18n={ptBR} className="xl:w-80">
+          <PanelCardHeader
             icon={<WalletIcon />}
             title="Saldo disponível"
             description="Pronto para uso imediato"
             updatedAt={UPDATED_AT}
           />
-          <DashboardCardBody className="gap-3">
+          <PanelCardBody className="gap-3">
             <Stat size="lg">
               <StatLabel className="sr-only">Saldo</StatLabel>
               <StatValue>R$ 1.365,00</StatValue>
@@ -394,15 +413,274 @@ export const WithStats: Story = {
               <AlertTriangleIcon />
               <AlertTitle>R$ 120,00 expiram em 5 dias</AlertTitle>
             </Alert>
-          </DashboardCardBody>
+          </PanelCardBody>
           <CardFooter>
             <Button className="w-full">
               Usar cashback
               <ChevronRightIcon data-icon="inline-end" />
             </Button>
           </CardFooter>
-        </DashboardCard>
+        </PanelCard>
       </div>
+    );
+  },
+};
+
+type CertificateState = "valid" | "expiring" | "expired" | "missing";
+
+const CERTIFICATE_STATUS = {
+  valid: { label: "Válido", badge: "success-light" },
+  expiring: { label: "Expirando", badge: "warning-light" },
+  expired: { label: "Expirado", badge: "destructive-light" },
+  missing: { label: "Inexistente", badge: "muted" },
+} as const;
+
+const SERIAL_NUMBER = "5A3F9C21D07E4B88A1C6F2E90B7D3E45";
+
+/** Copies a value and confirms it in the button's label and icon. */
+function CopyValueButton({ value, label }: { value: string; label: string }) {
+  const [copied, setCopied] = React.useState(false);
+
+  function copy() {
+    navigator.clipboard?.writeText(value).then(
+      () => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      },
+      () => setCopied(false),
+    );
+  }
+
+  return (
+    <TooltipTrigger>
+      <Button
+        variant="ghost"
+        size="icon-xs"
+        aria-label={copied ? "Copiado" : label}
+        onPress={copy}
+        className="text-muted-foreground"
+      >
+        {copied ? <CheckIcon /> : <CopyIcon />}
+      </Button>
+      <Tooltip>{copied ? "Copiado" : label}</Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+/**
+ * One resource and its status: the status is a badge next to the title,
+ * a problem is an `Alert` inside the card (the card keeps its colors), the
+ * details are a `DescriptionList` and the actions sit in the footer. With no
+ * certificate, the body shows the action that adds one; removing asks first.
+ */
+export const ResourceStatus: Story = {
+  render: function ResourceStatusExample() {
+    const [state, setState] = React.useState<CertificateState>("expiring");
+    const removal = useDialogPromise();
+    const status = CERTIFICATE_STATUS[state];
+
+    async function remove() {
+      const result = await removal.open();
+      if (result.status === "confirmed") setState("missing");
+    }
+
+    return (
+      <div className="flex max-w-md flex-col items-start gap-4">
+        <ToggleGroup
+          aria-label="Situação do certificado"
+          variant="outline"
+          size="sm"
+          disallowEmptySelection
+          selectedKeys={[state]}
+          onSelectionChange={(keys) => setState([...keys][0] as CertificateState)}
+        >
+          <ToggleGroupItem id="valid">Válido</ToggleGroupItem>
+          <ToggleGroupItem id="expiring">Expirando</ToggleGroupItem>
+          <ToggleGroupItem id="expired">Expirado</ToggleGroupItem>
+          <ToggleGroupItem id="missing">Inexistente</ToggleGroupItem>
+        </ToggleGroup>
+        <PanelCard i18n={ptBR} className="w-full">
+          <PanelCardHeader
+            icon={<FileBadgeIcon />}
+            title="Certificado digital A1"
+            status={<Badge variant={status.badge}>{status.label}</Badge>}
+          />
+          <PanelCardBody
+            isEmpty={state === "missing"}
+            emptyState={
+              <Empty className="p-4">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <FileXIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>Nenhum certificado adicionado</EmptyTitle>
+                  <EmptyDescription>
+                    Envie o arquivo .pfx do certificado A1 para emitir notas.
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Button size="sm" onPress={() => setState("valid")}>
+                    <PlusIcon data-icon="inline-start" />
+                    Adicionar certificado
+                  </Button>
+                </EmptyContent>
+              </Empty>
+            }
+            className="gap-4"
+          >
+            {state === "expiring" && (
+              <Alert variant="warning">
+                <AlertTriangleIcon />
+                <AlertTitle>Vence em 3 dias</AlertTitle>
+                <AlertDescription>Substitua para continuar emitindo notas.</AlertDescription>
+              </Alert>
+            )}
+            {state === "expired" && (
+              <Alert variant="destructive">
+                <AlertTriangleIcon />
+                <AlertTitle>Venceu em 20/09/2026</AlertTitle>
+                <AlertDescription>
+                  A emissão de notas está suspensa até a substituição.
+                </AlertDescription>
+              </Alert>
+            )}
+            <DescriptionList divided>
+              <DescriptionItem>
+                <DescriptionTerm>Vencimento</DescriptionTerm>
+                <DescriptionDetails>
+                  {state === "expired" ? "20/09/2026" : "23/10/2026"}
+                </DescriptionDetails>
+              </DescriptionItem>
+              <DescriptionItem>
+                <DescriptionTerm className="shrink-0">Número de série</DescriptionTerm>
+                <DescriptionDetails className="flex items-center gap-1">
+                  <span className="truncate" title={SERIAL_NUMBER}>
+                    {SERIAL_NUMBER}
+                  </span>
+                  <CopyValueButton value={SERIAL_NUMBER} label="Copiar número de série" />
+                </DescriptionDetails>
+              </DescriptionItem>
+            </DescriptionList>
+          </PanelCardBody>
+          {state !== "missing" && (
+            <CardFooter className="justify-end gap-2">
+              <Button variant="outline" onPress={remove}>
+                <Trash2Icon data-icon="inline-start" />
+                Remover
+              </Button>
+              <Button>Substituir</Button>
+            </CardFooter>
+          )}
+        </PanelCard>
+        <ConfirmDialog
+          controller={removal}
+          tone="destructive"
+          media={<Trash2Icon />}
+          title="Remover o certificado?"
+          description="Sem certificado, o cliente não consegue emitir notas."
+          confirmLabel="Remover"
+          cancelLabel="Cancelar"
+        />
+      </div>
+    );
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("Expirando", { selector: "[data-slot=badge]" })).toBeVisible();
+    await expect(canvas.getByRole("alert")).toHaveTextContent("Vence em 3 dias");
+    await expect(canvas.getByTitle(SERIAL_NUMBER)).toBeInTheDocument();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Remover" }));
+    const dialog = await body.findByRole("alertdialog", { name: "Remover o certificado?" });
+    await userEvent.click(within(dialog).getByRole("button", { name: "Remover" }));
+    await expect(await canvas.findByText("Nenhum certificado adicionado")).toBeVisible();
+    await expect(canvas.queryByRole("button", { name: "Remover" })).not.toBeInTheDocument();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Adicionar certificado" }));
+    await expect(canvas.getByText("Válido", { selector: "[data-slot=badge]" })).toBeVisible();
+    await expect(canvas.queryByRole("alert")).not.toBeInTheDocument();
+  },
+};
+
+const BENEFITS = [
+  "Gestão centralizada dos seus clientes",
+  "2 certificados digitais de brinde por mês",
+  "Até 500 notas adicionais no emissor por mês",
+  "Monitoramento de DAS MEI de até 50 clientes",
+];
+
+/**
+ * The current plan: the payment status as a badge, the terms in a
+ * `DescriptionList`, what the plan includes, and the change in the footer.
+ */
+export const CurrentPlan: Story = {
+  render: function CurrentPlanExample() {
+    const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+    function refresh() {
+      setIsRefreshing(true);
+      setTimeout(() => setIsRefreshing(false), 800);
+    }
+
+    return (
+      <PanelCard i18n={ptBR} className="max-w-2xl">
+        <PanelCardHeader
+          icon={<ReceiptTextIcon />}
+          title="Plano Profissional"
+          status={<Badge variant="destructive-light">Pagamento em atraso</Badge>}
+          updatedAt={UPDATED_AT}
+          isRefreshing={isRefreshing}
+          toolbar={
+            <Button
+              variant="outline"
+              size="icon-sm"
+              aria-label="Atualizar"
+              isDisabled={isRefreshing}
+              onPress={refresh}
+            >
+              <RefreshCwIcon />
+            </Button>
+          }
+        />
+        <PanelCardBody className="gap-4">
+          <Alert variant="destructive">
+            <AlertTriangleIcon />
+            <AlertTitle>A fatura de setembro está em aberto</AlertTitle>
+            <AlertDescription>Regularize até 30/10 para não perder os benefícios.</AlertDescription>
+          </Alert>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <DescriptionList divided>
+              <DescriptionItem>
+                <DescriptionTerm>Início da vigência</DescriptionTerm>
+                <DescriptionDetails>01/01/2026</DescriptionDetails>
+              </DescriptionItem>
+              <DescriptionItem>
+                <DescriptionTerm>Fim da vigência</DescriptionTerm>
+                <DescriptionDetails>31/12/2026</DescriptionDetails>
+              </DescriptionItem>
+              <DescriptionItem>
+                <DescriptionTerm>Valor</DescriptionTerm>
+                <DescriptionDetails>R$ 189,90/mês</DescriptionDetails>
+              </DescriptionItem>
+            </DescriptionList>
+            <section aria-labelledby="plan-benefits" className="flex flex-col gap-2">
+              <h3 id="plan-benefits" className="text-sm text-muted-foreground">
+                Inclui
+              </h3>
+              <ul className="flex flex-col gap-1.5 text-sm">
+                {BENEFITS.map((benefit) => (
+                  <li key={benefit} className="flex items-start gap-2">
+                    <CheckIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-success" />
+                    {benefit}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
+        </PanelCardBody>
+        <CardFooter className="justify-end">
+          <Button variant="outline">Alterar plano</Button>
+        </CardFooter>
+      </PanelCard>
     );
   },
 };

@@ -19,7 +19,7 @@ import { Popover, PopoverTrigger } from "@/core/popover/popover";
 import { Skeleton } from "@/core/skeleton/skeleton";
 import { Spinner } from "@/core/spinner/spinner";
 
-type DashboardCardLabels = {
+type PanelCardLabels = {
   /** The help button's accessible name. */
   help: string;
   /** The "last updated" line, given the formatted date. */
@@ -35,9 +35,9 @@ type DashboardCardLabels = {
   retry: string;
 };
 
-type DashboardCardI18n = { labels?: Partial<DashboardCardLabels> };
+type PanelCardI18n = { labels?: Partial<PanelCardLabels> };
 
-const defaultDashboardCardLabels: DashboardCardLabels = {
+const defaultPanelCardLabels: PanelCardLabels = {
   help: "More information",
   updatedAt: (formatted) => `Updated ${formatted}`,
   formatDate: (date, locale) =>
@@ -51,40 +51,43 @@ const defaultDashboardCardLabels: DashboardCardLabels = {
   retry: "Try again",
 };
 
-const DashboardCardContext = React.createContext<DashboardCardLabels>(defaultDashboardCardLabels);
+const PanelCardContext = React.createContext<PanelCardLabels>(defaultPanelCardLabels);
 
-const useDashboardCardLabels = () => React.useContext(DashboardCardContext);
+const usePanelCardLabels = () => React.useContext(PanelCardContext);
 
-/** A `Card` for a dashboard panel. Its `i18n` reaches the header and body inside. */
-function DashboardCard({
+/**
+ * A `Card` for a panel: a dashboard chart or table, or one resource and its
+ * status (a certificate, the current plan). Its `i18n` reaches the header and
+ * body inside.
+ */
+function PanelCard({
   i18n,
   className,
   ...props
-}: React.ComponentProps<typeof Card> & { i18n?: DashboardCardI18n }) {
+}: React.ComponentProps<typeof Card> & { i18n?: PanelCardI18n }) {
   const overrides = i18n?.labels;
-  const labels = React.useMemo(
-    () => ({ ...defaultDashboardCardLabels, ...overrides }),
-    [overrides],
-  );
+  const labels = React.useMemo(() => ({ ...defaultPanelCardLabels, ...overrides }), [overrides]);
   return (
-    <DashboardCardContext.Provider value={labels}>
-      <Card data-slot="dashboard-card" className={cn("min-w-0", className)} {...props} />
-    </DashboardCardContext.Provider>
+    <PanelCardContext.Provider value={labels}>
+      <Card data-slot="panel-card" className={cn("min-w-0", className)} {...props} />
+    </PanelCardContext.Provider>
   );
 }
 
 /**
  * The standard header: icon, title (a heading, `headingLevel` 2 by default)
- * with an optional help button, description, the "last updated" line and a
- * toolbar slot that wraps below the title on narrow cards. `help` opens in a
+ * with an optional help button and `status` (a `Badge`), description, the
+ * "last updated" line and a toolbar slot that wraps below the title on narrow
+ * cards. `help` opens in a
  * popover, so it works with touch and keyboard. `isRefreshing` spins next to
  * the date while the content stays on screen.
  */
-function DashboardCardHeader({
+function PanelCardHeader({
   title,
   icon,
   description,
   help,
+  status,
   updatedAt,
   isRefreshing,
   toolbar,
@@ -96,17 +99,19 @@ function DashboardCardHeader({
   icon?: React.ReactNode;
   description?: React.ReactNode;
   help?: React.ReactNode;
+  /** The resource's status, next to the title: a `Badge`. */
+  status?: React.ReactNode;
   updatedAt?: Date | number;
   isRefreshing?: boolean;
   toolbar?: React.ReactNode;
   headingLevel?: 2 | 3 | 4 | 5 | 6;
 }) {
-  const labels = useDashboardCardLabels();
+  const labels = usePanelCardLabels();
   const { locale } = useLocale();
   const date = updatedAt === undefined ? undefined : new Date(updatedAt);
   return (
     <CardHeader
-      data-slot="dashboard-card-header"
+      data-slot="panel-card-header"
       className={cn("flex flex-wrap items-start justify-between gap-3", className)}
       {...props}
     >
@@ -117,7 +122,7 @@ function DashboardCardHeader({
           </IconTile>
         )}
         <div className="flex min-w-0 flex-col gap-0.5">
-          <div className="flex min-h-8 items-center gap-1">
+          <div className="flex min-h-8 flex-wrap items-center gap-x-1 gap-y-0.5">
             <CardTitle role="heading" aria-level={headingLevel}>
               {title}
             </CardTitle>
@@ -136,15 +141,20 @@ function DashboardCardHeader({
                 </Popover>
               </PopoverTrigger>
             )}
+            {status && (
+              <span data-slot="panel-card-status" className="ml-1 inline-flex">
+                {status}
+              </span>
+            )}
           </div>
           {description && (
-            <div data-slot="dashboard-card-description" className="text-sm text-muted-foreground">
+            <div data-slot="panel-card-description" className="text-sm text-muted-foreground">
               {description}
             </div>
           )}
           {(date || isRefreshing) && (
             <div
-              data-slot="dashboard-card-updated-at"
+              data-slot="panel-card-updated-at"
               className="flex items-center gap-1.5 text-xs text-muted-foreground"
             >
               {date && (
@@ -159,7 +169,7 @@ function DashboardCardHeader({
       </div>
       {toolbar && (
         <div
-          data-slot="dashboard-card-toolbar"
+          data-slot="panel-card-toolbar"
           className="flex flex-wrap items-center justify-end gap-2"
         >
           {toolbar}
@@ -176,7 +186,7 @@ function DashboardCardHeader({
  * given), `isEmpty`, or the children. `emptyState`/`errorState` replace the
  * built-in messages. Give it a `min-h-*` to keep the card's height steady.
  */
-function DashboardCardBody({
+function PanelCardBody({
   isLoading,
   isEmpty,
   isError,
@@ -194,7 +204,7 @@ function DashboardCardBody({
   emptyState?: React.ReactNode;
   errorState?: React.ReactNode;
 }) {
-  const labels = useDashboardCardLabels();
+  const labels = usePanelCardLabels();
   let content = children;
   if (isLoading) {
     content = (
@@ -238,7 +248,7 @@ function DashboardCardBody({
   }
   return (
     <div
-      data-slot="dashboard-card-body"
+      data-slot="panel-card-body"
       aria-busy={isLoading || undefined}
       className={cn("flex min-w-0 flex-1 flex-col px-(--card-spacing)", className)}
       {...props}
@@ -248,5 +258,5 @@ function DashboardCardBody({
   );
 }
 
-export type { DashboardCardI18n, DashboardCardLabels };
-export { DashboardCard, DashboardCardBody, DashboardCardHeader };
+export type { PanelCardI18n, PanelCardLabels };
+export { PanelCard, PanelCardBody, PanelCardHeader };
