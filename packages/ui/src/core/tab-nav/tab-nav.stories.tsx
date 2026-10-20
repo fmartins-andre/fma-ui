@@ -2,10 +2,14 @@ import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import {
   BadgeCheckIcon,
   BuildingIcon,
+  ChartColumnIcon,
   FileBoxIcon,
   FileTextIcon,
   LandmarkIcon,
+  PowerIcon,
   ReceiptIcon,
+  SettingsIcon,
+  UploadIcon,
 } from "lucide-react";
 import * as React from "react";
 import { RouterProvider } from "react-aria-components";
@@ -73,36 +77,32 @@ export const Line: Story = {
   ),
 };
 
-/** Icons before the labels, and a separator between groups of pages. */
+/**
+ * A separator between groups that are really apart (the module's pages, then
+ * its setup); it reads best on `line`. Short navs don't need one: order the
+ * items by group instead.
+ */
 export const Grouped: Story = {
-  args: { "aria-label": "Cliente" },
-  decorators: [withRouter("/clientes/42/info")],
+  args: { "aria-label": "Gestor de Notas", variant: "line" },
+  decorators: [withRouter("/radar-notas/dashboard")],
   render: (args) => (
     <TabNav {...args}>
-      <TabNavItem href="/clientes/42/notas-fiscais">
-        <FileTextIcon />
-        Notas fiscais
+      <TabNavItem href="/radar-notas/dashboard">
+        <ChartColumnIcon />
+        Dashboard
       </TabNavItem>
-      <TabNavItem href="/clientes/42/das-mei">
-        <ReceiptIcon />
-        DAS MEI
+      <TabNavItem href="/radar-notas/importar-documentos">
+        <UploadIcon />
+        Importar documentos
       </TabNavItem>
       <TabNavSeparator />
-      <TabNavItem href="/clientes/42/info">
-        <BuildingIcon />
-        Informações
+      <TabNavItem href="/radar-notas/configuracoes">
+        <SettingsIcon />
+        Configurações
       </TabNavItem>
-      <TabNavItem href="/clientes/42/inscricoes-estaduais">
-        <LandmarkIcon />
-        Inscrições estaduais
-      </TabNavItem>
-      <TabNavItem href="/clientes/42/modulos">
-        <FileBoxIcon />
-        Módulos
-      </TabNavItem>
-      <TabNavItem href="/clientes/42/certificado-digital">
-        <BadgeCheckIcon />
-        Certificado digital
+      <TabNavItem href="/radar-notas/habilitacao">
+        <PowerIcon />
+        Habilitação
       </TabNavItem>
     </TabNav>
   ),
@@ -111,18 +111,9 @@ export const Grouped: Story = {
 /** In a narrow space the strip scrolls sideways and keeps the current page in view. */
 export const Overflow: Story = {
   args: { "aria-label": "Cliente", className: "w-72" },
-  decorators: [withRouter("/clientes/42/certificado-digital")],
+  decorators: [withRouter("/clientes/42/das-mei")],
   render: (args) => (
     <TabNav {...args}>
-      <TabNavItem href="/clientes/42/notas-fiscais">
-        <FileTextIcon />
-        Notas fiscais
-      </TabNavItem>
-      <TabNavItem href="/clientes/42/das-mei">
-        <ReceiptIcon />
-        DAS MEI
-      </TabNavItem>
-      <TabNavSeparator />
       <TabNavItem href="/clientes/42/info">
         <BuildingIcon />
         Informações
@@ -139,11 +130,19 @@ export const Overflow: Story = {
         <BadgeCheckIcon />
         Certificado digital
       </TabNavItem>
+      <TabNavItem href="/clientes/42/notas-fiscais">
+        <FileTextIcon />
+        Notas fiscais
+      </TabNavItem>
+      <TabNavItem href="/clientes/42/das-mei">
+        <ReceiptIcon />
+        DAS MEI
+      </TabNavItem>
     </TabNav>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const current = canvas.getByRole("link", { name: "Certificado digital" });
+    const current = canvas.getByRole("link", { name: "DAS MEI" });
     const scroller = current.closest("ul")?.parentElement as HTMLElement;
     await expect(scroller.scrollLeft).toBeGreaterThan(0);
     const box = current.getBoundingClientRect();
