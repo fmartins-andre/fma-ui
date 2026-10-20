@@ -220,9 +220,11 @@ tokens de interação da regra 11, sem estado de servidor (tudo por props/callba
   página (contador, 7 etapas). *Direção*: `stepper` + painéis + rodapé Voltar/Próximo/Concluir;
   `step` controlado e `onNext` assíncrono que pode barrar o avanço; funciona em `dialog` e em `card`.
 - **B12 `auth`** — *Necessidade*: login, esqueci a senha, redefinir com código e cadastro.
-  *Direção*: `AuthLayout` (área de marca como slot + coluna com logo e card, no padrão dos blocos
-  de login do shadcn) e `LoginForm`, `ForgotPasswordForm`, `ResetPasswordForm` (`input-otp` com
-  reenvio e contagem, C1, C2). Cadastro como story com B11.
+  *Direção*: só a estrutura — `AuthLayout` (área de marca como slot + coluna com logo e card, no
+  padrão dos blocos de login do shadcn), `AuthCard`, `AuthSubmit` e `ResendCode` (reenvio com
+  contagem); os campos são do app (C1, C2, `input-otp`) e aparecem nas stories de login, esqueci a
+  senha e redefinição em **duas etapas** (o servidor valida o código, depois a nova senha). Cadastro
+  como story com B11, depois do merge dele.
 - **B13 `order-summary`** — *Necessidade*: resumo de compra com itens, benefício aplicável
   (brinde, saldo de cashback), descontos e total antes de confirmar. *Direção*: card fixo com
   `description-list`, linha de opção com `switch`, descontos e total com hierarquia tipográfica
@@ -277,6 +279,7 @@ Implementados (um PR por item):
 | A2 `slider` com `marks` | `feat/slider-marks` |
 | B8 `settings-form` | `feat/settings-form` |
 | B11 `form-wizard` | `feat/form-wizard` |
+| B12 `auth` | `feat/auth` |
 
 ## Ordem de execução
 
