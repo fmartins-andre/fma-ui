@@ -48,9 +48,21 @@ describe("creditCardMaskFormatter", () => {
     expect(creditCardMaskFormatter("4111")).toBe("4111");
   });
 
-  it("truncates extra digits beyond the mask", () => {
-    // 19 digits — mask only holds 16
-    expect(creditCardMaskFormatter("4111111111111111111")).toBe("4111 1111 1111 1111");
+  it("keeps up to 19 digits for issuers that use them", () => {
+    expect(creditCardMaskFormatter("4111111111111111111")).toBe("4111 1111 1111 1111111");
+  });
+
+  it("truncates digits beyond the issuer's longest length", () => {
+    expect(creditCardMaskFormatter("41111111111111111112")).toBe("4111 1111 1111 1111111");
+    expect(creditCardMaskFormatter("3782822463100051")).toBe("3782 822463 10005");
+  });
+
+  it("groups Amex 4-6-5", () => {
+    expect(creditCardMaskFormatter("378282246310005")).toBe("3782 822463 10005");
+  });
+
+  it("groups Diners 4-6-4", () => {
+    expect(creditCardMaskFormatter("30569309025904")).toBe("3056 930902 5904");
   });
 
   it("returns empty string for null input", () => {
@@ -69,13 +81,20 @@ describe("creditCardMaskFormatter", () => {
 // ─── Mask options ───────────────────────────────────────────────────
 
 describe("createCreditCardMaskOptions", () => {
-  it("has the credit card mask pattern", () => {
+  it("picks the pattern from the issuer", () => {
     const options = createCreditCardMaskOptions();
-    const pattern = options.mask as readonly (string | RegExp)[];
-    expect(pattern).toHaveLength(19);
-    expect(pattern[4]).toBe(" ");
-    expect(pattern[9]).toBe(" ");
-    expect(pattern[14]).toBe(" ");
+    if (typeof options.mask !== "function") throw new Error("expected a dynamic mask");
+    const patternFor = (value: string) =>
+      (options.mask as (state: { value: string; selection: [number, number] }) => unknown[])({
+        value,
+        selection: [0, 0],
+      });
+    const unknown = patternFor("");
+    expect(unknown).toHaveLength(22);
+    expect([unknown[4], unknown[9], unknown[14]]).toEqual([" ", " ", " "]);
+    const amex = patternFor("37");
+    expect(amex).toHaveLength(17);
+    expect([amex[4], amex[11]]).toEqual([" ", " "]);
   });
 
   it("includes placeholder preprocessors", () => {

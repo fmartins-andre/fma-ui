@@ -90,6 +90,27 @@ export const CreditCard: Story = {
   play: typesAs("1234567890123456", "1234 5678 9012 3456"),
 };
 
+/** The card mask follows the issuer: Amex 4-6-5, up to 19 digits for Visa. */
+export const ShouldFollowCardIssuer: Story = {
+  tags: ["!autodocs"],
+  args: { mask: "credit-card", "aria-label": "Card number" },
+  play: async ({ canvas }) => {
+    const input = canvas.getByRole("textbox", { name: "Card number" });
+    await userEvent.type(input, "3782");
+    await expect(input).toHaveValue("3782 ______ _____");
+    await userEvent.type(input, "82246310005");
+    await expect(input).toHaveValue("3782 822463 10005");
+    await userEvent.type(input, "{backspace}{backspace}");
+    await expect(input).toHaveValue("3782 822463 100__");
+
+    await userEvent.clear(input);
+    await userEvent.type(input, "41111111111111111");
+    await expect(input).toHaveValue("4111 1111 1111 11111_");
+    await userEvent.tab();
+    await expect(input).toHaveValue("4111 1111 1111 11111");
+  },
+};
+
 export const Decimal: Story = {
   args: { mask: "decimal", "aria-label": "Amount" },
   play: typesAs("123456", "123.456,00"),

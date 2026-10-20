@@ -1,0 +1,9 @@
+{
+  "name": "credit-card",
+  "category": "data-display",
+  "status": "stable",
+  "source": "third-party",
+  "origin": "react-credit-cards-2 (https://github.com/felquis/react-credit-cards-2, MIT), ported to Tailwind",
+  "description": "A payment card drawn from its data, to show a saved card or preview one while it's typed. The front has the chip, the issuer's logo and color, the number padded with `•` and grouped by issuer (Amex 4-6-5), the holder and the expiry; the back has the stripe, the signature panel and the security code. `number`, `name`, `expiry` (`MM/YY`, `MM/YYYY` or digits only) and `cvc` are plain strings; `*` or `x` in `number` hide digits of a saved card, whose `issuer` (`visa`, `mastercard`, `amex`…) you pass, since by default it is detected from the number. `focused` (`number`, `name`, `expiry`, `cvc`) highlights the field being typed, and `cvc` turns the card over (Amex keeps its code on the front); with reduced motion it turns without the 3D spin. Logos for Visa, Mastercard, Elo, American Express, Hipercard, Diners Club, Discover and JCB; other issuers show their name on the theme gray. Its width sets its size (`w-72` by default) and the text scales with it. `labels` translates the captions and the accessible name: the card is one `role=\"img\"` (\"Visa card ending in 4242, expires 12/28\"). Issuer detection and the form's validation (number, expiry, security code) live in the `credit-card-validation` lib, usable without the card; pair the number field with the `credit-card` mask, which follows the issuer too.",
+  "tags": ["payment", "credit-card", "data-display", "form"]
+}

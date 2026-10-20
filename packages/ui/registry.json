@@ -920,6 +920,70 @@
       }
     },
     {
+      "name": "credit-card",
+      "type": "registry:ui",
+      "title": "Credit Card",
+      "description": "A payment card drawn from its data, to show a saved card or preview one while it's typed. The front has the chip, the issuer's logo and color, the number padded with `•` and grouped by issuer (Amex 4-6-5), the holder and the expiry; the back has the stripe, the signature panel and the security code. `number`, `name`, `expiry` (`MM/YY`, `MM/YYYY` or digits only) and `cvc` are plain strings; `*` or `x` in `number` hide digits of a saved card, whose `issuer` (`visa`, `mastercard`, `amex`…) you pass, since by default it is detected from the number. `focused` (`number`, `name`, `expiry`, `cvc`) highlights the field being typed, and `cvc` turns the card over (Amex keeps its code on the front); with reduced motion it turns without the 3D spin. Logos for Visa, Mastercard, Elo, American Express, Hipercard, Diners Club, Discover and JCB; other issuers show their name on the theme gray. Its width sets its size (`w-72` by default) and the text scales with it. `labels` translates the captions and the accessible name: the card is one `role=\"img\"` (\"Visa card ending in 4242, expires 12/28\"). Issuer detection and the form's validation (number, expiry, security code) live in the `credit-card-validation` lib, usable without the card; pair the number field with the `credit-card` mask, which follows the issuer too.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "data-display"
+      ],
+      "files": [
+        {
+          "path": "src/core/credit-card/credit-card.tsx",
+          "target": "components/fma-ui/credit-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/credit-card-validation"
+      ],
+      "dependencies": [
+        "cn@^0.4.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "third-party",
+        "origin": "react-credit-cards-2 (https://github.com/felquis/react-credit-cards-2, MIT), ported to Tailwind",
+        "tags": [
+          "payment",
+          "credit-card",
+          "data-display",
+          "form"
+        ]
+      }
+    },
+    {
+      "name": "credit-card-validation",
+      "type": "registry:lib",
+      "title": "Credit Card Validation",
+      "description": "Payment card helpers for forms, without React: `getCreditCardIssuer(number)` detects the issuer from the first digits with `credit-card-type` (`null` while ambiguous) and `getCreditCardIssuerById` reads it from saved card data (`visa`, `Mastercard`, `amex`); each returns the name, valid lengths, digit groups and security-code size. `isValidCreditCardNumber` checks the length for the issuer and the Luhn digit, `isValidCreditCardExpiry` a real month not yet ended (`MM/YY`, `MM/YYYY` or digits only) and `isValidCreditCardCode` the code size for the issuer. `getCreditCardNumberLayout` gives the digit groups for what's typed (Amex 4-6-5), used by the `credit-card` mask and component.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "forms"
+      ],
+      "files": [
+        {
+          "path": "src/lib/credit-card-validation.ts",
+          "target": "lib/fma-ui/credit-card-validation.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [
+        "credit-card-type@^10.3.0"
+      ],
+      "meta": {
+        "status": "stable",
+        "source": "original",
+        "tags": [
+          "forms",
+          "validation",
+          "credit-card",
+          "payment"
+        ]
+      }
+    },
+    {
       "name": "data-grid",
       "type": "registry:ui",
       "title": "Data Grid",
@@ -1905,7 +1969,7 @@
       "name": "input-masks",
       "type": "registry:lib",
       "title": "Input Masks",
-      "description": "Input-mask system built on Maskito: mask option hooks, formatters and remover utilities for Brazilian documents and common formats (CPF, CNPJ, CPF-or-CNPJ, CEP, phone, credit card, date, date range, date-time, time, decimal).",
+      "description": "Input-mask system built on Maskito: mask option hooks, formatters and remover utilities for Brazilian documents and common formats (CPF, CNPJ, CPF-or-CNPJ, CEP, phone, credit card (grouped by issuer: Amex 4-6-5, up to 19 digits), date, date range, date-time, time, decimal).",
       "author": "@fma-ui/ui",
       "categories": [
         "forms"
@@ -1988,6 +2052,7 @@
         }
       ],
       "registryDependencies": [
+        "@fma-ui/credit-card-validation",
         "@fma-ui/type-helper",
         "@fma-ui/types"
       ],
@@ -2674,6 +2739,50 @@
           "form",
           "password",
           "validation"
+        ]
+      }
+    },
+    {
+      "name": "payment-card",
+      "type": "registry:block",
+      "title": "Payment Card",
+      "description": "The payment card screens: the saved card and the form to add one. `PaymentCardDetails` draws the saved card (`credit-card`) beside a `description-list` (issuer, last digits, holder, expiry) from the gateway's data (`number` with hidden digits, `issuer`, `name`, `expiry`), with `actions` under it; `PaymentCardRemove` is the destructive button that asks through a `ConfirmDialog` and runs `onRemove` with the dialog pending, showing an error if it throws. `PaymentCardForm` is a react-aria `Form` that lays `PaymentCardPreview` beside `PaymentCardFields` (stacked when narrow); its fields are ready-made react-aria `TextField`s that feed the live preview with their value and focus (the code field turns the card): `PaymentCardNumberField` (masked by issuer), `PaymentCardNameField` (`part=\"first\"`/`\"last\"` split it for gateways that take them apart), `PaymentCardExpiryField` (`MM/YY`) and `PaymentCardCodeField` (digits, sized by the issuer). Each takes `value`/`onChange` or `defaultValue`, `name`, `validate`, `isInvalid` and `errorMessage` (for react-hook-form's `Controller`), `label` and `description`; validate with the `credit-card-validation` lib. Built-in text is in English; translate it with `label`, `placeholder` and `i18n.labels`.",
+      "author": "@fma-ui/ui",
+      "categories": [
+        "blocks"
+      ],
+      "files": [
+        {
+          "path": "src/blocks/payment-card/payment-card.tsx",
+          "target": "components/fma-ui/payment-card/payment-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": [
+        "@fma-ui/button",
+        "@fma-ui/confirm-dialog",
+        "@fma-ui/credit-card",
+        "@fma-ui/description-list",
+        "@fma-ui/input",
+        "@fma-ui/label",
+        "@fma-ui/masked-input",
+        "@fma-ui/use-dialog-promise",
+        "@fma-ui/credit-card-validation"
+      ],
+      "dependencies": [
+        "cn@^0.4.0",
+        "lucide-react@^1.55.0",
+        "react-aria-components@^1.22.1"
+      ],
+      "meta": {
+        "status": "experimental",
+        "source": "original",
+        "tags": [
+          "block",
+          "payment",
+          "credit-card",
+          "form",
+          "billing"
         ]
       }
     },
