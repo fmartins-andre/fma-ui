@@ -18,6 +18,7 @@ import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { Badge } from "@/core/badge/badge";
 import { Button } from "@/core/button/button";
 import { DropdownMenuItem } from "@/core/dropdown-menu/dropdown-menu";
+import { FieldHelp } from "@/core/field/field";
 import { Skeleton } from "@/core/skeleton/skeleton";
 import {
   DataGrid,
@@ -656,6 +657,44 @@ export const RowActions: Story = {
     const empty = await body.findByRole("menuitem", { name: "No actions available" });
     await expect(empty).toHaveAttribute("aria-disabled", "true");
     await expect(args.onRowClick).not.toHaveBeenCalled();
+  },
+};
+
+/**
+ * Help about a column: a `FieldHelp` beside the `DataGridColumnHeader`, not
+ * inside it, so it opens without sorting the column.
+ */
+export const ColumnHelp: Story = {
+  args: {
+    columns: COLUMNS.map(
+      (column): UserColumn =>
+        column.meta?.headerTitle === "Status"
+          ? {
+              ...column,
+              id: "status",
+              header: ({ column }) => (
+                <div className="flex items-center gap-0.5">
+                  <DataGridColumnHeader column={column} title="Status" />
+                  <FieldHelp label="More information: Status">
+                    Active users can sign in; pending ones haven't accepted the invitation yet.
+                  </FieldHelp>
+                </div>
+              ),
+            }
+          : column,
+    ),
+  },
+  render: (args) => <UsersDataGrid {...args} />,
+  play: async ({ canvas }) => {
+    const body = within(document.body);
+    await userEvent.click(canvas.getByRole("button", { name: "More information: Status" }));
+    const dialog = await body.findByRole("dialog", { name: "More information: Status" });
+    await waitFor(() => expect(dialog).toHaveTextContent(/pending ones/));
+    await userEvent.keyboard("{Escape}");
+    await expect(canvas.getByRole("columnheader", { name: /Status/ })).not.toHaveAttribute(
+      "aria-sort",
+      expect.stringMatching(/ascending|descending/),
+    );
   },
 };
 

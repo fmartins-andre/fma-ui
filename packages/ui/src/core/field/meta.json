@@ -4,6 +4,6 @@
   "status": "stable",
   "source": "customized",
   "origin": "shadcn/ui, style: aria-nova (base: react-aria-components)",
-  "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, and FieldSeparator for splitting a group. Pairs with Label, Input, and friends. `choiceCardClassName` is the choice-card surface shared by `CheckboxCard` and `RadioCard` (with react-aria the control is the card, instead of shadcn's `FieldLabel` wrapping a `Field`, which would nest labels); hover uses `accent`.",
+  "description": "Layout primitives for building form fields: Field, FieldSet/FieldLegend for grouping, FieldLabel/FieldDescription/FieldError for the usual label+hint+error stack, FieldSeparator for splitting a group, and FieldHelp, an ⓘ button beside a label or column header that opens help in a popover (touch and keyboard, unlike a tooltip; its required `label` names the subject). Pairs with Label, Input, and friends. `choiceCardClassName` is the choice-card surface shared by `CheckboxCard` and `RadioCard` (with react-aria the control is the card, instead of shadcn's `FieldLabel` wrapping a `Field`, which would nest labels); hover uses `accent`.",
   "tags": ["forms", "layout", "react-aria"]
 }

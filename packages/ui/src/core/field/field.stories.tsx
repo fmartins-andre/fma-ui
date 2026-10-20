@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Building2Icon, UserIcon } from "lucide-react";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { IconTile } from "../icon-tile/icon-tile";
 import { Input } from "../input/input";
 import { Label } from "../label/label";
@@ -12,6 +12,7 @@ import {
   FieldDescription,
   FieldError,
   FieldGroup,
+  FieldHelp,
   FieldLabel,
   FieldLegend,
   FieldSeparator,
@@ -79,6 +80,56 @@ export const WithError: Story = {
       <FieldLabel htmlFor="username">Username</FieldLabel>
       <Input id="username" defaultValue="a" />
       <FieldError errors={[{ message: "Username must be at least 3 characters." }]} />
+    </Field>
+  ),
+};
+
+/**
+ * `FieldHelp` sits beside the label, never inside it, and opens a popover:
+ * it works with touch and keyboard, unlike a tooltip. Its label names the subject.
+ */
+export const WithHelp: Story = {
+  render: () => (
+    <Field className="w-80">
+      <div className="flex items-center gap-1">
+        <FieldLabel htmlFor="cib">CIB</FieldLabel>
+        <FieldHelp label="More information: CIB">
+          The property's code in the Brazilian Real Estate Registry, printed on the property tax
+          bill.
+        </FieldHelp>
+      </div>
+      <Input id="cib" placeholder="0000000-0" />
+    </Field>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const help = canvas.getByRole("button", { name: "More information: CIB" });
+    await userEvent.click(help);
+    const dialog = await body.findByRole("dialog", { name: "More information: CIB" });
+    await expect(dialog).toHaveTextContent(/Real Estate Registry/);
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(help).toHaveFocus());
+    // The label still focuses the input: the button isn't inside it.
+    await userEvent.click(canvas.getByText("CIB"));
+    await expect(canvas.getByRole("textbox", { name: "CIB" })).toHaveFocus();
+  },
+};
+
+/** Beside a switch's label, in a horizontal field. */
+export const WithHelpAndSwitch: Story = {
+  args: { orientation: "horizontal" },
+  render: (args) => (
+    <Field {...args} className="w-96">
+      <FieldContent>
+        <div className="flex items-center gap-1">
+          <FieldLabel htmlFor="personal-operation">Personal operation</FieldLabel>
+          <FieldHelp label="More information: Personal operation">
+            Marks sales to individuals, which change how the tax is calculated.
+          </FieldHelp>
+        </div>
+        <FieldDescription>The buyer is an individual, not a company.</FieldDescription>
+      </FieldContent>
+      <Switch id="personal-operation" />
     </Field>
   ),
 };
